@@ -115,7 +115,14 @@ export default function Navbar() {
                 <a className="block text-xl py-2">About</a>
               </AccordionItem>
               <AccordionItem value="item-5" className="border-0">
-                <a className="block text-xl py-2">Support</a>
+                <div className="cursor-pointer">
+                  <a
+                    href="/support"
+                    className="block text-lg my-2 hover:text-primary"
+                  >
+                    Support
+                  </a>
+                </div>
               </AccordionItem>
             </Accordion>
           </div>
@@ -155,7 +162,9 @@ export default function Navbar() {
               <div className=" cursor-pointer">About</div>
             </MenubarMenu>
             <MenubarMenu>
-              <div className=" cursor-pointer">Support</div>
+              <a className=" cursor-pointer" href="/support">
+                Support
+              </a>
             </MenubarMenu>
           </Menubar>
         </div>
