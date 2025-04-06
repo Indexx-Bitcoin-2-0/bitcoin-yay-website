@@ -10,6 +10,7 @@ import PhoneImage1 from "../assets/images/home/phone-1.png";
 import PhoneImage2 from "../assets/images/home/phone-2.png";
 import PhoneImage3 from "../assets/images/home/phone-3.png";
 import PhoneImage4 from "../assets/images/home/phone-4.png";
+import PhoneImage5 from "../assets/images/home/phone-5.png";
 
 import InfoImage1 from "../assets/images/home/info-1.png";
 import InfoImage2 from "../assets/images/home/info-2.png";
@@ -23,12 +24,10 @@ import BenefitLogo4 from "../assets/images/home/benefits/4.png";
 
 import bgArtImage1 from "../assets/images/home/bg-art-1.png";
 import bgArtImage2 from "../assets/images/home/bg-art-2.png";
+import bgArtImage3 from "../assets/images/bitcoin-art.png";
+import UserReviewCards from "@/components/UserReviewCards";
 
 export default function Home() {
-  const handleDownloadClick = () => {
-    alert("Download link is not available yet. Please check back later.");
-  };
-
   return (
     <div className="container mx-auto px-4 py-8">
       <div>
@@ -89,7 +88,7 @@ export default function Home() {
       </div> */}
 
       <div
-        className="mt-40 pt-20 lg:pt-40 mx-auto relative bg-[center_-5px] md:bg-[center_-10px] bg-size-[400px_auto] md:bg-size-[700px_auto]  bg-no-repeat"
+        className="mt-30 pt-20 lg:pt-40 mx-auto relative bg-[center_-5px] md:bg-[center_-10px] bg-size-[400px_auto] md:bg-size-[700px_auto] bg-no-repeat"
         style={{
           backgroundImage: `url(${bgArtImage1.src})`,
         }}
@@ -152,7 +151,7 @@ export default function Home() {
 
       {/* Part 3 */}
       <div
-        className="mt-20 pt-20 lg:pt-40 mx-auto relative bg-[center_-5px] md:bg-[center_-10px] md:bg-size-[1200px_auto]  bg-no-repeat"
+        className="mt-10 pt-20 lg:pt-40 mx-auto relative bg-[center_-5px] md:bg-[center_-10px] md:bg-size-[1200px_auto] bg-no-repeat"
         style={{
           backgroundImage: `url(${bgArtImage2.src})`,
         }}
@@ -203,6 +202,39 @@ export default function Home() {
             </div>
           </button>
         </div>
+      </div>
+
+      {/* Part 4 */}
+      <div className="flex flex-col items-center justify-center text-center lg:mt-20 mx-aut0 mt-20">
+        <h2 className=" text-2xl lg:text-5xl font-bold w-96 lg:w-[775px] my-4 lg:my-6 lg:leading-16">
+          Download Install Bitcoin Yay app By Scanning The QR Code
+        </h2>
+        <p className="text-lg lg:text-xl font-normal text-tertiary leading-8 w-100 lg:w-[520px]">
+          Get real-time updates, smart insights, and seamless crypto management.
+        </p>
+        <div
+          className="mt-10 w-full relative bg-[-40px_0px] md:bg-[40px_0px] lg:bg-[150px_0px] bg-size-[450px_auto] md:bg-size-[700px_auto] lg:bg-size-[700px_auto] bg-no-repeat flex items-center justify-center"
+          style={{
+            backgroundImage: `url(${bgArtImage3.src})`,
+          }}
+        >
+          <div>
+            <Image
+              src={PhoneImage5}
+              alt="QR Code"
+              className="w-[270px] md:w-[400px] lg:w-[500px]"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Part 5 */}
+
+      <div className="mt-40 flex flex-col items-center justify-center text-center">
+        <div>
+          <h2 className="text-5xl font-bold">What Our Users Say?</h2>
+        </div>
+        <UserReviewCards />
       </div>
     </div>
   );
