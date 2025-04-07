@@ -4,9 +4,92 @@ import { useState } from "react";
 import Image from "next/image";
 
 import CustomButton from "@/components/CustomButton";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 import SearchIcon from "../../assets/images/search-icon.svg";
 import bgArtImage1 from "../../assets/images/bitcoin-art-2.png";
+
+const faqsContent = [
+  {
+    title: "What is Bitcoin Yay?",
+    content:
+      "Bitcoin Yay is a platform that provides real-time Bitcoin updates, market insights, and tools to help users navigate the crypto world.",
+  },
+  {
+    title: "What is Bitcoin Yay?",
+    content:
+      "Bitcoin Yay is a platform that provides real-time Bitcoin updates, market insights, and tools to help users navigate the crypto world.",
+  },
+  {
+    title: "What is Bitcoin Yay?",
+    content:
+      "Bitcoin Yay is a platform that provides real-time Bitcoin updates, market insights, and tools to help users navigate the crypto world.",
+  },
+  {
+    title: "What is Bitcoin Yay?",
+    content:
+      "Bitcoin Yay is a platform that provides real-time Bitcoin updates, market insights, and tools to help users navigate the crypto world.",
+  },
+  {
+    title: "What is Bitcoin Yay?",
+    content:
+      "Bitcoin Yay is a platform that provides real-time Bitcoin updates, market insights, and tools to help users navigate the crypto world.",
+  },
+  {
+    title: "What is Bitcoin Yay?",
+    content:
+      "Bitcoin Yay is a platform that provides real-time Bitcoin updates, market insights, and tools to help users navigate the crypto world.",
+  },
+  {
+    title: "What is Bitcoin Yay?",
+    content:
+      "Bitcoin Yay is a platform that provides real-time Bitcoin updates, market insights, and tools to help users navigate the crypto world.",
+  },
+  {
+    title: "What is Bitcoin Yay?",
+    content:
+      "Bitcoin Yay is a platform that provides real-time Bitcoin updates, market insights, and tools to help users navigate the crypto world.",
+  },
+  {
+    title: "What is Bitcoin Yay?",
+    content:
+      "Bitcoin Yay is a platform that provides real-time Bitcoin updates, market insights, and tools to help users navigate the crypto world.",
+  },
+
+  {
+    title: "Is Bitcoin Yay free to use?",
+    content:
+      "Yes. It comes with default styles that matches the other components' aesthetic.",
+  },
+  {
+    title: "Is it animated?",
+    content:
+      "Yes. It's animated by default, but you can disable it if you prefer.",
+  },
+  {
+    title: "What is crypto diversification, and why is it important?",
+    content:
+      "Crypto diversification is the practice of spreading your investments across different cryptocurrencies to reduce risk. It is important because it helps mitigate the impact of poor performance from any single asset, allowing for a more stable overall portfolio.",
+  },
+];
+
+const CustomAccordionItem = ({ value, title, content }) => {
+  return (
+    <AccordionItem value={value} className="border-b-1 rounded-lg">
+      <AccordionTrigger className="text-base font-semibold text-tertiary p-5 hover:no-underline">
+        {title}
+      </AccordionTrigger>
+      <AccordionContent className="text-sx text-tertiary px-5">
+        {content}
+      </AccordionContent>
+    </AccordionItem>
+  );
+};
 
 export default function support() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -21,13 +104,13 @@ export default function support() {
   };
 
   return (
-    <div className="constainer mx-auto max-w-[90vw] px-4 py-8">
-      <div
-        className="border border-bg2 rounded-lg p-5 lg:p-15 w-full mt-10 mx-auto relative bg-[120px_-80px] md:bg-[400px_-100px] lg:bg-[1100px_-100px] bg-size-[250px_auto] md:bg-size-[300px_auto] lg:bg-size-[540px_auto] bg-no-repeat"
-        style={{
-          backgroundImage: `url(${bgArtImage1.src})`,
-        }}
-      >
+    <div className="container mx-auto max-w-[90vw] px-4 py-8">
+      <div className="lg:h-100 overflow-hidden border border-bg2 rounded-lg p-5 lg:p-15 w-full mt-10 mx-auto relative ">
+        <Image
+          src={bgArtImage1}
+          alt="Background Art"
+          className="absolute -z-10 -top-5 md:top-0 right-0 w-50 lg:w-100"
+        />
         <h1 className="text-2xl md:text-5xl font-bold mt-6">
           Welcome to the FAQ & Support Page
         </h1>
@@ -67,8 +150,24 @@ export default function support() {
           </div>
         </div>
       </div>
-      <div>
-        
+
+      {/* Part 2 */}
+      <div className="my-20">
+        <Accordion type="single" collapsible className="w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+            {faqsContent.map((faq, index) => (
+              <div key={index}>
+                <div className="border-1 border-bg2 rounded-lg">
+                  <CustomAccordionItem
+                    value={`item-${index}`}
+                    title={faq.title}
+                    content={faq.content}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </Accordion>
       </div>
     </div>
   );

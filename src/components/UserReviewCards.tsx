@@ -68,7 +68,7 @@ export default function UserReviewCards() {
   }, [api]);
 
   return (
-    <div className="p-4 mt-10 flex items-center justify-center max-w-full ">
+    <div className="lg:p-4 mt-10 flex items-center justify-center max-w-full ">
       <Carousel setApi={setApi} className="w-full">
         <CarouselContent className=" gap-1">
           {userReviews.map((review, index) => (
@@ -76,7 +76,7 @@ export default function UserReviewCards() {
               key={index}
               className="basis-full lg:basis-[33%] flex items-center justify-center"
             >
-              <Card className=" lg:h-72 flex items-center justify-center flex-col border border-bg2 rounded-xl bg-bg1 text-tertiary w-[300px] md:w-[400px] lg:w-[500px]">
+              <Card className=" lg:h-72 flex items-center justify-center flex-col border border-bg2 rounded-xl bg-bg1 text-tertiary w-full md:w-[450px] lg:w-[500px]">
                 <CardContent className="px-7">
                   <div className="">
                     <div className="border-b border-bg2 flex items-center justify-between pb-4">
