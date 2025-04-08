@@ -59,7 +59,7 @@ export default function Navbar() {
             <Image
               src={BitcoinYayIcon}
               alt="Logo"
-              className="w-[165px] md:w-[270px]"
+              className="w-[165px] md:w-[270px] hover:scale-105 transition-transform duration-300"
               height={50}
             />
           </a>

@@ -6,8 +6,8 @@ import BenefitCard from "@/components/BenefitCard";
 import DownloadLogo from "../assets/images/download-button.png";
 import BitcoinYayLogo from "../assets/images/logo.png";
 
-import PhoneImage1 from "../assets/images/home/phone-1.png";
-import PhoneImage2 from "../assets/images/home/phone-2.png";
+import PhoneImage1 from "../assets/images/home/phone-1.svg";
+import PhoneImage2 from "../assets/images/home/phone-2.svg";
 import PhoneImage3 from "../assets/images/home/phone-3.png";
 import PhoneImage4 from "../assets/images/home/phone-4.png";
 import PhoneImage5 from "../assets/images/home/phone-5.png";
@@ -48,9 +48,9 @@ export default function Home() {
             </h3>
             <p className="text-sm md:text-xl leading-relaxed text-tertiary">
               Bitcoin Yay is your ultimate hub for everything Bitcoin! Whether
-              you&apos;re a seasoned investor or just starting your crypto journey,
-              we bring you the latest news, market trends, and tools to navigate
-              the world of digital currency with confidence.
+              you&apos;re a seasoned investor or just starting your crypto
+              journey, we bring you the latest news, market trends, and tools to
+              navigate the world of digital currency with confidence.
             </p>
           </div>
           <div className="flex-1 mt-20">
@@ -58,22 +58,26 @@ export default function Home() {
               <Image
                 src={PhoneImage1}
                 alt="Phone Image 1"
-                className="w-1/3 md:w-1/2 lg:w-[400px]"
-                height={400}
+                className="w-[150px] md:w-[280px] lg:w-[3800px]"
+                // height={400}
               />
               <Image
                 src={PhoneImage2}
                 alt="Phone Image 2"
-                className="w-1/3 md:w-1/2 lg:w-[400px]"
-                height={400}
+                className="w-[150px] md:w-[280px] lg:w-[380px]"
+                // height={400}
               />
             </div>
           </div>
         </div>
         <div className="flex flex-col items-center lg:items-start justify-center lg:-mt-32 lg:pl-8 lg:w-1/2">
           <div className="flex flex-col items-center justify-center">
-            <button>
-              <Image src={DownloadLogo} alt="Download Logo" className="mt-8" />
+            <button className="cursor-pointer">
+              <Image
+                src={DownloadLogo}
+                alt="Download Logo"
+                className="mt-8 hover:scale-110 transition-transform duration-300"
+              />
               <div className="flex justify-center text-tertiary">
                 <p className="text-lg">Download the App</p>
               </div>
@@ -122,11 +126,11 @@ export default function Home() {
               className="w-[250px] md:w-[500px]"
             />
             <div className="flex flex-col items-center justify-center mt-10">
-              <button>
+              <button className="cursor-pointer">
                 <Image
                   src={DownloadLogo}
                   alt="Download Logo"
-                  className="mt-8"
+                  className="mt-8 hover:scale-110 transition-transform duration-300"
                 />
                 <div className="flex justify-center text-tertiary">
                   <p className="text-lg">Download the App</p>
@@ -195,8 +199,12 @@ export default function Home() {
           </div>
         </div>
         <div className="flex flex-col items-center lg:items-start justify-center">
-          <button>
-            <Image src={DownloadLogo} alt="Download Logo" className="mt-8" />
+          <button className="cursor-pointer">
+            <Image
+              src={DownloadLogo}
+              alt="Download Logo"
+              className="mt-8 hover:scale-110 transition-transform duration-300"
+            />
             <div className="flex text-tertiary">
               <p className="text-lg">Download the App</p>
             </div>
