@@ -22,8 +22,8 @@ import BenefitLogo2 from "../assets/images/home/benefits/2.png";
 import BenefitLogo3 from "../assets/images/home/benefits/3.png";
 import BenefitLogo4 from "../assets/images/home/benefits/4.png";
 
-import bgArtImage1 from "../assets/images/home/bg-art-1.png";
-import bgArtImage2 from "../assets/images/home/bg-art-2.png";
+import bgArtImage1 from "../assets/images/bitcoin-art-3.png";
+import bgArtImage2 from "../assets/images/bitcoin-art-4.png";
 import bgArtImage3 from "../assets/images/bitcoin-art.png";
 import UserReviewCards from "@/components/UserReviewCards";
 

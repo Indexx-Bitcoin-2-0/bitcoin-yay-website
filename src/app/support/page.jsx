@@ -105,7 +105,7 @@ export default function support() {
 
   return (
     <div className="container mx-auto max-w-[90vw] px-4 py-8">
-      <div className="lg:h-100 overflow-hidden border border-bg2 rounded-lg p-5 lg:p-15 w-full mt-10 mx-auto relative ">
+      <div className="lg:h-120 overflow-hidden border border-bg2 rounded-lg p-5 lg:p-15 w-full mt-10 mx-auto relative ">
         <Image
           src={bgArtImage1}
           alt="Background Art"
@@ -135,7 +135,7 @@ export default function support() {
           </button>
         </form>
         <div>
-          <div className="flex flex-wrap gap-4 items-center mt-8">
+          <div className="flex md:gap-4 items-center my-10">
             {["General", "Bitcoin Yay", "Pricing", "App"].map(
               (category, index) => (
                 <CustomButton

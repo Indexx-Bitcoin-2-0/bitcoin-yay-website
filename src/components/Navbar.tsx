@@ -6,7 +6,6 @@ import BitcoinYayIcon from "../assets/images/main-logo.png";
 import SearchIcon from "../assets/images/search-icon.svg";
 import DownMenuIcon from "../assets/images/down-icon.svg";
 import MenuIcon from "../assets/images/menu-icon.svg";
-import CloseIcon from "../assets/images/close-icon.png";
 
 import {
   MenubarTrigger,
@@ -42,8 +41,8 @@ export default function Navbar() {
 
   return (
     <nav className="">
-      <div className="flex flex-wrap items-center justify-between mx-auto px-4 md:px-10 lg:px-20 py-8">
-        <div className="flex justify-center">
+      <div className="flex flex-wrap items-center justify-between mx-auto px-4 md:px-10 lg:px-20 py-8 ">
+        <div className="flex justify-center bg-bg  ">
           <div className="flex justify-center items-center lg:hidden">
             <button
               type="button"
@@ -65,69 +64,80 @@ export default function Navbar() {
           </a>
         </div>
         <div
-          className={`fixed inset-0 bg-opacity-50 z-50 transition-opacity duration-300 ${
-            isOpen ? "block opacity-100" : "hidden opacity-0"
+          className={`absolute left-0 top-20 w-full p-8 bg-bg shadow-lg transform z-20  ${
+            isOpen ? "translate-y-0 " : "-translate-y-[130%]"
           }`}
         >
-          <div
-            className={`absolute left-0 top-0 w-10/12 p-8 bg-background h-full shadow-lg transition-transform duration-1000 transform ${
-              isOpen ? "translate-x-0" : "translate-x-full"
-            }`}
-          >
-            <button
-              type="button"
-              onClick={toggleMenu}
-              className="absolute top-6 right-6"
+          <div className="">
+            <form
+              onSubmit={handleSearch}
+              className="relative border-primary focus-within:border-0"
             >
-              <Image src={CloseIcon} alt="Close Icon" width={30} height={30} />
-            </button>
-            <Accordion type="single" collapsible className=" mt-20">
-              <AccordionItem value="item-1" className="border-0">
-                <AccordionTrigger className="py-2 text-xl font-normal data-[state=open]:text-primary">
-                  Bitcoin Yay Blockchain
-                </AccordionTrigger>
-                <AccordionContent className="p-2">
-                  <a className="block text-lg my-2 hover:text-primary">
-                    Whiteapaper Chapter
-                  </a>
-                  <a className="block text-lg my-2 hover:text-primary">
-                    Roadmap
-                  </a>
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-2" className="border-0">
-                <AccordionTrigger className="py-2 text-xl font-normal data-[state=open]:text-primary">
-                  Community
-                </AccordionTrigger>
-                <AccordionContent className="p-2">
-                  <a className="block text-lg my-2 hover:text-primary">
-                    News & Blogs
-                  </a>
-                  <a className="block text-lg my-2 hover:text-primary">
-                    Safety Center
-                  </a>
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item-3" className="border-0">
-                <a className="block text-xl py-2 ">Developers</a>
-              </AccordionItem>
-              <AccordionItem value="item-4" className="border-0">
-                <a href="/about" className="block text-xl py-2">
-                  About
-                </a>
-              </AccordionItem>
-              <AccordionItem value="item-5" className="border-0">
-                <div className="cursor-pointer">
-                  <a
-                    href="/support"
-                    className="block text-lg my-2 hover:text-primary"
-                  >
-                    Support
-                  </a>
-                </div>
-              </AccordionItem>
-            </Accordion>
+              <input
+                type="text"
+                id="search-navbar"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="block h-15 w-full p-3 text-lg text-tertiary bg-transparent border border-[#2F2F2F] rounded-lg focus:border-primary hover:border-primary outline-none"
+                placeholder="Search"
+              />
+              <button
+                type="submit"
+                className="absolute right-2 top-2 mt-2 mr-2"
+              >
+                <Image
+                  src={SearchIcon}
+                  alt="Search Icon"
+                  width={30}
+                  height={30}
+                />
+              </button>
+            </form>
           </div>
+          <Accordion type="single" collapsible className=" mt-8">
+            <AccordionItem value="item-1" className="border-0">
+              <AccordionTrigger className="py-2 text-xl font-normal data-[state=open]:text-primary">
+                Bitcoin Yay Blockchain
+              </AccordionTrigger>
+              <AccordionContent className="p-2">
+                <a className="block text-lg my-2 hover:text-primary">
+                  Whiteapaper Chapter
+                </a>
+                <a className="block text-lg my-2 hover:text-primary">Roadmap</a>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-2" className="border-0">
+              <AccordionTrigger className="py-2 text-xl font-normal data-[state=open]:text-primary">
+                Community
+              </AccordionTrigger>
+              <AccordionContent className="p-2">
+                <a className="block text-lg my-2 hover:text-primary">
+                  News & Blogs
+                </a>
+                <a className="block text-lg my-2 hover:text-primary">
+                  Safety Center
+                </a>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-3" className="border-0">
+              <a className="block text-xl py-2 ">Developers</a>
+            </AccordionItem>
+            <AccordionItem value="item-4" className="border-0">
+              <a href="/about" className="block text-xl py-2">
+                About
+              </a>
+            </AccordionItem>
+            <AccordionItem value="item-5" className="border-0">
+              <div className="cursor-pointer">
+                <a
+                  href="/support"
+                  className="block text-lg my-2 hover:text-primary"
+                >
+                  Support
+                </a>
+              </div>
+            </AccordionItem>
+          </Accordion>
         </div>
         <div className="hidden lg:flex md:space-x-4 text-tertiary text-lg ">
           <Menubar className=" border-0 gap-8">
@@ -183,7 +193,7 @@ export default function Navbar() {
               id="search-navbar"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="block w-full p-2 text-sm border border-[#2F2F2F] rounded-lg "
+              className="block w-full p-2 text-sm border border-[#2F2F2F] rounded-lg outline-none hover:border-primary focus:border-primary"
               placeholder="Search"
             />
             <button type="submit" className="absolute right-0 top-0 mt-2 mr-2">
