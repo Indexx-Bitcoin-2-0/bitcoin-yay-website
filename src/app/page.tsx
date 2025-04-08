@@ -58,14 +58,14 @@ export default function Home() {
               <Image
                 src={PhoneImage1}
                 alt="Phone Image 1"
-                className="w-[150px] md:w-[280px] lg:w-[3800px]"
-                // height={400}
+                className="w-[150px] md:w-1/3 lg:w-1/2"
+                height={400}
               />
               <Image
                 src={PhoneImage2}
                 alt="Phone Image 2"
-                className="w-[150px] md:w-[280px] lg:w-[380px]"
-                // height={400}
+                className="w-[150px] md:w-1/3 lg:w-1/2"
+                height={400}
               />
             </div>
           </div>
