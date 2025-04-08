@@ -72,7 +72,7 @@ export default function Home() {
         </div>
         <div className="flex flex-col items-center lg:items-start justify-center lg:-mt-32 lg:pl-8 lg:w-1/2">
           <div className="flex flex-col items-center justify-center">
-            <button>
+            <button className="cursor-pointer">
               <Image src={DownloadLogo} alt="Download Logo" className="mt-8" />
               <div className="flex justify-center text-tertiary">
                 <p className="text-lg">Download the App</p>
@@ -122,7 +122,7 @@ export default function Home() {
               className="w-[250px] md:w-[500px]"
             />
             <div className="flex flex-col items-center justify-center mt-10">
-              <button>
+              <button className="cursor-pointer">
                 <Image
                   src={DownloadLogo}
                   alt="Download Logo"
@@ -195,7 +195,7 @@ export default function Home() {
           </div>
         </div>
         <div className="flex flex-col items-center lg:items-start justify-center">
-          <button>
+          <button className="cursor-pointer">
             <Image src={DownloadLogo} alt="Download Logo" className="mt-8" />
             <div className="flex text-tertiary">
               <p className="text-lg">Download the App</p>
