@@ -48,7 +48,7 @@ export default function Home() {
             </h3>
             <p className="text-sm md:text-xl leading-relaxed text-tertiary">
               Bitcoin Yay is your ultimate hub for everything Bitcoin! Whether
-              you're a seasoned investor or just starting your crypto journey,
+              you&apos;re a seasoned investor or just starting your crypto journey,
               we bring you the latest news, market trends, and tools to navigate
               the world of digital currency with confidence.
             </p>
@@ -164,24 +164,24 @@ export default function Home() {
         <div className="flex flex-col-reverse lg:flex-row mt-10 gap-2 justify-between">
           <div className="flex-1">
             <BenefitCard
-              image={BenefitLogo1.src}
+              image={BenefitLogo1}
               title="Customer assistance"
               description="Quickly find answers through our support resources, or reach out to us 24/7 via live chat, phone, or email."
             />
             <BenefitCard
-              image={BenefitLogo2.src}
-              title="Customer assistance"
-              description="Quickly find answers through our support resources, or reach out to us 24/7 via live chat, phone, or email."
+              image={BenefitLogo2}
+              title="Fee-free exchanges"
+              description="Start trading with us today and enjoy your initial three exchanges without incurring any fees."
             />
             <BenefitCard
-              image={BenefitLogo3.src}
-              title="Customer assistance"
-              description="Quickly find answers through our support resources, or reach out to us 24/7 via live chat, phone, or email."
+              image={BenefitLogo3}
+              title="Transparent fees"
+              description="Farewell unexpected charges! Bitcoin Yay  guarantees transparency through detailed breakdowns."
             />
             <BenefitCard
-              image={BenefitLogo4.src}
-              title="Customer assistance"
-              description="Quickly find answers through our support resources, or reach out to us 24/7 via live chat, phone, or email."
+              image={BenefitLogo4}
+              title="Secure platform"
+              description="To ensure client security and fund protection, we offer secure offline storage and conduct regular security evaluations."
             />
           </div>
           <div className="flex-1">

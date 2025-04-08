@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 
 import BitCoinYayLogo from "../../assets/images/logo.png";
 import bgArtImage1 from "../../assets/images/bitcoin-art-2.png";
@@ -37,7 +37,7 @@ const CustomStatsCard = ({
   title,
   desc,
 }: {
-  image: string;
+  image: StaticImageData;
   title: string;
   desc: string;
 }) => {

@@ -32,7 +32,7 @@ export default function Navbar() {
   };
 
   const toggleSearch = () => {
-    // setIsSearchVisible(!isSearchVisible);
+    setIsSearchVisible(isSearchVisible);
   };
 
   const handleSearch = (event: React.FormEvent) => {
@@ -55,7 +55,7 @@ export default function Navbar() {
               <Image src={MenuIcon} alt="Menu Icon" width={30} height={30} />
             </button>
           </div>
-          <a href="#" className="flex items-center space-x-3">
+          <a href="./" className="flex items-center space-x-3">
             <Image
               src={BitcoinYayIcon}
               alt="Logo"
@@ -112,7 +112,9 @@ export default function Navbar() {
                 <a className="block text-xl py-2 ">Developers</a>
               </AccordionItem>
               <AccordionItem value="item-4" className="border-0">
-                <a className="block text-xl py-2">About</a>
+                <a href="/about" className="block text-xl py-2">
+                  About
+                </a>
               </AccordionItem>
               <AccordionItem value="item-5" className="border-0">
                 <div className="cursor-pointer">
@@ -159,7 +161,9 @@ export default function Navbar() {
               <div className=" cursor-pointer">Developers</div>
             </MenubarMenu>
             <MenubarMenu>
-              <div className=" cursor-pointer">About</div>
+              <a href="/about" className=" cursor-pointer">
+                About
+              </a>
             </MenubarMenu>
             <MenubarMenu>
               <a className=" cursor-pointer" href="/support">

@@ -7,7 +7,6 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-  type CarouselApi,
 } from "@/components/ui/carousel";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import StarsRating from "./StarsRating";
@@ -52,24 +51,9 @@ const userReviews = [
 ];
 
 export default function UserReviewCards() {
-  const [api, setApi] = React.useState<CarouselApi>();
-  const [current, setCurrent] = React.useState(0);
-  const [count, setCount] = React.useState(0);
-
-  React.useEffect(() => {
-    if (!api) {
-      return;
-    }
-    setCount(api.scrollSnapList().length);
-    setCurrent(api.selectedScrollSnap() + 1);
-    api.on("select", () => {
-      setCurrent(api.selectedScrollSnap() + 1);
-    });
-  }, [api]);
-
   return (
     <div className="lg:p-4 mt-10 flex items-center justify-center max-w-full ">
-      <Carousel setApi={setApi} className="w-full">
+      <Carousel className="w-full">
         <CarouselContent className=" gap-1">
           {userReviews.map((review, index) => (
             <CarouselItem
