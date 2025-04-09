@@ -16,14 +16,14 @@ const Footer = ({}) => {
           { text: "Bitcoin Yay Blockchain", url: "#" },
           { text: "Community", url: "#" },
           { text: "Developers", url: "#" },
-          { text: "About us", url: "#" },
-          { text: "Support", url: "#" },
+          { text: "About us", url: "/about" },
+          { text: "Support", url: "/support" },
         ],
       },
       {
         title: "Resources",
         links: [
-          { text: "Privacy Policy", url: "#" },
+          { text: "Privacy Policy", url: "/privacy-policy" },
           { text: "Terms of Use", url: "#" },
           { text: "Terms of Services", url: "#" },
         ],
