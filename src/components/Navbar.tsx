@@ -94,7 +94,11 @@ export default function Navbar() {
               </button>
             </form>
           </div>
-          <Accordion type="single" collapsible className=" mt-8">
+          <Accordion
+            type="single"
+            collapsible
+            className=" mt-8 flex flex-col gap-8"
+          >
             <AccordionItem value="item-1" className="border-0">
               <AccordionTrigger className="py-2 text-xl font-normal data-[state=open]:text-primary">
                 Bitcoin Yay Blockchain
@@ -206,14 +210,14 @@ export default function Navbar() {
             </button>
           </form>
         </div>
-        <button
+        {/* <button
           type="button"
           onClick={toggleSearch}
           className="lg:hidden inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
         >
           <span className="sr-only">Search</span>
           <Image src={SearchIcon} alt="Search Icon" width={20} height={20} />
-        </button>
+        </button> */}
       </div>
     </nav>
   );

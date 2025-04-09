@@ -31,29 +31,43 @@ export default function Home() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div>
-        <div className="flex flex-col lg:flex-row gap-8 items-center justify-between flex-wrap">
-          <div className="flex-1">
-            <Image
-              src={BitcoinYayLogo}
-              alt="Logo"
-              className="w-1/3 d:w-1/2 lg:w-[300px]"
-              height={200}
-            />
-            <p className="text-sm md:text-xl text-primary">
-              Stay ahead with real-time Bitcoin updates, expert insights, and a
-              thriving community.
-            </p>
-            <h3 className="text-2xl md:text-5xl font-bold my-6 md:leading-14">
-              Bitcoin Yay – Your Gateway to Crypto Freedom!
-            </h3>
-            <p className="text-sm md:text-xl leading-relaxed text-tertiary">
-              Bitcoin Yay is your ultimate hub for everything Bitcoin! Whether
-              you&apos;re a seasoned investor or just starting your crypto
-              journey, we bring you the latest news, market trends, and tools to
-              navigate the world of digital currency with confidence.
-            </p>
+        <div className="flex flex-col gap-8 items-center justify-between flex-wrap mt-20">
+          <div className="w-full">
+            <div className="">
+              <Image
+                src={BitcoinYayLogo}
+                alt="Logo"
+                className="w-1/3 d:w-1/2 lg:w-[300px]"
+                height={200}
+              />
+              <p className="text-sm md:text-xl text-primary">
+                Stay ahead with real-time Bitcoin updates, expert insights, and
+                a thriving community.
+              </p>
+              <h3 className="text-4xl md:text-6xl lg:text-8xl font-bold my-6 md:leading-16 lg:leading-24 max-w-320">
+                Bitcoin Yay – Your Gateway to Crypto Freedom!
+              </h3>
+              <p className="text-sm md:text-xl leading-relaxed text-tertiary max-w-250">
+                Bitcoin Yay is your ultimate hub for everything Bitcoin! Whether
+                you&apos;re a seasoned investor or just starting your crypto
+                journey, we bring you the latest news, market trends, and tools
+                to navigate the world of digital currency with confidence.
+              </p>
+            </div>
           </div>
-          <div className="flex-1 mt-20">
+          <div className="flex flex-col items-center justify-center ">
+            <button className="cursor-pointer text-tertiary hover:text-primary">
+              <Image
+                src={DownloadLogo}
+                alt="Download Logo"
+                className="mt-8 hover:scale-110 transition-transform duration-300"
+              />
+              <div className="flex justify-center">
+                <p className="text-lg">Download the App</p>
+              </div>
+            </button>
+          </div>
+          <div className="mt-20">
             <div className="flex justify-center gap-6 lg:mt-40">
               <Image
                 src={PhoneImage1}
@@ -70,20 +84,6 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col items-center lg:items-start justify-center lg:-mt-32 lg:pl-8 lg:w-1/2">
-          <div className="flex flex-col items-center justify-center">
-            <button className="cursor-pointer">
-              <Image
-                src={DownloadLogo}
-                alt="Download Logo"
-                className="mt-8 hover:scale-110 transition-transform duration-300"
-              />
-              <div className="flex justify-center text-tertiary">
-                <p className="text-lg">Download the App</p>
-              </div>
-            </button>
-          </div>
-        </div>
       </div>
 
       {/* 2nd part */}
@@ -98,7 +98,7 @@ export default function Home() {
         }}
       >
         <div className="flex flex-col items-center justify-center text-center lg:mt-20">
-          <h2 className="text-3xl md:text-5xl font-bold my-10">
+          <h2 className="text-4xl md:text-5xl lg:text-8xl font-bold md:leading-16 lg:leading-24 my-10">
             Download the Bitcoin Yay App
           </h2>
           <p className="text-lg font-normal">
@@ -126,13 +126,13 @@ export default function Home() {
               className="w-[250px] md:w-[500px]"
             />
             <div className="flex flex-col items-center justify-center mt-10">
-              <button className="cursor-pointer">
+              <button className="cursor-pointer text-tertiary hover:text-primary">
                 <Image
                   src={DownloadLogo}
                   alt="Download Logo"
                   className="mt-8 hover:scale-110 transition-transform duration-300"
                 />
-                <div className="flex justify-center text-tertiary">
+                <div className="flex justify-center">
                   <p className="text-lg">Download the App</p>
                 </div>
               </button>
@@ -161,7 +161,7 @@ export default function Home() {
         }}
       >
         <div className="flex flex-col items-center justify-center text-center lg:mt-20">
-          <h2 className="text-3xl md:text-5xl font-bold my-10">
+          <h2 className="text-4xl md:text-6xl lg:text-8xl font-bold md:leading-16 lg:leading-24 my-10">
             Discover the benefits of our app
           </h2>
         </div>
@@ -198,14 +198,14 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col items-center lg:items-start justify-center">
-          <button className="cursor-pointer">
+        <div className="flex flex-col items-center justify-center">
+          <button className="cursor-pointer text-tertiary hover:text-primary">
             <Image
               src={DownloadLogo}
               alt="Download Logo"
               className="mt-8 hover:scale-110 transition-transform duration-300"
             />
-            <div className="flex text-tertiary">
+            <div className="flex">
               <p className="text-lg">Download the App</p>
             </div>
           </button>
@@ -214,7 +214,7 @@ export default function Home() {
 
       {/* Part 4 */}
       <div className="flex flex-col items-center justify-center text-center lg:mt-20 mx-aut0 mt-20">
-        <h2 className=" text-2xl lg:text-5xl font-bold w-96 lg:w-[775px] my-4 lg:my-6 lg:leading-16">
+        <h2 className="text-4xl md:text-6xl lg:text-8xl font-bold md:leading-16 lg:leading-24 my-10">
           Download Install Bitcoin Yay app By Scanning The QR Code
         </h2>
         <p className="text-lg lg:text-xl font-normal text-tertiary leading-8 w-100 lg:w-[520px]">
@@ -240,7 +240,9 @@ export default function Home() {
 
       <div className="mt-40 flex flex-col items-center justify-center text-center">
         <div>
-          <h2 className="text-5xl font-bold">What Our Users Say?</h2>
+          <h2 className="text-4xl md:text-6xl lg:text-8xl font-bold md:leading-16 lg:leading-24 my-10">
+            What Our Users Say?
+          </h2>
         </div>
         <UserReviewCards />
       </div>
