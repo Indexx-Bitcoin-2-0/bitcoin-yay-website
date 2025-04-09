@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import BitcoinYayIcon from "../assets/images/main-logo.png";
 import SearchIcon from "../assets/images/search-icon.svg";
@@ -21,7 +22,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-export default function Navbar() {
+export default function Navbar({ currentRoute = "/" }) {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -146,7 +148,7 @@ export default function Navbar() {
         <div className="hidden lg:flex md:space-x-4 text-tertiary text-lg ">
           <Menubar className=" border-0 gap-8">
             <MenubarMenu>
-              <MenubarTrigger className="text-tertiary font-normal text-lg p-0 hover:text-primary focus:bg-transparent focus:text-tertiary data-[state=open]:bg-transparent data-[state=open]:text-primary">
+              <MenubarTrigger className="text-tertiary cursor-pointer font-normal text-lg p-0 focus:text-tertiary focus:bg-transparent hover:text-primary data-[state=open]:bg-transparent data-[state=open]:text-primary">
                 Bitcoin Yay Blockchain <Image src={DownMenuIcon} alt="" />
               </MenubarTrigger>
               <MenubarContent className="w-80 bg-transparent rounded-2xl border-bg2 text-tertiary p-4">
@@ -159,7 +161,7 @@ export default function Navbar() {
               </MenubarContent>
             </MenubarMenu>
             <MenubarMenu>
-              <MenubarTrigger className="text-tertiary font-normal text-lg p-0 hover:text-primary focus:bg-transparent focus:text-tertiary data-[state=open]:bg-transparent data-[state=open]:text-primary">
+              <MenubarTrigger className="text-tertiary cursor-pointer font-normal text-lg p-0 hover:text-primary focus:bg-transparent focus:text-tertiary data-[state=open]:bg-transparent data-[state=open]:text-primary">
                 Community <Image src={DownMenuIcon} alt="" />
               </MenubarTrigger>
               <MenubarContent className="w-68 bg-transparent rounded-2xl border-bg2 text-tertiary p-4">
@@ -172,15 +174,31 @@ export default function Navbar() {
               </MenubarContent>
             </MenubarMenu>
             <MenubarMenu>
-              <div className=" cursor-pointer">Developers</div>
+              <div
+                className={`cursor-pointer font-normal text-lg p-0 hover:text-primary ${
+                  pathname === "/developer" ? "text-primary" : "text-tertiary"
+                }`}
+              >
+                Developers
+              </div>
             </MenubarMenu>
             <MenubarMenu>
-              <a href="/about" className=" cursor-pointer">
+              <a
+                href="/about"
+                className={`cursor-pointer font-normal text-lg p-0 hover:text-primary ${
+                  pathname === "/about" ? "text-primary" : "text-tertiary"
+                }`}
+              >
                 About
               </a>
             </MenubarMenu>
             <MenubarMenu>
-              <a className=" cursor-pointer" href="/support">
+              <a
+                className={`cursor-pointer font-normal text-lg p-0 hover:text-primary ${
+                  pathname === "/support" ? "text-primary" : "text-tertiary"
+                }`}
+                href="/support"
+              >
                 Support
               </a>
             </MenubarMenu>
