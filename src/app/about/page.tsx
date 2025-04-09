@@ -15,6 +15,7 @@ import StatsIcon3 from "../../assets/images/about/icon-3.png";
 import StatsIcon4 from "../../assets/images/about/icon-4.png";
 
 import UserReviewCards from "@/components/UserReviewCards";
+import CustomStyledConatiner from "@/components/CustomStyledContainer";
 
 const statsData = [
   {
@@ -62,12 +63,7 @@ const CustomStatsCard = ({
 export default function About() {
   return (
     <div className=" mx-auto max-w-[90vw] lg:px-10 py-8">
-      <div className=" lg:h-100 overflow-hidden border border-bg2 rounded-lg p-5 lg:p-15 w-full mt-6 lg:mt-10 mx-auto relative ">
-        <Image
-          src={bgArtImage1}
-          alt="Background Art"
-          className="absolute -z-10 -top-5 md:top-0 right-0 w-50 lg:w-100"
-        />
+      <CustomStyledConatiner>
         <h1 className="text-2xl md:text-5xl font-bold mt-6 max-w-300  md:leading-16">
           Bitcoin Yay: Shaping the Future of Social Cryptocurrency in Web3
         </h1>
@@ -75,7 +71,7 @@ export default function About() {
           Connecting communities, enabling seamless transactions, and
           revolutionizing digital finance.
         </p>
-      </div>
+      </CustomStyledConatiner>
 
       {/* Part 2 */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-20">
