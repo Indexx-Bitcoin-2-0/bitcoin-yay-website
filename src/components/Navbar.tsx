@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import BitcoinYayIcon from "../assets/images/main-logo.png";
@@ -9,24 +9,64 @@ import DownMenuIcon from "../assets/images/down-icon.svg";
 import MenuIcon from "../assets/images/menu-icon.svg";
 
 import {
-  MenubarTrigger,
-  MenubarContent,
-  MenubarItem,
-  Menubar,
-  MenubarMenu,
-} from "@/components/ui/menubar";
-import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-export default function Navbar({ currentRoute = "/" }) {
+export default function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+
+  const [bitcoinDropdownOpen, setBitcoinDropdownOpen] = useState(false);
+  const [communityDropdownOpen, setCommunityDropdownOpen] = useState(false);
+  const bitcoinDropdownTimeout = useRef<NodeJS.Timeout | null>(null);
+  const communityDropdownTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  const handleBitcoinMouseEnter = () => {
+    clearTimeout(bitcoinDropdownTimeout.current as NodeJS.Timeout);
+    setBitcoinDropdownOpen(true);
+  };
+
+  const handleBitcoinMouseLeave = () => {
+    bitcoinDropdownTimeout.current = setTimeout(() => {
+      setBitcoinDropdownOpen(false);
+    }, 150);
+  };
+
+  const handleBitcoinContentMouseEnter = () => {
+    clearTimeout(bitcoinDropdownTimeout.current as NodeJS.Timeout);
+  };
+
+  const handleBitcoinContentMouseLeave = () => {
+    bitcoinDropdownTimeout.current = setTimeout(() => {
+      setBitcoinDropdownOpen(false);
+    }, 150);
+  };
+
+  const handleCommunityMouseEnter = () => {
+    clearTimeout(communityDropdownTimeout.current as NodeJS.Timeout);
+    setCommunityDropdownOpen(true);
+  };
+
+  const handleCommunityMouseLeave = () => {
+    communityDropdownTimeout.current = setTimeout(() => {
+      setCommunityDropdownOpen(false);
+    }, 150);
+  };
+
+  const handleCommunityContentMouseEnter = () => {
+    clearTimeout(communityDropdownTimeout.current as NodeJS.Timeout);
+  };
+
+  const handleCommunityContentMouseLeave = () => {
+    communityDropdownTimeout.current = setTimeout(() => {
+      setCommunityDropdownOpen(false);
+    }, 150);
+  };
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -145,64 +185,98 @@ export default function Navbar({ currentRoute = "/" }) {
             </AccordionItem>
           </Accordion>
         </div>
-        <div className="hidden lg:flex md:space-x-4 text-tertiary text-lg ">
-          <Menubar className=" border-0 gap-8">
-            <MenubarMenu>
-              <MenubarTrigger className="text-tertiary cursor-pointer font-normal text-lg p-0 focus:text-tertiary focus:bg-transparent hover:text-primary data-[state=open]:bg-transparent data-[state=open]:text-primary">
+        <div className="hidden lg:flex md:space-x-4 text-tertiary text-lg">
+          <div className="relative border-0 gap-8 flex">
+            <div
+              className="group relative"
+              onMouseEnter={handleBitcoinMouseEnter}
+              onMouseLeave={handleBitcoinMouseLeave}
+            >
+              <button
+                className={`flex cursor-pointer font-normal text-lg p-0 hover:text-primary ${
+                  bitcoinDropdownOpen ? "text-primary" : "text-tertiary"
+                }`}
+              >
                 Bitcoin Yay Blockchain <Image src={DownMenuIcon} alt="" />
-              </MenubarTrigger>
-              <MenubarContent className="w-80 bg-transparent rounded-2xl border-bg2 text-tertiary p-4">
-                <MenubarItem className="hover:text-primary focus:text-primary focus:bg-transparent text-xl">
-                  Whiteapaper Chapter
-                </MenubarItem>
-                <MenubarItem className="hover:text-primary focus:text-primary focus:bg-transparent text-xl">
-                  Roadmap
-                </MenubarItem>
-              </MenubarContent>
-            </MenubarMenu>
-            <MenubarMenu>
-              <MenubarTrigger className="text-tertiary cursor-pointer font-normal text-lg p-0 hover:text-primary focus:bg-transparent focus:text-tertiary data-[state=open]:bg-transparent data-[state=open]:text-primary">
+              </button>
+              {bitcoinDropdownOpen && (
+                <div
+                  className="absolute flex flex-col gap-4 left-0 mt-4 w-80 rounded-2xl border-1 border-bg2 bg-bg1 text-tertiary p-8 z-10"
+                  onMouseEnter={handleBitcoinContentMouseEnter}
+                  onMouseLeave={handleBitcoinContentMouseLeave}
+                >
+                  <a
+                    href="#"
+                    className="block hover:text-primary focus:text-primary focus:bg-transparent text-xl"
+                  >
+                    Whiteapaper Chapter
+                  </a>
+                  <a
+                    href="#"
+                    className="block hover:text-primary focus:text-primary focus:bg-transparent text-xl"
+                  >
+                    Roadmap
+                  </a>
+                </div>
+              )}
+            </div>
+            <div
+              className="group relative"
+              onMouseEnter={handleCommunityMouseEnter}
+              onMouseLeave={handleCommunityMouseLeave}
+            >
+              <button
+                className={`flex cursor-pointer font-normal text-lg p-0 hover:text-primary ${
+                  communityDropdownOpen ? "text-primary" : "text-tertiary"
+                }`}
+              >
                 Community <Image src={DownMenuIcon} alt="" />
-              </MenubarTrigger>
-              <MenubarContent className="w-68 bg-transparent rounded-2xl border-bg2 text-tertiary p-4">
-                <MenubarItem className="hover:text-primary focus:text-primary focus:bg-transparent text-xl">
-                  News & Blogs
-                </MenubarItem>
-                <MenubarItem className="hover:text-primary focus:text-primary focus:bg-transparent text-xl">
-                  Safety Center
-                </MenubarItem>
-              </MenubarContent>
-            </MenubarMenu>
-            <MenubarMenu>
-              <div
-                className={`cursor-pointer font-normal text-lg p-0 hover:text-primary ${
-                  pathname === "/developer" ? "text-primary" : "text-tertiary"
-                }`}
-              >
-                Developers
-              </div>
-            </MenubarMenu>
-            <MenubarMenu>
-              <a
-                href="/about"
-                className={`cursor-pointer font-normal text-lg p-0 hover:text-primary ${
-                  pathname === "/about" ? "text-primary" : "text-tertiary"
-                }`}
-              >
-                About
-              </a>
-            </MenubarMenu>
-            <MenubarMenu>
-              <a
-                className={`cursor-pointer font-normal text-lg p-0 hover:text-primary ${
-                  pathname === "/support" ? "text-primary" : "text-tertiary"
-                }`}
-                href="/support"
-              >
-                Support
-              </a>
-            </MenubarMenu>
-          </Menubar>
+              </button>
+              {communityDropdownOpen && (
+                <div
+                  className="absolute flex flex-col gap-4 left-0 mt-4 w-80 rounded-2xl border-1 border-bg2 bg-bg1 text-tertiary p-8 z-10"
+                  onMouseEnter={handleCommunityContentMouseEnter}
+                  onMouseLeave={handleCommunityContentMouseLeave}
+                >
+                  <a
+                    href="#"
+                    className="block hover:text-primary focus:text-primary focus:bg-transparent text-xl"
+                  >
+                    News & Blogs
+                  </a>
+                  <a
+                    href="#"
+                    className="block hover:text-primary focus:text-primary focus:bg-transparent text-xl"
+                  >
+                    Safety Center
+                  </a>
+                </div>
+              )}
+            </div>
+            <div
+              className={`cursor-pointer font-normal text-lg p-0 hover:text-primary ${
+                pathname === "/developer" ? "text-primary" : "text-tertiary"
+              }`}
+            >
+              Developers
+            </div>
+            <a
+              href="/about"
+              className={`cursor-pointer font-normal text-lg p-0 hover:text-primary ${
+                pathname === "/about" ? "text-primary" : "text-tertiary"
+              }`}
+            >
+              About
+            </a>
+            <a
+              className={`cursor-pointer font-normal text-lg p-0 hover:text-primary ${
+                pathname === "/support" ? "text-primary" : "text-tertiary"
+              }`}
+              href="/support"
+            >
+              Support
+            </a>
+          </div>
         </div>
         <div
           className={`relative ${
