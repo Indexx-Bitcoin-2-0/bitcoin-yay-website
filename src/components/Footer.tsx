@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import BitcoinYayaIcon from "../assets/images/main-logo.png";
 import Image from "next/image";
 import AppQrCode from "../assets/images/app-qr.png";
@@ -62,7 +64,7 @@ const Footer = ({}) => {
                     key={linkIdx}
                     className="font-medium hover:text-primary leading-8"
                   >
-                    <a href={link.url}>{link.text}</a>
+                    <Link href={link.url}>{link.text}</Link>
                   </li>
                 ))}
               </ul>

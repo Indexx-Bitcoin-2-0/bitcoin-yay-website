@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import BitcoinYayIcon from "../assets/images/main-logo.png";
@@ -96,14 +97,14 @@ export default function Navbar() {
               <Image src={MenuIcon} alt="Menu Icon" width={30} height={30} />
             </button>
           </div>
-          <a href="./" className="flex items-center space-x-3">
+          <Link href="/" className="flex items-center space-x-3">
             <Image
               src={BitcoinYayIcon}
               alt="Logo"
               className="w-[165px] md:w-[270px] hover:scale-105 transition-transform duration-300"
               height={50}
             />
-          </a>
+          </Link>
         </div>
         <div
           className={`absolute left-0 top-20 w-full p-8 bg-bg shadow-lg transform z-20  ${
@@ -146,10 +147,18 @@ export default function Navbar() {
                 Bitcoin Yay Blockchain
               </AccordionTrigger>
               <AccordionContent className="p-2">
-                <a className="block text-lg my-2 hover:text-primary">
+                <Link
+                  href="#"
+                  className="block text-lg my-2 hover:text-primary"
+                >
                   Whiteapaper Chapter
-                </a>
-                <a className="block text-lg my-2 hover:text-primary">Roadmap</a>
+                </Link>
+                <Link
+                  href="#"
+                  className="block text-lg my-2 hover:text-primary"
+                >
+                  Roadmap
+                </Link>
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-2" className="border-0">
@@ -157,30 +166,38 @@ export default function Navbar() {
                 Community
               </AccordionTrigger>
               <AccordionContent className="p-2">
-                <a className="block text-lg my-2 hover:text-primary">
+                <Link
+                  href="#"
+                  className="block text-lg my-2 hover:text-primary"
+                >
                   News & Blogs
-                </a>
-                <a className="block text-lg my-2 hover:text-primary">
+                </Link>
+                <Link
+                  href="#"
+                  className="block text-lg my-2 hover:text-primary"
+                >
                   Safety Center
-                </a>
+                </Link>
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-3" className="border-0">
-              <a className="block text-xl py-2 ">Developers</a>
+              <Link href="#" className="block text-xl py-2 ">
+                Developers
+              </Link>
             </AccordionItem>
             <AccordionItem value="item-4" className="border-0">
-              <a href="/about" className="block text-xl py-2">
+              <Link href="/about" className="block text-xl py-2">
                 About
-              </a>
+              </Link>
             </AccordionItem>
             <AccordionItem value="item-5" className="border-0">
               <div className="cursor-pointer">
-                <a
+                <Link
                   href="/support"
                   className="block text-lg my-2 hover:text-primary"
                 >
                   Support
-                </a>
+                </Link>
               </div>
             </AccordionItem>
           </Accordion>
@@ -205,18 +222,18 @@ export default function Navbar() {
                   onMouseEnter={handleBitcoinContentMouseEnter}
                   onMouseLeave={handleBitcoinContentMouseLeave}
                 >
-                  <a
+                  <Link
                     href="#"
                     className="block hover:text-primary focus:text-primary focus:bg-transparent text-xl"
                   >
                     Whiteapaper Chapter
-                  </a>
-                  <a
+                  </Link>
+                  <Link
                     href="#"
                     className="block hover:text-primary focus:text-primary focus:bg-transparent text-xl"
                   >
                     Roadmap
-                  </a>
+                  </Link>
                 </div>
               )}
             </div>
@@ -238,18 +255,18 @@ export default function Navbar() {
                   onMouseEnter={handleCommunityContentMouseEnter}
                   onMouseLeave={handleCommunityContentMouseLeave}
                 >
-                  <a
+                  <Link
                     href="#"
                     className="block hover:text-primary focus:text-primary focus:bg-transparent text-xl"
                   >
                     News & Blogs
-                  </a>
-                  <a
+                  </Link>
+                  <Link
                     href="#"
                     className="block hover:text-primary focus:text-primary focus:bg-transparent text-xl"
                   >
                     Safety Center
-                  </a>
+                  </Link>
                 </div>
               )}
             </div>
@@ -260,22 +277,22 @@ export default function Navbar() {
             >
               Developers
             </div>
-            <a
+            <Link
               href="/about"
               className={`cursor-pointer font-normal text-lg p-0 hover:text-primary ${
                 pathname === "/about" ? "text-primary" : "text-tertiary"
               }`}
             >
               About
-            </a>
-            <a
+            </Link>
+            <Link
               className={`cursor-pointer font-normal text-lg p-0 hover:text-primary ${
                 pathname === "/support" ? "text-primary" : "text-tertiary"
               }`}
               href="/support"
             >
               Support
-            </a>
+            </Link>
           </div>
         </div>
         <div
