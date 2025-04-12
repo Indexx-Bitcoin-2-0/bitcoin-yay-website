@@ -64,14 +64,16 @@ export default function Home() {
               </div>
             </div>
             <div className="flex flex-col items-center justify-center ">
-              <button className="cursor-pointer text-tertiary hover:text-primary">
+              <button className="cursor-pointer text-tertiary group">
                 <Image
                   src={DownloadLogo}
                   alt="Download Logo"
-                  className="mt-8 hover:scale-110 transition-transform duration-300"
+                  className="mt-8 group-hover:scale-110 transition-transform duration-300"
                 />
                 <div className="flex justify-center">
-                  <p className="text-lg">Download the App</p>
+                  <p className="text-lg group-hover:text-primary">
+                    Download the App
+                  </p>
                 </div>
               </button>
             </div>
@@ -134,14 +136,16 @@ export default function Home() {
                 className="w-[250px] md:w-[500px]"
               />
               <div className="flex flex-col items-center justify-center mt-10">
-                <button className="cursor-pointer text-tertiary hover:text-primary">
+                <button className="cursor-pointer text-tertiary group">
                   <Image
                     src={DownloadLogo}
                     alt="Download Logo"
-                    className="mt-8 hover:scale-110 transition-transform duration-300"
+                    className="mt-8 group-hover:scale-110 transition-transform duration-300"
                   />
                   <div className="flex justify-center">
-                    <p className="text-lg">Download the App</p>
+                    <p className="text-lg group-hover:text-primary">
+                      Download the App
+                    </p>
                   </div>
                 </button>
               </div>
@@ -207,14 +211,16 @@ export default function Home() {
             </div>
           </div>
           <div className="flex flex-col items-center justify-center">
-            <button className="cursor-pointer text-tertiary hover:text-primary">
+            <button className="cursor-pointer text-tertiary group">
               <Image
                 src={DownloadLogo}
                 alt="Download Logo"
-                className="mt-8 hover:scale-110 transition-transform duration-300"
+                className="mt-8 group-hover:scale-110 transition-transform duration-300"
               />
-              <div className="flex">
-                <p className="text-lg">Download the App</p>
+              <div className="flex justify-center">
+                <p className="text-lg group-hover:text-primary">
+                  Download the App
+                </p>
               </div>
             </button>
           </div>
