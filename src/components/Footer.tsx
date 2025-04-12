@@ -27,7 +27,7 @@ const Footer = ({}) => {
         links: [
           { text: "Privacy Policy", url: "/privacy-policy" },
           { text: "Terms of Use", url: "#" },
-          { text: "Terms of Services", url: "#" },
+          { text: "Terms of Services", url: "/term-of-service" },
         ],
       },
     ],
