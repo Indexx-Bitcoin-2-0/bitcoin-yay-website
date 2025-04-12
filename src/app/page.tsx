@@ -3,24 +3,24 @@ import Image from "next/image";
 import InfoCard from "@/components/InfoCard";
 import BenefitCard from "@/components/BenefitCard";
 
-import DownloadLogo from "../assets/images/download-button.png";
-import BitcoinYayLogo from "../assets/images/logo.png";
+import DownloadLogo from "../assets/images/download-button.svg";
+import BitcoinYayLogo from "../assets/images/logo.svg";
 
 import PhoneImage1 from "../assets/images/home/phone-1.svg";
 import PhoneImage2 from "../assets/images/home/phone-2.svg";
-import PhoneImage3 from "../assets/images/home/phone-3.png";
-import PhoneImage4 from "../assets/images/home/phone-4.png";
-import PhoneImage5 from "../assets/images/home/phone-5.png";
+import PhoneImage3 from "../assets/images/home/phone-3.svg";
+import PhoneImage4 from "../assets/images/home/phone-4.svg";
+import PhoneImage5 from "../assets/images/home/phone-5.svg";
 
-import InfoImage1 from "../assets/images/home/info-1.png";
-import InfoImage2 from "../assets/images/home/info-2.png";
-import InfoImage3 from "../assets/images/home/info-3.png";
-import InfoImage4 from "../assets/images/home/info-4.png";
+import InfoImage1 from "../assets/images/home/info-1.svg";
+import InfoImage2 from "../assets/images/home/info-2.svg";
+import InfoImage3 from "../assets/images/home/info-3.svg";
+import InfoImage4 from "../assets/images/home/info-4.svg";
 
-import BenefitLogo1 from "../assets/images/home/benefits/1.png";
-import BenefitLogo2 from "../assets/images/home/benefits/2.png";
-import BenefitLogo3 from "../assets/images/home/benefits/3.png";
-import BenefitLogo4 from "../assets/images/home/benefits/4.png";
+import BenefitLogo1 from "../assets/images/home/benefits/1.svg";
+import BenefitLogo2 from "../assets/images/home/benefits/2.svg";
+import BenefitLogo3 from "../assets/images/home/benefits/3.svg";
+import BenefitLogo4 from "../assets/images/home/benefits/4.svg";
 
 import bgArtImage1 from "../assets/images/bitcoin-art-3.png";
 import bgArtImage2 from "../assets/images/bitcoin-art-4.png";
@@ -133,7 +133,7 @@ export default function Home() {
               <Image
                 src={PhoneImage3}
                 alt="Phone Image 3"
-                className="w-[250px] md:w-[500px]"
+                className="w-[250px] md:w-[500px] lg:mx-8"
               />
               <div className="flex flex-col items-center justify-center mt-10">
                 <button className="cursor-pointer text-tertiary group">

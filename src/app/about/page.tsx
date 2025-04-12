@@ -1,18 +1,17 @@
 import Image, { StaticImageData } from "next/image";
 
-import BitCoinYayLogo from "../../assets/images/logo.png";
-import bgArtImage1 from "../../assets/images/bitcoin-art-2.png";
-import bgArtImage2 from "../../assets/images/bitcoin-art-3.png";
+import BitCoinYayLogo from "../../assets/images/logo.svg";
+import bgArtImage2 from "../../assets/images/bitcoin-art-3.svg";
 
 import PhoneImage1 from "../../assets/images/about/phone01.svg";
 
 import FounderImage1 from "../../assets/images/about/founder-1.svg";
 import FounderImage2 from "../../assets/images/about/founder-2.svg";
 
-import StatsIcon1 from "../../assets/images/about/icon-1.png";
-import StatsIcon2 from "../../assets/images/about/icon-2.png";
-import StatsIcon3 from "../../assets/images/about/icon-3.png";
-import StatsIcon4 from "../../assets/images/about/icon-4.png";
+import StatsIcon1 from "../../assets/images/about/icon-1.svg";
+import StatsIcon2 from "../../assets/images/about/icon-2.svg";
+import StatsIcon3 from "../../assets/images/about/icon-3.svg";
+import StatsIcon4 from "../../assets/images/about/icon-4.svg";
 
 import UserReviewCards from "@/components/UserReviewCards";
 import CustomStyledConatiner from "@/components/CustomStyledContainer";

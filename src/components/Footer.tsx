@@ -1,8 +1,8 @@
 import Link from "next/link";
 
-import BitcoinYayaIcon from "../assets/images/main-logo.png";
+import BitcoinYayaIcon from "../assets/images/main-logo.svg";
 import Image from "next/image";
-import AppQrCode from "../assets/images/app-qr.png";
+import AppQrCode from "../assets/images/app-qr.svg";
 
 import FbIcon from "../assets/images/socials/fb.svg";
 import InstaIcon from "../assets/images/socials/insta.svg";
@@ -44,11 +44,7 @@ const Footer = ({}) => {
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-5">
           <div className="col-span-2 mb-8 lg:mb-0">
             <div className="flex items-center gap-2 lg:justify-start">
-              <Image
-                src={BitcoinYayaIcon}
-                alt="Bitcoin Yay Icon"
-                className="h-10"
-              />
+              <Image src={BitcoinYayaIcon} alt="Bitcoin Yay Icon" />
             </div>
             <p className="mt-12 w-80 ">
               Elevate your bitcoin trading experience to new heights with our
