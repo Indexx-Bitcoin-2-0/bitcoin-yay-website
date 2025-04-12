@@ -1,48 +1,9 @@
 import CustomStyledConatiner from "@/components/CustomStyledContainer";
-import React from "react";
-
-const InfoSection = ({
-  title = "",
-  desc = "",
-  content = "",
-  endingLine = "",
-}: {
-  title?: string;
-  desc?: string;
-  content?: React.ReactNode;
-  endingLine?: string;
-}) => {
-  return (
-    <div className={`${title != "" && "mt-30"}`}>
-      <h2 className="text-2xl md:text-5xl font-bold mt-8 max-w-300 md:leading-16 text-secondary">
-        {title}
-      </h2>
-      <h5
-        className={`text-xl md:text-2xl font-medium ${
-          title != "" && "my-6"
-        } text-tertiary`}
-      >
-        {desc}
-      </h5>
-      {content && (
-        <ul className="list-disc text-sm md:text-base my-4 mx-6 text-tertiary flex flex-col gap-3">
-          {content}
-        </ul>
-      )}
-      <p
-        className={`text-sm md:text-lg font-normal text-tertiary ${
-          content != "" && "my-4"
-        } my-4`}
-      >
-        {endingLine}
-      </p>
-    </div>
-  );
-};
-
-const ListItemHeading = ({ children }: { children: string }) => {
-  return <span className="text-sm md:text-base font-semibold">{children}</span>;
-};
+import {
+  InfoSection,
+  CustomListItem,
+  CustomP,
+} from "@/components/CustomTypography";
 
 export default function PrivacyPolicy() {
   return (
@@ -87,21 +48,18 @@ export default function PrivacyPolicy() {
           desc="We collect personal information in three ways:"
           content={
             <>
-              <li>
-                <ListItemHeading>Directly from You</ListItemHeading> – When you
-                voluntarily provide information through account registration,
-                communication, or transactions.
-              </li>
-              <li>
-                <ListItemHeading>Automated Technologies</ListItemHeading> –
-                Information collected through cookies, web beacons, and tracking
-                technologies when you use our Services.
-              </li>
-              <li>
-                <ListItemHeading>Third-Party Sources</ListItemHeading> – Data
-                obtained from service providers, analytics platforms, and social
-                media integrations.
-              </li>
+              <CustomListItem
+                title="Directly from You"
+                content="– When you voluntarily provide information through account registration, communication, or transactions."
+              />
+              <CustomListItem
+                title="Automated Technologies"
+                content="– Information collected through cookies, web beacons, and tracking technologies when you use our Services."
+              />
+              <CustomListItem
+                title="Third-Party Sources"
+                content="– Data obtained from service providers, analytics platforms, and social media integrations."
+              />
               We also aggregate and anonymize data for analytical and business
               purposes.
             </>
@@ -113,33 +71,34 @@ export default function PrivacyPolicy() {
           desc="We collect the following types of information:"
           content={
             <>
-              <li>
-                <ListItemHeading>
-                  Contact & Identity Information
-                </ListItemHeading>{" "}
-                – Name, phone number, email address, username, and linked social
-                media accounts.
-              </li>
-              <li>
-                <ListItemHeading>User-Generated Content</ListItemHeading> –
-                Messages, comments, reactions, and media shared in forums or
-                community spaces.
-              </li>
-              <li>
-                <ListItemHeading>Transaction Data</ListItemHeading> – Records of
+              <CustomListItem
+                title="Contact & Identity Information"
+                content="– Name, phone number, email address, username, and linked social
+                media accounts."
+              />
+              <CustomListItem
+                title="User-Generated Content"
+                content="– Messages, comments, reactions, and media shared in forums or
+                community spaces."
+              />
+              <CustomListItem
+                title="Transaction Data"
+                content="– Records of
                 cryptocurrency transactions sent, received, or processed through
-                Bitcoin Yay.
-              </li>
-              <li>
-                <ListItemHeading>Feedback & Correspondence</ListItemHeading> –
+                Bitcoin Yay."
+              />
+              <CustomListItem
+                title="Feedback & Correspondence"
+                content="–
                 Survey responses, customer support interactions, and other
-                inquiries.
-              </li>
-              <li>
-                <ListItemHeading>Marketing Preferences</ListItemHeading> –
+                inquiries."
+              />
+              <CustomListItem
+                title="Marketing Preferences"
+                content="–
                 Choices related to promotional communications and engagement
-                with our campaigns.
-              </li>
+                with our campaigns."
+              />
             </>
           }
         />
@@ -149,23 +108,20 @@ export default function PrivacyPolicy() {
           desc="To comply with Anti-Money Laundering (AML), Know-Your-Customer (KYC), and Counter-Terrorist Financing (CTF) regulations, Bitcoin Yay collects identity verification data, including:"
           content={
             <>
-              <li>
-                <ListItemHeading>Government-issued IDs </ListItemHeading>
-                (passport, driver's license, national identity card)
-              </li>
-              <li>
-                <ListItemHeading>Proof of Address </ListItemHeading> (utility
-                bills, bank statements)
-              </li>
-              <li>
-                <ListItemHeading>Selfie images or videos</ListItemHeading> for
-                identity confirmation.
-              </li>
-              <li>
-                <ListItemHeading>
-                  Source of funds and wealth declarations
-                </ListItemHeading>
-              </li>
+              <CustomListItem
+                title="Government-issued IDs"
+                content="(passport, driver's license, national identity card)"
+              />
+              <CustomListItem
+                title="Proof of Address"
+                content="(utility bills, bank statements)"
+              />
+              <CustomListItem
+                title="Selfie images or videos"
+                content="for
+                identity confirmation."
+              />
+              <CustomListItem title="Source of funds and wealth declarations" />
             </>
           }
           endingLine="KYC data is processed securely using human and AI-based
@@ -179,21 +135,16 @@ export default function PrivacyPolicy() {
           desc="We may receive additional data from:"
           content={
             <>
-              <li>
-                <ListItemHeading>Other users</ListItemHeading> (e.g., if a user
-                shares their contacts and you are listed as one of them)
-              </li>
-              <li>
-                <ListItemHeading>
-                  Social media and login providers
-                </ListItemHeading>{" "}
-                (Facebook, Google, Apple Sign-In)
-              </li>
-              <li>
-                <ListItemHeading>
-                  Public databases and blockchain transactions
-                </ListItemHeading>
-              </li>
+              <CustomListItem
+                title="Other users"
+                content="(e.g., if a user
+                shares their contacts and you are listed as one of them)"
+              />
+              <CustomListItem
+                title="Social media and login providers"
+                content=" (Facebook, Google, Apple Sign-In)"
+              />
+              <CustomListItem title="Public databases and blockchain transactions" />
             </>
           }
           endingLine="Some social media features, such as 'Like' and 'Share' buttons,
@@ -207,23 +158,27 @@ export default function PrivacyPolicy() {
           desc="When you use our Services, we collect:"
           content={
             <>
-              <li>
-                <ListItemHeading>Device Information</ListItemHeading> – Model,
-                OS version, browser type, and unique device identifiers.
-              </li>
-              <li>
-                <ListItemHeading>Usage & Activity Data</ListItemHeading> –
+              <CustomListItem
+                title="Device Information"
+                content="– Model,
+                OS version, browser type, and unique device identifiers."
+              />
+              <CustomListItem
+                title="Usage & Activity Data"
+                content="–
                 Mining frequency, transactions, account behavior, and engagement
-                with Bitcoin Yay tools.
-              </li>
-              <li>
-                <ListItemHeading>Location Information</ListItemHeading> – GPS
-                data, IP addresses, and network details (with user consent).
-              </li>
-              <li>
-                <ListItemHeading>Log Information</ListItemHeading> – Browser
-                activity, access times, page visits, and referring URLs.
-              </li>
+                with Bitcoin Yay tools."
+              />
+              <CustomListItem
+                title="Location Information"
+                content="– GPS
+                data, IP addresses, and network details (with user consent)."
+              />
+              <CustomListItem
+                title="Log Information"
+                content="– Browser
+                activity, access times, page visits, and referring URLs."
+              />
             </>
           }
           endingLine="We use cookies and analytics tools (e.g., Google Analytics) to improve user experience and optimize our Services. Learn more in our [Cookies Policy]."
@@ -234,18 +189,21 @@ export default function PrivacyPolicy() {
           desc="Bitcoin Yay implements robust security measures, including:"
           content={
             <>
-              <li>
-                <ListItemHeading>End-to-end encryption</ListItemHeading> for
-                sensitive data.
-              </li>
-              <li>
-                <ListItemHeading>AI-powered fraud detection</ListItemHeading> to
-                prevent unauthorized access.
-              </li>
-              <li>
-                <ListItemHeading>Strict KYC compliance</ListItemHeading> to
-                ensure a secure crypto ecosystem.
-              </li>
+              <CustomListItem
+                title="End-to-end encryption"
+                content="for
+                sensitive data."
+              />
+              <CustomListItem
+                title="AI-powered fraud detection"
+                content="to
+                prevent unauthorized access."
+              />
+              <CustomListItem
+                title="Strict KYC compliance"
+                content="to
+                ensure a secure crypto ecosystem."
+              />
             </>
           }
           endingLine="We never request or store private wallet keys or passphrases. Users should never share this information with anyone."
@@ -256,39 +214,25 @@ export default function PrivacyPolicy() {
           desc="We use collected data for the following purposes:"
           content={
             <>
-              <li>
-                <ListItemHeading>
-                  To provide and enhance our Services
-                </ListItemHeading>
-                (e.g., crypto transactions, account management).
-              </li>
-              <li>
-                <ListItemHeading>To ensure compliance</ListItemHeading> with
-                legal, regulatory, and security standards.
-              </li>
-              <li>
-                <ListItemHeading>
-                  To personalize user experience
-                </ListItemHeading>
-                and deliver relevant content.
-              </li>
-              <li>
-                <ListItemHeading>
-                  To facilitate KYC verification
-                </ListItemHeading>
-                and prevent fraud.
-              </li>
-              <li>
-                <ListItemHeading>
-                  To improve customer support and engagement.
-                </ListItemHeading>
-              </li>
-              <li>
-                <ListItemHeading>
-                  To communicate updates promotions, and service notifications.
-                </ListItemHeading>
-                ,
-              </li>
+              <CustomListItem
+                title="To provide and enhance our Services"
+                content="(e.g., crypto transactions, account management)."
+              />
+              <CustomListItem
+                title="To ensure compliance"
+                content="with
+                legal, regulatory, and security standards."
+              />
+              <CustomListItem
+                title="To personalize user experience"
+                content="and deliver relevant content."
+              />
+              <CustomListItem
+                title="To facilitate KYC verification"
+                content="and prevent fraud."
+              />
+              <CustomListItem title="To improve customer support and engagement." />
+              <CustomListItem title="To communicate updates promotions, and service notifications." />
             </>
           }
         />
@@ -298,18 +242,21 @@ export default function PrivacyPolicy() {
           desc="Bitcoin Yay does not sell user data. However, we may share information with:"
           content={
             <>
-              <li>
-                <ListItemHeading>Regulatory authorities</ListItemHeading> (for
-                legal compliance).
-              </li>
-              <li>
-                <ListItemHeading>Service providers</ListItemHeading> (for
-                payment processing, KYC, and analytics).
-              </li>
-              <li>
-                <ListItemHeading>Blockchain networks</ListItemHeading> (to
-                validate transactions).
-              </li>
+              <CustomListItem
+                title="Regulatory authorities"
+                content="(for
+                legal compliance)."
+              />
+              <CustomListItem
+                title="Service providers"
+                content="(for
+                payment processing, KYC, and analytics)."
+              />
+              <CustomListItem
+                title="Blockchain networks"
+                content="(to
+                validate transactions)."
+              />
             </>
           }
         />
@@ -319,35 +266,26 @@ export default function PrivacyPolicy() {
           desc="Depending on your jurisdiction, you may have rights to:"
           content={
             <>
-              <li>
-                <ListItemHeading>Access and correct your data</ListItemHeading>.
-              </li>
-              <li>
-                <ListItemHeading>Request data deletion</ListItemHeading>.
-              </li>
-              <li>
-                <ListItemHeading>
-                  Opt out of marketing communications
-                </ListItemHeading>
-                .
-              </li>
-              <li>
-                <ListItemHeading>Restrict data processing</ListItemHeading> in
-                certain cases.
-              </li>
-              <p className="text-sm md:text-lg font-normal text-tertiary my-4">
-                For privacy-related inquiries, contact us at{" "}
-                <span
-                  className="text-primary cursor-pointer"
-                  // onClick={() =>
-                  //   (window.location.href = "mailto:privacy@bitcoinyay.com")
-                  // }
-                >
-                  privacy@bitcoinyay.com.
-                </span>
-              </p>
+              <CustomListItem
+                title="Access and correct your data"
+                content="."
+              />
+              <CustomListItem title="Request data deletion" content="." />
+              <CustomListItem
+                title="Opt out of marketing communications"
+                content="."
+              />
+              <CustomListItem
+                title="Restrict data processing"
+                content="in
+                certain cases."
+              />
             </>
           }
+        />
+        <CustomP
+          start="For privacy-related inquiries, contact us at "
+          link="privacy@bitcoinyay.com."
         />
 
         <InfoSection
@@ -362,33 +300,33 @@ export default function PrivacyPolicy() {
           content={
             <>
               We utilize your information in the following ways:
-              <li>
-                Develop, operate, improve, deliver, maintain, and protect our
-                services.
-              </li>
-              <li>
-                Communicate with you by sending confirmations, technical
+              <CustomListItem
+                content="Develop, operate, improve, deliver, maintain, and protect our
+                services."
+              />
+              <CustomListItem
+                content="Communicate with you by sending confirmations, technical
                 notices, updates, security alerts, support messages, and
-                administrative notifications.
-              </li>
-              <li>
-                Monitor and analyze platform usage to enhance performance and
-                user experience.
-              </li>
-              <li>
-                Personalize your experience by suggesting relevant connections,
+                administrative notifications."
+              />
+              <CustomListItem
+                content="Monitor and analyze platform usage to enhance performance and
+                user experience."
+              />
+              <CustomListItem
+                content="Personalize your experience by suggesting relevant connections,
                 message templates, or customized content, including
-                advertisements.
-              </li>
-              <li>Enhance the security and integrity of our services.</li>
-              <li>
-                Verify user identities and safeguard against fraudulent,
-                unauthorized, or illegal activities.
-              </li>
-              <li>
-                Utilize cookies and similar technologies to improve service
-                functionality and user interaction.
-              </li>
+                advertisements."
+              />
+              <CustomListItem content="Enhance the security and integrity of our services." />
+              <CustomListItem
+                content="Verify user identities and safeguard against fraudulent,
+                unauthorized, or illegal activities."
+              />
+              <CustomListItem
+                content="Utilize cookies and similar technologies to improve service
+                functionality and user interaction."
+              />
             </>
           }
         />
@@ -421,17 +359,19 @@ export default function PrivacyPolicy() {
           desc="Bitcoin Yay does not sell or share personal information with third parties without user consent, except under the following circumstances:"
           content={
             <>
-              <li>
-                <ListItemHeading>Affiliates:</ListItemHeading>We may disclose
+              <CustomListItem
+                title="Affiliates:"
+                content="We may disclose
                 personal data to our subsidiaries and corporate affiliates as
-                necessary to provide and improve our services.
-              </li>
-              <li>
-                <ListItemHeading>Business Transfers: </ListItemHeading> In the
+                necessary to provide and improve our services."
+              />
+              <CustomListItem
+                title="Business Transfers:"
+                content=" In the
                 event of a business transaction such as a merger, acquisition,
                 financing, or asset transfer, we may share personal data with
-                the involved parties before and after the transaction.
-              </li>
+                the involved parties before and after the transaction."
+              />
             </>
           }
           endingLine=""
@@ -442,19 +382,17 @@ export default function PrivacyPolicy() {
           desc="We may disclose personal information to:"
           content={
             <>
-              <li>Comply with applicable laws and regulatory requirements.</li>
-              <li>
-                Respond to lawful requests, subpoenas, or legal processes.
-              </li>
-              <li>Enforce our agreements, policies, and Terms of Use.</li>
-              <li>
-                Protect the rights, safety, and security of our users,
-                employees, and partners.
-              </li>
-              <li>
-                Address emergencies, including security breaches and fraud
-                prevention.
-              </li>
+              <CustomListItem content="Comply with applicable laws and regulatory requirements." />
+              <CustomListItem content="Respond to lawful requests, subpoenas, or legal processes." />
+              <CustomListItem content="Enforce our agreements, policies, and Terms of Use." />
+              <CustomListItem
+                content="Protect the rights, safety, and security of our users,
+                employees, and partners."
+              />
+              <CustomListItem
+                content="Address emergencies, including security breaches and fraud
+                prevention."
+              />
             </>
           }
         />
@@ -515,45 +453,25 @@ export default function PrivacyPolicy() {
           desc="Tracking Technologies"
           endingLine="Users may disable cookies and tracking technologies through browser settings. For more details, refer to our 'Cookies Policy.'"
         />
-        <p className="text-sm md:text-lg font-normal text-tertiary my-4">
-          For privacy-related inquiries, contact us at{" "}
-          <span
-            className="text-primary cursor-pointer"
-            // onClick={() =>
-            //   (window.location.href = "mailto:privacy@bitcoinyay.com")
-            // }
-          >
-            privacy@bitcoinyay.com.
-          </span>
-        </p>
+        <CustomP
+          start="For further inquiries, please contact us at "
+          link="privacy@bitcoinyay.com."
+        />
 
-        <InfoSection desc="Google Analytics" />
-        <p className="text-sm md:text-lg font-normal text-tertiary my-4">
-          You may manage your preferences regarding the use of Google Analytics
-          cookies by visiting{" "}
-          <span
-            className="text-primary cursor-pointer"
-            // onClick={() =>
-            //   (window.location.href = "mailto:privacy@bitcoinyay.com")
-            // }
-          >
-            Google Analytics Opt-out Browser Add-on
-          </span>{" "}
-          and downloading the relevant tool.
-        </p>
+        <InfoSection desc="GOOGLE ANALYTICS" />
+        <CustomP
+          start="You may manage your preferences regarding the use of Google Analytics
+          cookies by visiting "
+          link="Google Analytics Opt-out Browser Add-on"
+          end=" and downloading the relevant tool."
+        />
+
         <InfoSection desc="Contact Information" />
-        <p className="text-sm md:text-lg font-normal text-tertiary my-4">
-          We welcome any comments or questions regarding this Privacy Policy.
-          You can reach us at:{" "}
-          <span
-            className="text-primary cursor-pointer"
-            // onClick={() =>
-            //   (window.location.href = "mailto:privacy@bitcoinyay.com")
-            // }
-          >
-            Privacy Contact.
-          </span>
-        </p>
+        <CustomP
+          start="We welcome any comments or questions regarding this Privacy Policy.
+          You can reach us at: "
+          link="Privacy Contact."
+        />
 
         <InfoSection
           desc="Changes to This Privacy Policy"
@@ -573,35 +491,126 @@ export default function PrivacyPolicy() {
               California residents may direct consumer rights inquiries to the
               Complaint Assistance Unit of the Division of Consumer Services of
               the California Department of Consumer Affairs:
-              <li>Address: 1625 North Market Blvd., Sacramento, CA 95834</li>
-              <li>Phone: (916) 445-1254 or (800) 952-5210.</li>
+              <CustomListItem
+                title="Address:"
+                content="1625 North Market Blvd., Sacramento, CA 95834"
+              />
+              <CustomListItem
+                title="Phone:"
+                content="(916) 445-1254 or (800) 952-5210."
+              />
             </>
           }
           endingLine=""
         />
-        <p className="text-sm md:text-lg font-normal text-tertiary my-4">
-          For additional information regarding California residents' data
-          privacy rights, please visit our{" "}
-          <span
-            className="text-primary cursor-pointer"
-            // onClick={() =>
-            //   (window.location.href = "mailto:privacy@bitcoinyay.com")
-            // }
-          >
-            California Consumer Privacy Notice.
-          </span>
-        </p>
+        <CustomP
+          start="For additional information regarding California residents' data
+          privacy rights, please visit our "
+          link="California Consumer Privacy Notice."
+        />
 
         <InfoSection
           desc="Notice to EU Data Subjects"
           endingLine="In compliance with the General Data Protection Regulation (GDPR), Bitcoin Yay recognizes 'personal information' as 'personal data.' Certain information you provide may be classified as 'sensitive data' under the GDPR, including details such as ethnicity recorded on government-issued identification documents."
         />
-
-        <ListItemHeading>Legal Basis for Processing :</ListItemHeading>
-        <p className="text-sm md:text-lg font-normal text-tertiary my-4">
-          We process personal data only when legally permitted. The following
-          table outlines our processing purposes and legal justifications:
+        <p className="text-sm md:text-base font-semibold">
+          Legal Basis for Processing :
         </p>
+        <CustomP
+          start=" We process personal data only when legally permitted. The following
+          table outlines our processing purposes and legal justifications:"
+        />
+        <div className="min-h-100 flex items-center justify-center">Table</div>
+        <CustomP
+          start="Where we rely on consent, you have the right to withdraw it at any time by contacting us via "
+          link="Privacy Contact."
+        />
+
+        <InfoSection
+          desc="Your Rights Under GDPR :"
+          content={
+            <>
+              <CustomListItem
+                title="Opt-out:"
+                content="Withdraw consent for marketing communications."
+              />
+              <CustomListItem
+                title="Access:"
+                content="Request access to your personal data."
+              />
+              <CustomListItem
+                title="Correction:"
+                content="Update or correct inaccuracies in your personal data."
+              />
+              <CustomListItem
+                title="Deletion:"
+                content="Request the removal of your data."
+              />
+              <CustomListItem
+                title="Data Portability:"
+                content="Obtain a machine-readable copy of your data."
+              />
+              <CustomListItem
+                title="Restriction:"
+                content="Limit how your data is processed."
+              />
+              <CustomListItem
+                title="Objection:"
+                content="Contest data processing based on legitimate interest."
+              />
+            </>
+          }
+        />
+        <CustomP
+          start="To exercise these rights, visit our "
+          link="Privacy Contact."
+        />
+
+        <InfoSection
+          desc="CROSS-BORDER DATA TRANSFER"
+          endingLine="Your data may be transferred to, processed, and stored in the United States. U.S. data protection laws may differ from those in your country. Transfers from the European Economic Area (EEA) are conducted in accordance with European Commission-approved Standard Contractual Clauses or other recognized data transfer mechanisms."
+        />
+        <CustomP start="If you require further details on how we transfer data internationally, please contact us." />
+
+        <InfoSection
+          desc="COOKIES POLICY"
+          endingLine="Bitcoin Yay is committed to transparency in the use of cookies and similar tracking technologies."
+        />
+
+        <InfoSection
+          desc="Types of Cookies We Use:"
+          content={
+            <>
+              <CustomListItem
+                title="Essential Cookies:"
+                content="Required for core website functionality."
+              />
+              <CustomListItem
+                title="Functional Cookies:"
+                content="Enhance your experience by remembering preferences."
+              />
+              <CustomListItem
+                title="Analytics Cookies:"
+                content="Collect insights into website usage and performance."
+              />
+              <CustomListItem
+                title="Advertising Cookies:"
+                content="Deliver relevant ads and improve marketing campaigns."
+              />
+              <CustomListItem
+                title="Security Cookies:"
+                content="Prevent fraud and unauthorized acc"
+              />
+            </>
+          }
+        />
+
+        <InfoSection
+          desc="Managing Cookies:"
+          endingLine="You can adjust cookie preferences through your browser settings.
+              To learn how to control cookies, visit AboutCookies.org. Note that
+              disabling cookies may impact website functionality."
+        />
       </div>
     </div>
   );
