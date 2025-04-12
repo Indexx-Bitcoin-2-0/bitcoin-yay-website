@@ -4,7 +4,7 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import BitcoinYayIcon from "../assets/images/main-logo.png";
+import BitcoinYayIcon from "../assets/images/main-logo.svg";
 import SearchIcon from "../assets/images/search-icon.svg";
 import DownMenuIcon from "../assets/images/down-icon.svg";
 import MenuIcon from "../assets/images/menu-icon.svg";
@@ -19,7 +19,6 @@ import {
 export default function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
   const [bitcoinDropdownOpen, setBitcoinDropdownOpen] = useState(false);
@@ -71,10 +70,6 @@ export default function Navbar() {
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
-  };
-
-  const toggleSearch = () => {
-    setIsSearchVisible(isSearchVisible);
   };
 
   const handleSearch = (event: React.FormEvent) => {
@@ -295,26 +290,22 @@ export default function Navbar() {
             </Link>
           </div>
         </div>
-        <div
-          className={`relative ${
-            isSearchVisible ? "block" : "hidden"
-          } lg:block`}
-        >
+        <div className={`relative hidden lg:block`}>
           <form onSubmit={handleSearch} className="relative">
             <input
               type="text"
               id="search-navbar"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="block w-full p-2 text-sm border border-[#2F2F2F] rounded-lg outline-none hover:border-primary focus:border-primary"
+              className="block w-80 h-15 p-2 text-lg text-tertiary border border-[#2F2F2F] rounded-lg outline-none hover:border-primary focus:border-primary"
               placeholder="Search"
             />
-            <button type="submit" className="absolute right-0 top-0 mt-2 mr-2">
+            <button type="submit" className="absolute right-2 top-2 mt-2 mr-2">
               <Image
                 src={SearchIcon}
                 alt="Search Icon"
-                width={20}
-                height={20}
+                width={30}
+                height={30}
               />
             </button>
           </form>

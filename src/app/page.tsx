@@ -38,7 +38,7 @@ export default function Home() {
 
       <div className="container mx-auto px-4 py-8">
         <div>
-          <div className="flex flex-col gap-8 items-center justify-between flex-wrap mt-0">
+          <div className="flex flex-col gap-8 items-center justify-between flex-wrap mt-30">
             <div className="w-full">
               <div className="">
                 <Image
