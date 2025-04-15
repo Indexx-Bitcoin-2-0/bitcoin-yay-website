@@ -77,6 +77,10 @@ export default function Navbar() {
     console.log("Searching for:", searchQuery);
   };
 
+  const closeMobileMenu = () => {
+    setIsOpen(false);
+  };
+
   return (
     <nav className="">
       <div className="flex flex-wrap items-center justify-between mx-auto px-4 md:px-10 lg:px-20 py-8 ">
@@ -145,12 +149,14 @@ export default function Navbar() {
                 <Link
                   href="#"
                   className="block text-lg my-2 hover:text-primary"
+                  onClick={closeMobileMenu}
                 >
                   Whiteapaper Chapter
                 </Link>
                 <Link
                   href="#"
                   className="block text-lg my-2 hover:text-primary"
+                  onClick={closeMobileMenu}
                 >
                   Roadmap
                 </Link>
@@ -164,24 +170,34 @@ export default function Navbar() {
                 <Link
                   href="#"
                   className="block text-lg my-2 hover:text-primary"
+                  onClick={closeMobileMenu}
                 >
                   News & Blogs
                 </Link>
                 <Link
                   href="#"
                   className="block text-lg my-2 hover:text-primary"
+                  onClick={closeMobileMenu}
                 >
                   Safety Center
                 </Link>
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-3" className="border-0">
-              <Link href="#" className="block text-xl py-2 ">
+              <Link
+                href="#"
+                className="block text-xl py-2 "
+                onClick={closeMobileMenu}
+              >
                 Developers
               </Link>
             </AccordionItem>
             <AccordionItem value="item-4" className="border-0">
-              <Link href="/about" className="block text-xl py-2">
+              <Link
+                href="/about"
+                className="block text-xl py-2"
+                onClick={closeMobileMenu}
+              >
                 About
               </Link>
             </AccordionItem>
@@ -190,6 +206,7 @@ export default function Navbar() {
                 <Link
                   href="/support"
                   className="block text-lg my-2 hover:text-primary"
+                  onClick={closeMobileMenu}
                 >
                   Support
                 </Link>
