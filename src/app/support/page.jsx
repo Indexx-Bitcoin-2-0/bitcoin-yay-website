@@ -13,6 +13,7 @@ import {
 
 import SearchIcon from "../../assets/images/search-icon.svg";
 import bgArtImage1 from "../../assets/images/bitcoin-art-2.png";
+import CustomStyledConatiner from "@/components/CustomStyledContainer";
 
 const faqsContent = [
   {
@@ -105,7 +106,47 @@ export default function support() {
 
   return (
     <div className="container mx-auto max-w-[90vw] px-4 py-8">
-      <div className="lg:h-100 overflow-hidden border border-bg2 rounded-lg p-5 lg:p-15 w-full mt-10 mx-auto relative ">
+      <CustomStyledConatiner>
+        <h1 className="text-2xl md:text-5xl font-bold mt-6">
+          Welcome to the FAQ & Support Page
+        </h1>
+        <p className="text-sm md:text-lg font-normal text-tertiary my-4">
+          Follow these steps to find the right resources for your support needs.
+        </p>
+        <form onSubmit={handleSearch} className="relative max-w-2xl my-6">
+          <input
+            type="text"
+            id="search-navbar"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="block w-full h-12 lg:h-15 p-5 text-lg border border-[#2F2F2F] rounded-lg bg-bg2 outline-none focus:border-primary hover:border-primary placeholder:text-tertiary"
+            placeholder="Search"
+          />
+          <button type="submit" className="absolute right-5 top-3 ">
+            <Image
+              src={SearchIcon}
+              alt="Search Icon"
+              className="w-5 lg:w-8 h-5 lg:h-8"
+            />
+          </button>
+        </form>
+        <div>
+          <div className="flex md:gap-4 items-center mt-8">
+            {["General", "Bitcoin Yay", "Pricing", "App"].map(
+              (category, index) => (
+                <CustomButton
+                  key={index}
+                  index={index}
+                  text={category}
+                  handleButtonClick={handleButtonClick}
+                  isActive={activeButton === index}
+                />
+              )
+            )}
+          </div>
+        </div>
+      </CustomStyledConatiner>
+      {/* <div className="lg:h-120 overflow-hidden border border-bg2 rounded-lg p-5 lg:p-15 w-full mt-10 mx-auto relative ">
         <Image
           src={bgArtImage1}
           alt="Background Art"
@@ -123,7 +164,7 @@ export default function support() {
             id="search-navbar"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="block w-full h-12 lg:h-15 p-5 text-lg border border-[#2F2F2F] rounded-lg bg-[#B7B7B733]"
+            className="block w-full h-12 lg:h-15 p-5 text-lg border border-[#2F2F2F] rounded-lg bg-bg2 outline-none focus:border-primary hover:border-primary placeholder:text-tertiary"
             placeholder="Search"
           />
           <button type="submit" className="absolute right-5 top-3 ">
@@ -135,7 +176,7 @@ export default function support() {
           </button>
         </form>
         <div>
-          <div className="flex flex-wrap gap-4 items-center mt-8">
+          <div className="flex md:gap-4 items-center my-10">
             {["General", "Bitcoin Yay", "Pricing", "App"].map(
               (category, index) => (
                 <CustomButton
@@ -149,7 +190,7 @@ export default function support() {
             )}
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Part 2 */}
       <div className="my-20">

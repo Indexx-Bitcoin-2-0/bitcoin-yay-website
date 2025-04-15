@@ -1,13 +1,20 @@
 import Image, { StaticImageData } from "next/image";
 
-import BitCoinYayLogo from "../../assets/images/logo.png";
-import bgArtImage1 from "../../assets/images/bitcoin-art-2.png";
-import StatsIcon1 from "../../assets/images/about/icon-1.png";
-import StatsIcon2 from "../../assets/images/about/icon-2.png";
-import StatsIcon3 from "../../assets/images/about/icon-3.png";
-import StatsIcon4 from "../../assets/images/about/icon-4.png";
+import BitCoinYayLogo from "../../assets/images/logo.svg";
+import bgArtImage2 from "../../assets/images/bitcoin-art-3.svg";
+
+import PhoneImage1 from "../../assets/images/about/phone01.svg";
+
+import FounderImage1 from "../../assets/images/about/founder-1.svg";
+import FounderImage2 from "../../assets/images/about/founder-2.svg";
+
+import StatsIcon1 from "../../assets/images/about/icon-1.svg";
+import StatsIcon2 from "../../assets/images/about/icon-2.svg";
+import StatsIcon3 from "../../assets/images/about/icon-3.svg";
+import StatsIcon4 from "../../assets/images/about/icon-4.svg";
 
 import UserReviewCards from "@/components/UserReviewCards";
+import CustomStyledConatiner from "@/components/CustomStyledContainer";
 
 const statsData = [
   {
@@ -55,12 +62,7 @@ const CustomStatsCard = ({
 export default function About() {
   return (
     <div className=" mx-auto max-w-[90vw] lg:px-10 py-8">
-      <div className=" lg:h-100 overflow-hidden border border-bg2 rounded-lg p-5 lg:p-15 w-full mt-6 lg:mt-10 mx-auto relative ">
-        <Image
-          src={bgArtImage1}
-          alt="Background Art"
-          className="absolute -z-10 -top-5 md:top-0 right-0 w-50 lg:w-100"
-        />
+      <CustomStyledConatiner>
         <h1 className="text-2xl md:text-5xl font-bold mt-6 max-w-300  md:leading-16">
           Bitcoin Yay: Shaping the Future of Social Cryptocurrency in Web3
         </h1>
@@ -68,7 +70,7 @@ export default function About() {
           Connecting communities, enabling seamless transactions, and
           revolutionizing digital finance.
         </p>
-      </div>
+      </CustomStyledConatiner>
 
       {/* Part 2 */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-20">
@@ -154,6 +156,117 @@ export default function About() {
             cutting-edge technology, delivering proprietary tools and smart
             solutions that enhance the crypto experience.
           </p>
+        </div>
+      </div>
+
+      {/* Part 05 */}
+      <div
+        className="flex flex-col lg:flex-row mt-30 pt-20 lg:pt-40 mx-auto relative bg-[center_-5px] md:bg-[center_-10px] bg-size-[400px_auto] md:bg-size-[700px_auto] bg-no-repeat"
+        style={{
+          backgroundImage: `url(${bgArtImage2.src})`,
+        }}
+      >
+        <div className=" flex flex-col flex-1 lg:p-10 justify-center">
+          <h2 className="text-2xl md:text-5xl font-bold text-secondary my-6">
+            Built for Everyone, By Everyone
+          </h2>
+          <p className="text-sm font-normal text-tertiary leading-6 my-2">
+            Bitcoin Yay is a dynamic community of crypto enthusiasts, investors,
+            and innovators dedicated to making Bitcoin and digital assets
+            accessible to all. Built on a foundation of decentralization and
+            transparency, Bitcoin Yay empowers users with real-time insights,
+            cutting-edge tools, and a collaborative ecosystem. By leveraging
+            revolutionary technology and a strong global network, we are shaping
+            the future of Web3, ensuring a secure, inclusive, and meritocratic
+            crypto experience for everyone.
+          </p>
+          <p className="text-sm font-normal text-tertiary leading-6 my-2">
+            In order to ensure fairness in Pi mining, secure the Pi blockchain,
+            maintain integrity in the Pi ecosystem, and eventually create and
+            safeguard the community-run governance, it is essential to empower
+            real people around the world and disempower malicious actors, bots,
+            or free riders. Pi relies on its community of Pioneers to
+            meritocratically mine Pi tokens using their mobile phones, while Pi
+            KYC serves as a core mechanism to ensure true humanity and build
+            collaboration into the network, enabling the community to create a
+            decentralized ecosystem with meaningful use cases for everyday
+            people.  An accessible developer platform, combined with a large,
+            identity-verified and crypto-enabled social network, positions Pi
+            Network to become a pillar of the next wave of technological
+            revolution.
+          </p>
+        </div>
+        <div className=" flex flex-1 items-center justify-center mt-20 lg:mt-0">
+          <Image
+            src={PhoneImage1}
+            alt="Phone Image"
+            className="w-50 md:w-100"
+          />
+        </div>
+      </div>
+
+      {/* Part 06  */}
+      <div className="flex flex-col items-center justify-center mt-40">
+        <h2 className="text-2xl md:text-5xl font-bold text-secondary my-6">
+          The Founders – Visionaries Behind Bitcoin Yay
+        </h2>
+        <div className="flex flex-col lg:flex-row mt-10 md:mt-20 gap-10 lg:gap-20 ">
+          <div className="flex-1 bg-bg2 rounded-lg p-4 md:p-6">
+            <div className="flex items-center justify-start mb-4">
+              <Image
+                src={FounderImage1}
+                alt="Founder Image 1"
+                className="w-30 md:w-52"
+              />
+              <div className="flex flex-col justify-center p-4">
+                <h3 className="text-2xl md:text-4xl font-bold text-secondary py-2">
+                  Corey Kleinsasser
+                </h3>
+                <p className="text-xl md:text-3xl font-base text-tertiary">
+                  Head of Technology
+                </p>
+              </div>
+            </div>
+            <p className="text-sm font-normal text-tertiary leading-6 mt-2">
+              Lorem Ipsum is simply dummy text of the printing and typesetting
+              industry. Lorem Ipsum has been the industrys standard dummy text
+              ever since the 1500s, when an unknown printer took a galley of
+              type and scrambled it to make a type specimen book. It has
+              survived not only five centuries, but also the leap into
+              electronic typesetting, remaining essentially unchanged. It was
+              popularised in the 1960s with the release of Letraset sheets
+              containing Lorem Ipsum passages, and more recently with desktop
+              publishing{" "}
+            </p>
+          </div>
+          <div className="flex-1 bg-bg2 rounded-lg p-4 md:p-6">
+            <div className="flex items-center justify-start mb-4">
+              <Image
+                src={FounderImage2}
+                alt="Founder Image 1"
+                className="w-30 md:w-52"
+              />
+              <div className="flex flex-col justify-center p-4">
+                <h3 className="text-2xl md:text-4xl font-bold text-secondary py-2">
+                  Phil Hale
+                </h3>
+                <p className="text-xl md:text-3xl font-base text-tertiary">
+                  Head of Product
+                </p>
+              </div>
+            </div>
+            <p className="text-sm font-normal text-tertiary leading-6 mt-2">
+              Lorem Ipsum is simply dummy text of the printing and typesetting
+              industry. Lorem Ipsum has been the industrys standard dummy text
+              ever since the 1500s, when an unknown printer took a galley of
+              type and scrambled it to make a type specimen book. It has
+              survived not only five centuries, but also the leap into
+              electronic typesetting, remaining essentially unchanged. It was
+              popularised in the 1960s with the release of Letraset sheets
+              containing Lorem Ipsum passages, and more recently with desktop
+              publishing{" "}
+            </p>
+          </div>
         </div>
       </div>
 
