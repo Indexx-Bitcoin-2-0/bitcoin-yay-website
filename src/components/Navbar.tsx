@@ -154,7 +154,7 @@ export default function Navbar() {
                   Whiteapaper Chapter
                 </Link>
                 <Link
-                  href="#"
+                  href="/roadmap"
                   className="block text-lg my-2 hover:text-primary"
                   onClick={closeMobileMenu}
                 >
@@ -241,7 +241,7 @@ export default function Navbar() {
                     Whiteapaper Chapter
                   </Link>
                   <Link
-                    href="#"
+                    href="/roadmap"
                     className="block hover:text-primary focus:text-primary focus:bg-transparent text-xl"
                   >
                     Roadmap
