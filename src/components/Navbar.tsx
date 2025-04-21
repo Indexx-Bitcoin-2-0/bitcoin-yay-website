@@ -82,7 +82,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="">
+    <nav className="bg-bg">
       <div className="flex flex-wrap items-center justify-between mx-auto px-4 md:px-10 lg:px-20 py-8 ">
         <div className="flex justify-center bg-bg  ">
           <div className="flex justify-center items-center lg:hidden">
@@ -154,7 +154,7 @@ export default function Navbar() {
                   Whiteapaper Chapter
                 </Link>
                 <Link
-                  href="#"
+                  href="/roadmap"
                   className="block text-lg my-2 hover:text-primary"
                   onClick={closeMobileMenu}
                 >
@@ -241,7 +241,7 @@ export default function Navbar() {
                     Whiteapaper Chapter
                   </Link>
                   <Link
-                    href="#"
+                    href="/roadmap"
                     className="block hover:text-primary focus:text-primary focus:bg-transparent text-xl"
                   >
                     Roadmap
