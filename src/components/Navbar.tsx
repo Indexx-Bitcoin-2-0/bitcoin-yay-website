@@ -147,7 +147,7 @@ export default function Navbar() {
               </AccordionTrigger>
               <AccordionContent className="p-2">
                 <Link
-                  href="#"
+                  href="/whitepaper"
                   className="block text-lg my-2 hover:text-primary"
                   onClick={closeMobileMenu}
                 >
@@ -168,14 +168,14 @@ export default function Navbar() {
               </AccordionTrigger>
               <AccordionContent className="p-2">
                 <Link
-                  href="#"
+                  href="/blogs"
                   className="block text-lg my-2 hover:text-primary"
                   onClick={closeMobileMenu}
                 >
                   News & Blogs
                 </Link>
                 <Link
-                  href="#"
+                  href="/safety-center"
                   className="block text-lg my-2 hover:text-primary"
                   onClick={closeMobileMenu}
                 >
@@ -183,7 +183,7 @@ export default function Navbar() {
                 </Link>
               </AccordionContent>
             </AccordionItem>
-            <AccordionItem value="item-3" className="border-0">
+            {/* <AccordionItem value="item-3" className="border-0">
               <Link
                 href="#"
                 className="block text-xl py-2 "
@@ -191,7 +191,7 @@ export default function Navbar() {
               >
                 Developers
               </Link>
-            </AccordionItem>
+            </AccordionItem> */}
             <AccordionItem value="item-4" className="border-0">
               <Link
                 href="/about"
@@ -235,7 +235,7 @@ export default function Navbar() {
                   onMouseLeave={handleBitcoinContentMouseLeave}
                 >
                   <Link
-                    href="#"
+                    href="/whitepaper"
                     className="block hover:text-primary focus:text-primary focus:bg-transparent text-xl"
                   >
                     Whiteapaper Chapter
@@ -268,13 +268,13 @@ export default function Navbar() {
                   onMouseLeave={handleCommunityContentMouseLeave}
                 >
                   <Link
-                    href="#"
+                    href="/blogs"
                     className="block hover:text-primary focus:text-primary focus:bg-transparent text-xl"
                   >
                     News & Blogs
                   </Link>
                   <Link
-                    href="#"
+                    href="/safety-center"
                     className="block hover:text-primary focus:text-primary focus:bg-transparent text-xl"
                   >
                     Safety Center
@@ -282,13 +282,13 @@ export default function Navbar() {
                 </div>
               )}
             </div>
-            <div
+            {/* <div
               className={`cursor-pointer font-normal text-lg p-0 hover:text-primary ${
                 pathname === "/developer" ? "text-primary" : "text-tertiary"
               }`}
             >
               Developers
-            </div>
+            </div> */}
             <Link
               href="/about"
               className={`cursor-pointer font-normal text-lg p-0 hover:text-primary ${

@@ -8,6 +8,12 @@ import Whitepaper03 from "@/assets/images/whitepaper/whitepaper-03.svg";
 import Whitepaper04 from "@/assets/images/whitepaper/whitepaper-04.svg";
 import Whitepaper05 from "@/assets/images/whitepaper/whitepaper-05.svg";
 import Whitepaper06 from "@/assets/images/whitepaper/whitepaper-06.svg";
+import Whitepaper07 from "@/assets/images/whitepaper/whitepaper-066.svg";
+import Whitepaper08 from "@/assets/images/whitepaper/whitepaper-07.svg";
+import Whitepaper09 from "@/assets/images/whitepaper/whitepaper-08.svg";
+import Whitepaper10 from "@/assets/images/whitepaper/whitepaper-09.svg";
+import Whitepaper11 from "@/assets/images/whitepaper/whitepaper-10.svg";
+
 export default function whitepaper() {
   return (
     <div className=" mx-auto max-w-[90vw] lg:px-10 py-8">
@@ -466,6 +472,10 @@ export default function whitepaper() {
 
         <InfoSection endingLine="From day one, Bitcoin Yay benefits from being born into Indexx's ecosystem. Instead of having to create demand from scratch, BTCY plugs into existing platforms where it has immediate usefulness — trading, shopping, gaming, and more. This comprehensive integration means a user can earn BTCY by mining in the morning, trade some for stablecoin in the afternoon, stake some for interest by evening, and spend a little at night for entertainment, all within one connected crypto environment." />
 
+        <div className="flex justify-center items-center my-12">
+          <Image src={Whitepaper07} alt="Whitepaper-07" />
+        </div>
+
         <InfoSection
           title="7. Roadmap & Development Phases"
           endingLine="Bitcoin Yay's development is planned in clear phases from 2025 onward, with each phase building on the last to gradually decentralize the project and expand its reach:"
@@ -492,6 +502,10 @@ export default function whitepaper() {
             />,
           ]}
         />
+
+        <div className="flex justify-center items-center my-12">
+          <Image src={Whitepaper08} alt="Whitepaper-08" />
+        </div>
 
         <InfoSection
           title="8. Withdrawal Rules & Vetting System"
@@ -560,6 +574,10 @@ export default function whitepaper() {
         <InfoSection endingLine="Overall, this vetting and withdrawal system ensures Bitcoin Yay's early adopters cannot unfairly or destructively dump large amounts of BTCY, which protects the token's value and the community. It aligns users with the project's long-term success: those who stick around and withdraw gradually are rewarded with lower fees and potentially more token utility unlocked as they remain engaged." />
 
         <InfoSection endingLine="(Note: The updated Bitcoin Yay framework also introduces tiered utility thresholds for various features, as described in the Tokenomics and Utility sections. Rather than a single high withdrawal threshold, users unlock different features (trading, stablecoin conversion, BTC conversion, etc.) at different BTCY levels, some of which are below 100k. The 100k figure mentioned here is a general benchmark for full token liquidity access. The key takeaway is that new users are guided into the ecosystem gradually, and large liquidations are discouraged by design.)" />
+
+        <div className="flex justify-center items-center my-12">
+          <Image src={Whitepaper09} alt="Whitepaper-09" />
+        </div>
 
         <InfoSection
           title="9. Legal & Compliance"
@@ -644,6 +662,10 @@ export default function whitepaper() {
             />,
           ]}
         />
+
+        <div className="flex justify-center items-center my-12">
+          <Image src={Whitepaper10} alt="Whitepaper-10" />
+        </div>
 
         <InfoSection
           title="10. Marketing & Adoption Strategy"
@@ -762,6 +784,10 @@ export default function whitepaper() {
         />
 
         <InfoSection endingLine="In summary, Bitcoin Yay's marketing and adoption plan is holistic: it combines viral growth tactics (airdrops, referrals), community engagement (rewards for content creation, strong social presence), influencer and media amplification, and a user-friendly experience. The goal is to rapidly build a large, engaged user base that not only mines BTCY but actively uses it, thereby creating a self-sustaining, growing economy around Bitcoin Yay." />
+
+        <div className="flex justify-center items-center my-12">
+          <Image src={Whitepaper11} alt="Whitepaper-11" />
+        </div>
 
         <InfoSection
           title="11. Conclusion"

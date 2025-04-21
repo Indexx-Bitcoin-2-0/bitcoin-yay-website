@@ -26,6 +26,7 @@ import bgArtImage1 from "../assets/images/bitcoin-art-3.png";
 import bgArtImage2 from "../assets/images/bitcoin-art-4.png";
 import bgArtImage3 from "../assets/images/bitcoin-art.png";
 import UserReviewCards from "@/components/UserReviewCards";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -64,7 +65,10 @@ export default function Home() {
               </div>
             </div>
             <div className="flex flex-col items-center justify-center ">
-              <button className="cursor-pointer text-tertiary group">
+              <Link
+                href="/coming-soon"
+                className="cursor-pointer text-tertiary group"
+              >
                 <Image
                   src={DownloadLogo}
                   alt="Download Logo"
@@ -75,7 +79,7 @@ export default function Home() {
                     Download the App
                   </p>
                 </div>
-              </button>
+              </Link>
             </div>
             <div className="mt-20">
               <div className="flex justify-center gap-6 lg:mt-40">
@@ -136,7 +140,10 @@ export default function Home() {
                 className="w-[250px] md:w-[500px] lg:mx-8"
               />
               <div className="flex flex-col items-center justify-center mt-10">
-                <button className="cursor-pointer text-tertiary group">
+                <Link
+                  href="/coming-soon"
+                  className="cursor-pointer text-tertiary group"
+                >
                   <Image
                     src={DownloadLogo}
                     alt="Download Logo"
@@ -147,7 +154,7 @@ export default function Home() {
                       Download the App
                     </p>
                   </div>
-                </button>
+                </Link>
               </div>
             </div>
             <div>
@@ -211,7 +218,10 @@ export default function Home() {
             </div>
           </div>
           <div className="flex flex-col items-center justify-center">
-            <button className="cursor-pointer text-tertiary group">
+            <Link
+              href="/coming-soon"
+              className="cursor-pointer text-tertiary group"
+            >
               <Image
                 src={DownloadLogo}
                 alt="Download Logo"
@@ -222,7 +232,7 @@ export default function Home() {
                   Download the App
                 </p>
               </div>
-            </button>
+            </Link>
           </div>
         </div>
 
