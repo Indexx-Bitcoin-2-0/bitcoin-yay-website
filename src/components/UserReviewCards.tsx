@@ -52,7 +52,7 @@ const userReviews = [
 
 export default function UserReviewCards() {
   return (
-    <div className="lg:p-4 mt-10 flex items-center justify-center max-w-full ">
+    <div className="lg:p-4 my-10 flex items-center justify-center max-w-full ">
       <Carousel className="w-full">
         <CarouselContent className=" gap-1">
           {userReviews.map((review, index) => (
