@@ -1,0 +1,194 @@
+{
+  "general": [
+    {
+      "title": "What is Bitcoin Yay?",
+      "content": "Bitcoin Yay (BTCY) is a next-generation cryptocurrency designed as a “Micro Token of Bitcoin” – a smaller, more accessible unit tied to Bitcoin’s legacy."
+    },
+    {
+      "title": "How is Bitcoin Yay different from Bitcoin?",
+      "content": "Bitcoin Yay uses an AI‑powered Proof‑of‑Participation consensus instead of energy‑intensive Proof‑of‑Work and offers sub‑second settlements with negligible fees making it more suitable for everyday use."
+    },
+    {
+      "title": "What does “Micro Token of Bitcoin” mean?",
+      "content": "It means that Bitcoin Yay units are defined so that one Bitcoin converts to one million BTCY lowering the entry barrier and enabling microtransactions."
+    },
+    {
+      "title": "What is the total supply of Bitcoin Yay?",
+      "content": "The total supply of Bitcoin Yay is capped at 21 trillion BTCY to mirror Bitcoin’s 21 million cap at the micro‑token scale."
+    },
+    {
+      "title": "What is the conversion ratio between Bitcoin and Bitcoin Yay?",
+      "content": "The conversion ratio is set at one Bitcoin equals one million BTCY to preserve a value relationship tied to Bitcoin’s legacy."
+    },
+    {
+      "title": "How does Bitcoin Yay control inflation?",
+      "content": "Bitcoin Yay controls inflation by cutting mining rewards in half every six months under a semi‑annual halving schedule."
+    },
+    {
+      "title": "What consensus mechanism does Bitcoin Yay use?",
+      "content": "Bitcoin Yay uses a novel AI‑powered Proof‑of‑Participation consensus that rewards user engagement and network contribution instead of raw computing power."
+    },
+    {
+      "title": "What blockchain framework does Bitcoin Yay operate on?",
+      "content": "Bitcoin Yay operates on a customized Stellar‑based blockchain framework augmented with smart contract support via Soroban and AI integration."
+    },
+    {
+      "title": "How does Bitcoin Yay ensure fair distribution of tokens?",
+      "content": "Fair distribution is achieved by rewarding both on‑chain engagement and in‑app participation rather than favoring those with specialized mining hardware."
+    },
+    {
+      "title": "What security measures protect the Bitcoin Yay network?",
+      "content": "Security measures include multi‑layer encryption AI‑powered threat detection a BFT validator model with slashing and support for light nodes in the mobile app."
+    },
+    {
+      "title": "Will Bitcoin Yay become fully decentralized?",
+      "content": "Yes Bitcoin Yay plans to transition governance to a community‑run DAO over four development phases reaching full decentralization by around 2027."
+    },
+    {
+      "title": "What is the main goal of Bitcoin Yay?",
+      "content": "The main goal is to create a seamless user‑friendly and sustainable Bitcoin alternative that promotes wider everyday use of digital currency."
+    }
+  ],
+  "bitcoinyay": [
+    {
+      "title": "What is AI Mobile Mining?",
+      "content": "AI Mobile Mining is a process where users complete AI‑assigned tasks on their smartphones and earn BTCY based on their engagement and AI Mining Score."
+    },
+    {
+      "title": "How do mining tasks work?",
+      "content": "The AI Teacher analyzes behaviors that benefit the network and sends tailored lightweight tasks to user apps which earn token rewards on completion."
+    },
+    {
+      "title": "What is the AI Mining Score?",
+      "content": "The AI Mining Score is a dynamic multiplier that reflects how actively a user engages in tasks referrals and community activities boosting their base mining rate."
+    },
+    {
+      "title": "What are Gopher Mining Tiers?",
+      "content": "Gopher Mining Tiers segment users into participation levels including Snatch Gopher free tier Pocket Gopher referral program Nugget Gopher paid plans and Nerdy Gopher developer rewards."
+    },
+    {
+      "title": "What is the Snatch Gopher plan?",
+      "content": "The Snatch Gopher plan is the free entry‑level mining tier with a base speed of one times allowing users to earn BTCY at no cost."
+    },
+    {
+      "title": "What is the Pocket Gopher program?",
+      "content": "The Pocket Gopher program rewards users for referrals and content creation by granting bonus BTCY for community building activities."
+    },
+    {
+      "title": "What are the Nugget Gopher plans?",
+      "content": "The Nugget Gopher plans are paid subscription tiers named Electric Turbo and Nuclear offering base mining speeds of three times six times and nine times respectively."
+    },
+    {
+      "title": "What is the Nerdy Gopher program?",
+      "content": "The Nerdy Gopher program rewards developers and technical contributors through bounties and grants instead of hourly mining rates."
+    },
+    {
+      "title": "How often are mining rewards halved?",
+      "content": "Mining rewards are halved every six months to manage inflation and preserve the token’s scarcity narrative."
+    },
+    {
+      "title": "Why does Bitcoin Yay use AI in mining?",
+      "content": "AI is used to optimize task difficulty prevent abuse personalize user experience and ensure fair reward distribution based on engagement."
+    },
+    {
+      "title": "How does the AI Mining Score affect earnings?",
+      "content": "A higher AI Mining Score multiplies a user’s base mining rate so active participants can earn two to three times more BTCY than their base plan."
+    },
+    {
+      "title": "How does Bitcoin Yay’s mining differ from Bitcoin’s mining?",
+      "content": "Bitcoin Yay mining replaces energy‑intensive hashing with AI‑driven participation tasks to democratize access and reduce environmental impact."
+    },
+    {
+      "title": "What benefits do paid mining plans offer?",
+      "content": "Paid plans offer higher base mining speeds faster transaction processing priority withdrawals and additional community perks."
+    }
+  ],
+  "pricing": [
+    {
+      "title": "How much does it cost to start mining Bitcoin Yay?",
+      "content": "It is free to start mining with the Snatch Gopher plan requiring only minimal daily engagement tasks."
+    },
+    {
+      "title": "What are the subscription costs for paid mining plans?",
+      "content": "Paid mining plans cost one hundred dollars three hundred dollars or six hundred dollars per month for Electric Turbo and Nuclear tiers respectively."
+    },
+    {
+      "title": "What is included in the Electric plan?",
+      "content": "The Electric plan costs one hundred dollars per month and provides a base mining speed of three times the free rate."
+    },
+    {
+      "title": "What is included in the Turbo plan?",
+      "content": "The Turbo plan costs three hundred dollars per month and provides a base mining speed of six times the free rate."
+    },
+    {
+      "title": "What is included in the Nuclear plan?",
+      "content": "The Nuclear plan costs six hundred dollars per month and provides a base mining speed of nine times the free rate."
+    },
+    {
+      "title": "What is the mining speed multiplier for each paid plan?",
+      "content": "The Electric plan offers a three times multiplier the Turbo plan offers a six times multiplier and the Nuclear plan offers a nine times multiplier."
+    },
+    {
+      "title": "Are there extra benefits to paid plans?",
+      "content": "Paid plans include faster transaction priority in the network and priority withdrawal processing during high demand."
+    },
+    {
+      "title": "How can users earn Bitcoin Yay for free?",
+      "content": "Users earn Bitcoin Yay for free through the Snatch Gopher plan referrals under the Pocket Gopher program and community contributions."
+    },
+    {
+      "title": "Are there any costs associated with referring friends?",
+      "content": "There is no cost to referring friends and users earn bonus BTCY through successful referrals."
+    },
+    {
+      "title": "What are the subscription tiers called?",
+      "content": "The subscription tiers are called Snatch Gopher Free Electric Gopher Turbo Gopher and Nuclear Gopher."
+    }
+  ],
+  "app": [
+    {
+      "title": "What can I do with the Bitcoin Yay app?",
+      "content": "You can mine BTCY view your mining rate and AI multiplier send and receive BTCY and Bitcoin and access staking and swaps."
+    },
+    {
+      "title": "Is the Bitcoin Yay app easy to use?",
+      "content": "The app is designed to be user‑friendly with guided tutorials for wallet setup mining and token conversions."
+    },
+    {
+      "title": "Can I use the Bitcoin Yay app to send money?",
+      "content": "Yes the app supports sending and receiving BTCY and Bitcoin to any valid address with minimal fees."
+    },
+    {
+      "title": "Does the app support biometric authentication?",
+      "content": "The app supports biometric authentication for secure and convenient login using fingerprint or facial recognition."
+    },
+    {
+      "title": "How do I know how much Bitcoin Yay I am earning?",
+      "content": "The app dashboard displays your current base mining rate AI multiplier and total BTCY earned."
+    },
+    {
+      "title": "Does the app use a lot of battery?",
+      "content": "The app is optimized for minimal battery usage because the heavy AI computations run on centralized servers."
+    },
+    {
+      "title": "Does the app have a built‑in wallet?",
+      "content": "The app includes a fully non‑custodial wallet for BTCY and Bitcoin with secure key storage and backup options."
+    },
+    {
+      "title": "Can I buy Bitcoin Yay in the app?",
+      "content": "The app provides a fiat on‑ramp to purchase BTCY via credit card or other supported payment methods."
+    },
+    {
+      "title": "Can I stake my BTCY in the app?",
+      "content": "Once you reach the staking threshold you can stake BTCY within the app to earn yield and governance voting power."
+    },
+    {
+      "title": "Does the app notify me of important updates?",
+      "content": "The app sends push notifications for mining milestones incoming transactions governance proposals and security alerts."
+    },
+    {
+      "title": "Can I convert BTCY to other tokens in the app?",
+      "content": "The app supports in‑app swaps to stablecoins and other Indexx ecosystem tokens once you meet the required thresholds."
+    }
+  ]
+}
