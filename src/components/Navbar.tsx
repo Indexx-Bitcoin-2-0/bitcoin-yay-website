@@ -217,16 +217,17 @@ export default function Navbar() {
         <div className="hidden lg:flex md:space-x-4 text-tertiary text-lg">
           <div className="relative border-0 gap-8 flex">
             <div
-              className="group relative"
+              className="group "
               onMouseEnter={handleBitcoinMouseEnter}
               onMouseLeave={handleBitcoinMouseLeave}
             >
               <button
-                className={`flex cursor-pointer font-normal text-lg p-0 hover:text-primary ${
+                className={`flex cursor-pointer font-normal text-sm p-0 hover:text-primary ${
                   bitcoinDropdownOpen ? "text-primary" : "text-tertiary"
                 }`}
               >
-                Bitcoin Yay Blockchain <Image src={DownMenuIcon} alt="" />
+                Bitcoin Yay Blockchain{" "}
+                <Image src={DownMenuIcon} alt="" width={20} />
               </button>
               {bitcoinDropdownOpen && (
                 <div
@@ -250,16 +251,16 @@ export default function Navbar() {
               )}
             </div>
             <div
-              className="group relative"
+              className="group"
               onMouseEnter={handleCommunityMouseEnter}
               onMouseLeave={handleCommunityMouseLeave}
             >
               <button
-                className={`flex cursor-pointer font-normal text-lg p-0 hover:text-primary ${
+                className={`flex cursor-pointer font-normal text-sm p-0 hover:text-primary ${
                   communityDropdownOpen ? "text-primary" : "text-tertiary"
                 }`}
               >
-                Community <Image src={DownMenuIcon} alt="" />
+                Community <Image src={DownMenuIcon} alt="" width={20} />
               </button>
               {communityDropdownOpen && (
                 <div
@@ -291,14 +292,14 @@ export default function Navbar() {
             </div> */}
             <Link
               href="/about"
-              className={`cursor-pointer font-normal text-lg p-0 hover:text-primary ${
+              className={`cursor-pointer font-normal text-sm p-0 hover:text-primary ${
                 pathname === "/about" ? "text-primary" : "text-tertiary"
               }`}
             >
               About
             </Link>
             <Link
-              className={`cursor-pointer font-normal text-lg p-0 hover:text-primary ${
+              className={`cursor-pointer font-normal text-sm p-0 hover:text-primary ${
                 pathname === "/support" ? "text-primary" : "text-tertiary"
               }`}
               href="/support"

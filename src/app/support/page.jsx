@@ -10,9 +10,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import ContactForm from "@/components/ContactForm";
 
 import SearchIcon from "../../assets/images/search-icon.svg";
 import CustomStyledConatiner from "@/components/CustomStyledContainer";
+import WalletArt from "../../assets/images/wallet-art.svg";
 
 import faqData from "./data.json";
 
@@ -110,6 +112,24 @@ export default function support() {
             ))}
           </div>
         </Accordion>
+      </div>
+
+      <div>
+        <div className="border border-bg2 rounded-lg p-5 lg:p-15 w-full mt-6 lg:mt-10 mx-auto flex flex-col lg:flex-row">
+          <div className="flex-1">
+            <h1 className="text-2xl md:text-5xl font-bold mt-6">Contact Us</h1>
+            <p className="text-lg font-medium mt-6">Have a question or need help?</p>
+            <p className="text-sm max-w-100 mt-2">
+              We’re here to support you every step of the way. Whether it’s
+              about your account, mining, referrals, or app features — reach out
+              and we’ll get back to you as soon as possible.
+            </p>
+            <Image src={WalletArt} alt="Wallet Art" className="w-full h-auto mt-20" />
+          </div>
+          <div className="flex-1">
+            <ContactForm />
+          </div>
+        </div>
       </div>
     </div>
   );
