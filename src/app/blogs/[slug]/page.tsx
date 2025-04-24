@@ -78,7 +78,14 @@ const components: Components = {
   ),
 };
 
-export default function BlogPost({ params }: { params: { slug: string } }) {
+interface PageProps {
+  params: {
+    slug: string;
+  };
+  searchParams?: { [key: string]: string | string[] | undefined };
+}
+
+export default function BlogPost({ params }: PageProps) {
   const content = getPostContent(params.slug);
 
   if (!content) {
