@@ -6,28 +6,36 @@ export async function POST(request: Request) {
     const { email } = await request.json();
 
     if (!email) {
-      return NextResponse.json({ error: "Email is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Email is required" },
+        { status: 400 }
+      );
     }
-
-    // Store the deletion request in the database
 
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/deleteaccount`,
-      {
-        email: email,
-      }
+      { email }
     );
 
-    console.log(response?.data);
-    // return NextResponse.json(
-    //   { message: "Data deletion request received" },
-    //   { status: 200 }
-    // );
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    console.error("Error processing data deletion request:", error?.message);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { message: response.data.message },
+      { status: 200 }
+    );
+
+  } catch (error: any) {
+    console.error("Error in data deletion:", error?.response?.data);
+
+    // Handle axios errors
+    if (error?.response?.data) {
+      return NextResponse.json(
+        error.response.data,
+        { status: error.response.status || 500 }
+      );
+    }
+
+    // Handle other errors
+    return NextResponse.json(
+      { error: "An unexpected error occurred" },
       { status: 500 }
     );
   }
