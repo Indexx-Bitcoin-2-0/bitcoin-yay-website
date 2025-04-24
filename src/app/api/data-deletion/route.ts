@@ -23,7 +23,8 @@ export async function POST(request: Request) {
     //   { message: "Data deletion request received" },
     //   { status: 200 }
     // );
-  } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
     console.error("Error processing data deletion request:", error?.message);
     return NextResponse.json(
       { error: "Internal server error" },
