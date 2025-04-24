@@ -247,71 +247,105 @@ export default function whitepaper() {
 
         <InfoSection endingLine="These gopher-themed tiers cleverly segment the community: Those who can pay to subscribe support the project's finances and in return receive more BTCY; those who cannot pay can still earn via the free plan or through contributions like referrals and development, ensuring inclusivity for all types of participants." />
 
-        <InfoSection
-          desc="Subscription-Based Mining Plans Overview:"
-          content={
-            <div className="overflow-x-auto">
-              <table className="min-w-full bg-transparent border-collapse">
-                <thead>
-                  <tr className="border-b border-gray-700">
-                    <th className="py-3 px-4 text-left">Plan (Gopher Tier)</th>
-                    <th className="py-3 px-4 text-left">Speed Boost</th>
-                    <th className="py-3 px-4 text-left">
-                      Mining Rate (per hour)
-                    </th>
-                    <th className="py-3 px-4 text-left">Cost</th>
-                    <th className="py-3 px-4 text-left">Benefits</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-b border-gray-700">
-                    <td className="py-3 px-4">
-                      Free Plan (&ldquo;Scratch Gopher&rdquo;)
-                    </td>
-                    <td className="py-3 px-4">1× (baseline)</td>
-                    <td className="py-3 px-4">~3 BTCY/hour</td>
-                    <td className="py-3 px-4">$0</td>
-                    <td className="py-3 px-4">
-                      Standard 24 hours/day mining availability. No cost entry
-                      for all users. Requires simple engagement (e.g., watch
-                      ads) to maintain mining.
-                    </td>
-                  </tr>
-                  <tr className="border-b border-gray-700">
-                    <td className="py-3 px-4">Electric Power</td>
-                    <td className="py-3 px-4">3×</td>
-                    <td className="py-3 px-4">~9 BTCY/hour</td>
-                    <td className="py-3 px-4">$50/m</td>
-                    <td className="py-3 px-4">
-                      High-speed mining. Faster transaction processing on the
-                      network.
-                    </td>
-                  </tr>
-                  <tr className="border-b border-gray-700">
-                    <td className="py-3 px-4">Turbo Power</td>
-                    <td className="py-3 px-4">6×</td>
-                    <td className="py-3 px-4">~18 BTCY/hour</td>
-                    <td className="py-3 px-4">$100/m</td>
-                    <td className="py-3 px-4">
-                      Super-speed mining. Priority withdrawal processing
-                      (withdrawals are prioritized for Turbo users).
-                    </td>
-                  </tr>
-                  <tr className="border-b border-gray-700">
-                    <td className="py-3 px-4">Nuclear Power</td>
-                    <td className="py-3 px-4">9×</td>
-                    <td className="py-3 px-4">~27 BTCY/hour</td>
-                    <td className="py-3 px-4">$250/m</td>
-                    <td className="py-3 px-4">
-                      Ultra-speed mining. VIP support (dedicated customer
-                      service, faster issue resolution, exclusive perks).
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          }
-        />
+        <InfoSection desc="Subscription-Based Mining Plans Overview:" />
+        <div className="overflow-x-auto my-10">
+          <table className="min-w-full bg-transparent border-collapse text-sm lg:text-xl lg:table-fixed">
+            <thead>
+              <tr className="">
+                <th className="py-2 px-2 md:py-3 md:px-4 text-left min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal">
+                  Plan (Gopher Tier)
+                </th>
+                <th className="py-2 px-2 sm:px-2 md:py-3 md:px-4 text-left min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal">
+                  Speed Boost
+                </th>
+                <th className="py-2 px-2 sm:px-2 md:py-3 md:px-4 text-left min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal">
+                  Mining Rate (per hour)
+                </th>
+                <th className="py-2 px-2 sm:px-2 md:py-3 md:px-4 text-left min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal">
+                  Cost
+                </th>
+                <th className="py-2 px-2 sm:px-2 md:py-3 md:px-4 text-left min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal">
+                  Benefits
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="">
+                <td className="py-2 px-2 sm:px-0 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal">
+                  Free Plan (&ldquo;Scratch Gopher&rdquo;)
+                </td>
+                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal">
+                  1× (baseline)
+                </td>
+                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal">
+                  ~3 BTCY/hour
+                </td>
+                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal">
+                  $0
+                </td>
+                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal">
+                  Standard 24 hours/day mining availability. No cost entry for
+                  all users. Requires simple engagement (e.g., watch ads) to
+                  maintain mining.
+                </td>
+              </tr>
+              <tr className="">
+                <td className="py-2 px-2 sm:px-0 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal">
+                  Electric Power
+                </td>
+                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal">
+                  3×
+                </td>
+                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal">
+                  ~9 BTCY/hour
+                </td>
+                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal">
+                  $50/m
+                </td>
+                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal">
+                  High-speed mining. Faster transaction processing on the
+                  network.
+                </td>
+              </tr>
+              <tr className="">
+                <td className="py-2 px-2 sm:px-0 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal">
+                  Turbo Power
+                </td>
+                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal">
+                  6×
+                </td>
+                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal">
+                  ~18 BTCY/hour
+                </td>
+                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal">
+                  $100/m
+                </td>
+                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal">
+                  Super-speed mining. Priority withdrawal processing
+                  (withdrawals are prioritized for Turbo users).
+                </td>
+              </tr>
+              <tr className="">
+                <td className="py-2 px-2 sm:px-0 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal">
+                  Nuclear Power
+                </td>
+                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal">
+                  9×
+                </td>
+                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal">
+                  ~27 BTCY/hour
+                </td>
+                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal">
+                  $250/m
+                </td>
+                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal">
+                  Ultra-speed mining. VIP support (dedicated customer service,
+                  faster issue resolution, exclusive perks).
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
         <InfoSection endingLine="(Note: The paid tiers are optional. All users can earn BTCY on the Free plan; paid plans simply accelerate earnings and provide additional benefits.)" />
 

@@ -56,7 +56,7 @@ const CustomCard = ({
     <div className="flex flex-col lg:flex-row items-start justify-center mt-20 p-4 md:p-10 lg:p-16 bg-bg2 rounded-lg">
       <div className=" flex-4/5 flex flex-col items-start justify-start py-4 lg:py-10">
         <h2 className="text-4xl lg:text-6xl font-bold">{title}</h2>
-        <p className="text-base mt-8">{desc}</p>
+        <div className="text-base mt-8">{desc}</div>
       </div>
       <div className="flex-1/5 w-full flex items-center justify-end">
         <Image
