@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+
+interface DeleteAccountResponse {
+  message?: string;
+  error?: string;
+}
 
 export async function POST(request: Request) {
   try {
@@ -12,7 +17,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const response = await axios.post(
+    const response = await axios.post<DeleteAccountResponse>(
       `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/deleteaccount`,
       { email }
     );
@@ -22,11 +27,12 @@ export async function POST(request: Request) {
       { status: 200 }
     );
 
-  } catch (error: any) {
-    console.error("Error in data deletion:", error?.response?.data);
+  } catch (err) {
+    const error = err as AxiosError<DeleteAccountResponse>;
+    console.error("Error in data deletion:", error.response?.data);
 
     // Handle axios errors
-    if (error?.response?.data) {
+    if (error.response?.data) {
       return NextResponse.json(
         error.response.data,
         { status: error.response.status || 500 }
