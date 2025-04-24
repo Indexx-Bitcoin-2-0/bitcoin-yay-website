@@ -520,7 +520,57 @@ export default function PrivacyPolicy() {
           start=" We process personal data only when legally permitted. The following
           table outlines our processing purposes and legal justifications:"
         />
-        <div className="min-h-100 flex items-center justify-center">Table</div>
+        <div className="w-full my-24">
+          <table className="mx-auto bg-transparent border-2 border-bg2 w-100 md:w-150 table-fixed">
+            <thead>
+              <tr className="border-b border-bg2 bg-bg1 text-base md:text-xl">
+                <th className="py-3 px-4 text-left border-r border-bg2 w-1/2">
+                  Processing Purpose
+                </th>
+                <th className="py-3 px-4 text-left w-1/2">Legal Basis</th>
+              </tr>
+            </thead>
+            <tbody className="text-sm md:text-base">
+              <tr className=" ">
+                <td className="py-3 px-4 border-r border-bg2 w-1/2">
+                  Providing services
+                </td>
+                <td className="py-3 px-4 w-1/2">Legitimate interest</td>
+              </tr>
+              <tr className="">
+                <td className="py-3 px-4 border-r border-bg2 w-1/2">
+                  Enabling platform features
+                </td>
+                <td className="py-3 px-4 w-1/2">Legitimate interest</td>
+              </tr>
+              <tr className="">
+                <td className="py-3 px-4 border-r border-bg2 w-1/2">
+                  Communication
+                </td>
+                <td className="py-3 px-4 w-1/2">Legitimate interest</td>
+              </tr>
+              <tr className="">
+                <td className="py-3 px-4 border-r border-bg2 w-1/2">
+                  Optimization & security
+                </td>
+                <td className="py-3 px-4 w-1/2">Legitimate interest</td>
+              </tr>
+              <tr className="">
+                <td className="py-3 px-4 border-r border-bg2 w-1/2">
+                  Fraud prevention & compliance
+                </td>
+                <td className="py-3 px-4 w-1/2">Legal obligation</td>
+              </tr>
+              <tr className="">
+                <td className="py-3 px-4 border-r border-bg2 w-1/2">
+                  Enforcing terms of service
+                </td>
+                <td className="py-3 px-4 w-1/2">Legitimate interest</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
         <CustomP
           start="Where we rely on consent, you have the right to withdraw it at any time by contacting us via "
           link="Privacy Contact."
@@ -611,6 +661,37 @@ export default function PrivacyPolicy() {
               To learn how to control cookies, visit AboutCookies.org. Note that
               disabling cookies may impact website functionality."
         />
+
+        <div className="bg-transparent w-full my-20">
+          <div className="flex flex-col lg:flex-row justify-center items-start">
+            <div className="border-2 border-bg2 w-full lg:w-1/4, max-w-80 mb-10">
+              <div className="py-3 px-4 text-left border-bg2 bg-bg1 ">
+                Cookie Name
+              </div>
+              <div className="py-3 px-4">Google Analytics</div>
+              <div className="py-3 px-4">Bitcoin Yay Session</div>
+            </div>
+            <div className="border-2 border-bg2 w-full lg:w-1/4, max-w-80 mb-10 lg:border-l-0">
+              <div className="py-3 px-4 text-left border-bg2 bg-bg1 ">
+                Purpose
+              </div>
+              <div className="py-3 px-4">Website analytics</div>
+              <div className="py-3 px-4">Maintain user session</div>
+            </div>
+            <div className="border-2 border-bg2 w-full lg:w-1/4, max-w-80 mb-10 lg:border-l-0">
+              <div className="py-3 px-4 text-left border-bg2 bg-bg1 ">Type</div>
+              <div className="py-3 px-4">Third-party</div>
+              <div className="py-3 px-4">First-party</div>
+            </div>
+            <div className="border-2 border-bg2 w-full lg:w-1/4, max-w-80 mb-10 lg:border-l-0">
+              <div className="py-3 px-4 text-left border-bg2 bg-bg1 ">
+                Duration
+              </div>
+              <div className="py-3 px-4">2 years</div>
+              <div className="py-3 px-4">9 days</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
