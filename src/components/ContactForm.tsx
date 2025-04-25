@@ -2,15 +2,10 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import axios from "axios";
+
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Form,
   FormControl,
@@ -23,18 +18,16 @@ import {
 import SendButton from "@/assets/images/send-button.svg";
 import Image from "next/image";
 
+import { CONTACT_US_ROUTE } from "@/routes";
+
 const formSchema = z.object({
-  firstName: z.string().min(2, {
-    message: "First name must be at least 2 characters.",
+  userName: z.string().min(2, {
+    message: "Name must be at least 2 characters.",
   }),
-  lastName: z.string().min(2, {
-    message: "Last name must be at least 2 characters.",
-  }),
-  country: z.string().min(1, "Please select a country"),
-  phoneNumber: z.string().optional(),
   email: z.string().email({
     message: "Please enter a valid email address.",
   }),
+  subject: z.string().min(1, "Please enter a subject"),
   message: z.string().min(1, "Please enter a message"),
 });
 
@@ -44,34 +37,62 @@ const ContactForm = () => {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      country: "",
-      phoneNumber: "",
+      userName: "",
       email: "",
+      subject: "",
       message: "",
     },
   });
 
   const onSubmit = (data: FormData) => {
-    console.log(data);
+    try {
+      axios
+        .post(CONTACT_US_ROUTE, {
+          name: data.userName,
+          email: data.email,
+          subject: data.subject,
+          message: data.message,
+          website: "BitcoinYay",
+        })
+        .then((response) => {
+          console.log(response.data);
+          // reset form
+          form.reset();
+        });
+    } catch (error) {
+      console.error("Error sending email:", error);
+    }
   };
 
   return (
     <div className="min-h-screen text-white flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="mt-10">
             <div className="rounded-md shadow-sm space-y-6">
               <FormField
                 control={form.control}
-                name="firstName"
+                name="userName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="">First Name</FormLabel>
+                    <FormLabel className="">Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Name" {...field} className="h-12" />
+                    </FormControl>
+                    <FormMessage className="text-red-500 text-sm mt-1" />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="subject"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="">Subject</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="First Name"
+                        placeholder="Subject"
                         {...field}
                         className="h-12"
                       />
@@ -80,70 +101,7 @@ const ContactForm = () => {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="lastName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="">Last Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Last Name"
-                        {...field}
-                        className="h-12"
-                      />
-                    </FormControl>
-                    <FormMessage className="text-red-500 text-sm mt-1" />
-                  </FormItem>
-                )}
-              />
-              <FormField
-  control={form.control}
-  name="country"
-  render={({ field }) => (
-    <FormItem>
-      <FormLabel className="">Country</FormLabel>
-      <Select onValueChange={field.onChange} value={field.value}>
-        <FormControl>
-          <SelectTrigger className="w-full h-12 appearance-none rounded-md relative block  px-3 py-2 text-secondary placeholder-gray-500">
-            <SelectValue placeholder="Country" className="h-12" />
-          </SelectTrigger>
-        </FormControl>
-        <SelectContent className="bg-bg2 text-secondary">
-          <SelectItem value="United States">
-            United States
-          </SelectItem>
-          <SelectItem value="Canada">Canada</SelectItem>
-          <SelectItem value="United Kingdom">
-            United Kingdom
-          </SelectItem>
-          <SelectItem value="Germany">Germany</SelectItem>
-          <SelectItem value="France">France</SelectItem>
-          <SelectItem value="Other">Other</SelectItem>
-        </SelectContent>
-      </Select>
-      <FormMessage className="text-red-500 text-sm mt-1" />
-    </FormItem>
-  )}
-/>
-              <FormField
-                control={form.control}
-                name="phoneNumber"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Phone Number</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Phone Number"
-                        type="number"
-                        {...field}
-                        className="h-12 no-arrows"
-                      />
-                    </FormControl>
-                    <FormMessage className="text-red-500 text-sm mt-1" />
-                  </FormItem>
-                )}
-              />
+
               <FormField
                 control={form.control}
                 name="email"
@@ -171,7 +129,7 @@ const ContactForm = () => {
                     <FormControl>
                       <Textarea
                         placeholder="Message..."
-                        className="h-30"
+                        className="h-40"
                         {...field}
                       />
                     </FormControl>
