@@ -80,3 +80,21 @@ export const CustomListItem = ({
     </li>
   );
 };
+
+export const CustomPWithTitle = ({
+  title,
+  content,
+  ...props
+}: {
+  title?: string;
+  content?: string;
+}) => {
+  return (
+    <p className="text-sm md:text-base text-tertiary mt-4" {...props}>
+      {title && (
+        <span className="text-sm md:text-base font-semibold">{title}</span>
+      )}
+      {content && <span>{content}</span>}
+    </p>
+  );
+};

@@ -7,7 +7,6 @@ export default function DataDeletionPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -23,17 +22,25 @@ export default function DataDeletionPage() {
         body: JSON.stringify({ email }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error("Failed to submit data deletion request");
+        // Handle specific error messages from API
+        if (data.message) {
+          setError(data.message);
+        } else if (data.error) {
+          setError(data.error);
+        } else {
+          setError("Failed to submit data deletion request");
+        }
+        return;
       }
 
       setSuccess(true);
       setEmail("");
     } catch (error) {
       console.error("Error submitting data deletion request:", error);
-      setError(
-        "An error occurred while submitting your request. Please try again."
-      );
+      setError("An error occurred while submitting your request. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
