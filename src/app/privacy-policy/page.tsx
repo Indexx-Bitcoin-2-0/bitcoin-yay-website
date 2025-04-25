@@ -1,9 +1,12 @@
+"use client";
+
 import CustomStyledConatiner from "@/components/CustomStyledContainer";
 import {
   InfoSection,
   CustomListItem,
   CustomP,
 } from "@/components/CustomTypography";
+import Link from "next/link";
 
 export default function PrivacyPolicy() {
   return (
@@ -37,8 +40,24 @@ export default function PrivacyPolicy() {
           <p className="text-sm md:text-lg font-normal text-tertiary my-4">
             If you are visiting our website from the European Union (EU), please
             refer to the Notice to EU Data Subjects for information on our data
-            processing and transfer policies. If you are a California resident,
-            please review our California Privacy Notice at [link].
+            processing and transfer policies.
+          </p>
+          <p>
+            If you are a <span className="font-bold">California resident</span>,
+            you are entitled to certain rights under the{" "}
+            <span className="font-bold">
+              California Consumer Privacy Act (CCPA)
+            </span>
+            , including the right to request access to your personal
+            information, request deletion of your data, and opt out of any data
+            sales. Bitcoin Yay does not sell user data. To exercise your
+            California privacy rights, please contact us at{" "}
+            <Link
+              className="text-primary cursor-pointer hover:underline underline-offset-3"
+              href="mailto:privacy@bitcoinyay.com"
+            >
+              privacy@bitcoinyay.com.
+            </Link>
           </p>
         </div>
 
@@ -181,7 +200,7 @@ export default function PrivacyPolicy() {
               />
             </>
           }
-          endingLine="We use cookies and analytics tools (e.g., Google Analytics) to improve user experience and optimize our Services. Learn more in our [Cookies Policy]."
+          endingLine="We use cookies and analytics tools (e.g., Google Analytics) to improve user experience and optimize our Services. These tools help us understand how users interact with our platform and allow us to enhance functionality, performance, and security."
         />
 
         <InfoSection
@@ -286,12 +305,15 @@ export default function PrivacyPolicy() {
         <CustomP
           start="For privacy-related inquiries, contact us at "
           link="privacy@bitcoinyay.com."
+          onClick={() => {
+            window.location.href="mailto:privacy@bitcoinyay.com"
+          }}
         />
 
         <InfoSection
           title="5. Policy Updates"
           desc="Depending on your jurisdiction, you may have rights to:"
-          endingLine="Bitcoin Yay may update this Privacy Policy periodically. Continued use of our Services after updates constitutes acceptance of the revised terms. For more details, visit [Bitcoin Yay Privacy Policy] or reach out to our support team."
+          endingLine="Bitcoin Yay may update this Privacy Policy periodically to reflect changes in our practices, legal requirements, or services. Continued use of our Services after such updates constitutes acceptance of the revised terms. We encourage users to review this page regularly to stay informed about how we protect your data. If you have any questions or concerns, please contact our support team."
         />
 
         <InfoSection
@@ -456,6 +478,9 @@ export default function PrivacyPolicy() {
         <CustomP
           start="For further inquiries, please contact us at "
           link="privacy@bitcoinyay.com."
+          onClick={() => {
+            window.location.href="mailto:privacy@bitcoinyay.com"
+          }}
         />
 
         <InfoSection desc="GOOGLE ANALYTICS" />
@@ -463,6 +488,12 @@ export default function PrivacyPolicy() {
           start="You may manage your preferences regarding the use of Google Analytics
           cookies by visiting "
           link="Google Analytics Opt-out Browser Add-on"
+          onClick={() => {
+            window.open(
+              "https://support.google.com/analytics/answer/181881?hl=en",
+              "_blank"
+            );
+          }}
           end=" and downloading the relevant tool."
         />
 
@@ -470,7 +501,10 @@ export default function PrivacyPolicy() {
         <CustomP
           start="We welcome any comments or questions regarding this Privacy Policy.
           You can reach us at: "
-          link="Privacy Contact."
+          link="privacy@bitcoinyay.com"
+          onClick={() => {
+            window.location.href="mailto:privacy@bitcoinyay.com"
+          }}
         />
 
         <InfoSection
@@ -503,11 +537,7 @@ export default function PrivacyPolicy() {
           }
           endingLine=""
         />
-        <CustomP
-          start="For additional information regarding California residents' data
-          privacy rights, please visit our "
-          link="California Consumer Privacy Notice."
-        />
+        <CustomP start="For additional information regarding your rights under the California Consumer Privacy Act (CCPA), please contact our support team. We will provide the necessary details or documentation upon request." />
 
         <InfoSection
           desc="Notice to EU Data Subjects"
@@ -573,7 +603,10 @@ export default function PrivacyPolicy() {
 
         <CustomP
           start="Where we rely on consent, you have the right to withdraw it at any time by contacting us via "
-          link="Privacy Contact."
+          link="privacy@bitcoinyay.com"
+          onClick={() => {
+            window.location.href="mailto:privacy@bitcoinyay.com"
+          }}
         />
 
         <InfoSection
@@ -612,8 +645,12 @@ export default function PrivacyPolicy() {
           }
         />
         <CustomP
-          start="To exercise these rights, visit our "
-          link="Privacy Contact."
+          start="To exercise any of these rights, please contact our support team at "
+          link="privacy@bitcoinyay.com"
+          onClick={() => {
+            window.location.href="mailto:privacy@bitcoinyay.com"
+          }}
+          end=" We will respond in accordance with applicable data protection laws."
         />
 
         <InfoSection
@@ -655,11 +692,14 @@ export default function PrivacyPolicy() {
           }
         />
 
-        <InfoSection
-          desc="Managing Cookies:"
-          endingLine="You can adjust cookie preferences through your browser settings.
-              To learn how to control cookies, visit AboutCookies.org. Note that
-              disabling cookies may impact website functionality."
+        <InfoSection desc="Managing Cookies:" endingLine="AboutCookies.org. " />
+        <CustomP
+          start="You can adjust cookie preferences through your browser settings. To learn how to control cookies, visit "
+          link="aboutcookies.org"
+          onClick={() => {
+            window.open("https://www.aboutcookies.org/", "_blank");
+          }}
+          end=" Note that disabling cookies may impact website functionality."
         />
 
         <div className="bg-transparent w-full my-20">
