@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import BitcoinYayaIcon from "../assets/images/main-logo.svg";
 import Image from "next/image";
-import AppQrCode from "../assets/images/app-qr.svg";
+import AppQrCode from "../assets/images/home/bitcoin-yay-qr.png";
 
 import FbIcon from "../assets/images/socials/fb.svg";
 import InstaIcon from "../assets/images/socials/insta.svg";

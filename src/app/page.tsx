@@ -25,6 +25,7 @@ import BenefitLogo4 from "../assets/images/home/benefits/4.svg";
 import bgArtImage1 from "../assets/images/bitcoin-art-3.png";
 import bgArtImage2 from "../assets/images/bitcoin-art-4.png";
 import bgArtImage3 from "../assets/images/bitcoin-art.png";
+import minerGif from "@/assets/miner.gif";
 import UserReviewCards from "@/components/UserReviewCards";
 import Link from "next/link";
 
@@ -34,12 +35,15 @@ export default function Home() {
       <Image
         src={bgArtImage2}
         alt="Background Art"
-        className="absolute -z-10 top-0 lg:-top-30 -right-30 w-150 md:w-200 lg:w-400 max-w-[200%]"
+        className="absolute -z-10 top-0 lg:-top-30 -right-30 w-150 md:w-200 lg:w-300 max-w-[200%]"
       />
+      <div className="flex justify-center ">
+        <Image src={minerGif} alt="gopher mining" className="h-170 w-auto" />
+      </div>
 
       <div className="container mx-auto px-4 py-8">
         <div>
-          <div className="flex flex-col gap-8 items-center justify-between flex-wrap mt-30">
+          <div className="flex flex-col gap-8 items-center justify-between flex-wrap mt-20">
             <div className="w-full">
               <div className="">
                 <Image
