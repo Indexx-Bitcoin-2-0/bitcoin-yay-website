@@ -2,6 +2,8 @@ import Image, { StaticImageData } from "next/image";
 
 import BitCoinYayLogo from "../../assets/images/logo.svg";
 import bgArtImage2 from "../../assets/images/bitcoin-art-3.svg";
+import ArtImage1 from "@/assets/images/about/art-1.svg";
+import ArtImage2 from "@/assets/images/about/art-2.svg";
 
 import PhoneImage1 from "../../assets/images/about/phone01.svg";
 
@@ -86,7 +88,7 @@ export default function About() {
 
       {/* Part 3 */}
       <div className="flex flex-col-reverse lg:flex-row mt-50">
-        <div className="flex-1 mt-52 md:mt-20 lg:mt-0">
+        <div className="flex-1 mt-20 md:mt-20 lg:mt-0">
           <h2 className="text-2xl md:text-5xl font-bold text-secondary">
             Who We Are
           </h2>
@@ -123,12 +125,8 @@ export default function About() {
             your ultimate gateway to the future of cryptocurrency.
           </p>
         </div>
-        <div className="flex-1 items-center justify-center relative">
-          <Image
-            src={BitCoinYayLogo}
-            alt="Bitcoin Yay Logo"
-            className=" w-70 lg:w-164 h-70 lg:h-164 absolute -top-30 right-0"
-          />
+        <div className="flex-1 flex items-center justify-center -mt-30">
+          <Image src={ArtImage1} alt="Bitcoin Yay Logo" className="" />
         </div>
       </div>
 
@@ -197,11 +195,7 @@ export default function About() {
           </p>
         </div>
         <div className=" flex flex-1 items-center justify-center mt-20 lg:mt-0">
-          <Image
-            src={PhoneImage1}
-            alt="Phone Image"
-            className="w-50 md:w-100"
-          />
+          <Image src={ArtImage2} alt="Phone Image" />
         </div>
       </div>
 

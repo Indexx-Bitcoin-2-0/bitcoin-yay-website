@@ -25,7 +25,10 @@ import BenefitLogo4 from "../assets/images/home/benefits/4.svg";
 import bgArtImage1 from "../assets/images/bitcoin-art-3.png";
 import bgArtImage2 from "../assets/images/bitcoin-art-4.png";
 import bgArtImage3 from "../assets/images/bitcoin-art.png";
+
 import minerGif from "@/assets/miner.gif";
+import ArtImage1 from "@/assets/images/home/art-1.svg";
+
 import UserReviewCards from "@/components/UserReviewCards";
 import Link from "next/link";
 
@@ -103,11 +106,6 @@ export default function Home() {
             </div>
           </div>
         </div>
-
-        {/* 2nd part */}
-        {/* <div className="flex justify-center mt-20 absolute left-1/3 top-20 lg:top-[1200px]">
-        <Image src={bgArtImage} alt="Background Art" className="w-[700px]" />
-      </div> */}
 
         <div
           className="mt-30 pt-20 lg:pt-40 mx-auto relative bg-[center_-5px] md:bg-[center_-10px] bg-size-[400px_auto] md:bg-size-[700px_auto] bg-no-repeat"
@@ -266,8 +264,12 @@ export default function Home() {
         </div>
 
         {/* Part 5 */}
+        <div className="mt-20 md:mt-40">
+          <Image src={ArtImage1} alt="art-image" />
+        </div>
+        {/* Part 6 */}
 
-        <div className="mt-40 flex flex-col items-center justify-center text-center">
+        <div className="mt-20 md:mt-40 flex flex-col items-center justify-center text-center">
           <div>
             <h2 className="text-4xl md:text-6xl lg:text-8xl font-bold md:leading-16 lg:leading-24 my-10">
               What Our Users Say?

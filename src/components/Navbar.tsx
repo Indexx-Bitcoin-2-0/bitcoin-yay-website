@@ -212,6 +212,17 @@ export default function Navbar() {
                 </Link>
               </div>
             </AccordionItem>
+            <AccordionItem value="item-5" className="border-0">
+              <div className="cursor-pointer">
+                <Link
+                  href="/pricing"
+                  className="block text-lg my-2 hover:text-primary"
+                  onClick={closeMobileMenu}
+                >
+                  Pricing
+                </Link>
+              </div>
+            </AccordionItem>
           </Accordion>
         </div>
         <div className="hidden lg:flex md:space-x-4 text-tertiary text-lg">
@@ -305,6 +316,14 @@ export default function Navbar() {
               href="/support"
             >
               Support
+            </Link>
+            <Link
+              className={`cursor-pointer font-normal text-sm p-0 hover:text-primary ${
+                pathname === "/pricing" ? "text-primary" : "text-tertiary"
+              }`}
+              href="/pricing"
+            >
+              Pricing
             </Link>
           </div>
         </div>

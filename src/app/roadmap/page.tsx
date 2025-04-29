@@ -2,14 +2,17 @@
 
 import Image, { StaticImageData } from "next/image";
 import { ReactNode, useRef } from "react";
+import Link from "next/link";
 
 import CustomStyledConatiner from "@/components/CustomStyledContainer";
 
-import BitcoinYayArrow3 from "@/assets/images/roadmap/bitcoin-yay-3-arrow.svg";
-import BitcoinYayArrow2 from "@/assets/images/roadmap/bitcoin-yay-2-arrow.svg";
+import ArtImage from "@/assets/images/roadmap/art-1.svg";
 import GopherArt1 from "@/assets/images/roadmap/gopher-01.svg";
 import GopherArt2 from "@/assets/images/roadmap/gopher-02.svg";
 import HelmetArt from "@/assets/images/roadmap/helmet01.svg";
+
+import AppsButtonIcon from "@/assets/images/roadmap/apps-button-icon.svg";
+import PlatformButtonIcon from "@/assets/images/roadmap/platforms-button-icon.svg";
 
 import BitcoinYayLogo from "@/assets/images/roadmap/bitcoin-yay-logo.svg";
 import ChatLogo from "@/assets/images/roadmap/chat-white.svg";
@@ -90,18 +93,9 @@ export default function Roadmap() {
         </p>
       </CustomStyledConatiner>
 
-      <div className="relative mt-20">
-        <Image
-          src={BitcoinYayArrow3}
-          alt="Bitcoin Yay Arrow"
-          className="hidden lg:block absolute top-240 left-1/2 transform -translate-x-2/3 -translate-y-1/2 z-0"
-        />
-        <Image
-          src={BitcoinYayArrow2}
-          alt="Bitcoin Yay Arrow"
-          className="lg:hidden absolute top-220 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-0"
-        />
-        <div className="flex items-center justify-center">
+      {/* Part 02 */}
+      <div className="flex justify-between flex-col lg:flex-row mt-40">
+        <div>
           <PhaseCard
             image={GopherArt1}
             title="Phase 1:"
@@ -110,8 +104,6 @@ export default function Roadmap() {
                 Launch Mining application on Android and IOS Device.
                     Establish smart contract functionality."
           />
-        </div>
-        <div className="flex flex-col lg:flex-row items-center justify-between mt-150 lg:mt-150">
           <PhaseCard
             image={GopherArt2}
             title="Phase 2:"
@@ -129,29 +121,50 @@ export default function Roadmap() {
                 Establish partnerships with financial institutions and merchants"
           />
         </div>
+        <div className="flex items-center justify-center">
+          <Image src={ArtImage} alt="Art" className="" />
+        </div>
       </div>
 
       {/* Part 03 */}
       <div className="mt-40 flex flex-col items-center justify-center">
-        <h2 className="text-3xl md:text-5xl font-bold">
-          Product Roadmap Progress
-        </h2>
         <div className="flex flex-col lg:flex-row items-center justify-between">
-          <div className="flex mt-10 lg:mt-0 flex-col md:flex-row lg:flex-col items-center justify-center gap-10 px-20">
-            <button
-              onClick={() => scrollToSection(appsRef)}
-              className="bg-transparent text-white border-1 py-2 w-60 rounded-sm cursor-pointer hover:bg-primary hover:text-white hover:border-primary transition duration-300 ease-in-out"
-            >
-              Apps
-            </button>
-            <button
-              onClick={() => scrollToSection(platformsRef)}
-              className="bg-transparent text-white border-1 py-2 w-60 rounded-sm cursor-pointer hover:bg-primary hover:text-white hover:border-primary transition duration-300 ease-in-out"
-            >
-              Platform
-            </button>
+          <div className="w-full lg:w-100 flex lg:flex-col justify-between items-center px-10 md:px-30 lg:px-0 lg:mr-40">
+            <div className="flex flex-col items-center justify-center">
+              <div
+                onClick={() => scrollToSection(appsRef)}
+                className="cursor-pointer text-tertiary group"
+              >
+                <Image
+                  src={AppsButtonIcon}
+                  alt="Download Logo"
+                  className="mt-8 group-hover:scale-110 transition-transform duration-300"
+                />
+                <div className="flex justify-center">
+                  <p className="text-lg group-hover:text-primary">Apps</p>
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col items-center justify-center ">
+              <div
+                onClick={() => scrollToSection(platformsRef)}
+                className="cursor-pointer text-tertiary group"
+              >
+                <Image
+                  src={PlatformButtonIcon}
+                  alt="Download Logo"
+                  className="mt-8 group-hover:scale-110 transition-transform duration-300"
+                />
+                <div className="flex justify-center">
+                  <p className="text-lg group-hover:text-primary">Platforms</p>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="p-4 flex flex-col items-center justify-center">
+          <div className="p-4 flex flex-col items-center justify-center mt-10">
+            <h2 className="text-3xl md:text-5xl font-bold">
+              Product Roadmap Progress
+            </h2>
             <p className="text-base mt-10">
               Bitcoin Yay is designed as a comprehensive ecosystem where apps
               and utilities cater to real-world needs, a powerful platform
