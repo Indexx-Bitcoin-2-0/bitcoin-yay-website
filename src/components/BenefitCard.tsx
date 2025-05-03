@@ -10,20 +10,18 @@ const BenefitCard = ({
   image: StaticImageData;
 }) => {
   return (
-    <div className="flex flex-col p-4 md:w-[450px]">
-      <div className="flex items-center justify-start">
-        <Image
-          src={image}
-          alt={title}
-          className="w-16 md:w-[100px] object-cover"
-        />
-        <h3 className="text-lg md:text-2xl font-semibold my-2 text-secondary">
+    <div className="flex p-4 max-w-150">
+      <div>
+        <Image src={image} alt={title} className="max-w-24" />
+      </div>
+      <div className="flex flex-col justify-center items-start ml-6">
+        <h3 className="text-lg md:text-2xl font-semibold text-secondary">
           {title}
         </h3>
+        <p className="text-base font-normal text-tertiary leading-6 mt-2">
+          {description}
+        </p>
       </div>
-      <p className="text-base font-normal text-tertiary leading-6">
-        {description}
-      </p>
     </div>
   );
 };

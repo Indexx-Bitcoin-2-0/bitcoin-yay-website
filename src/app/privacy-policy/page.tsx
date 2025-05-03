@@ -306,7 +306,7 @@ export default function PrivacyPolicy() {
           start="For privacy-related inquiries, contact us at "
           link="privacy@bitcoinyay.com."
           onClick={() => {
-            window.location.href="mailto:privacy@bitcoinyay.com"
+            window.location.href = "mailto:privacy@bitcoinyay.com";
           }}
         />
 
@@ -479,7 +479,7 @@ export default function PrivacyPolicy() {
           start="For further inquiries, please contact us at "
           link="privacy@bitcoinyay.com."
           onClick={() => {
-            window.location.href="mailto:privacy@bitcoinyay.com"
+            window.location.href = "mailto:privacy@bitcoinyay.com";
           }}
         />
 
@@ -503,7 +503,7 @@ export default function PrivacyPolicy() {
           You can reach us at: "
           link="privacy@bitcoinyay.com"
           onClick={() => {
-            window.location.href="mailto:privacy@bitcoinyay.com"
+            window.location.href = "mailto:privacy@bitcoinyay.com";
           }}
         />
 
@@ -605,7 +605,7 @@ export default function PrivacyPolicy() {
           start="Where we rely on consent, you have the right to withdraw it at any time by contacting us via "
           link="privacy@bitcoinyay.com"
           onClick={() => {
-            window.location.href="mailto:privacy@bitcoinyay.com"
+            window.location.href = "mailto:privacy@bitcoinyay.com";
           }}
         />
 
@@ -648,7 +648,7 @@ export default function PrivacyPolicy() {
           start="To exercise any of these rights, please contact our support team at "
           link="privacy@bitcoinyay.com"
           onClick={() => {
-            window.location.href="mailto:privacy@bitcoinyay.com"
+            window.location.href = "mailto:privacy@bitcoinyay.com";
           }}
           end=" We will respond in accordance with applicable data protection laws."
         />
@@ -663,44 +663,7 @@ export default function PrivacyPolicy() {
           desc="COOKIES POLICY"
           endingLine="Bitcoin Yay is committed to transparency in the use of cookies and similar tracking technologies."
         />
-
-        <InfoSection
-          desc="Types of Cookies We Use:"
-          content={
-            <>
-              <CustomListItem
-                title="Essential Cookies:"
-                content="Required for core website functionality."
-              />
-              <CustomListItem
-                title="Functional Cookies:"
-                content="Enhance your experience by remembering preferences."
-              />
-              <CustomListItem
-                title="Analytics Cookies:"
-                content="Collect insights into website usage and performance."
-              />
-              <CustomListItem
-                title="Advertising Cookies:"
-                content="Deliver relevant ads and improve marketing campaigns."
-              />
-              <CustomListItem
-                title="Security Cookies:"
-                content="Prevent fraud and unauthorized acc"
-              />
-            </>
-          }
-        />
-
-        <InfoSection desc="Managing Cookies:" endingLine="AboutCookies.org. " />
-        <CustomP
-          start="You can adjust cookie preferences through your browser settings. To learn how to control cookies, visit "
-          link="aboutcookies.org"
-          onClick={() => {
-            window.open("https://www.aboutcookies.org/", "_blank");
-          }}
-          end=" Note that disabling cookies may impact website functionality."
-        />
+        <InfoSection desc="Types of Cookies We Use:" />
 
         <div className="bg-transparent w-full my-20">
           <div className="flex flex-col lg:flex-row justify-center items-start">
@@ -732,6 +695,12 @@ export default function PrivacyPolicy() {
             </div>
           </div>
         </div>
+
+        <CustomP start="Bitcoin Yay does not track users across third-party websites or apps for advertising purposes without obtaining explicit user consent, in accordance with Apple's AppTrackingTransparency requirements." />
+        <InfoSection
+          desc="Managing Cookies:"
+          endingLine="You can adjust cookie preferences through your browser settings. To learn how to control cookies, visit AboutCookies.org. Note that disabling cookies may impact website functionality."
+        />
       </div>
     </div>
   );
