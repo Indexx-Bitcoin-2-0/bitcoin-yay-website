@@ -7,99 +7,138 @@ import Image1 from "@/assets/images/home/hero-section/1.svg";
 import Image2 from "@/assets/images/home/hero-section/2.svg";
 import Image3 from "@/assets/images/home/hero-section/3.svg";
 import Image4 from "@/assets/images/home/hero-section/4.svg";
-import Image5 from "@/assets/images/home/hero-section/5.svg";
-import Image6 from "@/assets/images/home/hero-section/6.svg";
+// import Image5 from "@/assets/images/home/hero-section/5.svg";
+// import Image6 from "@/assets/images/home/hero-section/6.svg";
 
-const images = [Image1, Image2, Image3, Image4, Image5, Image6];
+const CarouselFrame1 = () => {
+  return (
+    <div className="h-[300px] md:h-[300px] lg:h-[700px] relative flex flex-col md:flex-row justify-between items-center text-center md:text-left md:mx-20 lg:mx-40">
+      <div className="w-full">
+        <h2 className="text-5xl lg:text-9xl font-bold my-4">Bitcoin Yay</h2>
+        <h3 className="text-xl lg:text-7xl my-4">The Micro token of Bitcoin</h3>
+        <p className="text-2xl hidden md:block max-w-1/2">
+          A Bitcoin-backed micro-token powering real utility, mining, and
+          community ownership
+        </p>
+      </div>
+      <Image
+        src={Image1}
+        alt="Carousel Frame"
+        className="absolute -bottom-90 md:-right-20 md:-bottom-50 w-100 lg:w-180"
+      />
+    </div>
+  );
+};
+
+const CarouselFrame2 = () => {
+  return (
+    <div className="h-[300px] md:h-[300px] lg:h-[700px] relative flex flex-col md:flex-row justify-between items-center text-center md:text-left md:mx-20 lg:mx-40">
+      <div className="md:mt-20 w-full">
+        <h2 className="text-5xl lg:text-9xl font-bold my-4">Mobile Mining </h2>
+        <h3 className="text-4xl lg:text-8xl my-4">is Here!</h3>
+        <p className="text-xl lg:text-2xl hidden md:block max-w-1/2">
+          AI-Powered Mobile Mining. No Expensive Rigs. Just You, Your Phone, and
+          BTCY. Earn Bitcoin Yay effortlessly by participating daily. Fully
+          decentralized, mobile-first.
+        </p>
+      </div>
+      <Image
+        src={Image2}
+        alt="Carousel Frame"
+        className="absolute -bottom-110 md:-right-20 md:-bottom-100 w-100 lg:w-180"
+      />
+    </div>
+  );
+};
+
+const CarouselFrame3 = () => {
+  return (
+    <div className="h-[300px] md:h-[300px] lg:h-[700px] relative flex flex-col md:flex-row justify-between items-center text-center md:text-left md:mx-20 lg:mx-40">
+      <div className="w-full flex flex-col justify-center">
+        <h2 className="text-5xl lg:text-9xl font-bold my-4 md:max-w-2/3">
+          Pick Up Your Gopher to mine BTCY
+        </h2>
+        <p className="text-2xl hidden md:block max-w-1/2">
+          Start free. Upgrade for speed, perks, and priority rewards. Everyone
+          starts somewhere.
+        </p>
+      </div>
+      <Image
+        src={Image3}
+        alt="Carousel Frame"
+        className="absolute -bottom-90 md:-right-20 md:-bottom-50 w-100 lg:w-180"
+      />
+    </div>
+  );
+};
+
+const CarouselFrame4 = () => {
+  return (
+    <div className="h-[300px] md:h-[300px] lg:h-[700px] relative flex flex-col-reverse mt-60 md:mt-0 md:flex-col justify-between items-center text-center md:text-left md:mx-20 lg:mx-40">
+      <div className="w-full flex justify-center mt-20">
+        <Image
+          src={Image4}
+          alt="Carousel Frame"
+          className="w-80 md:w-100 lg:w-140 md:-mt-16"
+        />
+      </div>
+      <div className="w-full flex flex-col justify-center items-center text-center">
+        <h2 className="text-5xl lg:text-7xl font-bold mt-4 md:max-w-2/3">
+          Built on Bitcoin.
+        </h2>
+        <h2 className="text-5xl lg:text-7xl font-bold mt-2 md:max-w-2/3">
+          Powered by You.
+        </h2>
+        <p className="text-2xl mt-4 hidden md:block lg:max-w-1/2">
+          Every mined token earns you ownership. The more you contribute, the
+          more you shape the future.
+        </p>
+      </div>
+    </div>
+  );
+};
 
 export default function Carousel() {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(3);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 3000);
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % 4);
+    }, 2500);
 
     return () => clearInterval(interval);
   }, []);
 
-  // const goToPrevious = () => {
-  //   setCurrentIndex((prevIndex) =>
-  //     prevIndex === 0 ? images.length - 1 : prevIndex - 1
-  //   );
-  // };
-
-  // const goToNext = () => {
-  //   setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-  // };
-
   return (
-    <div className="relative w-full">
-      {/* Carousel wrapper */}
-      <div className="relative lg:my-80 rounded-lg h-[300px] md:h-[600px] lg:h-[700px]">
-        {images.map((src, index) => (
-          <div
-            key={index}
-            className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-              index === currentIndex ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            <Image
-              src={src}
-              alt={`Slide ${index + 1}`}
-              className="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
-            />
-          </div>
-        ))}
+    <div className="relative w-full h-[300px] md:h-[600px] lg:h-[700px]">
+      <div
+        className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+          currentIndex === 0 ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <CarouselFrame1 />
       </div>
-
-      {/* Slider controls */}
-      {/* <button
-        onClick={goToPrevious}
-        type="button"
-        className="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+      <div
+        className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+          currentIndex === 1 ? "opacity-100" : "opacity-0"
+        }`}
       >
-        <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70">
-          <svg
-            className="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180"
-            fill="none"
-            viewBox="0 0 6 10"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M5 1 1 5l4 4"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <span className="sr-only">Previous</span>
-        </span>
-      </button>
-      <button
-        onClick={goToNext}
-        type="button"
-        className="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+        <CarouselFrame2 />
+      </div>
+      <div
+        className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+          currentIndex === 2 ? "opacity-100" : "opacity-0"
+        }`}
       >
-        <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70">
-          <svg
-            className="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180"
-            fill="none"
-            viewBox="0 0 6 10"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="m1 9 4-4-4-4"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <span className="sr-only">Next</span>
-        </span>
-      </button> */}
+        <CarouselFrame3 />
+      </div>
+      <div
+        className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+          currentIndex === 3 ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <CarouselFrame4 />
+      </div>
     </div>
   );
 }

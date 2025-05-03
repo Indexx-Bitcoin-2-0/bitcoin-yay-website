@@ -41,7 +41,7 @@ const CustomCard = ({
 }) => {
   return (
     <div className="flex flex-col items-center justify-center">
-      <div className="bg-bg1 rounded-xl">
+      <div className="bg-bg1 rounded-2xl">
         <Image src={image} alt={title} />
       </div>
       <p className="text-tertiary text-lg my-10">
@@ -60,7 +60,7 @@ export default function Home() {
 
       <div className="container mx-auto px-4 py-8 relative">
         {/* Part 02 */}
-        <div className="mt-20 text-center">
+        <div className="mt-120 text-center">
           <div className="flex flex-col justify-center ">
             <p className="text-2xl">Bitcoin Yay</p>
             <h2 className="text-4xl md:text-7xl font-bold my-4">
