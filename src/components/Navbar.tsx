@@ -226,7 +226,7 @@ export default function Navbar() {
           </Accordion>
         </div>
         <div className="hidden lg:flex md:space-x-4 text-tertiary text-lg">
-          <div className="relative border-0 gap-8 flex">
+          <div className=" border-0 gap-8 flex">
             <div
               className="group "
               onMouseEnter={handleBitcoinMouseEnter}
@@ -242,22 +242,24 @@ export default function Navbar() {
               </button>
               {bitcoinDropdownOpen && (
                 <div
-                  className="absolute flex flex-col gap-4 left-0 mt-4 w-80 rounded-2xl border-1 border-bg2 bg-bg1 text-tertiary p-8 z-10"
+                  className="absolute left-0 mt-4 w-full rounded-2xl border-1 border-bg2 bg-bg1 text-tertiary p-8 z-10"
                   onMouseEnter={handleBitcoinContentMouseEnter}
                   onMouseLeave={handleBitcoinContentMouseLeave}
                 >
-                  <Link
-                    href="/whitepaper"
-                    className="block hover:text-primary focus:text-primary focus:bg-transparent text-xl"
-                  >
-                    Whiteapaper Chapter
-                  </Link>
-                  <Link
-                    href="/roadmap"
-                    className="block hover:text-primary focus:text-primary focus:bg-transparent text-xl"
-                  >
-                    Roadmap
-                  </Link>
+                  <div className="flex flex-col gap-4 my-6 ml-[35%] w-fit">
+                    <Link
+                      href="/whitepaper"
+                      className="block hover:text-primary focus:text-primary focus:bg-transparent text-xl"
+                    >
+                      Whiteapaper Chapter
+                    </Link>
+                    <Link
+                      href="/roadmap"
+                      className="block hover:text-primary focus:text-primary focus:bg-transparent text-xl"
+                    >
+                      Roadmap
+                    </Link>
+                  </div>
                 </div>
               )}
             </div>
@@ -275,32 +277,27 @@ export default function Navbar() {
               </button>
               {communityDropdownOpen && (
                 <div
-                  className="absolute flex flex-col gap-4 left-0 mt-4 w-80 rounded-2xl border-1 border-bg2 bg-bg1 text-tertiary p-8 z-10"
+                  className="absolute left-0 mt-4 w-full rounded-2xl border-1 border-bg2 bg-bg1 text-tertiary p-8 z-10"
                   onMouseEnter={handleCommunityContentMouseEnter}
                   onMouseLeave={handleCommunityContentMouseLeave}
                 >
-                  <Link
-                    href="/blogs"
-                    className="block hover:text-primary focus:text-primary focus:bg-transparent text-xl"
-                  >
-                    News & Blogs
-                  </Link>
-                  <Link
-                    href="/safety-center"
-                    className="block hover:text-primary focus:text-primary focus:bg-transparent text-xl"
-                  >
-                    Safety Center
-                  </Link>
+                  <div className="flex flex-col gap-4 my-6 ml-[46%] w-fit">
+                    <Link
+                      href="/blogs"
+                      className="block hover:text-primary focus:text-primary focus:bg-transparent text-xl"
+                    >
+                      News & Blogs
+                    </Link>
+                    <Link
+                      href="/safety-center"
+                      className="block hover:text-primary focus:text-primary focus:bg-transparent text-xl"
+                    >
+                      Safety Center
+                    </Link>
+                  </div>
                 </div>
               )}
             </div>
-            {/* <div
-              className={`cursor-pointer font-normal text-lg p-0 hover:text-primary ${
-                pathname === "/developer" ? "text-primary" : "text-tertiary"
-              }`}
-            >
-              Developers
-            </div> */}
             <Link
               href="/about"
               className={`cursor-pointer font-normal text-sm p-0 hover:text-primary ${
