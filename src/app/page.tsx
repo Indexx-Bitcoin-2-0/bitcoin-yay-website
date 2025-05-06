@@ -275,7 +275,7 @@ export default function Home() {
         </div>
 
         {/* Part 09 */}
-        <div className="mt-40">
+        <div className="mt-80">
           <p className="my-4">Bitcoin Yay Disclaimer</p>
 
           <ul className="list-decimal pl-6 space-y-4">

@@ -1,11 +1,9 @@
 import Image, { StaticImageData } from "next/image";
 
-import BitCoinYayLogo from "../../assets/images/logo.svg";
 import bgArtImage2 from "../../assets/images/bitcoin-art-3.svg";
 import ArtImage1 from "@/assets/images/about/art-1.svg";
 import ArtImage2 from "@/assets/images/about/art-2.svg";
 
-import PhoneImage1 from "../../assets/images/about/phone01.svg";
 
 import FounderImage1 from "../../assets/images/about/founder-1.svg";
 import FounderImage2 from "../../assets/images/about/founder-2.svg";

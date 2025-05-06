@@ -2,7 +2,6 @@
 
 import Image, { StaticImageData } from "next/image";
 import { ReactNode, useRef } from "react";
-import Link from "next/link";
 
 import CustomStyledConatiner from "@/components/CustomStyledContainer";
 
