@@ -237,7 +237,7 @@ export default function Navbar() {
                   bitcoinDropdownOpen ? "text-primary" : "text-tertiary"
                 }`}
               >
-                Bitcoin Yay Blockchain{" "}
+                Bitcoin Yay Blockchain
                 <Image src={DownMenuIcon} alt="" width={20} />
               </button>
               {bitcoinDropdownOpen && (

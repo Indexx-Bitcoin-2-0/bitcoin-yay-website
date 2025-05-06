@@ -69,7 +69,11 @@ export default function Home() {
             <h3 className="text-2xl md:text-4xl">Micro Token of Bitcoin</h3>
           </div>
           <div className="my-10 flex flex-col justify-center items-center">
-            <Image src={PhoneImage1} alt="Phone Image 1" className="w-auto" />
+            <Image
+              src={PhoneImage1}
+              alt="Phone Image 1"
+              className="w-80 md:w-140 lg:w-auto"
+            />
             <p className="text-2xl font-bold my-10">
               Bitcoin Yay is your petty cash for Bitcoin!{" "}
             </p>
@@ -96,7 +100,11 @@ export default function Home() {
         {/* Part 03 */}
         <div className="mt-60 mb-20 items-center">
           <div className="flex flex-col justify-center items-center">
-            <Image src={PhoneImage2} alt="Phone Image 2" className="" />
+            <Image
+              src={PhoneImage2}
+              alt="Phone Image 2"
+              className="w-80 md:w-140 lg:w-auto"
+            />
             <h2 className="text-4xl md:text-7xl font-bold my-20 text-center">
               Download The Bitcoin Yay App
             </h2>
@@ -122,7 +130,7 @@ export default function Home() {
 
         {/* Part 04 */}
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 md:mx-10 mt-80">
           <CustomCard
             image={CardImage1}
             title="Bitcoin  Diversification."
@@ -158,7 +166,11 @@ export default function Home() {
             </h2>
           </div>
           <div className="my-10">
-            <Image src={PhoneImage3} alt="Phone Image 3" className="" />
+            <Image
+              src={PhoneImage3}
+              alt="Phone Image 3"
+              className="w-80 md:w-140 lg:w-auto"
+            />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 mt-10 gap-2">
             <BenefitCard
@@ -202,7 +214,7 @@ export default function Home() {
         </div>
 
         {/* Part 06 */}
-        <div className="flex flex-col md:flex-row gap-20 justify-center items-center mt-80">
+        <div className="flex flex-col md:flex-row gap-20 justify-center items-center mt-80 mx-10">
           <div className="flex flex-col items-center justify-center">
             <div className="flex flex-col items-center justify-center relative">
               <Image src={PhoneImage4} alt="Phone Image 4" />
