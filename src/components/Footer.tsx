@@ -39,7 +39,7 @@ const Footer = ({}) => {
       { image: YoutubeIcon, url: "#" },
     ];
   return (
-    <div className="container mx-auto px-4 py-8 mt-40">
+    <div className="container mx-auto px-4 py-8 mt-10">
       <footer className="mx-auto border-t pt-20 border-tertiary text-secondry">
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-5">
           <div className="col-span-2 mb-8 lg:mb-0">

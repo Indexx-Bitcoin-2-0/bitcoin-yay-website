@@ -11,9 +11,9 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import StarsRating from "./StarsRating";
 
-import ReviewPic1 from "../assets/images/home/review/review-pic-1.png";
-import ReviewPic2 from "../assets/images/home/review/review-pic-2.png";
-import ReviewPic3 from "../assets/images/home/review/review-pic-3.png";
+import ReviewPic1 from "../assets/images/home/review/review-pic-1.svg";
+import ReviewPic2 from "../assets/images/home/review/review-pic-2.svg";
+import ReviewPic3 from "../assets/images/home/review/review-pic-3.svg";
 
 const userReviews = [
   {
@@ -41,11 +41,11 @@ const userReviews = [
     image: ReviewPic3.src,
   },
   {
-    star: 5,
-    time: "2 days ago",
+    star: 4,
+    time: "3 days ago",
     review:
-      "I enjoy using this app because they offer excellent customer support and assistance.",
-    name: "Bella Adams, Artist",
+      "It's great to hear you're finding the platform intuitive and appreciate the clear layout! And you're right, knowing your investments are secure is a fantastic foundation to build on.",
+    name: "David Carter, Marketing Manager",
     image: ReviewPic3.src,
   },
 ];
@@ -58,37 +58,35 @@ export default function UserReviewCards() {
           {userReviews.map((review, index) => (
             <CarouselItem
               key={index}
-              className="basis-full lg:basis-[33%] flex items-center justify-center"
+              className="basis-full h-100 lg:basis-[33%] flex items-center justify-center"
             >
-              <Card className=" lg:h-72 flex items-center justify-center flex-col border border-bg2 rounded-xl bg-bg1 text-tertiary w-full md:w-[450px] lg:w-[500px]">
-                <CardContent className="px-7">
-                  <div className="">
-                    <div className="border-b border-bg2 flex items-center justify-between pb-4">
-                      <StarsRating rating={review.star} />
-                      <p className="text-sm font-normal text-tertiary">
-                        {review.time}
-                      </p>
-                    </div>
-                    <div className="py-4 h-40 lg:h-30 block">
-                      <p className="leading-normal font-normal text-base text-start text-tertiary">
-                        {review.review}
-                      </p>
-                    </div>
-                    <div className="flex items-center justify-start mt-4">
-                      <Avatar className="w-12 h-12">
-                        <AvatarImage
-                          src={review.image}
-                          alt="User Avatar"
-                          className="rounded-full"
-                        />
-                        <AvatarFallback>
-                          {review.name.charAt(0).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                      <p className="flex flex-col items-start ml-2 text-base font-regular text-tertiary">
-                        {review.name}
-                      </p>
-                    </div>
+              <Card className=" lg:h-72 flex items-center justify-start flex-col border border-bg2 rounded-xl bg-bg1 text-tertiary w-full md:w-[450px] lg:w-[500px]">
+                <CardContent className="px-7 relative ">
+                  <div className="border-b border-bg2 flex items-center justify-between pb-4">
+                    <StarsRating rating={review.star} />
+                    <p className="text-sm font-normal text-tertiary">
+                      {review.time}
+                    </p>
+                  </div>
+                  <div className="py-4 h-40 lg:h-30 block">
+                    <p className="leading-normal font-normal text-base text-start text-tertiary">
+                      {review.review}
+                    </p>
+                  </div>
+                  <div className="absolute -bottom-20 lg:-bottom-40  flex items-start justify-start mt-4">
+                    <Avatar className="w-24 h-24">
+                      <AvatarImage
+                        src={review.image}
+                        alt="User Avatar"
+                        className="rounded-full"
+                      />
+                      <AvatarFallback>
+                        {review.name.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <p className="flex flex-col items-start ml-2 text-base font-regular text-tertiary">
+                      {review.name}
+                    </p>
                   </div>
                 </CardContent>
               </Card>

@@ -40,7 +40,7 @@ const CustomCard = ({
   desc: string;
 }) => {
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="w-full md:w-[calc(50%-1.5rem)] lg:w-[calc(25%-1.5rem)] flex flex-col items-center justify-center">
       <div className="bg-bg1 rounded-2xl">
         <Image src={image} alt={title} />
       </div>
@@ -130,7 +130,7 @@ export default function Home() {
 
         {/* Part 04 */}
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 md:mx-10 mt-80">
+        <div className="flex flex-wrap gap-6 items-start justify-center md:mx-10 mt-80 ">
           <CustomCard
             image={CardImage1}
             title="Bitcoin  Diversification."
@@ -153,7 +153,7 @@ export default function Home() {
           />
         </div>
 
-        <div className="lg:-mx-auto mt-60 w-screen relative right-0 flex items-end justify-end">
+        <div className="lg:-mx-auto mt-20 w-screen relative right-0 flex items-end justify-end">
           <Image src={bgArtImage1} alt="art-image" className="w-150 lg:w-190" />
         </div>
 

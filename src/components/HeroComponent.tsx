@@ -171,7 +171,7 @@ export default function HeroSection() {
 
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % 6);
-    }, 2500);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [paused]);
