@@ -15,8 +15,12 @@ const CarouselFrame1 = () => {
   return (
     <div className="h-[300px] md:h-[300px] lg:h-[700px] relative flex flex-col md:flex-row justify-between items-center text-center md:text-left md:mx-20 lg:mx-40">
       <div className="w-full">
-        <h2 className="text-5xl lg:text-9xl font-bold my-4">Bitcoin Yay</h2>
-        <h3 className="text-xl lg:text-7xl my-4">The Micro token of Bitcoin</h3>
+        <h2 className="text-5xl lg::text-7xl xl:text-7xl 2xl:text-9xl font-bold my-4">
+          Bitcoin Yay
+        </h2>
+        <h3 className="text-xl lg-text-3xl xl:text-5xl 2xl:text-6xl my-4">
+          The Micro token of Bitcoin
+        </h3>
         <p className="text-2xl hidden md:block max-w-1/2">
           A Bitcoin-backed micro-token powering real utility, mining, and
           community ownership
@@ -25,7 +29,7 @@ const CarouselFrame1 = () => {
       <Image
         src={Image1}
         alt="Carousel Frame"
-        className="absolute -bottom-90 md:-right-20 md:-bottom-50 w-100 lg:w-180"
+        className="absolute -bottom-90 md:-right-20 md:-bottom-50 lg:-bottom-0 xl:-bottom-50 w-100 lg:w-120 xl:w-180"
       />
     </div>
   );
@@ -35,9 +39,11 @@ const CarouselFrame2 = () => {
   return (
     <div className="h-[300px] md:h-[300px] lg:h-[700px] relative flex flex-col md:flex-row justify-between items-center text-center md:text-left md:mx-20 lg:mx-40">
       <div className="md:mt-20 w-full">
-        <h2 className="text-5xl lg:text-9xl font-bold my-4">Mobile Mining </h2>
-        <h3 className="text-4xl lg:text-8xl my-4">is Here!</h3>
-        <p className="text-xl lg:text-2xl hidden md:block max-w-1/2">
+        <h2 className="text-5xl xl:text-7xl 2xl:text-8xl font-bold my-4">
+          Mobile Mining
+        </h2>
+        <h3 className="text-4xl xl:text-5xl 2xl:text-7xl my-4">is Here!</h3>
+        <p className="text-xl xl:text-2xl hidden md:block max-w-1/2">
           AI-Powered Mobile Mining. No Expensive Rigs. Just You, Your Phone, and
           BTCY. Earn Bitcoin Yay effortlessly by participating daily. Fully
           decentralized, mobile-first.
@@ -46,7 +52,7 @@ const CarouselFrame2 = () => {
       <Image
         src={Image2}
         alt="Carousel Frame"
-        className="absolute -bottom-110 md:-right-20 md:-bottom-100 w-100 lg:w-180"
+        className="absolute -bottom-110 md:-right-20 md:-bottom-100 lg:-bottom-0 xl:-bottom-50 2xl:-bottom-100 w-100 xl:w-140 2xl:w-170"
       />
     </div>
   );
@@ -54,9 +60,9 @@ const CarouselFrame2 = () => {
 
 const CarouselFrame3 = () => {
   return (
-    <div className="h-[300px] md:h-[300px] lg:h-[700px] relative flex flex-col md:flex-row justify-between items-center text-center md:text-left md:mx-20 lg:mx-40">
+    <div className="h-[300px] md:h-[300px] lg:h-[500px] xl:h-[700px] relative flex flex-col lg:flex-row justify-between items-center text-center md:text-left md:mx-20 lg:mx-40">
       <div className="w-full flex flex-col justify-center">
-        <h2 className="text-5xl lg:text-9xl font-bold my-4 md:max-w-2/3">
+        <h2 className="text-5xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-bold my-4 md:max-w-2/3">
           Pick Up Your Gopher to mine BTCY
         </h2>
         <p className="text-2xl hidden md:block max-w-1/2">
@@ -67,7 +73,7 @@ const CarouselFrame3 = () => {
       <Image
         src={Image3}
         alt="Carousel Frame"
-        className="absolute -bottom-90 md:-right-20 md:-bottom-50 w-100 lg:w-180"
+        className="absolute -bottom-90 md:-right-20 md:-bottom-50 w-100 lg:w-140 xl:w-180"
       />
     </div>
   );
@@ -80,7 +86,7 @@ const CarouselFrame4 = () => {
         <Image
           src={Image4}
           alt="Carousel Frame"
-          className="w-80 md:w-100 lg:w-140 md:-mt-16"
+          className="w-80 md:w-120 lg:w-180 md:-mt-16"
         />
       </div>
       <div className="w-full flex flex-col justify-center items-center text-center">
@@ -106,7 +112,7 @@ const CarouselFrame5 = () => {
         <Image
           src={Image5}
           alt="Carousel Frame"
-          className="w-100 md:w-100 lg:w-160 md:-mt-16"
+          className="w-100 md:w-140 lg:w-200 md:-mt-16"
         />
       </div>
       <div className="w-full flex flex-col justify-center items-center text-center">
@@ -135,12 +141,14 @@ const CarouselFrame6 = () => {
         className="absolute left-0 top-40 md:-top-10 lg:-top-20 w-60 md:w-100 lg:w-120"
       />
       <div className="text-center flex flex-col items-center">
-        <h1 className="text-8xl lg:text-[350px] font-bold lg:leading-100">
+        <h1 className="text-8xl lg:text-[200px] xl:text-[250px] 2xl:text-[350px] font-bold xl:leading-60 2xl:leading-100">
           21
         </h1>
-        <h2 className="text-7xl lg:text-8xl font-bold">Trillion</h2>
-        <h3 className="text-3xl lg:text-5xl">BTCY for everyone to mine</h3>
-        <p className="text-2xl mt-4 hidden md:block md:max-w-120 lg:max-w-180">
+        <h2 className="text-7xl lg:text-6xl xl:text-8xl font-bold">Trillion</h2>
+        <h3 className="text-3xl lg:text-4xl xl:text-5xl">
+          BTCY for everyone to mine
+        </h3>
+        <p className="text-2xl lg:text-xl mt-4 hidden md:block md:max-w-120 lg:max-w-120">
           Bitcoin-YAY: The micro token of Bitcoin, bringing fun and energy to
           every satoshi-sized move!
         </p>
