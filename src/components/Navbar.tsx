@@ -82,14 +82,20 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-bg">
+    <nav className="bg-bg relative">
+      {isOpen && (
+        <div
+          className="fixed top-[96px] inset-x-0 bottom-0 bg-black/30 backdrop-blur-sm z-10"
+          onClick={closeMobileMenu}
+        />
+      )}
       <div className="flex flex-wrap items-center justify-between mx-auto px-4 md:px-10 lg:px-20 py-8 ">
         <div className="flex justify-center bg-bg  ">
-          <div className="flex justify-center items-center lg:hidden">
+          <div className="flex justify-center items-center xl:hidden">
             <button
               type="button"
               onClick={toggleMenu}
-              className="inline-flex items-center mr-4 justify-center lg:hidden"
+              className="inline-flex items-center mr-4 justify-center xl:hidden"
               aria-controls="navbar-menu"
               aria-expanded={isOpen}
             >
@@ -106,7 +112,7 @@ export default function Navbar() {
           </Link>
         </div>
         <div
-          className={`absolute left-0 top-20 w-full p-8 bg-bg shadow-lg transform z-20  ${
+          className={`absolute left-0 top-24 w-full p-8 bg-bg shadow-lg transform z-20  ${
             isOpen ? "translate-y-0 " : "-translate-y-[130%]"
           }`}
         >
@@ -225,7 +231,7 @@ export default function Navbar() {
             </AccordionItem>
           </Accordion>
         </div>
-        <div className="hidden lg:flex md:space-x-4 text-tertiary text-lg">
+        <div className="hidden xl:flex md:space-x-4 text-tertiary text-lg">
           <div className=" border-0 gap-8 flex">
             <div
               className="group "
@@ -324,7 +330,7 @@ export default function Navbar() {
             </Link>
           </div>
         </div>
-        <div className={`relative hidden lg:block`}>
+        <div className={`relative hidden xl:block`}>
           <form onSubmit={handleSearch} className="relative">
             <input
               type="text"
