@@ -32,11 +32,14 @@ const Footer = ({}) => {
       },
     ],
     bottomLinks = [
-      { image: FbIcon, url: "#" },
-      { image: InstaIcon, url: "#" },
-      { image: TelegramIcon, url: "#" },
-      { image: XIcon, url: "#" },
-      { image: YoutubeIcon, url: "#" },
+      {
+        image: FbIcon,
+        url: "https://www.facebook.com/profile.php?id=61574910722200",
+      },
+      { image: InstaIcon, url: "https://www.instagram.com/bitcoin.yay/" },
+      { image: TelegramIcon, url: "https://t.me/+Cmz7QGEuxP5jY2U1" },
+      { image: XIcon, url: "https://x.com/bitcoin_YAY" },
+      { image: YoutubeIcon, url: "https://www.youtube.com/@BitcoinYay" },
     ];
   return (
     <div className="container mx-auto px-4 py-8 mt-10">
@@ -81,7 +84,10 @@ const Footer = ({}) => {
           <p className="hidden md:flex">© 2025 | Bitcoin Yay</p>
           <ul className="flex gap-4">
             {bottomLinks.map((link, linkIdx) => (
-              <li key={linkIdx} className="underline hover:text-primary">
+              <li
+                key={linkIdx}
+                className="underline hover:text-primary hover:scale-110"
+              >
                 <a href={link.url}>
                   <Image
                     src={link.image}
