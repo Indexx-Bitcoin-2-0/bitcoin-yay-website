@@ -254,11 +254,14 @@ export default function Home() {
             Crypto Paradise
           </h2>
           <div className="flex items-center justify-center gap-10 mt-10">
-            <Link href="/coming-soon" className="text-lg hover:text-primary">
+            <Link
+              href="https://indexx.ai/"
+              className="text-lg hover:text-primary"
+            >
               Learn more
             </Link>
             <Link
-              href="/coming-soon"
+              href="https://cex.indexx.ai/"
               className="text-lg text-[#0063E7] hover:text-primary"
             >
               Buy Token
