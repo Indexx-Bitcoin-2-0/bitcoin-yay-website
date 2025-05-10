@@ -3,6 +3,7 @@ import Image, { StaticImageData } from "next/image";
 import BenefitCard from "@/components/BenefitCard";
 import HeroComponent from "@/components/HeroComponent";
 
+import IndexxLogo1 from "@/assets/images/indexx-logo-1.svg";
 import DownloadLogo from "../assets/images/download-button.svg";
 import AppleLogo from "@/assets/images/home/apple-logo.svg";
 import PlaystoreLogo from "@/assets/images/home/playstore-logo.svg";
@@ -26,6 +27,7 @@ import bgArtImage1 from "../assets/images/bitcoin-art-2.png";
 
 import ArtImage1 from "@/assets/images/home/art-1.svg";
 import ArtImage2 from "@/assets/images/home/art-2.svg";
+import ArtImage3 from "@/assets/images/home/art-3.svg";
 
 import UserReviewCards from "@/components/UserReviewCards";
 import Link from "next/link";
@@ -244,8 +246,35 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Part 07 */}
+
+        <div className="flex flex-col items-center justify-center mt-40 md:mt-80">
+          <Image src={IndexxLogo1} alt="Indexx Logo" />
+          <h2 className="text-4xl md:text-6xl font-medium my-4">
+            Crypto Paradise
+          </h2>
+          <div className="flex items-center justify-center gap-10 mt-10">
+            <Link href="/coming-soon" className="text-lg hover:text-primary">
+              Learn more
+            </Link>
+            <Link
+              href="/coming-soon"
+              className="text-lg text-[#0063E7] hover:text-primary"
+            >
+              Buy Token
+            </Link>
+          </div>
+        </div>
+        <div className="mt-20 md:mt-40 w-screen relative left-1/2 right-1/2 -translate-x-1/2 flex flex-col items-center justify-center">
+          <Image src={ArtImage3} alt="art-image" className="w-full min-w-260" />
+          <h2 className="text-3xl md:text-5xl px-2 font-medium text-center mt-60 max-w-280">
+            Celebrating Bitcoin-YAY, mobile mining, in the community. Earning
+            crypto on the go awith Bitcoin-YAY mining.
+          </h2>
+        </div>
+
         {/* Part 7 */}
-        <div className="-mx-4 mt-60 w-screen relative left-1/2 right-1/2 -translate-x-1/2 flex flex-col items-center">
+        <div className="-mx-4 mt-20 w-screen relative left-1/2 right-1/2 -translate-x-1/2 flex flex-col items-center">
           <Image src={ArtImage1} alt="art-image" className="w-full" />
           <Image
             src={ArtImage2}
