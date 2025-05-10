@@ -14,6 +14,7 @@ import StarsRating from "./StarsRating";
 import ReviewPic1 from "../assets/images/home/review/review-pic-1.svg";
 import ReviewPic2 from "../assets/images/home/review/review-pic-2.svg";
 import ReviewPic3 from "../assets/images/home/review/review-pic-3.svg";
+import ReviewPic4 from "../assets/images/home/review/review-pic-4.svg";
 
 const userReviews = [
   {
@@ -46,7 +47,7 @@ const userReviews = [
     review:
       "It's great to hear you're finding the platform intuitive and appreciate the clear layout! And you're right, knowing your investments are secure is a fantastic foundation to build on.",
     name: "David Carter, Marketing Manager",
-    image: ReviewPic3.src,
+    image: ReviewPic4.src,
   },
 ];
 
