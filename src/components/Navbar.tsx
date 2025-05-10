@@ -153,6 +153,20 @@ export default function Navbar() {
               </AccordionTrigger>
               <AccordionContent className="p-2">
                 <Link
+                  href="/blockchain"
+                  className="block text-lg my-2 hover:text-primary"
+                  onClick={closeMobileMenu}
+                >
+                  YingYang Blockchain
+                </Link>
+                <Link
+                  href="/coming-soon"
+                  className="block text-lg my-2 hover:text-primary"
+                  onClick={closeMobileMenu}
+                >
+                  Block Explore
+                </Link>
+                <Link
                   href="/whitepaper"
                   className="block text-lg my-2 hover:text-primary"
                   onClick={closeMobileMenu}
@@ -248,11 +262,23 @@ export default function Navbar() {
               </button>
               {bitcoinDropdownOpen && (
                 <div
-                  className="absolute left-0 mt-4 w-full rounded-2xl border-1 border-bg2 bg-bg1 text-tertiary p-8 z-10"
+                  className="absolute left-0 mt-6 w-full rounded-2xl border-1 border-bg2 bg-bg1 text-tertiary p-8 z-10"
                   onMouseEnter={handleBitcoinContentMouseEnter}
                   onMouseLeave={handleBitcoinContentMouseLeave}
                 >
                   <div className="flex flex-col gap-4 my-6 ml-[35%] w-fit">
+                    <Link
+                      href="/blockchain"
+                      className="block hover:text-primary focus:text-primary focus:bg-transparent text-xl"
+                    >
+                      YingYang Blockchain
+                    </Link>
+                    <Link
+                      href="/coming-soon"
+                      className="block hover:text-primary focus:text-primary focus:bg-transparent text-xl"
+                    >
+                      Block Explore
+                    </Link>
                     <Link
                       href="/whitepaper"
                       className="block hover:text-primary focus:text-primary focus:bg-transparent text-xl"
