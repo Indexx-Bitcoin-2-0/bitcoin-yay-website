@@ -6,6 +6,7 @@ import PricingCardTitleImage1 from "@/assets/images/pricing/title-image-1.svg";
 import PricingCardTitleImage2 from "@/assets/images/pricing/title-image-2.svg";
 import PricingCardTitleImage3 from "@/assets/images/pricing/title-image-3.svg";
 import PricingCardTitleImage4 from "@/assets/images/pricing/title-image-4.svg";
+import PricingCardTitleImage5 from "@/assets/images/pricing/title-image-5.svg";
 
 import PricingCardImage1 from "@/assets/images/pricing/pricing-card-1.svg";
 import PricingCardImage2 from "@/assets/images/pricing/pricing-card-2.svg";
@@ -34,7 +35,7 @@ const PricingCard = ({
   featuresList: ReactNode;
 }) => {
   return (
-    <div className="w-120 bg-bg2 shadow-lg rounded-lg p-6 m-4 relative overflow-hidden">
+    <div className="w-120 bg-bg2 shadow-lg rounded-lg p-6 m-4">
       <div className="flex items-center mb-4">
         {titleImage ? (
           <Image src={titleImage} alt={title} className="w-16 h-16 mr-2" />
@@ -43,20 +44,20 @@ const PricingCard = ({
         )}
         <h2 className="text-xl font-bold">{title}</h2>
       </div>
-      <Image
-        src={mainImage}
-        alt={title}
-        className="w-84 md:w-114 h-46 my-10 absolute"
-      />
+      <div className="flex justify-center items-center">
+        <Image src={mainImage} alt={title} className="h-60" />
+      </div>
 
-      <p className="text-base mb-4 text-center mt-80">
-        {numOfGophers && (
-          <span className="text-3xl font-medium">{numOfGophers}</span>
+      <p className="text-base font-bold mb-4 text-center flex flex-col items-center">
+        {numOfGophers ? (
+          <span className="text-6xl font-medium">{numOfGophers}</span>
+        ) : (
+          <span className="h-15"></span>
         )}
         {gophersDesc}
       </p>
       {price ? (
-        <div className="flex justify-start items-center mb-4">
+        <div className="flex justify-start items-center mt-14">
           <span className="text-3xl font-medium">$</span>
           <span className="text-8xl font-medium">
             {price}
@@ -64,7 +65,7 @@ const PricingCard = ({
           </span>
         </div>
       ) : (
-        <div className="h-28"></div>
+        <div className="h-35"></div>
       )}
 
       {priceDesc ? (
@@ -85,7 +86,7 @@ export default function PricingPage() {
           Bitcoin Yay Pricing
         </h1>
         <p className="text-sm md:text-lg font-normal text-tertiary my-4">
-          Last Updated: March 10, 2025
+          Last Updated: May 10, 2025
         </p>
       </CustomStyledConatiner>
 
@@ -115,7 +116,7 @@ export default function PricingPage() {
           titleImage={PricingCardTitleImage2}
           title="Electric Plan"
           mainImage={PricingCardImage2}
-          numOfGophers="3"
+          numOfGophers="300"
           gophersDesc=" Electric Gophers Mining Power"
           price="100"
           priceDesc="High-speed mining. Faster transaction processing on the network."
@@ -136,7 +137,7 @@ export default function PricingPage() {
           titleImage={PricingCardTitleImage3}
           title="Turbo Plan"
           mainImage={PricingCardImage3}
-          numOfGophers="6"
+          numOfGophers="900"
           gophersDesc=" Turbo Gophers Mining Power"
           price="300"
           priceDesc="Super-speed mining. Priority withdrawal processing (withdrawals are prioritized for Turbo users)."
@@ -157,7 +158,7 @@ export default function PricingPage() {
           titleImage={PricingCardTitleImage4}
           title="Nuclear Plan"
           mainImage={PricingCardImage4}
-          numOfGophers="9"
+          numOfGophers="1,500"
           gophersDesc=" Nuclear Gophers Mining Power or More"
           price="600"
           priceDesc="Ultra-speed mining. VIP support (dedicated customer service, faster issue resolution, exclusive perks)."
@@ -175,9 +176,11 @@ export default function PricingPage() {
           }
         />
         <PricingCard
+          titleImage={PricingCardTitleImage5}
           title="Nerdy Gopher"
           mainImage={PricingCardImage5}
-          gophersDesc="Computing Power mining Plan"
+          numOfGophers="1,000"
+          gophersDesc="Snatch Gophers Mining Power"
           featuresList={
             <>
               <li>Speed Boost 9x</li>
