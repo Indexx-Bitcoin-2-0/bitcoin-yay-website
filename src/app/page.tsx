@@ -75,7 +75,7 @@ export default function Home() {
             <Image
               src={PhoneImage1}
               alt="Phone Image 1"
-              className="w-80 md:w-140 lg:w-auto"
+              className="w-80 md:w-140 lg:w-240"
             />
             <p className="text-2xl font-bold my-10">
               Bitcoin Yay is your petty cash for Bitcoin!{" "}
@@ -106,7 +106,7 @@ export default function Home() {
             <Image
               src={PhoneImage2}
               alt="Phone Image 2"
-              className="w-80 md:w-140 lg:w-auto"
+              className="w-80 md:w-140 lg:w-240"
             />
             <h2 className="text-4xl md:text-7xl font-bold my-20 text-center">
               Download The Bitcoin Yay App
@@ -172,7 +172,7 @@ export default function Home() {
             <Image
               src={PhoneImage3}
               alt="Phone Image 3"
-              className="w-80 md:w-140 lg:w-auto"
+              className="w-80 md:w-140 lg:w-240"
             />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 mt-10 gap-2">

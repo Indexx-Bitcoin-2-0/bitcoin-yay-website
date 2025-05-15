@@ -308,7 +308,7 @@ const HeaderTest: React.FC = () => {
         <div
           className={`absolute left-0 top-30 w-full p-8 bg-bg shadow-lg transform z-20 ${
             menuOpen ? "translate-y-0" : "-translate-y-[130%]"
-          } transition-transform duration-300 lg:hidden`}
+          }  lg:hidden`}
         >
           {/* Search Input (Mobile) */}
           <div className="mb-6">
