@@ -262,7 +262,7 @@ export default function Home() {
             </Link>
             <Link
               href="https://cex.indexx.ai/"
-              className="text-lg text-[#0063E7] hover:text-primary"
+              className="text-lg text-primary hover:text-[#f96e0d]"
             >
               Buy Token
             </Link>
@@ -270,9 +270,9 @@ export default function Home() {
         </div>
         <div className="mt-20 md:mt-40 w-screen relative left-1/2 right-1/2 -translate-x-1/2 flex flex-col items-center justify-center">
           <Image src={ArtImage3} alt="art-image" className="w-full min-w-260" />
-          <h2 className="text-3xl md:text-5xl px-2 font-medium text-center mt-60 max-w-280">
+          <h2 className="text-3xl md:text-5xl px-2 font-medium text-center mt-60 max-w-280 leading-16">
             Celebrating Bitcoin-YAY, mobile mining, in the community. Earning
-            crypto on the go awith Bitcoin-YAY mining.
+            crypto on the go with Bitcoin-YAY mining.
           </h2>
         </div>
 
@@ -287,8 +287,8 @@ export default function Home() {
         </div>
 
         <div className="text-center mt-40 flex flex-col items-center">
-          <p className="text-5xl font-medium text-primary">Community</p>
-          <h2 className="text-4xl md:text-7xl font-bold my-6">
+          <p className="text-2xl font-medium text-primary">Community</p>
+          <h2 className="text-4xl md:text-7xl font-bold mb-6">
             Stay connected
           </h2>
           <p className="text-3xl max-w-170">

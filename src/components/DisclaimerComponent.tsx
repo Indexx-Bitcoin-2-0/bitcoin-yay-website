@@ -1,9 +1,9 @@
 const DisclaimerComponent = () => {
   return (
-    <div className="mt-80">
+    <div className="mt-80 text-xs leading-4">
       <p className="my-4">Bitcoin Yay Disclaimer</p>
 
-      <ul className="list-decimal pl-6 space-y-4">
+      <ul className="list-decimal pl-6 space-y-2">
         <li>
           General Information and Risks: Bitcoin Yay (&quot;BTCY&quot;) is a
           utility token intended solely for use within the Bitcoin Yay
