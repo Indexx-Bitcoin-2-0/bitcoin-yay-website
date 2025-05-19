@@ -21,7 +21,7 @@ const CustomCard = ({
   buttonText: string;
 }) => {
   return (
-    <div className="flex w-full md:w-[48%] h-144 px-2 flex-col items-center justify-center text-center bg-[#181818]">
+    <div className="flex w-full md:w-[48vw] h-144 px-2 flex-col items-center justify-center text-center bg-[#181818]">
       <Image src={image} alt={title} className="w-54" />
       <h3 className="text-4xl font-bold mt-10">{title}</h3>
       <p className="text-lg mt-4">{description}</p>
@@ -60,37 +60,39 @@ export default function Bible() {
         </p>
       </div>
 
-      <div className="mt-20 mx-auto flex flex-wrap gap-4">
-        <CustomCard
-          image={CardImage1}
-          title="Story"
-          description="A Crypto based lottery where you can earn big rewards"
-          buttonText="Read Story"
-        />
-        <CustomCard
-          image={CardImage2}
-          title="Whitepaper"
-          description="Project guide"
-          buttonText="Read Whitepaper"
-        />
-        <CustomCard
-          image={CardImage3}
-          title="Tokenomics"
-          description="Crypto Exchange where you Buy/Sell and Convert Crypto Currencies"
-          buttonText="Explore Tokenomics"
-        />
-        <CustomCard
-          image={CardImage4}
-          title="YingYang Blockchain"
-          description="Dynamic, AI-optimized ecosystem. "
-          buttonText="Explore Blockchain"
-        />
-        <CustomCard
-          image={CardImage5}
-          title="Ying Yang Wallet"
-          description="A Crypto based lottery where you can earn big rewards"
-          buttonText="Learn Ying Yang Wallet"
-        />
+      <div className="flex items-center justify-center w-full mt-20">
+        <div className="mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
+          <CustomCard
+            image={CardImage1}
+            title="Story"
+            description="A Crypto based lottery where you can earn big rewards"
+            buttonText="Read Story"
+          />
+          <CustomCard
+            image={CardImage2}
+            title="Whitepaper"
+            description="Project guide"
+            buttonText="Read Whitepaper"
+          />
+          <CustomCard
+            image={CardImage3}
+            title="Tokenomics"
+            description="Crypto Exchange where you Buy/Sell and Convert Crypto Currencies"
+            buttonText="Explore Tokenomics"
+          />
+          <CustomCard
+            image={CardImage4}
+            title="YingYang Blockchain"
+            description="Dynamic, AI-optimized ecosystem. "
+            buttonText="Explore Blockchain"
+          />
+          <CustomCard
+            image={CardImage5}
+            title="Ying Yang Wallet"
+            description="A Crypto based lottery where you can earn big rewards"
+            buttonText="Learn Ying Yang Wallet"
+          />
+        </div>
       </div>
     </div>
   );
