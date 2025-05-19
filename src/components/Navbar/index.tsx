@@ -65,7 +65,7 @@ const DropdownLink = memo(
       <Link
         href={link.href}
         className={`${
-          isMainList ? "text-lg font-semibold" : "text-xs"
+          isMainList ? "text-[25px] font-semibold" : "text-xs"
         } text-tertiary block relative after:absolute after:left-0 after:-bottom-1 after:w-5 after:h-[3px] after:bg-primary after:opacity-0 hover:after:opacity-100 after:transition-opacity after:duration-300`}
       >
         {link.name}
@@ -77,7 +77,7 @@ const DropdownLink = memo(
 DropdownLink.displayName = "DropdownLink";
 
 // Main component
-const HeaderTest: React.FC = () => {
+const Navbar: React.FC = () => {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const elementRef = useRef<HTMLDivElement | null>(null);
   const [headerData] = useState<HeaderItem[]>(Data);
@@ -400,4 +400,4 @@ const HeaderTest: React.FC = () => {
   );
 };
 
-export default HeaderTest;
+export default Navbar;
