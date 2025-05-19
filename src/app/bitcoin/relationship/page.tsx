@@ -13,7 +13,7 @@ export default function Bitcoin() {
   return (
     <div className="container mx-auto px-4 overflow-visible">
       <div className="mt-20 flex flex-col items-center justify-center text-center">
-        <h2 className="text-lg md:text-2xl font-bold text-primary">
+        <h2 className="text-lg md:text-2xl mb-4 font-bold text-primary">
           BTCY AND BTC
         </h2>
         <h1 className="text-5xl md:text-7xl font-semibold">Relationship</h1>
@@ -64,7 +64,7 @@ export default function Bitcoin() {
           <p className="text-lg font-light mb-4">
             This isn’t just a technical bridge — it’s a philosophical expansion.
           </p>
-          <ul className="list-disc list-inside mb-4 pl-4">
+          <ul className="list-disc mb-4 pl-4">
             <li>21 Million BTC becomes 21 Trillion BTCY</li>
             <li>
               We mirror Bitcoin’s total supply, but scale it to allow
