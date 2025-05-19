@@ -17,7 +17,7 @@ export default function Bitcoin() {
           BTCY AND BTC
         </h2>
         <h1 className="text-5xl md:text-7xl font-semibold">Relationship</h1>
-        <Image src={ArtImage1} alt="Art Image 1" />
+        <Image src={ArtImage1} alt="Art Image 1" className="mt-10" />
       </div>
       <div className="mt-20">
         <h3 className="text-xl md:text-3xl font-bold mb-2">
