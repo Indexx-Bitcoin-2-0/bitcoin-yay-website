@@ -1,3 +1,5 @@
+"use client";
+
 import Image, { StaticImageData } from "next/image";
 
 import ArtImage1 from "@/assets/images/bible/art-1.svg";
@@ -8,6 +10,7 @@ import CardImage2 from "@/assets/images/bible/card-2.svg";
 import CardImage3 from "@/assets/images/bible/card-3.svg";
 import CardImage4 from "@/assets/images/bible/card-4.svg";
 import CardImage5 from "@/assets/images/bible/card-5.svg";
+import DisclaimerComponent from "@/components/DisclaimerComponent";
 
 const CustomCard = ({
   image,
@@ -93,6 +96,11 @@ export default function Bible() {
             buttonText="Learn Ying Yang Wallet"
           />
         </div>
+          </div>
+          
+
+      <div className="mt-20 px-2 md:px-20 xl:px-40">
+        <DisclaimerComponent />
       </div>
     </div>
   );
