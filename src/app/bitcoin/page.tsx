@@ -2,10 +2,10 @@
 
 import Image from "next/image";
 
-import ArtImage1 from "@/assets/images/bitcoin/art-1.svg";
-import ArtImage2 from "@/assets/images/bitcoin/art-2.svg";
-import ArtImage3 from "@/assets/images/bitcoin/art-3.svg";
-import ArtImage4 from "@/assets/images/bitcoin/art-4.svg";
+import ArtImage1 from "@/assets/images/bitcoin/art-1.webp";
+import ArtImage2 from "@/assets/images/bitcoin/art-2.webp";
+import ArtImage3 from "@/assets/images/bitcoin/art-3.webp";
+import ArtImage4 from "@/assets/images/bitcoin/art-4.webp";
 
 import DisclaimerComponent from "@/components/DisclaimerComponent";
 

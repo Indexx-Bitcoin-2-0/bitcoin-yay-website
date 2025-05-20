@@ -81,6 +81,24 @@ export const CustomListItem = ({
   );
 };
 
+export const CustomListItem2 = ({
+  title,
+  content,
+  ...props
+}: {
+  title?: string;
+  content?: string;
+}) => {
+  return (
+    <li className="text-sm md:text-lg text-tertiary" {...props}>
+      {title && (
+        <span className="font-semibold text-primary">{title}</span>
+      )}
+      {content && <span>{content}</span>}
+    </li>
+  );
+};
+
 export const CustomPWithTitle = ({
   title,
   content,
@@ -94,6 +112,24 @@ export const CustomPWithTitle = ({
       {title && (
         <span className="text-sm md:text-base font-semibold">{title}</span>
       )}
+      {content && <span>{content}</span>}
+    </p>
+  );
+};
+
+export const CustomPWithTitle2 = ({
+  title,
+  content,
+  ...props
+}: {
+  title?: string;
+  content?: string;
+}) => {
+  return (
+    <p className="text-sm md:text-lg text-tertiary mt-4" {...props}>
+      {title && (
+        <span className="font-semibold text-primary">{title}</span>
+      )}{" "}
       {content && <span>{content}</span>}
     </p>
   );

@@ -2,14 +2,14 @@
 
 import Image, { StaticImageData } from "next/image";
 
-import ArtImage1 from "@/assets/images/bible/art-1.svg";
-import ArtImage2 from "@/assets/images/bible/art-2.svg";
+import ArtImage1 from "@/assets/images/bible/art-1.webp";
+import ArtImage2 from "@/assets/images/bible/art-2.webp";
 
-import CardImage1 from "@/assets/images/bible/card-1.svg";
-import CardImage2 from "@/assets/images/bible/card-2.svg";
-import CardImage3 from "@/assets/images/bible/card-3.svg";
-import CardImage4 from "@/assets/images/bible/card-4.svg";
-import CardImage5 from "@/assets/images/bible/card-5.svg";
+import CardImage1 from "@/assets/images/bible/card-1.webp";
+import CardImage2 from "@/assets/images/bible/card-2.webp";
+import CardImage3 from "@/assets/images/bible/card-3.webp";
+import CardImage4 from "@/assets/images/bible/card-4.webp";
+import CardImage5 from "@/assets/images/bible/card-5.webp";
 import DisclaimerComponent from "@/components/DisclaimerComponent";
 
 const CustomCard = ({
@@ -43,7 +43,7 @@ export default function Bible() {
           Bitcoin-YAY
         </h2>
         <h1 className="text-5xl md:text-7xl mb-4 font-semibold">Bible</h1>
-        <Image src={ArtImage1} alt="Art Image 1" />
+        <Image src={ArtImage1} alt="Art Image 1" className="w-100 md:w-150 lg:w-320"/>
         <p className="text-lg font-light max-w-140">
           BTCY Bible Is the essential documentation—whitepaper, tokenomics,
           governance, and ecosystem design—for understanding and building within
