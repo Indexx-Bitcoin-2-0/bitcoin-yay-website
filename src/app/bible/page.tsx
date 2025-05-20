@@ -1,6 +1,7 @@
 "use client";
 
 import Image, { StaticImageData } from "next/image";
+import Link from "next/link";
 
 import ArtImage1 from "@/assets/images/bible/art-1.webp";
 import ArtImage2 from "@/assets/images/bible/art-2.webp";
@@ -17,20 +18,24 @@ const CustomCard = ({
   title,
   description,
   buttonText,
+  buttonLink,
 }: {
   image: StaticImageData;
   title: string;
   description: string;
   buttonText: string;
+  buttonLink: string;
 }) => {
   return (
     <div className="flex w-full md:w-[48vw] h-144 px-2 flex-col items-center justify-center text-center bg-[#181818]">
       <Image src={image} alt={title} className="w-54" />
       <h3 className="text-4xl font-bold mt-10">{title}</h3>
       <p className="text-lg mt-4">{description}</p>
-      <button className="bg-primary text-bg mt-4 text-sm px-4 py-2 rounded-md cursor-pointer">
-        {buttonText}
-      </button>
+      <Link href={buttonLink}>
+        <button className="bg-primary text-bg mt-4 text-sm px-4 py-2 rounded-md cursor-pointer">
+          {buttonText}
+        </button>
+      </Link>
     </div>
   );
 };
@@ -43,7 +48,11 @@ export default function Bible() {
           Bitcoin-YAY
         </h2>
         <h1 className="text-5xl md:text-7xl mb-4 font-semibold">Bible</h1>
-        <Image src={ArtImage1} alt="Art Image 1" className="w-100 md:w-150 lg:w-320"/>
+        <Image
+          src={ArtImage1}
+          alt="Art Image 1"
+          className="w-100 md:w-150 lg:w-320"
+        />
         <p className="text-lg font-light max-w-140">
           BTCY Bible Is the essential documentation—whitepaper, tokenomics,
           governance, and ecosystem design—for understanding and building within
@@ -70,34 +79,38 @@ export default function Bible() {
             title="Story"
             description="A Crypto based lottery where you can earn big rewards"
             buttonText="Read Story"
+            buttonLink="/bible/story"
           />
           <CustomCard
             image={CardImage2}
             title="Whitepaper"
             description="Project guide"
             buttonText="Read Whitepaper"
+            buttonLink="/whitepaper"
           />
           <CustomCard
             image={CardImage3}
             title="Tokenomics"
             description="Crypto Exchange where you Buy/Sell and Convert Crypto Currencies"
             buttonText="Explore Tokenomics"
+            buttonLink="/bible/tokenomics"
           />
           <CustomCard
             image={CardImage4}
             title="YingYang Blockchain"
             description="Dynamic, AI-optimized ecosystem. "
             buttonText="Explore Blockchain"
+            buttonLink="/blockchain"
           />
           <CustomCard
             image={CardImage5}
             title="Ying Yang Wallet"
             description="A Crypto based lottery where you can earn big rewards"
             buttonText="Learn Ying Yang Wallet"
+            buttonLink="/coming-soon"
           />
         </div>
-          </div>
-          
+      </div>
 
       <div className="mt-20 px-2 md:px-20 xl:px-40">
         <DisclaimerComponent />

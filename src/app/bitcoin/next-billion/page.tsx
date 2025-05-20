@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import ArtImage5 from "@/assets/images/bitcoin/art-5.svg";
+import ArtImage5 from "@/assets/images/bitcoin/art-5.webp";
 export default function NextBillion() {
   return (
     <div className="container mx-auto px-4 overflow-visible">
