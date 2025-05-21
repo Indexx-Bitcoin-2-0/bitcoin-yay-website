@@ -37,6 +37,28 @@ export const InfoSection = ({
   );
 };
 
+export const CustomHeading = ({ content, ...props }: { content: string }) => {
+  return (
+    <h2
+      className="text-3xl md:text-6xl font-bold mt-8 max-w-300 md:leading-16 text-secondary"
+      {...props}
+    >
+      {content}
+    </h2>
+  );
+};
+
+export const CustomHeading2 = ({ content, ...props }: { content: string }) => {
+  return (
+    <h2
+      className="text-2xl md:text-[40px] font-bold mt-8 max-w-300 md:leading-16 text-secondary"
+      {...props}
+    >
+      {content}
+    </h2>
+  );
+};
+
 export const CustomP = ({
   start,
   link,
@@ -60,6 +82,22 @@ export const CustomP = ({
       </span>
       {end}
     </p>
+  );
+};
+
+export const CustomUnorderedList = ({
+  children,
+  ...props
+}: {
+  children: React.ReactNode;
+}) => {
+  return (
+    <ul
+      className="pl-10 mt-10 list-disc list-primary marker:text-primary flex flex-col gap-10"
+      {...props}
+    >
+      {children}
+    </ul>
   );
 };
 
@@ -91,9 +129,7 @@ export const CustomListItem2 = ({
 }) => {
   return (
     <li className="text-sm md:text-lg text-tertiary" {...props}>
-      {title && (
-        <span className="font-semibold text-primary">{title}</span>
-      )}
+      {title && <span className="font-semibold text-primary">{title}</span>}{" "}
       {content && <span>{content}</span>}
     </li>
   );
@@ -126,10 +162,8 @@ export const CustomPWithTitle2 = ({
   content?: string;
 }) => {
   return (
-    <p className="text-sm md:text-lg text-tertiary mt-4" {...props}>
-      {title && (
-        <span className="font-semibold text-primary">{title}</span>
-      )}{" "}
+    <p className="text-sm md:text-lg text-tertiary mt-8" {...props}>
+      {title && <span className="font-semibold text-primary">{title}</span>}{" "}
       {content && <span>{content}</span>}
     </p>
   );
