@@ -308,7 +308,7 @@ const Navbar: React.FC = () => {
         <div
           className={`absolute left-0 top-30 w-full p-8 bg-bg shadow-lg transform z-20 ${
             menuOpen ? "translate-y-0" : "-translate-y-[130%]"
-          }  lg:hidden`}
+          }  lg:hidden max-h-[calc(100vh-150px)] overflow-y-auto`}
         >
           {/* Search Input (Mobile) */}
           <div className="mb-6">
