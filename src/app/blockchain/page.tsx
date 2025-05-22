@@ -15,7 +15,7 @@ import DisclaimerComponent from "@/components/DisclaimerComponent";
 
 const BlockchainPage = () => {
   return (
-    <div className="mt-20 container mx-auto px-4 py-8">
+    <div className="mt-40 container mx-auto px-4 py-8">
       {/* Part 1 */}
       <div className="flex flex-col items-center justify-center text-center">
         <div className="flex flex-col items-center justify-center">

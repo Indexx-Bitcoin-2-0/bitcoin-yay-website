@@ -170,10 +170,10 @@ const Navbar: React.FC = () => {
   }, []);
 
   return (
-    <nav className="w-full bg-bg">
+    <nav className="w-full bg-bg fixed top-0 left-0 right-0 z-50">
       <div className="relative flex items-center justify-between h-[150px] px-4 lg:px-[100px] mx-auto">
-        {!isMobile && <Backdrop visible={backdropVisibility} />}
-        {isMobile && <Backdrop visible={menuOpen} />}
+        {/* {!isMobile && <Backdrop visible={backdropVisibility} />}
+        {isMobile && <Backdrop visible={menuOpen} />} */}
 
         <div className="flex items-center justify-between w-full lg:justify-start lg:w-auto">
           <Logo />

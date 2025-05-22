@@ -4,7 +4,7 @@ import ArtImage1 from "@/assets/images/coming-soon/art-1.webp";
 
 export default function ComingSoon() {
   return (
-    <div className="container mx-auto mb-40">
+    <div className="container mx-auto my-40">
       <h2 className="text-5xl md:text-6xl font-bold text-center mt-20">
         Coming Soon
       </h2>

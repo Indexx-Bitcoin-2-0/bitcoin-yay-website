@@ -7,7 +7,7 @@ import {
 
 export default function TermsOfService() {
   return (
-    <div className=" mx-auto max-w-[90vw] lg:px-10 py-8">
+    <div className=" mx-auto max-w-[90vw] lg:px-10 py-8 mt-40">
       <CustomStyledConatiner>
         <h1 className="text-2xl md:text-5xl font-bold mt-8 max-w-300  md:leading-16">
           Terms of Service

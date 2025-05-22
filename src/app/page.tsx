@@ -57,7 +57,7 @@ const CustomCard = ({
 
 export default function Home() {
   return (
-    <div className="overflow-hidden relative">
+    <div className="overflow-hidden relative mt-40">
       {/* Part 01 */}
       <HeroComponent />
 

@@ -94,7 +94,7 @@ export default function Whitepaper() {
   ];
 
   return (
-    <div className="mx-auto">
+    <div className="mx-auto mt-40">
       <div className="mt-20 flex flex-col items-center justify-center text-center">
         <h2 className="text-lg md:text-2xl mb-4 font-bold text-primary">
           Bitcoin-YAY

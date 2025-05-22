@@ -42,7 +42,7 @@ const CustomCard = ({
 
 export default function Bible() {
   return (
-    <div className="mx-auto px-4 ">
+    <div className="mx-auto px-4 mt-40">
       <div className="mt-20 flex flex-col items-center justify-center text-center">
         <h2 className="text-lg md:text-2xl mb-4 font-bold text-primary">
           Bitcoin-YAY

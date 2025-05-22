@@ -53,7 +53,7 @@ export default function support() {
   };
 
   return (
-    <div className="container mx-auto max-w-[90vw] px-4 py-8">
+    <div className="container mx-auto max-w-[90vw] px-4 py-8 mt-40">
       <CustomStyledConatiner>
         <h1 className="text-2xl md:text-5xl font-bold mt-6">
           Welcome to the FAQ & Support Page

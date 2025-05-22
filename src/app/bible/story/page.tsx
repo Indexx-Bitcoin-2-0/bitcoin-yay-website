@@ -9,7 +9,7 @@ import ArtImage6 from "@/assets/images/bible/story/art-6.webp";
 
 export default function BibleStory() {
   return (
-    <div className="mx-auto">
+    <div className="mx-auto mt-40">
       <div className="mt-20 flex flex-col items-center justify-center text-center px-4">
         <h2 className="text-lg md:text-2xl mb-4 font-bold text-primary">
           Bitcoin-YAY

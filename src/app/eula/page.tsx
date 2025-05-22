@@ -11,7 +11,7 @@ import DownloadLogo from "@/assets/images/download-button.svg";
 
 export default function EULA() {
   return (
-    <div className="container mx-auto px-4 overflow-visible">
+    <div className="container mx-auto px-4 overflow-visible mt-40">
       <CustomStyledConatiner>
         <h1 className="text-2xl md:text-5xl font-bold mt-6 max-w-200  md:leading-16">
           End-User License Agreement (EULA) for Bitcoin Yay

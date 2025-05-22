@@ -13,7 +13,7 @@ import { SectionDiv } from "@/components/utils";
 
 export default function Tokenomics() {
   return (
-    <div className="mx-auto overflow-hidden mb-40">
+    <div className="mx-auto overflow-hidden mt-40">
       <div className="mt-20 flex flex-col items-center justify-center text-center px-4">
         <h2 className="text-lg md:text-2xl mb-4 font-bold text-primary">
           Bitcoin-YAY

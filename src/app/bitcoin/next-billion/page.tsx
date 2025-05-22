@@ -3,7 +3,7 @@ import Image from "next/image";
 import ArtImage5 from "@/assets/images/bitcoin/art-5.webp";
 export default function NextBillion() {
   return (
-    <div className="container mx-auto px-4 overflow-visible">
+    <div className="container mx-auto px-4 overflow-visible mt-40">
       <div className="mt-20 flex flex-col items-center justify-center text-center">
         <h2 className="text-lg md:text-2xl mb-4 font-bold text-primary">
           WHY BTCY IS
