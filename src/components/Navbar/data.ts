@@ -45,7 +45,7 @@ const header_data = [
     ],
   },
   {
-    mainTextDesktop: "YingYang DAO",
+    mainTextDesktop: "DAO",
     mainTextMob: "YingYang DAO",
     active: false,
     href: "/coming-soon",
@@ -161,11 +161,11 @@ const header_data = [
           },
           {
             name: "Mine Bitcoin-Yay",
-            href: "#",
+            href: "/#apple-store-download",
           },
           {
             name: "Buy Gift Card",
-            href: "#",
+            href: "https://shop.indexx.ai/?category=bitcoin-cards",
           },
           
         ],
@@ -245,7 +245,7 @@ const header_data = [
     ],
   },
   {
-    mainTextDesktop: "Ecosystem",
+    mainTextDesktop: "Eco",
     mainTextMob: "Ecosystem",
     active: false,
     href: "#",

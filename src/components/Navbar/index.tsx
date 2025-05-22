@@ -365,7 +365,7 @@ const Navbar: React.FC = () => {
                               key={linkIdx}
                               href={link.href}
                               className={`block text-lg my-3 hover:text-primary ${
-                                section.mainList ? "font-medium" : ""
+                                section.mainList ? "font-bold text-xl" : ""
                               }`}
                               onClick={closeMobileMenu}
                             >
