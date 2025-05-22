@@ -3,11 +3,16 @@ import Image from "next/image";
 import ArtImage1 from "@/assets/images/bible/tokenomics/art-1.webp";
 import ArtImage2 from "@/assets/images/bible/tokenomics/art-2.webp";
 
-import { InfoSection, CustomPWithTitle2 } from "@/components/CustomTypography";
+import {
+  CustomPWithTitle2,
+  CustomHeading,
+  CustomUnorderedList,
+  CustomListItem2,
+} from "@/components/CustomTypography";
 
 export default function Tokenomics() {
   return (
-    <div className="mx-auto overflow-hidden">
+    <div className="mx-auto overflow-hidden mb-40">
       <div className="mt-20 flex flex-col items-center justify-center text-center px-4">
         <h2 className="text-lg md:text-2xl mb-4 font-bold text-primary">
           Bitcoin-YAY
@@ -20,92 +25,87 @@ export default function Tokenomics() {
         />
       </div>
       <div className="mt-20 px-4 md:px-20 lg:px-40 2xl:px-60">
-        <InfoSection title="Total Supply & Distribution" />
+        <CustomHeading content="Total Supply & Distribution" />
         <CustomPWithTitle2
           title="Fixed Total Supply:"
           content=" Hard-capped at 21 trillion BTCY tokens, mirroring Bitcoin’s 21 million cap via micro-token conversion (1 BTC → 1,000,000 BTCY). This ensures BTCY remains scarce in the long run, creating incentive for holding and naturally limiting inflation."
         />
-        <ul className="list-disc text-sm md:text-lg my-8 ml-12 flex flex-col gap-3">
-          <li>
-            Bitcoin Conversion Ratio: At launch, 1 BTC is set to equal 1,000,000
-            BTCY. Hypothetically, converting all 21 million BTC would yield 21
-            trillion BTCY. If you own 1 BTC, you can claim 1,000,000 BTCY; 0.01
-            BTC equates to 10,000 BTCY, and so forth. This ties Bitcoin Yay’s
-            value conceptually to Bitcoin’s, and a reserve mechanism backs this
-            by holding actual BTC.
-          </li>
-        </ul>
+        <CustomUnorderedList>
+          <CustomListItem2 content="Bitcoin Conversion Ratio: At launch, 1 BTC is set to equal 1,000,000 BTCY. Hypothetically, converting all 21 million BTC would yield 21 trillion BTCY. If you own 1 BTC, you can claim 1,000,000 BTCY; 0.01 BTC equates to 10,000 BTCY, and so forth. This ties Bitcoin Yay’s value conceptually to Bitcoin’s, and a reserve mechanism backs this by holding actual BTC." />
+        </CustomUnorderedList>
+
         <CustomPWithTitle2
           title="Initial Distribution Breakdown:"
           content="The allocation of 21 trillion BTCY is strategically planned for ecosystem needs:"
         />
-        <ul className="list-disc text-sm md:text-lg my-8 ml-12 flex flex-col gap-6">
-          <li>
-            40% (8.4 Trillion) – Mining Rewards & Ecosystem Incentives. Reserved
+        <CustomUnorderedList>
+          <CustomListItem2
+            content=" 40% (8.4 Trillion) – Mining Rewards & Ecosystem Incentives. Reserved
             for distribution via the mining programs (Snatch Gopher free mining,
             Nugget Gopher paid plans, etc.) and other user participation
             incentives. This large allocation ensures the community can earn a
             significant share of the supply over time, fueling user growth and
-            engagement.
-          </li>
-          <li>
-            10% (2.1 Trillion) – Satoshi Nakamoto Legacy Allocation. In tribute
+            engagement."
+          />
+          <CustomListItem2
+            content="  10% (2.1 Trillion) – Satoshi Nakamoto Legacy Allocation. In tribute
             to Bitcoin’s creator, earmarked for Satoshi. Practically, these
             tokens could be locked or even burned to symbolize transfer to
             Satoshi’s inaccessible wallet. It serves as a narrative bridge
             between BTC and BTCY, a thoughtful nod to the origins of the
-            project.
-          </li>
-          <li>
-            20% (4.2 Trillion) – Developer & Infrastructure Fund. Held by the
+            project."
+          />
+          <CustomListItem2
+            content="20% (4.2 Trillion) – Developer & Infrastructure Fund. Held by the
             project team/Indexx and vested over ~4 years. Funds ongoing
             development, infrastructure (servers, support), and rewards for core
             contributors. A vesting schedule prevents the team from flooding the
             market and aligns their incentives with Bitcoin Yay’s long-term
-            success.
-          </li>
-          <li>
-            15% (3.15 Trillion) – Indexx Treasury (Liquidity & Stability).
+            success."
+          />
+          <CustomListItem2
+            content=" 15% (3.15 Trillion) – Indexx Treasury (Liquidity & Stability).
             Managed by Indexx to provide liquidity on exchanges, perform
             market-making, and support token stability. This treasury will also
             help back the BTC reserve mechanism (swapping some BTCY for BTC over
             time to fill reserves). It acts as a buffer to stabilize price and
-            ensure convertibility.
-          </li>
-          <li>
-            10% (2.1 Trillion) – Community & Influencer Incentives. Dedicated to
+            ensure convertibility."
+          />
+          <CustomListItem2
+            content="10% (2.1 Trillion) – Community & Influencer Incentives. Dedicated to
             airdrops, rewards, community events, and influencer
             partnerships.This allocation seeds the initial user base and creates
             buzz (e.g., free BTCY drops to early adopters, bonuses for social
             media promotions, etc.). By distributing tokens through community
             engagement campaigns, Bitcoin Yay kickstarts network effects and
-            public awareness.
-          </li>
-          <li>
-            5% (1.05 Trillion) – Strategic Partnerships & Institutional
+            public awareness."
+          />
+          <CustomListItem2
+            content="5% (1.05 Trillion) – Strategic Partnerships & Institutional
             Adoption. Reserved for key partners or institutional participants.
             These tokens incentivize collaborations with payment providers,
             merchants, fintech companies or even NGOs to integrate BTCY. Having
             a reserve for strategic outreach provides flexibility to foster
             adoption in larger contexts (for example, rewarding a popular app
             for accepting BTCY, or encouraging a financial institution to pilot
-            BTCY-based services).
-          </li>
-        </ul>
+            BTCY-based services)."
+          />
+        </CustomUnorderedList>
 
         <CustomPWithTitle2 content="This distribution ensures that a majority of tokens (50% from mining + community programs) end up in the hands of the community. A substantial portion (35%) is initially held by the team/Indexx for development and liquidity but with clear purpose and vesting to mitigate centralization risk. The Satoshi tribute and partnership allocations further align BTCY with the broader crypto narrative and future expansion." />
-        <ul className="list-disc text-sm md:text-lg my-8 ml-12 flex flex-col gap-6">
-          <li>
-            Circulating Supply Trajectory: Not all 21T will circulate
+
+        <CustomUnorderedList>
+          <CustomListItem2
+            content="Circulating Supply Trajectory: Not all 21T will circulate
             immediately. Only a small fraction enters circulation at launch
             (e.g., via initial airdrops and exchange liquidity). Mining rewards
             (the 8.4T allocation) will be released gradually over many years.
             Other allocations like the Treasury and Dev Fund will also unlock
             strategically. This controlled release, similar to vesting in many
             projects, avoids oversupply in the market at launch and supports
-            long-term price stability.
-          </li>
-        </ul>
+            long-term price stability."
+          />
+        </CustomUnorderedList>
       </div>
 
       <div className="flex items-center justify-end my-60 md:my-100 relative ">
@@ -117,7 +117,7 @@ export default function Tokenomics() {
       </div>
 
       <div className="mt-20 px-4 md:px-20 lg:px-60">
-        <InfoSection title="BTCY Price Strategy" />
+        <CustomHeading content="BTCY Price Strategy" />
 
         <CustomPWithTitle2
           title="Pegged Early Value:"
@@ -132,30 +132,30 @@ export default function Tokenomics() {
           title="Fee Mechanisms: "
           content="Conversion and transfer fees are used to control token velocity and fund the reserves:"
         />
-        <ul className="list-disc text-sm md:text-lg my-8 ml-12 flex flex-col gap-6">
-          <li>
-            Converting BTCY to other tokens incurs a fee (e.g., 15% fee when
+        <CustomUnorderedList>
+          <CustomListItem2
+            content="Converting BTCY to other tokens incurs a fee (e.g., 15% fee when
             swapping to internal tokens like IUSD+, and up to 20% fee for
             external stablecoins like USDC/USDT). These steep fees mean if
             someone dumps BTCY immediately for cash, they lose a significant
             portion, which deters mass liquidation and incentivizes holding or
-            using BTCY within the ecosystem.
-          </li>
-          <li>
-            Similarly, converting to Bitcoin (BTC) has a high fee, reflecting
+            using BTCY within the ecosystem."
+          />
+          <CustomListItem2
+            content="Similarly, converting to Bitcoin (BTC) has a high fee, reflecting
             that directly acquiring BTC from BTCY is treated as a form of
             cashing out. (For example, converting BTCY to BTC might carry a 25%
             fee.) These percentages can be adjusted via governance, but
             initially they create friction that slows down speculative flipping
-            of BTCY.
-          </li>
-          <li>
-            Collected fees (in stablecoins or BTC) feed back into the system —
+            of BTCY."
+          />
+          <CustomListItem2
+            content="Collected fees (in stablecoins or BTC) feed back into the system —
             for instance, a portion may be burned (reducing supply) and the rest
             added to the reserve. This deflationary aspect and reserve-funding
-            further stabilize the token.
-          </li>
-        </ul>
+            further stabilize the token."
+          />
+        </CustomUnorderedList>
         <CustomPWithTitle2
           title="Bitcoin Reserve Model: "
           content="A portion of various fees and revenues is allocated to continuously purchase Bitcoin for a strategic reserve. This BTC reserve backs the BTCY ecosystem; for example, it enables a future feature where users can swap BTCY for actual BTC at market rates. As BTCY decentralizes over time, this reserve could be placed under community control via smart contracts. The existence of a Bitcoin reserve ties BTCY’s fate to Bitcoin’s success — if Bitcoin’s value rises, BTCY’s backing strengthens, providing holders additional confidence."
