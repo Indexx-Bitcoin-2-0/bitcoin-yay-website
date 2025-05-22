@@ -10,20 +10,7 @@ import {
   CustomPWithTitle2,
   CustomUnorderedList,
 } from "@/components/CustomTypography";
-
-const SectionDiv = ({
-  id,
-  children,
-}: {
-  id: string;
-  children: React.ReactNode;
-}) => {
-  return (
-    <div className="mt-40 px-4 md:px-20 xl:px-48" id={id}>
-      {children}
-    </div>
-  );
-};
+import { SectionDiv } from "@/components/utils";
 
 import ButtonImage1 from "@/assets/images/bible/whitepaper/button-1.webp";
 import ButtonImage2 from "@/assets/images/bible/whitepaper/button-2.webp";

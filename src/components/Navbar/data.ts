@@ -1,4 +1,4 @@
-const baseNewCEXURL = "/";
+const baseURL = "/";
 
 const header_data = [
   
@@ -6,7 +6,7 @@ const header_data = [
     mainTextDesktop: "Mining",
     mainTextMob: "Mining",
     active: false,
-    href: baseNewCEXURL,
+    href: baseURL,
     hasMegaDrop: true,
     dropDownContent: [
       {
@@ -248,7 +248,7 @@ const header_data = [
     mainTextDesktop: "Eco",
     mainTextMob: "Ecosystem",
     active: false,
-    href: "#",
+    href: "https://indexx.ai",
     hasMegaDrop: true,
     dropDownContent: [
       {

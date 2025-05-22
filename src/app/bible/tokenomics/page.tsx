@@ -9,6 +9,7 @@ import {
   CustomUnorderedList,
   CustomListItem2,
 } from "@/components/CustomTypography";
+import { SectionDiv } from "@/components/utils";
 
 export default function Tokenomics() {
   return (
@@ -24,7 +25,7 @@ export default function Tokenomics() {
           className="w-100 md:w-150 lg:w-200 2xl:w-320"
         />
       </div>
-      <div className="mt-20 px-4 md:px-20 lg:px-40 2xl:px-60">
+      <SectionDiv id="total-supply-distribution">
         <CustomHeading content="Total Supply & Distribution" />
         <CustomPWithTitle2
           title="Fixed Total Supply:"
@@ -106,7 +107,7 @@ export default function Tokenomics() {
             long-term price stability."
           />
         </CustomUnorderedList>
-      </div>
+      </SectionDiv>
 
       <div className="flex items-center justify-end my-60 md:my-100 relative ">
         <Image
@@ -116,7 +117,7 @@ export default function Tokenomics() {
         />
       </div>
 
-      <div className="mt-20 px-4 md:px-20 lg:px-60">
+      <SectionDiv id="btcy-price-strategy">
         <CustomHeading content="BTCY Price Strategy" />
 
         <CustomPWithTitle2
@@ -164,7 +165,7 @@ export default function Tokenomics() {
           title="Gradual Float:"
           content="Over time, as BTCY becomes widely held and its utility proven, the project may relax the $0.10 peg to allow BTCY’s market price to float upward. Any such changes would be decided via decentralized governance once the network matures. In the long run, BTCY’s value will be supported by its scarcity (controlled by halving and burns), its utility in the ecosystem, and the underlying reserves, rather than a fixed peg."
         />
-      </div>
+      </SectionDiv>
     </div>
   );
 }
