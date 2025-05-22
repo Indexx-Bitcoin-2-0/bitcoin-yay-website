@@ -46,7 +46,7 @@ const header_data = [
   },
   {
     mainTextDesktop: "DAO",
-    mainTextMob: "YingYang DAO",
+    mainTextMob: "DAO",
     active: false,
     href: "/coming-soon",
     hasMegaDrop: true,
@@ -246,7 +246,7 @@ const header_data = [
   },
   {
     mainTextDesktop: "Eco",
-    mainTextMob: "Ecosystem",
+    mainTextMob: "Eco",
     active: false,
     href: "https://indexx.ai",
     hasMegaDrop: true,
