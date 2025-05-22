@@ -15,7 +15,7 @@ const header_data = [
         links: [
           {
             name: "Mobile Mining",
-            href: `#`,
+            href: `/#mobile-mining`,
           },
         
         ],
@@ -25,11 +25,11 @@ const header_data = [
         links: [
           {
             name: "Download App on Apple Store",
-            href: '#',
+            href: '/#apple-store-download',
           },
           {
             name: "Download on Google Play",
-            href: '#',
+            href: '/#google-play-download',
           },
         ],
       },
@@ -38,7 +38,7 @@ const header_data = [
         links: [
           {
             name: "Contact Us",
-            href: "#",
+            href: "/support/#contact-us",
           },
         ],
       },
@@ -48,7 +48,7 @@ const header_data = [
     mainTextDesktop: "YingYang DAO",
     mainTextMob: "YingYang DAO",
     active: false,
-    href: "#",
+    href: "/coming-soon",
     hasMegaDrop: true,
     dropDownContent: [
       {
@@ -57,15 +57,15 @@ const header_data = [
         links: [
           {
             name: "Proposal Studio",
-            href: "#",
+            href: "/coming-soon",
           },
           {
             name: "Role-Based Governance",
-            href: "#",
+            href: "/coming-soon",
           },
           {
             name: "Yin Yang Grant Rounds",
-            href: "#",
+            href: "/coming-soon",
           },
         ],
       },
@@ -74,7 +74,7 @@ const header_data = [
         links: [
           {
             name: "Contact Us",
-            href: "#",
+            href: "/coming-soon",
           },
         ],
       },
@@ -86,7 +86,7 @@ const header_data = [
     mainTextDesktop: "WIBS",
     mainTextMob: "WIBS",
     active: false,
-    href: "#",
+    href: "https://whoisbitcoinsatoshi.wtf",
     hasMegaDrop: true,
     dropDownContent: [
       {
@@ -95,7 +95,7 @@ const header_data = [
         links: [
           {
             name: "Who is Bitcon Satoshi",
-            href: "#",
+            href: "https://whoisbitcoinsatoshi.wtf",
           },
         ],
       },
@@ -105,15 +105,15 @@ const header_data = [
         links: [
           {
             name: "Buy WIBS",
-            href: "#",
+            href: "https://cex.indexx.ai/update/home?buyToken=WIBS",
           },
           {
             name: "Buy Gift Cards",
-            href: "#",
+            href: "https://shop.indexx.ai/?category=bitcoin-cards",
           },
           {
             name: "Crypto Treasury",
-            href: "#",
+            href: "https://cex.indexx.ai/smart-crypto",
           },
           
         ],
@@ -124,7 +124,7 @@ const header_data = [
         links: [
           {
             name: "Contact Us",
-            href: "#",
+            href: "https://whoisbitcoinsatoshi.wtf/contact-us",
           },
         ],
       },
@@ -134,7 +134,7 @@ const header_data = [
     mainTextDesktop: "Bitcoin",
     mainTextMob: "Bitcoin",
     active: false,
-    href: "#",
+    href: "/bitcoin",
     hasMegaDrop: true,
     dropDownContent: [
       {
@@ -143,12 +143,12 @@ const header_data = [
         links: [
           {
             name: "BTCY Relationship",
-            href: "#",
+            href: "/bitcoin",
           },
 
           {
             name: "Bitcoin for the Next Billion",
-            href: "#",
+            href: "/bitcoin/next-billion",
           },
         ],
       },
@@ -157,7 +157,7 @@ const header_data = [
         links: [
           {
             name: "Buy BTCY",
-            href: "#",
+            href: "https://cex.indexx.ai/update/home?buyToken=BTCY",
           },
           {
             name: "Mine Bitcoin-Yay",
@@ -175,7 +175,7 @@ const header_data = [
         links: [
           {
             name: "Crypto Treasury",
-            href: "#",
+            href: "https://cex.indexx.ai/smart-crypto",
           },
         ],
       },
@@ -186,7 +186,7 @@ const header_data = [
     mainTextDesktop: "Bible",
     mainTextMob: "Bible",
     active: false,
-    href: "#",
+    href: "/bible",
     hasMegaDrop: true,
     dropDownContent: [
       {
@@ -195,23 +195,23 @@ const header_data = [
         links: [
           {
             name: "Story of BTCY",
-            href: "#",
+            href: "/bible/story",
           },
           {
             name: "Whitepaper",
-            href: "#",
+            href: "/bible/whitepaper",
           },
           {
             name: "Tokenomics",
-            href: "#",
+            href: "/bible/tokenomics",
           },
           {
             name: "Ying Yang Blockchain",
-            href: "#",
+            href: "/blockchain",
           },
           {
             name: "Ying Yang Wallet",
-            href: "#",
+            href: "/coming-soon",
           },
         ],
       },
@@ -220,15 +220,15 @@ const header_data = [
         links: [
           {
             name: "Buy token",
-            href: "#",
+            href: "https://cex.indexx.ai/update/home?buyToken=BTCY",
           },
           {
             name: "Buy Gift Card",
-            href: "#",
+            href: "https://shop.indexx.ai/?category=bitcoin-cards",
           },
           {
             name: "Crypto Treasury",
-            href: "#",
+            href: "https://cex.indexx.ai/smart-crypto",
           },
         ],
       },
@@ -237,7 +237,7 @@ const header_data = [
         links: [
           {
             name: "Contact Us",
-            href: "#",
+            href: "/support/#contact-us",
           },
         ],
       },
@@ -257,11 +257,11 @@ const header_data = [
         links: [
           {
             name: "Developer",
-            href: "#",
+            href: "/coming-soon",
           },
           {
             name: "Indexx.ai",
-            href: "#",
+            href: "https://indexx.ai",
           },
         ],
       },
@@ -271,31 +271,31 @@ const header_data = [
         links: [
           {
             name: "Lotto",
-            href: "#",
+            href: "https://lotto.indexx.ai",
           },
           {
             name: "Exchange",
-            href: "#",
+            href: "https://cex.indexx.ai/update/home?buyToken=INEX",
           },
           {
             name: "Shop",
-            href: "#",
+            href: "https://shop.indexx.ai",
           },
           {
             name: "xToken",
-            href: "#",
+            href: "https://indexx.ai/indexx-exchange/token-details",
           },
           {
             name: "Hive",
-            href: "#",
+            href: "https://hive.indexx.ai",
           },
           {
             name: "Academy",
-            href: "#",
+            href: "https://academy.indexx.ai",
           },
           {
             name: "Crypto Treasury",
-            href: "#",
+            href: "https://cex.indexx.ai/smart-crypto",
           },
         ],
       },
@@ -304,27 +304,27 @@ const header_data = [
         links: [
           {
             name: "Sign up on Exchange",
-            href: "#",
+            href: "https://indexx.ai/auth/signup-email?redirectWebsiteLink=exchange",
           },
           {
             name: "Get Gift Cards",
-            href: "#",
+            href: "https://shop.indexx.ai/?category=gift",
           },
           {
             name: "But Ticket",
-            href: "#",
+            href: "https://lotto.indexx.ai/contest?contest=crypto",
           },
           {
             name: "Enroll to Academy",
-            href: "#",
+            href: "https://indexx.ai/auth/signup-email?redirectWebsiteLink=academy",
           },
           {
             name: "Invest with Smart Crypto",
-            href: "#",
+            href: "https://cex.indexx.ai/smart-crypto",
           },
           {
             name: "Invest with Smart APY",
-            href: "#",
+            href: "https://cex.indexx.ai/smart-apy",
           },
         ],
       },
@@ -333,7 +333,7 @@ const header_data = [
         links: [
           {
             name: "About Us",
-            href: "#",
+            href: "https://indexx.ai/indexx-exchange/about",
           },
         ],
       },

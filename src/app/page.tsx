@@ -63,7 +63,7 @@ export default function Home() {
 
       <div className="container mx-auto px-4 py-8 relative">
         {/* Part 02 */}
-        <div className="mt-120 text-center">
+        <div className="mt-120 text-center" id="mobile-mining">
           <div className="flex flex-col justify-center ">
             <p className="text-2xl">Bitcoin Yay</p>
             <h2 className="text-4xl md:text-7xl font-bold my-4">
@@ -218,7 +218,7 @@ export default function Home() {
 
         {/* Part 06 */}
         <div className="flex flex-col md:flex-row gap-20 justify-center items-center mt-80 mx-10">
-          <div className="flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center justify-center" id="apple-store-download">
             <div className="flex flex-col items-center justify-center relative">
               <Image src={PhoneImage4} alt="Phone Image 4" />
               <Image
@@ -231,7 +231,7 @@ export default function Home() {
               Download on the Apple Store
             </p>
           </div>
-          <div className="flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center justify-center" id="google-play-download">
             <div className="flex flex-col items-center justify-center relative">
               <Image src={PhoneImage4} alt="Phone Image 4" />
               <Image

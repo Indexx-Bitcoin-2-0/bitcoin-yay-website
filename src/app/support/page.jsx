@@ -114,7 +114,7 @@ export default function support() {
         </Accordion>
       </div>
 
-      <div>
+      <div id="contact-us">
         <div className="border border-bg2 rounded-lg p-5 lg:p-15 w-full mt-6 lg:mt-10 mx-auto flex flex-col lg:flex-row">
           <div className="flex-1">
             <h1 className="text-2xl md:text-5xl font-bold mt-6">Contact Us</h1>
