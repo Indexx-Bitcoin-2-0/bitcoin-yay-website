@@ -36,9 +36,9 @@ export default function AirdropRegisterPage() {
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
   const [isRegistraionSuccessful, setIsRegistrationSuccessful] =
     useState<boolean>(true);
-  const [referralLink, setReferralLink] = useState<string>(
-    "bitcoinyay.com/airdrop?ref=username123"
-  ); // Initial value from image
+  //   const [referralLink, setReferralLink] = useState<string>(
+  //     "bitcoinyay.com/airdrop?ref=username123"
+  //   ); // Initial value from image
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
@@ -105,9 +105,9 @@ export default function AirdropRegisterPage() {
     }
   };
 
-  const copyReferralLink = (): void => {
-    navigator.clipboard.writeText(referralLink);
-  };
+  //   const copyReferralLink = (): void => {
+  //     navigator.clipboard.writeText(referralLink);
+  //   };
   return (
     <div className="container mx-auto mt-60 flex flex-col justify-center items-center">
       <div className="absolute inset-0 bg-cover bg-center mt-40 -z-10">
@@ -203,10 +203,10 @@ export default function AirdropRegisterPage() {
           </Link>
         </p>
       </div>
-      <div>
+      <div className="w-full flex justify-center mt-10">
         <form
           onSubmit={handleSubmit}
-          className="p-8 flex flex-col justify-center max-w-3xl"
+          className="w-full p-8 flex flex-col justify-center max-w-3xl"
         >
           <div className="mb-6">
             <label
@@ -271,7 +271,7 @@ export default function AirdropRegisterPage() {
             )}
           </div>
 
-          <div className="mb-6 mt-20">
+          {/* <div className="mb-6 mt-20">
             <label
               htmlFor="referralLink"
               className="block text-tertiary text-xl mb-2"
@@ -303,7 +303,7 @@ export default function AirdropRegisterPage() {
           <p className="text-primary text-base italic text-center mb-6">
             Share the link with your family and friends to increase your chances
             of extending your Turbo Mining Power by another day or more.
-          </p>
+          </p> */}
           <div className="flex justify-center mt-20">
             <button type="submit">
               <Image

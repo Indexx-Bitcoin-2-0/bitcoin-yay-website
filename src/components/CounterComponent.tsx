@@ -1,17 +1,17 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 interface CountdownTimerProps {
   targetDate: Date;
 }
 
 const CountdownTimer: React.FC<CountdownTimerProps> = ({ targetDate }) => {
-  const calculateTimeRemaining = () => {
+  const calculateTimeRemaining = useCallback(() => {
     const now = new Date().getTime();
     const difference = targetDate.getTime() - now;
     return difference > 0 ? difference : 0;
-  };
+  }, [targetDate]);
 
   const [timeRemaining, setTimeRemaining] = useState<number>(
     calculateTimeRemaining
@@ -22,7 +22,7 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({ targetDate }) => {
       setTimeRemaining(calculateTimeRemaining());
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [calculateTimeRemaining]);
 
   const days = Math.floor(timeRemaining / (24 * 60 * 60 * 1000));
   const hours = Math.floor(
