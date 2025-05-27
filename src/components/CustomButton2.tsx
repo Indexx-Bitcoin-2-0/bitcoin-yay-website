@@ -18,7 +18,7 @@ export default function CustomButton2({
       <Image
         src={image}
         alt="Logo"
-        className="w-40 mt-8 group-hover:scale-110 transition-transform duration-300"
+        className="w-36 mt-8 group-hover:scale-110 transition-transform duration-300"
       />
       <div className="flex justify-center mt-4">
         <p className="text-lg group-hover:text-primary">{text}</p>
