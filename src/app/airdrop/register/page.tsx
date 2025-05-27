@@ -9,7 +9,9 @@ import { AIRDROP_REGISTER_API_ROUTE } from "@/routes";
 
 import BgImage1 from "@/assets/images/airdrop/bg-art-1.webp";
 import BgImage2 from "@/assets/images/airdrop/bg-art-2.webp";
-import CopyIcon from "@/assets/images/icons/copy-icon.svg";
+import BackArrowIcon1 from "@/assets/images/icons/back-arrow-1.webp";
+import BackArrowIcon2 from "@/assets/images/icons/back-arrow-2.webp";
+// import CopyIcon from "@/assets/images/icons/copy-icon.svg";
 import InfoIcon from "@/assets/images/icons/info-icon.webp";
 import DownloadButton from "@/assets/images/buttons/download-button.webp";
 import BackButton from "@/assets/images/buttons/back-button.webp";
@@ -182,6 +184,22 @@ export default function AirdropRegisterPage() {
             </div>
           )}
         </PopupComponent>
+      </div>
+
+      {/* Back arrow */}
+      <div className="w-full flex justify-start group -mt-20">
+        <Link href="/airdrop">
+          <Image
+            src={BackArrowIcon1}
+            alt="Back Arrow"
+            className="group-hover:hidden w-16 h-16 cursor-pointer"
+          />
+          <Image
+            src={BackArrowIcon2}
+            alt="Back Arrow"
+            className="hidden group-hover:block w-16 h-16 cursor-pointer"
+          />
+        </Link>
       </div>
       <div className="text-center flex flex-col items-center justify-center">
         <h4 className="text-3xl font-semibold text-primary">Sign Up for the</h4>
