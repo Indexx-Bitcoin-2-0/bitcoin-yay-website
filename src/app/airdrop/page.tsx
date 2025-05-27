@@ -9,7 +9,7 @@ import ArtImage3 from "@/assets/images/airdrop/art-3.webp";
 import ArtImage4 from "@/assets/images/airdrop/art-4.webp";
 import ArtImage5 from "@/assets/images/airdrop/art-5.webp";
 
-import RegisterButtonImage from "@/assets/images/airdrop/register-button.webp";
+import RegisterButtonImage from "@/assets/images/buttons/register-button.webp";
 
 export default function Airdrop() {
   return (
@@ -31,7 +31,7 @@ export default function Airdrop() {
             <p className="text-sm text-primary mt-10">
               Remaining days before the airdrop
             </p>
-            <CountdownTimer targetDate={new Date("2025-06-01")} />
+            <CountdownTimer targetDate={new Date("2025-06-15")} />
           </div>
         </div>
         <Image
@@ -39,7 +39,7 @@ export default function Airdrop() {
           alt="Airdrop Art 1"
           className="w-90 md:w-140 2xl:w-240 absolute top-0 left-1/2 lg:left-auto lg:right-0 transform lg:transform-none -translate-x-1/2 lg:translate-x-0 -z-10 mt-160 lg:mt-0"
         />
-        <div className="mt-130 md:mt-160 lg:mt-60">
+        <div className="mt-130 md:mt-160 lg:mt-60 flex justify-center">
           <CustomButton2
             image={RegisterButtonImage}
             text="Register for the FREE Airdrop Now!"
@@ -68,7 +68,7 @@ export default function Airdrop() {
         </div>
       </div>
 
-      <div className="mt-40">
+      <div className="my-40 flex justify-center">
         <CustomButton2
           image={RegisterButtonImage}
           text="Register for the FREE Airdrop Now!"
@@ -128,7 +128,7 @@ export default function Airdrop() {
         </div>
       </div>
 
-      <div className="mt-40">
+      <div className="my-40 flex justify-center">
         <CustomButton2
           image={RegisterButtonImage}
           text="Register for the FREE Airdrop Now!"
@@ -192,7 +192,7 @@ export default function Airdrop() {
         </div>
       </div>
 
-      <div className="mt-40">
+      <div className="my-40 flex justify-center">
         <CustomButton2
           image={RegisterButtonImage}
           text="Register for the FREE Airdrop Now!"
@@ -280,7 +280,7 @@ export default function Airdrop() {
         </div>
       </div>
 
-      <div className="mt-40">
+      <div className="my-40 flex justify-center">
         <CustomButton2
           image={RegisterButtonImage}
           text="Register for the FREE Airdrop Now!"
@@ -358,7 +358,7 @@ export default function Airdrop() {
         </div>
       </div>
 
-      <div className="mt-40">
+      <div className="my-40 flex justify-center">
         <CustomButton2
           image={RegisterButtonImage}
           text="Register for the FREE Airdrop Now!"
@@ -387,7 +387,7 @@ export default function Airdrop() {
         </div>
       </div>
 
-      <div className="my-40">
+      <div className="my-40 flex justify-center">
         <CustomButton2
           image={RegisterButtonImage}
           text="Register for the FREE Airdrop Now!"
