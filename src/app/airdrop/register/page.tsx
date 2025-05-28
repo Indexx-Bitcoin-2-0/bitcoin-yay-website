@@ -243,7 +243,7 @@ export default function AirdropRegisterPage() {
 
       {/* ###################   Back arrow  ##################### */}
       <div className="w-full flex justify-start group -mt-20">
-        <Link href="/airdrop">
+        <Link href="#" onClick={() => window.history.back()}>
           <Image
             src={BackArrowIcon1}
             alt="Back Arrow"
