@@ -3,7 +3,7 @@
 import { FormEvent, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 import { AIRDROP_REGISTER_API_ROUTE } from "@/routes";
 
@@ -104,9 +104,18 @@ export default function AirdropRegisterPage() {
         setFormSubmitted(false);
       } catch (error) {
         console.error("Submission error:", error);
+
+        let errorMessage = (error as AxiosError).response?.data;
+        errorMessage = (errorMessage as { data?: object })?.data;
+
         setErrors({
-          general: "Network error or server unavailable. Please try again.",
+          general:
+            error instanceof Error && "response" in error
+              ? (errorMessage as { message?: string })?.message ||
+                "An error occurred"
+              : "Network error or server unavailable. Please try again.",
         });
+        setIsPopupOpen(true);
       }
     }
   };
@@ -218,9 +227,8 @@ export default function AirdropRegisterPage() {
               <Image src={InfoIcon} alt="Info Icon" className="w-22" />
               <h3 className="text-4xl font-medium mt-6">Email not found</h3>
               <p className="mt-6">
-                The email entered is not registered with Indexx.ai. To continue
-                and qualify for the free airdrop, please create an account at
-                Indexx.ai.
+                {errors.general ||
+                  "An error occurred while processing your request. Please try again."}
               </p>
               <div className="flex justify-between w-full mt-10 px-4">
                 <CustomButton2
@@ -232,7 +240,7 @@ export default function AirdropRegisterPage() {
                 <CustomButton2
                   image={BackButton}
                   text="Back"
-                  link="/airdrop/register"
+                  link="/airdrop"
                   imageStyling="w-22"
                 />
               </div>
