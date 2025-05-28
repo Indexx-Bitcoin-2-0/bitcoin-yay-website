@@ -5,7 +5,7 @@ export default function CustomButton2({
   image,
   text,
   link,
-  imageStyling = "w-36",
+  imageStyling = "w-36 mt-8",
 }: {
   image: StaticImageData;
   text: string;
@@ -20,7 +20,7 @@ export default function CustomButton2({
       <Image
         src={image}
         alt="Logo"
-        className={`mt-8 group-hover:scale-110 transition-transform duration-300 ${imageStyling}`}
+        className={`group-hover:scale-110 transition-transform duration-300 ${imageStyling}`}
       />
       <div className="flex justify-center mt-4">
         <p className="text-lg group-hover:text-primary">{text}</p>

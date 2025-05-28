@@ -11,7 +11,8 @@ import BgImage1 from "@/assets/images/airdrop/bg-art-1.webp";
 import BgImage2 from "@/assets/images/airdrop/bg-art-2.webp";
 import BackArrowIcon1 from "@/assets/images/icons/back-arrow-1.webp";
 import BackArrowIcon2 from "@/assets/images/icons/back-arrow-2.webp";
-// import CopyIcon from "@/assets/images/icons/copy-icon.svg";
+import CopyIcon1 from "@/assets/images/icons/copy-icon-1.webp";
+import CopyIcon2 from "@/assets/images/icons/copy-icon-2.webp";
 import InfoIcon from "@/assets/images/icons/info-icon.webp";
 import DownloadButton from "@/assets/images/buttons/download-button.webp";
 import BackButton from "@/assets/images/buttons/back-button.webp";
@@ -34,13 +35,15 @@ interface FormErrors {
 export default function AirdropRegisterPage() {
   const [email, setEmail] = useState<string>("");
   const [username, setUsername] = useState<string>("");
+  const [referralLink, setReferralLink] = useState<string>("");
+  const [userReferralLink, setUserReferralLink] = useState<string>(
+    "bitcoinyay.com/airdrop?ref="
+  );
+
   const [acceptTerms, setAcceptTerms] = useState<boolean>(false);
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
   const [isRegistraionSuccessful, setIsRegistrationSuccessful] =
-    useState<boolean>(true);
-  //   const [referralLink, setReferralLink] = useState<string>(
-  //     "bitcoinyay.com/airdrop?ref=username123"
-  //   ); // Initial value from image
+    useState<boolean>(false);
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
@@ -76,6 +79,7 @@ export default function AirdropRegisterPage() {
       try {
         const res = await axios.post(AIRDROP_REGISTER_API_ROUTE, {
           email: email,
+          referralLink: referralLink,
           userType: "Indexx Exchange",
           walletAddress: "",
           walletProvider: "",
@@ -91,7 +95,7 @@ export default function AirdropRegisterPage() {
         }
 
         console.log("Form data submitted:", { email, username, acceptTerms });
-
+        setUserReferralLink(userReferralLink + email);
         setIsPopupOpen(true);
         setEmail("");
         setUsername("");
@@ -107,11 +111,12 @@ export default function AirdropRegisterPage() {
     }
   };
 
-  //   const copyReferralLink = (): void => {
-  //     navigator.clipboard.writeText(referralLink);
-  //   };
+  const copyReferralLink = (): void => {
+    navigator.clipboard.writeText(userReferralLink);
+  };
   return (
     <div className="container mx-auto mt-60 flex flex-col justify-center items-center">
+      {/* ###############  Bsckgroung Images   ############################# */}
       <div className="absolute inset-0 bg-cover bg-center mt-40 -z-10">
         <Image
           src={BgImage1}
@@ -124,13 +129,16 @@ export default function AirdropRegisterPage() {
           className="hidden md:block md:w-60 xl:w-120 absolute top-0 right-0"
         />
       </div>
+
+      {/* ###############  Popups   ############################# */}
+
       <div>
         <PopupComponent
           isOpen={isPopupOpen}
           onClose={() => setIsPopupOpen(false)}
         >
           {isRegistraionSuccessful ? (
-            <div className="py-6 w-90 md:w-120 flex flex-col justify-center items-center text-center relative overflow-hidden">
+            <div className="py-6 w-90 md:w-140 flex flex-col justify-center items-center text-center relative overflow-hidden">
               <div className="absolute inset-0 bg-cover bg-center -z-10">
                 <Image
                   src={PopupArt3}
@@ -143,19 +151,66 @@ export default function AirdropRegisterPage() {
                   className="w-40 absolute top-0 -right-10"
                 />
               </div>
-              <Image src={PopupArt1} alt="art" className="w-48 md:w-56" />
+              <Image src={PopupArt1} alt="art" className="w-48 lg:w-56" />
               <h2 className="mt-10 text-3xl md:text-5xl font-medium text-primary">
                 Congratulations!
               </h2>
-              <p className="mt-6 mx-10">
+              <p className="mt-6 max-w-100 lg:text-xl">
                 You have successfully registered for the FREE Turbo Mining
                 Gopher airdrop.
               </p>
+
+              <div className="mb-6 mt-2 lg:mt-8 w-full px-4 md:px-8 text-start">
+                <label
+                  htmlFor="referralLink"
+                  className="block text-bg3 text-xl mb-2"
+                >
+                  Referral link
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    id="referralLink"
+                    className="w-full text-lg p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none  hover:border-primary"
+                    value={userReferralLink}
+                    readOnly
+                  />
+                  <button
+                    type="button"
+                    onClick={copyReferralLink}
+                    className="absolute group inset-y-0 right-3 cursor-pointer"
+                  >
+                    <Image
+                      src={CopyIcon1}
+                      alt="Copy Icon"
+                      className="group-hover:hidden w-6 h-6 z-10"
+                    />
+                    <Image
+                      src={CopyIcon2}
+                      alt="Copy Icon"
+                      className="hidden group-hover:block w-6 h-6 z-10"
+                    />
+                  </button>
+                </div>
+                <p className="text-primary text-xs italic mt-2">
+                  Share the link with your family and friends to increase your
+                  chances of extending your Turbo Mining Power by another day or
+                  more.
+                </p>
+              </div>
+
+              <button
+                className="text-bg3 text-base hover:text-primary cursor-pointer"
+                onClick={copyReferralLink}
+              >
+                Copy your referral link
+              </button>
+
               <CustomButton2
                 image={DownloadButton}
                 text="Download the Mining App"
                 link="/#apple-store-download"
-                imageStyling="w-22"
+                imageStyling="w-22 mt-8"
               />
             </div>
           ) : (
@@ -167,7 +222,7 @@ export default function AirdropRegisterPage() {
                 and qualify for the free airdrop, please create an account at
                 Indexx.ai.
               </p>
-              <div className="flex justify-between w-full">
+              <div className="flex justify-between w-full mt-10 px-4">
                 <CustomButton2
                   image={IndexxButton}
                   text="Go to indexx.ai"
@@ -186,7 +241,7 @@ export default function AirdropRegisterPage() {
         </PopupComponent>
       </div>
 
-      {/* Back arrow */}
+      {/* ###################   Back arrow  ##################### */}
       <div className="w-full flex justify-start group -mt-20">
         <Link href="/airdrop">
           <Image
@@ -201,6 +256,8 @@ export default function AirdropRegisterPage() {
           />
         </Link>
       </div>
+
+      {/* ###################   Main Content  ##################### */}
       <div className="text-center flex flex-col items-center justify-center">
         <h4 className="text-3xl font-semibold text-primary">Sign Up for the</h4>
         <h2 className="mt-6 text-5xl md:text-7xl font-bold">
@@ -227,17 +284,14 @@ export default function AirdropRegisterPage() {
           className="w-full p-8 flex flex-col justify-center max-w-3xl"
         >
           <div className="mb-6">
-            <label
-              htmlFor="username"
-              className="block text-tertiary text-xl mb-2"
-            >
+            <label htmlFor="username" className="block text-bg3 text-xl mb-2">
               Name
             </label>
             <input
               type="text"
               id="username"
               className={
-                "w-full text-lg p-3 text-tertiary border border-tertiary rounded-md focus:border-primary focus:outline-none  hover:border-primary"
+                "w-full text-lg p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none  hover:border-primary"
               }
               placeholder="Enter your name"
               value={username}
@@ -248,14 +302,14 @@ export default function AirdropRegisterPage() {
             )}
           </div>
           <div className="mb-6">
-            <label htmlFor="email" className="block text-tertiary text-xl mb-2">
+            <label htmlFor="email" className="block text-bg3 text-xl mb-2">
               Email Address
             </label>
             <input
               type="email"
               id="email"
               className={
-                "w-full text-lg p-3 text-tertiary border border-tertiary rounded-md focus:border-primary focus:outline-none  hover:border-primary"
+                "w-full text-lg p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none  hover:border-primary"
               }
               placeholder="Enter the email address you used on Indexx.ai"
               value={email}
@@ -275,10 +329,7 @@ export default function AirdropRegisterPage() {
                 checked={acceptTerms}
                 onChange={(e) => setAcceptTerms(e.target.checked)}
               />
-              <label
-                htmlFor="acceptTerms"
-                className="ml-2 text-gray-300 text-sm"
-              >
+              <label htmlFor="acceptTerms" className="ml-2 text-bg3 text-sm">
                 Accept Terms and conditions
               </label>
             </div>
@@ -289,10 +340,10 @@ export default function AirdropRegisterPage() {
             )}
           </div>
 
-          {/* <div className="mb-6 mt-20">
+          <div className="mb-6 mt-20">
             <label
               htmlFor="referralLink"
-              className="block text-tertiary text-xl mb-2"
+              className="block text-bg3 text-xl mb-2"
             >
               Referral link
             </label>
@@ -300,28 +351,19 @@ export default function AirdropRegisterPage() {
               <input
                 type="text"
                 id="referralLink"
-                className="w-full text-lg p-3 text-tertiary border border-tertiary rounded-md focus:border-primary focus:outline-none  hover:border-primary"
+                className="w-full text-lg p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none  hover:border-primary"
                 value={referralLink}
-                readOnly
+                placeholder="Enter the referral link you received"
+                onChange={(e) => setReferralLink(e.target.value)}
               />
-              <button
-                type="button"
-                onClick={copyReferralLink}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-orange-400 focus:outline-none"
-              >
-                <Image
-                  src={CopyIcon}
-                  alt="Copy Icon"
-                  className="w-6 h-6 z-10"
-                />
-              </button>
             </div>
           </div>
 
           <p className="text-primary text-base italic text-center mb-6">
-            Share the link with your family and friends to increase your chances
-            of extending your Turbo Mining Power by another day or more.
-          </p> */}
+            Note: This link is from the user who shared the free Turbo Mining
+            Gopher Airdrop with you. After you sign up, you’ll get your own
+            referral link to share.
+          </p>
           <div className="flex justify-center mt-20">
             <button type="submit">
               <Image
