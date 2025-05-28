@@ -113,7 +113,7 @@ export const CustomListItem = ({
     <li className="text-sm md:text-base text-tertiary" {...props}>
       {title && (
         <span className="text-sm md:text-base font-semibold">{title}</span>
-      )}
+      )}{" "}
       {content && <span>{content}</span>}
     </li>
   );

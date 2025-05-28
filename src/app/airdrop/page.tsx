@@ -318,8 +318,8 @@ export default function Airdrop() {
           </p>
         </div>
 
-        <div className="my-10 overflow-x-auto max-w-screen">
-          <table className="min-w-200 bg-transparent border-2 border-bg2 text-sm lg:text-xl lg:table-fixed">
+        <div className="my-10 overflow-x-auto max-w-screen flex justify-center">
+          <table className="min-w-200 max-w-340 bg-transparent border-2 border-bg2 text-sm lg:text-xl lg:table-fixed">
             <thead>
               <tr className="border-b border-2 border-bg2 [&>th]:border-2 [&>th]:border-bg2 [&>th]:py-4 [&>th]:px-2 [&>th]:text-center [&>th]:min-w-32 [&>th]:whitespace-nowrap [&>th]:lg:w-1/6">
                 <th>Mining Power</th>

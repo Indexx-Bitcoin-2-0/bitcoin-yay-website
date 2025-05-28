@@ -16,7 +16,7 @@ export default function PrivacyPolicy() {
           Privacy Policy
         </h1>
         <p className="text-sm md:text-lg font-normal text-tertiary my-4">
-          Last Updated: March 10, 2025
+          Last Updated: May 26, 2025
         </p>
       </CustomStyledConatiner>
       <div className="md:p-10 lg:p-18">
@@ -112,12 +112,22 @@ export default function PrivacyPolicy() {
                 Survey responses, customer support interactions, and other
                 inquiries."
               />
+
               <CustomListItem
-                title="Marketing Preferences"
-                content="–
-                Choices related to promotional communications and engagement
-                with our campaigns."
+                title="Subscription Pack Details "
+                content="– When you purchase or modify a subscription pack (e.g., Free, Premium, Pro tiers):"
               />
+              <ul className="list-disc ml-6">
+                <li>Subscription tier and plan name</li>
+                <li>
+                  Billing and payment information (e.g., credit/debit card
+                  number, PayPal or other payment account identifiers)
+                </li>
+                <li>
+                  Subscription start date, renewal date, and cancellation date
+                </li>
+                <li>Auto-renewal preferences and history of plan changes</li>
+              </ul>
             </>
           }
         />
@@ -229,6 +239,18 @@ export default function PrivacyPolicy() {
         />
 
         <InfoSection
+          title="F. Subscription Pack Data"
+          desc="We collect and process subscription-related information as necessary to:"
+          content={
+            <>
+              <CustomListItem content="Activate, manage, and bill your subscription packs" />
+              <CustomListItem content="Send renewal reminders and payment confirmations" />
+              <CustomListItem content="Provide tier-based features and customer support" />
+            </>
+          }
+        />
+
+        <InfoSection
           title="2. How We Use Your Information"
           desc="We use collected data for the following purposes:"
           content={
@@ -244,14 +266,21 @@ export default function PrivacyPolicy() {
               />
               <CustomListItem
                 title="To personalize user experience"
-                content="and deliver relevant content."
+                content="and deliver relevant contentt, including tier-based feature access."
               />
               <CustomListItem
                 title="To facilitate KYC verification"
                 content="and prevent fraud."
               />
               <CustomListItem title="To improve customer support and engagement." />
-              <CustomListItem title="To communicate updates promotions, and service notifications." />
+              <CustomListItem
+                title="To communicate updates promotions, and service notifications,"
+                content="including subscription renewal alerts."
+              />
+              <CustomListItem
+                title="To Manage Subscriptions"
+                content="– process billing, handle upgrades/downgrades, and send automated renewal or cancellation notifications."
+              />
             </>
           }
         />
@@ -276,12 +305,38 @@ export default function PrivacyPolicy() {
                 content="(to
                 validate transactions)."
               />
+              <CustomListItem
+                title="Subscription & Payment Gateways"
+                content="– to charge and manage your subscription pack."
+              />
             </>
           }
         />
 
         <InfoSection
-          title="4. Your Privacy Rights"
+          title="4. Information Retention"
+          desc="We retain personal data for as long as necessary to:"
+          content={
+            <>
+              <CustomListItem content="Fulfill the purposes outlined in this Policy (including active subscription management)." />
+              <CustomListItem content="Comply with legal requirements." />
+              <CustomListItem content="Prevent fraud, resolve disputes, and enforce our Terms of Use." />
+            </>
+          }
+        />
+
+        <InfoSection
+          title="Subscription Data Retention"
+          content={
+            <>
+              <CustomListItem content="Active subscription information is retained until cancellation." />
+              <CustomListItem content="After cancellation, subscription billing records and related personal data are retained for up to 7 years for accounting and legal purposes, unless a longer period is required by law." />
+            </>
+          }
+        />
+
+        <InfoSection
+          title="5. Your Privacy Rights"
           desc="Depending on your jurisdiction, you may have rights to:"
           content={
             <>
@@ -303,7 +358,7 @@ export default function PrivacyPolicy() {
           }
         />
         <CustomP
-          start="For privacy-related inquiries, contact us at "
+          start="To exercise your rights, or for privacy-related inquiries, contact us at "
           link="privacy@bitcoinyay.com."
           onClick={() => {
             window.location.href = "mailto:privacy@bitcoinyay.com";
@@ -311,9 +366,8 @@ export default function PrivacyPolicy() {
         />
 
         <InfoSection
-          title="5. Policy Updates"
-          desc="Depending on your jurisdiction, you may have rights to:"
-          endingLine="Bitcoin Yay may update this Privacy Policy periodically to reflect changes in our practices, legal requirements, or services. Continued use of our Services after such updates constitutes acceptance of the revised terms. We encourage users to review this page regularly to stay informed about how we protect your data. If you have any questions or concerns, please contact our support team."
+          title="6. Policy Updates"
+          endingLine="Bitcoin Yay may update this Privacy Policy periodically to reflect changes in our practices, legal requirements, or services (including new subscription offerings). Continued use of our Services after such updates constitutes acceptance of the revised terms. We encourage users to review this page regularly to stay informed about how we protect your data."
         />
 
         <InfoSection
