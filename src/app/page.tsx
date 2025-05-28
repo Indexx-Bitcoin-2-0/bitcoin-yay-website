@@ -18,10 +18,10 @@ import BenefitLogo2 from "../assets/images/home/benefits/2.svg";
 import BenefitLogo3 from "../assets/images/home/benefits/3.svg";
 import BenefitLogo4 from "../assets/images/home/benefits/4.svg";
 
-import CardImage1 from "@/assets/images/home/card-1.svg";
-import CardImage2 from "@/assets/images/home/card-2.svg";
-import CardImage3 from "@/assets/images/home/card-3.svg";
-import CardImage4 from "@/assets/images/home/card-4.svg";
+import CardImage1 from "@/assets/images/home/card-1.webp";
+import CardImage2 from "@/assets/images/home/card-2.webp";
+import CardImage3 from "@/assets/images/home/card-3.webp";
+import CardImage4 from "@/assets/images/home/card-4.webp";
 
 import GopherImage1 from "@/assets/images/home/gophers/gopher-1.webp";
 import GopherImage2 from "@/assets/images/home/gophers/gopher-2.webp";
