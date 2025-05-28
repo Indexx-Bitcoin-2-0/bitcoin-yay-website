@@ -9,6 +9,9 @@ import ArtImage3 from "@/assets/images/airdrop/art-3.webp";
 import ArtImage4 from "@/assets/images/airdrop/art-4.webp";
 import ArtImage5 from "@/assets/images/airdrop/art-5.webp";
 
+import BgArt1 from "@/assets/images/airdrop/bg-art/bg-art1.webp";
+import BgArt2 from "@/assets/images/airdrop/bg-art/bg-art2.webp";
+
 import RegisterButtonImage from "@/assets/images/buttons/register-button.webp";
 
 export default function Airdrop() {
@@ -76,7 +79,15 @@ export default function Airdrop() {
         />
       </div>
 
-      <div className="mt-80 flex flex-col justify-center text-center px-4 md:px-20 xl:px-40">
+      <div className="mt-80 flex flex-col justify-center text-center relative">
+        <div className="absolute w-[98vw] h-full -z-10">
+          <Image src={BgArt1} alt="" className="absolute w-80 top-0 right-0" />
+          <Image
+            src={BgArt2}
+            alt=""
+            className="absolute w-80 -bottom-40 md:-bottom-20 left-0"
+          />
+        </div>
         <div>
           <h4 className="text-2xl md:text-3xl font-bold text-primary">
             TURBO MINING POWER{" "}
@@ -84,39 +95,43 @@ export default function Airdrop() {
           <h2 className="mt-6 text-4xl md:text-8xl font-semibold">
             Earnings in 5 Days
           </h2>
-          <p className="text-xl mt-16">Normal Mining vs. Turbo Mining Power</p>
+          <p className="text-xl mt-4 md:mt-16">
+            Normal Mining vs. Turbo Mining Power
+          </p>
         </div>
-        <div className="my-10 overflow-x-auto max-w-screen">
-          <table className="min-w-200 bg-transparent border-2 border-bg2 text-sm lg:text-xl lg:table-fixed">
-            <thead>
-              <tr className="border-b border-2 border-bg2 [&>th]:border-2 [&>th]:border-bg2 [&>th]:py-10 [&>th]:px-4 [&>th]:text-center [&>th]:min-w-32 [&>th]:whitespace-nowrap [&>th]:lg:w-1/6">
-                <th>Mining Power</th>
-                <th>Mining Speed</th>
-                <th>Mining Rate (per hour)</th>
-                <th>Total BTCY (per day)</th>
-                <th>Total BTCY (in 5 days)</th>
-                <th>Earnings in 5 Days (in USD)</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-b border-2 border-bg2 [&>td]:border-2 [&>td]:border-bg2 [&>td]:py-10 [&>td]:px-4 [&>td]:text-center [&>td]:min-w-32 [&>td]:lg:w-1/6">
-                <td className="font-normal">Normal Mining</td>
-                <td>1x</td>
-                <td>3 BTCY</td>
-                <td>72</td>
-                <td>360</td>
-                <td>$36</td>
-              </tr>
-              <tr className="border-b border-2 border-bg2 text-2xl lg:text-3xl font-bold text-orange-400 [&>td]:border-2 [&>td]:border-bg2 xl:[&>td]:py-10 [&>td]:px-4 md:[&>td]:py-4 [&>td]:text-center [&>td]:min-w-32 [&>td]:lg:w-1/6">
-                <td className="text-white">Turbo Mining Power</td>
-                <td className="text-white">6x</td>
-                <td className="text-white">18 BTCY</td>
-                <td className="text-white">432</td>
-                <td className="text-orange-400 text-3xl lg:text-5xl">2160</td>
-                <td className="text-orange-400 text-3xl lg:text-5xl">$216</td>
-              </tr>
-            </tbody>
-          </table>
+        <div className="px-4 flex justify-center">
+          <div className="my-10 overflow-x-auto max-w-screen mx-auto">
+            <table className="max-w-300 min-w-200 bg-transparent border-2 border-bg2 text-sm lg:text-xl lg:table-fixed">
+              <thead>
+                <tr className="border-b border-2 border-bg2 [&>th]:border-2 [&>th]:border-bg2 [&>th]:py-10 [&>th]:px-4 [&>th]:text-center [&>th]:min-w-32 [&>th]:whitespace-nowrap [&>th]:lg:w-1/6">
+                  <th>Mining Power</th>
+                  <th>Mining Speed</th>
+                  <th>Mining Rate (per hour)</th>
+                  <th>Total BTCY (per day)</th>
+                  <th>Total BTCY (in 5 days)</th>
+                  <th>Earnings in 5 Days (in USD)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b border-2 border-bg2 [&>td]:border-2 [&>td]:border-bg2 [&>td]:py-10 [&>td]:px-4 [&>td]:text-center [&>td]:min-w-32 [&>td]:lg:w-1/6">
+                  <td className="font-normal">Normal Mining</td>
+                  <td>1x</td>
+                  <td>3 BTCY</td>
+                  <td>72</td>
+                  <td>360</td>
+                  <td>$36</td>
+                </tr>
+                <tr className="border-b border-2 border-bg2 text-2xl lg:text-3xl font-bold text-orange-400 [&>td]:border-2 [&>td]:border-bg2 xl:[&>td]:py-10 [&>td]:px-2 md:[&>td]:py-4 [&>td]:text-center [&>td]:min-w-32 [&>td]:lg:w-1/8">
+                  <td className="text-white">Turbo Mining Power</td>
+                  <td className="text-white">6x</td>
+                  <td className="text-white">18 BTCY</td>
+                  <td className="text-white">432</td>
+                  <td className="text-orange-400 text-3xl lg:text-5xl">2160</td>
+                  <td className="text-orange-400 text-3xl lg:text-5xl">$216</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
         <div className="flex items-center justify-center w-full">
           <p className="text-primary text-xl max-w-260">

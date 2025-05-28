@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
-import Image1 from "@/assets/images/home/hero-section/1.svg";
+import Image1 from "@/assets/images/home/hero-section/1.webp";
 import Image2 from "@/assets/images/home/hero-section/2.svg";
 import Image3 from "@/assets/images/home/hero-section/3.svg";
 import Image4 from "@/assets/images/home/hero-section/4.svg";
-import Image5 from "@/assets/images/home/hero-section/5.svg";
+import Image5 from "@/assets/images/home/hero-section/5.webp";
 import Image6a from "@/assets/images/home/hero-section/6-1.svg";
 import Image6b from "@/assets/images/home/hero-section/6-2.svg";
 
