@@ -79,7 +79,7 @@ export default function AirdropRegisterPage() {
       try {
         const res = await axios.post(AIRDROP_REGISTER_API_ROUTE, {
           email: email,
-          referralLink: referralLink,
+          referralCode: referralLink,
           userType: "Indexx Exchange",
           walletAddress: "",
           walletProvider: "",
