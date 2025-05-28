@@ -225,7 +225,7 @@ export default function AirdropRegisterPage() {
           ) : (
             <div className="w-80 md:w-100 flex flex-col justify-center items-center text-center p-10">
               <Image src={InfoIcon} alt="Info Icon" className="w-22" />
-              <h3 className="text-4xl font-medium mt-6">Email not found</h3>
+              <h3 className="text-5xl font-medium mt-6">Oops</h3>
               <p className="mt-6">
                 {errors.general ||
                   "An error occurred while processing your request. Please try again."}
