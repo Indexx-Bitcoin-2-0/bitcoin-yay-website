@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState, useCallback, memo } from "react";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import logo from "@/assets/images/main-logo.svg";
@@ -80,11 +81,33 @@ DropdownLink.displayName = "DropdownLink";
 const Navbar: React.FC = () => {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const elementRef = useRef<HTMLDivElement | null>(null);
-  const [headerData] = useState<HeaderItem[]>(Data);
+  const [headerData, setHeaderData] = useState<HeaderItem[]>(Data);
   const [backdropVisibility, setBackdropVisibility] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const currentPath = usePathname();
+
+  // Update the active item
+  useEffect(() => {
+    if (currentPath == "/coming-soon") {
+      return;
+    }
+    const updatedHeaderData = headerData.map((item) => {
+      const currentActivePath: string[] = [];
+      currentActivePath.push(item.href);
+      item.dropDownContent.forEach((section) => {
+        currentActivePath.push(...section.links.map((link) => link.href));
+      });
+
+      return {
+        ...item,
+        active: currentActivePath.includes(currentPath),
+      };
+    });
+
+    setHeaderData(updatedHeaderData);
+  }, [currentPath]);
 
   // Optimized resize handler with debounce
   useEffect(() => {
@@ -227,8 +250,8 @@ const Navbar: React.FC = () => {
               >
                 <Link
                   href={element.href}
-                  className={`text-tertiary text-sm font-normal transition-all duration-300 hover:text-primary ${
-                    element.active ? "text-primary" : ""
+                  className={`text-sm font-normal transition-all duration-300 hover:text-primary ${
+                    element.active ? "text-primary" : "text-tertiary"
                   } group-hover:text-primary`}
                   onMouseEnter={() =>
                     updateBackDropVisibility(
