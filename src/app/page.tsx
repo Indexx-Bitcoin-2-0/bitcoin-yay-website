@@ -23,6 +23,13 @@ import CardImage2 from "@/assets/images/home/card-2.svg";
 import CardImage3 from "@/assets/images/home/card-3.svg";
 import CardImage4 from "@/assets/images/home/card-4.svg";
 
+import GopherImage1 from "@/assets/images/home/gophers/gopher-1.webp";
+import GopherImage2 from "@/assets/images/home/gophers/gopher-2.webp";
+import GopherImage3 from "@/assets/images/home/gophers/gopher-3.webp";
+import GopherImage4 from "@/assets/images/home/gophers/gopher-4.webp";
+import GopherImage5 from "@/assets/images/home/gophers/gopher-5.webp";
+import GopherImage6 from "@/assets/images/home/gophers/gopher-6.webp";
+
 import bgArtImage1 from "../assets/images/bitcoin-art-2.png";
 
 import ArtImage1 from "@/assets/images/home/art-1.svg";
@@ -51,6 +58,26 @@ const CustomCard = ({
         <span className="text-primary font-semibold">{title}</span>
         {desc}
       </p>
+    </div>
+  );
+};
+
+const GopherCard = ({
+  image,
+  title,
+  desc,
+}: {
+  image: StaticImageData;
+  title: string;
+  desc: string;
+}) => {
+  return (
+    <div className="w-full flex flex-col items-center justify-center">
+      <Image src={image} alt={title} className="w-80 md:w-100" />
+      <div className="mt-10">
+        <h3 className="text-3xl font-bold">{title}</h3>
+        <p className="text-lg font-light text-bg3 mt-4">{desc}</p>
+      </div>
     </div>
   );
 };
@@ -163,7 +190,7 @@ export default function Home() {
         {/* Part 05 */}
         <div className=" flex flex-col justify-center items-center">
           <div className="text-center">
-            <p className="text-2xl">Discover the</p>
+            <p className="text-2xl text-primary">Discover the</p>
             <h2 className="text-4xl md:text-7xl font-bold my-4">
               Benefits Of Our App
             </h2>
@@ -218,7 +245,10 @@ export default function Home() {
 
         {/* Part 06 */}
         <div className="flex flex-col md:flex-row gap-20 justify-center items-center mt-80 mx-10">
-          <div className="flex flex-col items-center justify-center" id="apple-store-download">
+          <div
+            className="flex flex-col items-center justify-center"
+            id="apple-store-download"
+          >
             <div className="flex flex-col items-center justify-center relative">
               <Image src={PhoneImage4} alt="Phone Image 4" />
               <Image
@@ -231,7 +261,10 @@ export default function Home() {
               Download on the Apple Store
             </p>
           </div>
-          <div className="flex flex-col items-center justify-center" id="google-play-download">
+          <div
+            className="flex flex-col items-center justify-center"
+            id="google-play-download"
+          >
             <div className="flex flex-col items-center justify-center relative">
               <Image src={PhoneImage4} alt="Phone Image 4" />
               <Image
@@ -270,7 +303,7 @@ export default function Home() {
         </div>
         <div className="mt-20 md:mt-40 w-screen relative left-1/2 right-1/2 -translate-x-1/2 flex flex-col items-center justify-center">
           <Image src={ArtImage3} alt="art-image" className="w-full min-w-260" />
-          <h2 className="text-3xl md:text-5xl px-2 font-medium text-center mt-60 max-w-280 leading-16">
+          <h2 className="text-3xl md:text-5xl px-2 font-medium text-center mt-60 max-w-280 md:leading-16">
             Celebrating Bitcoin-YAY, mobile mining, in the community. Earning
             crypto on the go with Bitcoin-YAY mining.
           </h2>
@@ -296,9 +329,59 @@ export default function Home() {
             thriving community.
           </p>
         </div>
-        {/* Part 8 */}
 
-        <div className="mt-40 md:mt-100 flex flex-col items-center justify-center text-center">
+        {/* Part 08 */}
+
+        <div className="mt-80">
+          <div className="text-center mt-40 flex flex-col items-center">
+            <p className="text-2xl font-medium text-primary">Get to know our</p>
+            <h2 className="text-5xl md:text-8xl font-bold mt-2">Gophers</h2>
+            <p className="text-lg font-light max-w-176 mt-8">
+              Meet the hardworking Bitcoin Yay miner gophers behind your BTCY
+              earnings! These tireless miners work quietly in the background of
+              your phone helping you mine BTCY anytime, anywhere. Get to know
+              their unique powers and choose your mining buddy. Download your
+              favorite gopher and set it as your screen saver. It’s mining time
+              in style!
+            </p>
+          </div>
+          <div className="mt-40 md:mx-20 grid items-start grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-20">
+            <GopherCard
+              image={GopherImage1}
+              title="AI Gopher"
+              desc="Uses artificial intelligence to optimize the mining system—making it faster, smarter, and more energy-efficient."
+            />
+            <GopherCard
+              image={GopherImage2}
+              title="Blockchain Gopher"
+              desc="Your reliable builder! It keeps the chain running smoothly, ensuring secure and traceable mining operations."
+            />
+            <GopherCard
+              image={GopherImage3}
+              title="DAO Gopher"
+              desc="The voice of the community! It believes in teamwork, helping miners vote and shape the future of BTCY."
+            />
+            <GopherCard
+              image={GopherImage4}
+              title="Smart Contract Gopher"
+              desc="Automates everything! This clever gopher executes tasks with precision—no human needed, no errors allowed."
+            />
+            <GopherCard
+              image={GopherImage5}
+              title="Token Gopher"
+              desc="The master of digital assets! This gopher specializes in spotting and stacking BTCY tokens efficiently."
+            />
+            <GopherCard
+              image={GopherImage6}
+              title="Wallet Gopher"
+              desc="The keeper of your treasures! This gopher secures your BTCY earnings and keeps your balance safe and sound."
+            />
+          </div>
+        </div>
+
+        {/* Part 9 */}
+
+        <div className="mt-80 md:mt-100 flex flex-col items-center justify-center text-center">
           <div>
             <h2 className="text-4xl md:text-7xl font-bold my-6">
               What Our Minners Say?
@@ -307,7 +390,7 @@ export default function Home() {
           <UserReviewCards />
         </div>
 
-        {/* Part 09 */}
+        {/* Part 10 */}
         <DisclaimerComponent />
       </div>
     </div>
