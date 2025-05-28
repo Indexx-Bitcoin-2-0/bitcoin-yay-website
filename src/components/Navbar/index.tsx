@@ -91,6 +91,7 @@ const Navbar: React.FC = () => {
   // Update the active item
   useEffect(() => {
     if (currentPath == "/coming-soon") {
+      setHeaderData(Data);
       return;
     }
     const updatedHeaderData = headerData.map((item) => {
