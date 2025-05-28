@@ -86,7 +86,7 @@ export default function Bible() {
             title="Whitepaper"
             description="Project guide"
             buttonText="Read Whitepaper"
-            buttonLink="/whitepaper"
+            buttonLink="/bible/whitepaper"
           />
           <CustomCard
             image={CardImage3}
