@@ -31,6 +31,9 @@ import GopherImage4 from "@/assets/images/home/gophers/gopher-4.webp";
 import GopherImage5 from "@/assets/images/home/gophers/gopher-5.webp";
 import GopherImage6 from "@/assets/images/home/gophers/gopher-6.webp";
 
+import BirthdayBanner from "@/assets/images/home/BTCY-birthday-celebration.webp";
+import BirthdayBannerMobile from "@/assets/images/home/BTCY-birthday-celebration-mobile.webp";
+
 import bgArtImage1 from "../assets/images/bitcoin-art-2.png";
 
 import ArtImage1 from "@/assets/images/home/art-1.svg";
@@ -40,6 +43,7 @@ import ArtImage3 from "@/assets/images/home/art-3.svg";
 import UserReviewCards from "@/components/UserReviewCards";
 import Link from "next/link";
 import DisclaimerComponent from "@/components/DisclaimerComponent";
+import CustomButton2 from "@/components/CustomButton2";
 
 const CustomCard = ({
   image,
@@ -86,12 +90,38 @@ const GopherCard = ({
 export default function Home() {
   return (
     <div className="overflow-hidden relative mt-40">
+      <div className="mt-6 flex justify-center text-center">
+        <h1 className="px-4 text-4xl md:text-5xl xl:text-6xl font-bold text-primary max-w-250 leading-10 md:leading-18">
+          Bitcoin Yay Is The Micro Token And Petty Cash Of Bitcoin{" "}
+        </h1>
+      </div>
       {/* Part 01 */}
       <HeroComponent />
 
+      <div className="mt-120 md:mt-40 xl:mt-100 flex flex-col justify-center items-center">
+        <Image
+          src={BirthdayBanner}
+          alt="Birthday Banner"
+          className="w-full hidden md:block"
+        />
+        <Image
+          src={BirthdayBannerMobile}
+          alt="Birthday Banner"
+          className="w-full md:hidden"
+        />
+        <CustomButton2
+          image={DownloadLogo}
+          text="Download the Mining App"
+          link="/#apple-store-download"
+        />
+      </div>
+
       <div className="container mx-auto px-4 py-8 relative">
         {/* Part 02 */}
-        <div className="mt-120 text-center" id="mobile-mining">
+        <div
+          className="mt-60 text-center flex flex-col items-center"
+          id="mobile-mining"
+        >
           <div className="flex flex-col justify-center ">
             <p className="text-2xl">Bitcoin Yay</p>
             <h2 className="text-4xl md:text-7xl font-bold my-4">
@@ -109,23 +139,11 @@ export default function Home() {
               Bitcoin Yay is your petty cash for Bitcoin!{" "}
             </p>
           </div>
-          <div className="flex flex-col items-center justify-center ">
-            <Link
-              href="/coming-soon"
-              className="cursor-pointer text-tertiary group"
-            >
-              <Image
-                src={DownloadLogo}
-                alt="Download Logo"
-                className="mt-8 group-hover:scale-110 transition-transform duration-300"
-              />
-              <div className="flex justify-center">
-                <p className="text-lg group-hover:text-primary">
-                  Download the App
-                </p>
-              </div>
-            </Link>
-          </div>
+          <CustomButton2
+            image={DownloadLogo}
+            text="Download the Mining App"
+            link="/#apple-store-download"
+          />
         </div>
 
         {/* Part 03 */}
@@ -141,21 +159,11 @@ export default function Home() {
             </h2>
           </div>
           <div className="flex flex-col items-center justify-center mt-10">
-            <Link
-              href="/coming-soon"
-              className="cursor-pointer text-tertiary group"
-            >
-              <Image
-                src={DownloadLogo}
-                alt="Download Logo"
-                className="mt-8 group-hover:scale-110 transition-transform duration-300"
-              />
-              <div className="flex justify-center">
-                <p className="text-lg group-hover:text-primary">
-                  Download the App
-                </p>
-              </div>
-            </Link>
+            <CustomButton2
+              image={DownloadLogo}
+              text="Download the Mining App"
+              link="/#apple-store-download"
+            />
           </div>
         </div>
 
@@ -226,22 +234,18 @@ export default function Home() {
             />
           </div>
           <div className="flex flex-col items-center justify-center mt-40">
-            <Link
-              href="/coming-soon"
-              className="cursor-pointer text-tertiary group"
-            >
-              <Image
-                src={DownloadLogo}
-                alt="Download Logo"
-                className="mt-8 group-hover:scale-110 transition-transform duration-300"
-              />
-              <div className="flex justify-center">
-                <p className="text-lg group-hover:text-primary">
-                  Download the App
-                </p>
-              </div>
-            </Link>
+            <CustomButton2
+              image={DownloadLogo}
+              text="Download the Mining App"
+              link="/#apple-store-download"
+            />
           </div>
+        </div>
+
+        <div className="mt-40 flex justify-center text-center">
+          <h1 className="px-4 text-4xl md:text-5xl xl:text-6xl font-bold text-primary max-w-250 leading-10 md:leading-18">
+            Bitcoin Yay Is The Micro Token And Petty Cash Of Bitcoin{" "}
+          </h1>
         </div>
 
         {/* Part 06 */}
