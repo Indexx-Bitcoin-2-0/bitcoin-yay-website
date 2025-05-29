@@ -11,7 +11,9 @@ import CardImage2 from "@/assets/images/bible/card-2.webp";
 import CardImage3 from "@/assets/images/bible/card-3.webp";
 import CardImage4 from "@/assets/images/bible/card-4.webp";
 import CardImage5 from "@/assets/images/bible/card-5.webp";
+
 import DisclaimerComponent from "@/components/DisclaimerComponent";
+import CustomButton from "@/components/CustomButton";
 
 const CustomCard = ({
   image,
@@ -28,11 +30,13 @@ const CustomCard = ({
 }) => {
   return (
     <div className="flex w-full md:w-[48vw] h-144 px-2 flex-col items-center justify-center text-center bg-[#181818]">
-      <Image src={image} alt={title} className="w-54" />
+      <div className="h-60 flex items-center justify-center">
+        <Image src={image} alt={title} className="w-54 " />
+      </div>
       <h3 className="text-4xl font-bold mt-10">{title}</h3>
       <p className="text-lg mt-4">{description}</p>
       <Link href={buttonLink}>
-        <button className="bg-primary text-bg mt-4 text-sm px-4 py-2 rounded-md cursor-pointer">
+        <button className="bg-primary text-bg mt-4 text-sm px-4 py-2 rounded-md cursor-pointer hover:scale-105">
           {buttonText}
         </button>
       </Link>
@@ -107,7 +111,7 @@ export default function Bible() {
             title="Ying Yang Wallet"
             description="A Crypto based lottery where you can earn big rewards"
             buttonText="Learn Ying Yang Wallet"
-            buttonLink="/coming-soon"
+            buttonLink="/bible/ying-yang-wallet"
           />
         </div>
       </div>
