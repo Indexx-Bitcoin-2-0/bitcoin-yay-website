@@ -13,7 +13,6 @@ import CardImage4 from "@/assets/images/bible/card-4.webp";
 import CardImage5 from "@/assets/images/bible/card-5.webp";
 
 import DisclaimerComponent from "@/components/DisclaimerComponent";
-import CustomButton from "@/components/CustomButton";
 
 const CustomCard = ({
   image,
