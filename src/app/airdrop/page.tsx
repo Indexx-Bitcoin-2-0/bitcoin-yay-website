@@ -62,11 +62,11 @@ export default function Airdrop() {
         <div className="flex flex-col items-start justify-center gap-4 mt-10 flex-1 px-4 md:px-20 xl:px-0">
           <h4 className="text-3xl font-bold text-primary">WHAT IS</h4>
           <h3 className="text-5xl md:text-7xl font-semibold">
-            Turbo Mining Power
+            Turbo Mining Gopher
           </h3>
           <p className="text-3xl font-light max-w-164">
-            It’s a Super-Speed Mining Power capability — 6× the mining speed of
-            BTCY, generating up to 18 BTCY per hour.
+            It&apos;s a Super-Speed Mining Gopher capability — 6× the mining
+            speed of BTCY, generating up to 18 BTCY per hour.
           </p>
         </div>
       </div>
@@ -90,13 +90,13 @@ export default function Airdrop() {
         </div>
         <div>
           <h4 className="text-2xl md:text-3xl font-bold text-primary">
-            TURBO MINING POWER{" "}
+            TURBO MINING GOPHER
           </h4>
           <h2 className="mt-6 text-4xl md:text-8xl font-semibold">
             Earnings in 5 Days
           </h2>
           <p className="text-xl mt-4 md:mt-16">
-            Normal Mining vs. Turbo Mining Power
+            Normal Mining Gopher vs. Turbo Mining Gopher
           </p>
         </div>
         <div className="px-4 flex justify-center">
@@ -104,7 +104,7 @@ export default function Airdrop() {
             <table className="max-w-300 min-w-200 bg-transparent border-2 border-bg2 text-sm lg:text-xl lg:table-fixed">
               <thead>
                 <tr className="border-b border-2 border-bg2 [&>th]:border-2 [&>th]:border-bg2 [&>th]:py-10 [&>th]:px-4 [&>th]:text-center [&>th]:min-w-32 [&>th]:whitespace-nowrap [&>th]:lg:w-1/6">
-                  <th>Mining Power</th>
+                  <th>Mining Gopher</th>
                   <th>Mining Speed</th>
                   <th>Mining Rate (per hour)</th>
                   <th>Total BTCY (per day)</th>
@@ -114,7 +114,7 @@ export default function Airdrop() {
               </thead>
               <tbody>
                 <tr className="border-b border-2 border-bg2 [&>td]:border-2 [&>td]:border-bg2 [&>td]:py-10 [&>td]:px-4 [&>td]:text-center [&>td]:min-w-32 [&>td]:lg:w-1/6">
-                  <td className="font-normal">Normal Mining</td>
+                  <td className="font-normal">Normal Mining Gopher</td>
                   <td>1x</td>
                   <td>3 BTCY</td>
                   <td>72</td>
@@ -122,7 +122,7 @@ export default function Airdrop() {
                   <td>$36</td>
                 </tr>
                 <tr className="border-b border-2 border-bg2 text-2xl lg:text-3xl font-bold text-orange-400 [&>td]:border-2 [&>td]:border-bg2 xl:[&>td]:py-10 [&>td]:px-2 md:[&>td]:py-4 [&>td]:text-center [&>td]:min-w-32 [&>td]:lg:w-1/8">
-                  <td className="text-white">Turbo Mining Power</td>
+                  <td className="text-white">Turbo Mining Gopher</td>
                   <td className="text-white">6x</td>
                   <td className="text-white">18 BTCY</td>
                   <td className="text-white">432</td>
@@ -135,10 +135,9 @@ export default function Airdrop() {
         </div>
         <div className="flex items-center justify-center w-full">
           <p className="text-primary text-xl max-w-260">
-            <span className="font-bold">Note: </span>Start mining in the app
-            once it becomes available on the App Store and Google Play Store on
-            June 15, 2025. Keep mining for 5 straight days to ensure you don’t
-            forfeit your daily earnings.
+            <span className="font-bold">Note: </span>Start mining on June 15,
+            2025, with your Turbo Mining Gopher. Keep mining for 5 consecutive
+            days to ensure you. don&apos;t lose your daily earnings.
           </p>
         </div>
       </div>
@@ -163,7 +162,7 @@ export default function Airdrop() {
             HOW TO MINE WITH
           </h4>
           <h2 className="mt-6 text-4xl md:text-8xl font-semibold">
-            Turbo Mining Power
+            Turbo Mining Gopher
           </h2>
           <ul className="list-decimal list-inside text-xl font-light mt-10">
             <li>
@@ -180,7 +179,7 @@ export default function Airdrop() {
             <li>
               Click the{" "}
               <span className="font-bold">
-                “Register for FREE Airdrop Now!”
+                &quot;Register for FREE Airdrop Now!&quot;
               </span>{" "}
               button.
             </li>
@@ -195,14 +194,14 @@ export default function Airdrop() {
             </li>
             <li>
               Enjoy mining BTCY with{" "}
-              <span className="font-bold">Turbo Mining Power</span> for{" "}
+              <span className="font-bold">Turbo Mining Gopher</span> for{" "}
               <span className="font-bold">5 days!</span>
             </li>
           </ul>
           <p className="text-primary text-xl max-w-220 mt-10">
-            <span className="font-bold">Note: </span>On the airdrop date, June
-            15, 2025, download the BTCY Mining App from the Apple App Store or
-            Google Play Store.
+            <span className="font-bold">Note: </span>On June 15, 2025, the
+            airdrop date, you can begin mining BTCY with the Turbo Mining
+            Gopher.
           </p>
         </div>
       </div>
@@ -223,11 +222,11 @@ export default function Airdrop() {
           </h4>
           <h2 className="mt-6 text-4xl md:text-5xl xl:text-8xl font-semibold md:leading-16 xl:leading-26">
             2 or More days of
-            <br /> Free Turbo Mining Power
+            <br /> Free Turbo Mining Gopher
           </h2>
           <p className="mt-10 text-3xl font-light max-w-200">
-            Refer more people and get a chance to extend your Turbo Mining Power
-            by an extra day or more!
+            Refer more people and get a chance to extend your Turbo Mining
+            Gopher by an extra day or more!
           </p>
         </div>
         <Image
@@ -239,7 +238,7 @@ export default function Airdrop() {
           <div className="mt-20">
             <h4 className="text-2xl font-bold text-primary">How it works:</h4>
             <ul className="text-xl font-light list-decimal list-inside flex flex-col gap-2">
-              <li>Sign up for the Free Turbo Mining Power Airdrop.</li>
+              <li>Sign up for the Free Turbo Mining Gopher Airdrop.</li>
               <li>Copy your unique referral code.</li>{" "}
               <li>
                 Share it with your family and friends on WhatsApp, Telegram,
@@ -253,14 +252,14 @@ export default function Airdrop() {
           </div>
           <div className="mt-20">
             <h4 className="text-2xl font-bold text-primary">
-              Refer to Extend Turbo Mining Power Table
+              Refer to Extend Turbo Mining Gopher Table
             </h4>
 
             <table className="w-full mt-10 bg-transparent border-2 border-bg2 lg:text-xl lg:table-fixed">
               <thead>
                 <tr className="border-b border-2 border-bg2 [&>th]:border-2 [&>th]:border-bg2 [&>th]:py-2 [&>th]:px-2 [&>th]:text-center [&>th]:min-w-32 [&>th]:whitespace-nowrap">
                   <th>Number of Referrals</th>
-                  <th>Turbo Mining Power </th>
+                  <th>Turbo Mining Gopher </th>
                 </tr>
               </thead>
               <tbody>
@@ -313,58 +312,87 @@ export default function Airdrop() {
             Mining Comparison Chart
           </h2>
           <p className="mt-10 text-3xl font-light max-w-200">
-            Bitcoin Yay offers mining plans from free to powerful upgrades.
-            Choose your plan and start mining!
+            Bitcoin Yay offers mining Gophers from free to powerful upgrades.
+            Choose your Gopher and start mining!
           </p>
         </div>
         <div className="px-4 flex justify-center">
           <div className="my-10 overflow-x-auto max-w-screen mx-auto">
-            <table className="min-w-200 max-w-340 bg-transparent border-2 border-bg2 text-sm lg:text-xl lg:table-fixed">
+            <table className="min-w-340 max-w-400 bg-transparent border-2 border-bg2 text-sm lg:text-xl lg:table-fixed">
               <thead>
-                <tr className="border-b border-2 border-bg2 [&>th]:border-2 [&>th]:border-bg2 [&>th]:py-4 [&>th]:px-2 [&>th]:text-center [&>th]:min-w-32 [&>th]:whitespace-nowrap [&>th]:lg:w-1/6">
-                  <th>Mining Power</th>
-                  <th>Mining Speed</th>
-                  <th>Cost ($/month)</th>
-                  <th>Mining Rate (per hour)</th>
-                  <th>Total BTCY (per day)</th>
-                  <th>Total BTCY (per month)</th>
-                  <th>Earnings per Month (USD)</th>
+                <tr className="border-b border-2 border-bg2 [&>th]:border-2 [&>th]:border-bg2 [&>th]:py-4 [&>th]:px-2 [&>th]:text-center [&>th]:min-w-32 [&>th]:whitespace-nowrap [&>th]:lg:w-1/7">
+                  <th>Mining Gopher</th>
+                  <th>Power (X)</th>
+                  <th>
+                    Cost
+                    <br />
+                    ($/month)
+                  </th>
+                  <th>
+                    BTCY
+                    <br />
+                    (per hour)
+                  </th>
+                  <th>
+                    BTCY
+                    <br />
+                    (per day)
+                  </th>
+                  <th>
+                    USD
+                    <br />
+                    (per day)
+                  </th>
+                  <th>
+                    BTCY
+                    <br />
+                    (per month)
+                  </th>
+                  <th>
+                    USD
+                    <br />
+                    (per month)
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-b border-2 border-bg2 [&>td]:border-2 [&>td]:border-bg2 [&>td]:py-6 [&>td]:px-2 [&>td]:text-center [&>td]:min-w-32 [&>td]:lg:w-1/6">
+                <tr className="border-b border-2 border-bg2 [&>td]:border-2 [&>td]:border-bg2 [&>td]:py-6 [&>td]:px-2 [&>td]:text-center [&>td]:min-w-32 [&>td]:lg:w-1/7">
                   <td className="font-normal">Snatch Gopher (Free)</td>
                   <td>1x</td>
                   <td>$0 (ads/tasks)</td>
                   <td>~3 BTCY</td>
                   <td>72 BTCY</td>
+                  <td>$72.00</td>
                   <td>2,160 BTCY</td>
                   <td>$216.00</td>
                 </tr>
-                <tr className="border-b border-2 border-bg2 [&>td]:border-2 [&>td]:border-bg2 [&>td]:py-6 [&>td]:px-2 [&>td]:text-center [&>td]:min-w-32 [&>td]:lg:w-1/6">
-                  <td className="font-normal">Electric Mining Power</td>
+                <tr className="border-b border-2 border-bg2 [&>td]:border-2 [&>td]:border-bg2 [&>td]:py-6 [&>td]:px-2 [&>td]:text-center [&>td]:min-w-32 [&>td]:lg:w-1/7">
+                  <td className="font-normal">Electric Mining Gopher</td>
                   <td>300x</td>
                   <td>$100.00</td>
                   <td>~9 BTCY</td>
                   <td>216 BTCY</td>
+                  <td>$21.00</td>
                   <td>6,400 BTCY</td>
                   <td>$648.00</td>
                 </tr>
-                <tr className="border-b border-2 border-bg2 [&>td]:border-2 [&>td]:border-bg2 [&>td]:py-6 [&>td]:px-2 [&>td]:text-center [&>td]:min-w-32 [&>td]:lg:w-1/6">
-                  <td>Turbo Mining Power</td>
+                <tr className="border-b border-2 border-bg2 [&>td]:border-2 [&>td]:border-bg2 [&>td]:py-6 [&>td]:px-2 [&>td]:text-center [&>td]:min-w-32 [&>td]:lg:w-1/7">
+                  <td>Turbo Mining Gopher</td>
                   <td>600x</td>
                   <td>$300.00</td>
                   <td>~18 BTCY</td>
                   <td>432 BTCY</td>
+                  <td>$43.20</td>
                   <td>12,960 BTCY</td>
                   <td>$1,296.00</td>
                 </tr>
-                <tr className="border-b border-2 border-bg2 [&>td]:border-2 [&>td]:border-bg2 [&>td]:py-6 [&>td]:px-2 [&>td]:text-center [&>td]:min-w-32 [&>td]:lg:w-1/6">
-                  <td className="font-normal">Nuclear Mining Power</td>
+                <tr className="border-b border-2 border-bg2 [&>td]:border-2 [&>td]:border-bg2 [&>td]:py-6 [&>td]:px-2 [&>td]:text-center [&>td]:min-w-32 [&>td]:lg:w-1/7">
+                  <td className="font-normal">Nuclear Mining Gopher</td>
                   <td>900x</td>
                   <td>$600.00</td>
                   <td>~27 BTCY</td>
                   <td>648 BTCY</td>
+                  <td>$64.00</td>
                   <td>19,440 BTCY</td>
                   <td>$1,944.00</td>
                 </tr>
@@ -383,10 +411,10 @@ export default function Airdrop() {
       </div>
 
       {/* Part 06 */}
-      <div className="mt-80 px-4 md:mx-20 xl:px-40">
+      <div className="mt-80 px-4 md:px-20 xl:px-40">
         <div className="flex flex-col items-center text-center">
           <h4 className="text-2xl md:text-3xl font-bold text-primary">
-            HURRY! DON’T FORGET TO
+            HURRY! DON&apos;T FORGET TO
           </h4>
           <h2 className="mt-6 text-4xl md:text-5xl xl:text-8xl font-semibold md:leading-16 xl:leading-26">
             Mark your calendar
@@ -396,9 +424,9 @@ export default function Airdrop() {
             alt="art"
             className="mt-20 w-90 md:w-160 xl:w-300"
           />
-          <p className="mt-10 text-3xl font-light max-w-200">
+          <p className="mt-10 text-3xl font-light max-w-220">
             Don&apos;t miss out on the upcoming FREE airdrop! Mark your calendar
-            and get ready to receive your Turbo Mining Power.
+            and get ready to receive your Turbo Mining Gopher.
           </p>
         </div>
       </div>
