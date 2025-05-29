@@ -1,5 +1,7 @@
 "use client";
 import Image, { StaticImageData } from "next/image";
+import Link from "next/link";
+
 import BenefitCard from "@/components/BenefitCard";
 import HeroComponent from "@/components/HeroComponent";
 
@@ -33,6 +35,8 @@ import GopherImage6 from "@/assets/images/home/gophers/gopher-6.webp";
 
 import BirthdayBanner from "@/assets/images/home/BTCY-birthday-celebration.webp";
 import BirthdayBannerMobile from "@/assets/images/home/BTCY-birthday-celebration-mobile.webp";
+import ApplestoreDownloadButton from "@/assets/images/buttons/get-on-applestore-button.webp";
+import PlaystoreDownloadButton from "@/assets/images/buttons/get-on-playstore-button.webp";
 
 import bgArtImage1 from "../assets/images/bitcoin-art-2.png";
 
@@ -41,7 +45,6 @@ import ArtImage2 from "@/assets/images/home/art-2.svg";
 import ArtImage3 from "@/assets/images/home/art-3.svg";
 
 import UserReviewCards from "@/components/UserReviewCards";
-import Link from "next/link";
 import DisclaimerComponent from "@/components/DisclaimerComponent";
 import CustomButton2 from "@/components/CustomButton2";
 
@@ -98,7 +101,7 @@ export default function Home() {
       {/* Part 01 */}
       <HeroComponent />
 
-      <div className="mt-120 md:mt-40 xl:mt-100 flex flex-col justify-center items-center">
+      <div className="mt-120 md:mt-40 xl:mt-100">
         <Image
           src={BirthdayBanner}
           alt="Birthday Banner"
@@ -109,11 +112,28 @@ export default function Home() {
           alt="Birthday Banner"
           className="w-full md:hidden"
         />
-        <CustomButton2
-          image={DownloadLogo}
-          text="Download the Mining App"
-          link="/#apple-store-download"
-        />
+        <div className="mt-10 flex flex-col md:flex-row gap-10 md:gap-20 justify-center items-center">
+          <Link
+            href="https://apps.apple.com/ph/app/bitcoin-yay/id6744868017"
+            target="_blank"
+          >
+            <Image
+              src={ApplestoreDownloadButton}
+              alt="Get on Apple Store"
+              className="w-64 h-24 mt-10 hover:scale-105 transition-transform duration-300 ease-in-out"
+            />
+          </Link>
+          <Link
+            href="https://play.google.com/store/apps/details?id=com.bitcoin2&hl=en"
+            target="_blank"
+          >
+            <Image
+              src={PlaystoreDownloadButton}
+              alt="Get on Play Store"
+              className="w-64 h-24 mt-10 hover:scale-105 transition-transform duration-300 ease-in-out"
+            />
+          </Link>
+        </div>
       </div>
 
       <div className="container mx-auto px-4 py-8 relative">
