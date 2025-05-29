@@ -2,7 +2,8 @@ import Link from "next/link";
 
 import BitcoinYayaIcon from "../assets/images/main-logo.svg";
 import Image from "next/image";
-import AppQrCode from "../assets/images/bitcoin-yay-qr.svg";
+import AppleQrCode from "../assets/images/apple-qr.webp";
+import PlaystoreQrCode from "../assets/images/playstore-qr.webp";
 
 import FbIcon from "../assets/images/socials/fb.svg";
 import InstaIcon from "../assets/images/socials/insta.svg";
@@ -43,8 +44,8 @@ const Footer = ({}) => {
     ];
   return (
     <div className="container mx-auto px-4 py-8 mt-10">
-      <footer className="mx-auto border-t pt-20 border-tertiary text-secondry">
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-5">
+      <footer className="mx-auto border-t pt-18 border-bg3 text-secondry">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-6">
           <div className="col-span-2 mb-8 lg:mb-0">
             <div className="flex items-center gap-2 lg:justify-start">
               <Image src={BitcoinYayaIcon} alt="Bitcoin Yay Icon" />
@@ -69,18 +70,33 @@ const Footer = ({}) => {
               </ul>
             </div>
           ))}
-          <div className="min-w-44 ">
-            <h3 className="mb-4 font-bold">
-              Install app By Scanning The QR Code
-            </h3>
-            <Image
-              src={AppQrCode}
-              alt="App QR Code"
-              className="h-44 w-44 md:mt-12 text-amber-50"
-            />
+          <div className="min-w-44 col-span-2 flex flex-col items-start xl:items-end ">
+            <div className="">
+              <h3 className="mb-4 font-bold text-lg max-w-60">
+                Install app By Scanning The QR Code
+              </h3>
+              <div className="flex flex-col md:flex-row gap-4 lg:gap-8 lg:mt-12">
+                <div className="flex flex-col items-start justify-start mt-6">
+                  <p className="text-xs font-semibold">App Store</p>
+                  <Image
+                    src={AppleQrCode}
+                    alt="App QR Code"
+                    className="h-44 w-44 mt-2 text-amber-50"
+                  />
+                </div>
+                <div className="flex flex-col items-start justify-start mt-6">
+                  <p className="text-xs font-semibold">Google Play Store</p>
+                  <Image
+                    src={PlaystoreQrCode}
+                    alt="Google QR Code"
+                    className="h-44 w-44 mt-2 text-amber-50"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="mt-24 flex flex-col justify-between items-center gap-4 border-t border-tertiary pt-8 text-sm font-medium text-muted-foreground md:flex-row md:items-center">
+        <div className="mt-10 flex flex-col justify-between items-center gap-4 border-t border-bg3 pt-8 text-sm font-medium text-muted-foreground md:flex-row md:items-center">
           <p className="hidden md:flex">© 2025 | Bitcoin Yay</p>
           <ul className="flex gap-4">
             {bottomLinks.map((link, linkIdx) => (
