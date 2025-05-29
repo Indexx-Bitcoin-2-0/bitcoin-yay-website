@@ -16,7 +16,7 @@ export default function PrivacyPolicy() {
           Privacy Policy
         </h1>
         <p className="text-sm md:text-lg font-normal text-tertiary my-4">
-          Last Updated: May 26, 2025
+          Last Updated: May 29, 2025
         </p>
       </CustomStyledConatiner>
       <div className="md:p-10 lg:p-18">
@@ -248,6 +248,32 @@ export default function PrivacyPolicy() {
               <CustomListItem content="Provide tier-based features and customer support" />
             </>
           }
+        />
+
+        <InfoSection
+          title="G. Auto-Renewable Subscription Information"
+          desc="Bitcoin Yay’s paid mining plans (Electric, Turbo, and Nuclear) are offered as auto-renewable subscriptions through the Apple App Store and Google Play Store. By subscribing, you agree to the following terms:"
+          content={
+            <>
+              <CustomListItem content="Your subscription automatically renews unless auto-renew is turned off at least 24 hours before the current billing period ends." />
+              <CustomListItem content="Payment is charged to your Apple or Google account upon confirmation of purchase." />
+              <CustomListItem content="You can manage or cancel your subscription via your Apple or Google account settings." />
+              <CustomListItem content="No refunds are issued for unused portions of the subscription term." />
+            </>
+          }
+        />
+
+        <InfoSection
+          title="H. Subscription Grace Period"
+          desc="In the event of a failed payment during renewal, Bitcoin Yay adheres to Apple and Google Play's grace period policies."
+          content={
+            <>
+              <CustomListItem content="Users may retain access to premium features for a limited time while the payment is retried." />
+              <CustomListItem content="If payment succeeds during the grace period, service continues uninterrupted." />
+              <CustomListItem content="If payment fails and the grace period expires, access to premium features will be revoked automatically. " />
+            </>
+          }
+          
         />
 
         <InfoSection
@@ -756,6 +782,6 @@ export default function PrivacyPolicy() {
           endingLine="You can adjust cookie preferences through your browser settings. To learn how to control cookies, visit AboutCookies.org. Note that disabling cookies may impact website functionality."
         />
       </div>
-    </div>
+    </div >
   );
 }
