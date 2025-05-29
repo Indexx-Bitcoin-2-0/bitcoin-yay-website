@@ -11,7 +11,8 @@ import PlaystoreLogo from "@/assets/images/home/playstore-logo.svg";
 import PhoneImage1 from "../assets/images/home/phone-1.svg";
 import PhoneImage2 from "../assets/images/home/phone-2.svg";
 import PhoneImage3 from "../assets/images/home/phone-3.svg";
-import PhoneImage4 from "../assets/images/home/phone-4.svg";
+import PhoneImage4 from "../assets/images/home/phone-4.webp";
+import PhoneImage5 from "../assets/images/home/phone-5.webp";
 
 import BenefitLogo1 from "../assets/images/home/benefits/1.svg";
 import BenefitLogo2 from "../assets/images/home/benefits/2.svg";
@@ -266,7 +267,7 @@ export default function Home() {
             id="google-play-download"
           >
             <div className="flex flex-col items-center justify-center relative">
-              <Image src={PhoneImage4} alt="Phone Image 4" />
+              <Image src={PhoneImage5} alt="Phone Image 4" />
               <Image
                 src={PlaystoreLogo}
                 alt="Apple Logo"

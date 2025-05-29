@@ -211,7 +211,7 @@ const header_data = [
           },
           {
             name: "Ying Yang Wallet",
-            href: "/coming-soon",
+            href: "/bible/ying-yang-wallet",
           },
         ],
       },

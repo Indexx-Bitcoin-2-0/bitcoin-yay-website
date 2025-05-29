@@ -317,59 +317,60 @@ export default function Airdrop() {
             Choose your plan and start mining!
           </p>
         </div>
-
-        <div className="my-10 overflow-x-auto max-w-screen flex justify-center">
-          <table className="min-w-200 max-w-340 bg-transparent border-2 border-bg2 text-sm lg:text-xl lg:table-fixed">
-            <thead>
-              <tr className="border-b border-2 border-bg2 [&>th]:border-2 [&>th]:border-bg2 [&>th]:py-4 [&>th]:px-2 [&>th]:text-center [&>th]:min-w-32 [&>th]:whitespace-nowrap [&>th]:lg:w-1/6">
-                <th>Mining Power</th>
-                <th>Mining Speed</th>
-                <th>Cost ($/month)</th>
-                <th>Mining Rate (per hour)</th>
-                <th>Total BTCY (per day)</th>
-                <th>Total BTCY (per month)</th>
-                <th>Earnings per Month (USD)</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-b border-2 border-bg2 [&>td]:border-2 [&>td]:border-bg2 [&>td]:py-6 [&>td]:px-2 [&>td]:text-center [&>td]:min-w-32 [&>td]:lg:w-1/6">
-                <td className="font-normal">Snatch Gopher (Free)</td>
-                <td>1x</td>
-                <td>$0 (ads/tasks)</td>
-                <td>~3 BTCY</td>
-                <td>72 BTCY</td>
-                <td>2,160 BTCY</td>
-                <td>$216.00</td>
-              </tr>
-              <tr className="border-b border-2 border-bg2 [&>td]:border-2 [&>td]:border-bg2 [&>td]:py-6 [&>td]:px-2 [&>td]:text-center [&>td]:min-w-32 [&>td]:lg:w-1/6">
-                <td className="font-normal">Electric Mining Power</td>
-                <td>300x</td>
-                <td>$100.00</td>
-                <td>~9 BTCY</td>
-                <td>216 BTCY</td>
-                <td>6,400 BTCY</td>
-                <td>$648.00</td>
-              </tr>
-              <tr className="border-b border-2 border-bg2 [&>td]:border-2 [&>td]:border-bg2 [&>td]:py-6 [&>td]:px-2 [&>td]:text-center [&>td]:min-w-32 [&>td]:lg:w-1/6">
-                <td>Turbo Mining Power</td>
-                <td>600x</td>
-                <td>$300.00</td>
-                <td>~18 BTCY</td>
-                <td>432 BTCY</td>
-                <td>12,960 BTCY</td>
-                <td>$1,296.00</td>
-              </tr>
-              <tr className="border-b border-2 border-bg2 [&>td]:border-2 [&>td]:border-bg2 [&>td]:py-6 [&>td]:px-2 [&>td]:text-center [&>td]:min-w-32 [&>td]:lg:w-1/6">
-                <td className="font-normal">Nuclear Mining Power</td>
-                <td>900x</td>
-                <td>$600.00</td>
-                <td>~27 BTCY</td>
-                <td>648 BTCY</td>
-                <td>19,440 BTCY</td>
-                <td>$1,944.00</td>
-              </tr>
-            </tbody>
-          </table>
+        <div className="px-4 flex justify-center">
+          <div className="my-10 overflow-x-auto max-w-screen mx-auto">
+            <table className="min-w-200 max-w-340 bg-transparent border-2 border-bg2 text-sm lg:text-xl lg:table-fixed">
+              <thead>
+                <tr className="border-b border-2 border-bg2 [&>th]:border-2 [&>th]:border-bg2 [&>th]:py-4 [&>th]:px-2 [&>th]:text-center [&>th]:min-w-32 [&>th]:whitespace-nowrap [&>th]:lg:w-1/6">
+                  <th>Mining Power</th>
+                  <th>Mining Speed</th>
+                  <th>Cost ($/month)</th>
+                  <th>Mining Rate (per hour)</th>
+                  <th>Total BTCY (per day)</th>
+                  <th>Total BTCY (per month)</th>
+                  <th>Earnings per Month (USD)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b border-2 border-bg2 [&>td]:border-2 [&>td]:border-bg2 [&>td]:py-6 [&>td]:px-2 [&>td]:text-center [&>td]:min-w-32 [&>td]:lg:w-1/6">
+                  <td className="font-normal">Snatch Gopher (Free)</td>
+                  <td>1x</td>
+                  <td>$0 (ads/tasks)</td>
+                  <td>~3 BTCY</td>
+                  <td>72 BTCY</td>
+                  <td>2,160 BTCY</td>
+                  <td>$216.00</td>
+                </tr>
+                <tr className="border-b border-2 border-bg2 [&>td]:border-2 [&>td]:border-bg2 [&>td]:py-6 [&>td]:px-2 [&>td]:text-center [&>td]:min-w-32 [&>td]:lg:w-1/6">
+                  <td className="font-normal">Electric Mining Power</td>
+                  <td>300x</td>
+                  <td>$100.00</td>
+                  <td>~9 BTCY</td>
+                  <td>216 BTCY</td>
+                  <td>6,400 BTCY</td>
+                  <td>$648.00</td>
+                </tr>
+                <tr className="border-b border-2 border-bg2 [&>td]:border-2 [&>td]:border-bg2 [&>td]:py-6 [&>td]:px-2 [&>td]:text-center [&>td]:min-w-32 [&>td]:lg:w-1/6">
+                  <td>Turbo Mining Power</td>
+                  <td>600x</td>
+                  <td>$300.00</td>
+                  <td>~18 BTCY</td>
+                  <td>432 BTCY</td>
+                  <td>12,960 BTCY</td>
+                  <td>$1,296.00</td>
+                </tr>
+                <tr className="border-b border-2 border-bg2 [&>td]:border-2 [&>td]:border-bg2 [&>td]:py-6 [&>td]:px-2 [&>td]:text-center [&>td]:min-w-32 [&>td]:lg:w-1/6">
+                  <td className="font-normal">Nuclear Mining Power</td>
+                  <td>900x</td>
+                  <td>$600.00</td>
+                  <td>~27 BTCY</td>
+                  <td>648 BTCY</td>
+                  <td>19,440 BTCY</td>
+                  <td>$1,944.00</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
