@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/accordion";
 import ContactForm from "@/components/ContactForm";
 
-import SearchIcon from "../../assets/images/search-icon.svg";
+import SearchIcon from "../../assets/images/search-icon-2.svg";
 import CustomStyledConatiner from "@/components/CustomStyledContainer";
 import ArtImage1 from "@/assets/images/support/art-1.svg";
 

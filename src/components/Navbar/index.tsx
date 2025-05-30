@@ -5,7 +5,8 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import logo from "@/assets/images/main-logo.svg";
-import SearchIcon from "@/assets/images/search-icon.svg";
+import SearchIcon1 from "@/assets/images/search-icon-1.svg";
+import SearchIcon2 from "@/assets/images/search-icon-2.svg";
 import Data from "./data";
 import {
   Accordion,
@@ -308,7 +309,7 @@ const Navbar: React.FC = () => {
 
         {/* Search Input (Desktop) */}
         <div className="hidden xl:block">
-          <form onSubmit={handleSearch} className="relative">
+          <form onSubmit={handleSearch} className="relative group">
             <input
               type="text"
               id="search-navbar"
@@ -317,10 +318,18 @@ const Navbar: React.FC = () => {
               className="block w-80 h-15 p-2 text-lg text-tertiary border border-[#2F2F2F] rounded-lg outline-none hover:border-primary focus:border-primary"
               placeholder="Search"
             />
-            <button type="submit" className="absolute right-2 top-2 mt-2 mr-2">
+            <button type="submit" className="absolute right-2 top-2 ">
               <Image
-                src={SearchIcon}
+                src={SearchIcon1}
                 alt="Search Icon"
+                className="group-hover:hidden group-focus-within:hidden"
+                width={44}
+                height={44}
+              />
+              <Image
+                src={SearchIcon2}
+                alt="Search Icon"
+                className="hidden group-hover:block group-focus-within:block mt-2 mr-2"
                 width={30}
                 height={30}
               />
@@ -338,7 +347,7 @@ const Navbar: React.FC = () => {
           <div className="mb-6">
             <form
               onSubmit={handleSearch}
-              className="relative border-primary focus-within:border-0"
+              className="relative border-primary group focus-within:border-0"
             >
               <input
                 type="text"
@@ -348,13 +357,18 @@ const Navbar: React.FC = () => {
                 className="block h-15 w-full p-3 text-lg text-tertiary bg-transparent border border-[#2F2F2F] rounded-lg focus:border-primary hover:border-primary outline-none"
                 placeholder="Search"
               />
-              <button
-                type="submit"
-                className="absolute right-2 top-2 mt-2 mr-2"
-              >
+              <button type="submit" className="absolute right-2 top-2 ">
                 <Image
-                  src={SearchIcon}
+                  src={SearchIcon1}
                   alt="Search Icon"
+                  className="group-hover:hidden group-focus-within:hidden"
+                  width={44}
+                  height={44}
+                />
+                <Image
+                  src={SearchIcon2}
+                  alt="Search Icon"
+                  className="hidden group-hover:block group-focus-within:block mt-2 mr-2"
                   width={30}
                   height={30}
                 />
