@@ -13,6 +13,7 @@ import CardImage4 from "@/assets/images/bible/card-4.webp";
 import CardImage5 from "@/assets/images/bible/card-5.webp";
 
 import DisclaimerComponent from "@/components/DisclaimerComponent";
+import CustomButton from "@/components/CustomButton";
 
 const CustomCard = ({
   image,
@@ -34,10 +35,13 @@ const CustomCard = ({
       </div>
       <h3 className="text-4xl font-bold mt-10">{title}</h3>
       <p className="text-lg mt-4">{description}</p>
-      <Link href={buttonLink}>
-        <button className="bg-primary text-bg mt-4 text-sm px-4 py-2 rounded-md cursor-pointer hover:scale-105">
-          {buttonText}
-        </button>
+      <Link href={buttonLink} className="mt-6">
+        <CustomButton
+          text={buttonText}
+          handleButtonClick={() => {}}
+          isActive={false}
+          index={0}
+        />
       </Link>
     </div>
   );
@@ -81,35 +85,35 @@ export default function Bible() {
             image={CardImage1}
             title="Story"
             description="A Crypto based lottery where you can earn big rewards"
-            buttonText="Read Story"
+            buttonText="Read More"
             buttonLink="/bible/story"
           />
           <CustomCard
             image={CardImage2}
             title="Whitepaper"
             description="Project guide"
-            buttonText="Read Whitepaper"
+            buttonText="Read More"
             buttonLink="/bible/whitepaper"
           />
           <CustomCard
             image={CardImage3}
             title="Tokenomics"
             description="Crypto Exchange where you Buy/Sell and Convert Crypto Currencies"
-            buttonText="Explore Tokenomics"
+            buttonText="Read More"
             buttonLink="/bible/tokenomics"
           />
           <CustomCard
             image={CardImage4}
             title="YingYang Blockchain"
             description="Dynamic, AI-optimized ecosystem. "
-            buttonText="Explore Blockchain"
+            buttonText="Read More"
             buttonLink="/blockchain"
           />
           <CustomCard
             image={CardImage5}
             title="Ying Yang Wallet"
             description="A Crypto based lottery where you can earn big rewards"
-            buttonText="Learn Ying Yang Wallet"
+            buttonText="Read More"
             buttonLink="/bible/ying-yang-wallet"
           />
         </div>
