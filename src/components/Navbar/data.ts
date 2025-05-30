@@ -1,7 +1,6 @@
 const baseURL = "/";
 
 const header_data = [
-  
   {
     mainTextDesktop: "Mining",
     mainTextMob: "Mining",
@@ -17,7 +16,6 @@ const header_data = [
             name: "Mobile Mining",
             href: `/#mobile-mining`,
           },
-        
         ],
       },
       {
@@ -25,11 +23,11 @@ const header_data = [
         links: [
           {
             name: "Download App on Apple Store",
-            href: '/#apple-store-download',
+            href: "/#apple-store-download",
           },
           {
             name: "Download on Google Play",
-            href: '/#google-play-download',
+            href: "/#google-play-download",
           },
         ],
       },
@@ -81,12 +79,12 @@ const header_data = [
     ],
   },
 
-
   {
     mainTextDesktop: "WIBS",
     mainTextMob: "WIBS",
     active: false,
     href: "https://whoisbitcoinsatoshi.wtf",
+    openInNewTab: true,
     hasMegaDrop: true,
     dropDownContent: [
       {
@@ -96,6 +94,7 @@ const header_data = [
           {
             name: "Who is Bitcon Satoshi",
             href: "https://whoisbitcoinsatoshi.wtf",
+            openInNewTab: true,
           },
         ],
       },
@@ -106,16 +105,18 @@ const header_data = [
           {
             name: "Buy WIBS",
             href: "https://cex.indexx.ai/update/home?buyToken=WIBS",
+            openInNewTab: true,
           },
           {
             name: "Buy Gift Cards",
             href: "https://shop.indexx.ai/?category=bitcoin-cards",
+            openInNewTab: true,
           },
           {
             name: "Crypto Treasury",
             href: "https://cex.indexx.ai/smart-crypto",
+            openInNewTab: true,
           },
-          
         ],
       },
       {
@@ -125,6 +126,7 @@ const header_data = [
           {
             name: "Contact Us",
             href: "https://whoisbitcoinsatoshi.wtf/contact-us",
+            openInNewTab: true,
           },
         ],
       },
@@ -158,6 +160,7 @@ const header_data = [
           {
             name: "Buy BTCY",
             href: "https://cex.indexx.ai/update/home?buyToken=BTCY",
+            openInNewTab: true,
           },
           {
             name: "Mine Bitcoin-Yay",
@@ -166,8 +169,8 @@ const header_data = [
           {
             name: "Buy Gift Card",
             href: "https://shop.indexx.ai/?category=bitcoin-cards",
+            openInNewTab: true,
           },
-          
         ],
       },
       {
@@ -176,6 +179,7 @@ const header_data = [
           {
             name: "Crypto Treasury",
             href: "https://cex.indexx.ai/smart-crypto",
+            openInNewTab: true,
           },
         ],
       },
@@ -221,14 +225,17 @@ const header_data = [
           {
             name: "Buy token",
             href: "https://cex.indexx.ai/update/home?buyToken=BTCY",
+            openInNewTab: true,
           },
           {
             name: "Buy Gift Card",
             href: "https://shop.indexx.ai/?category=bitcoin-cards",
+            openInNewTab: true,
           },
           {
             name: "Crypto Treasury",
             href: "https://cex.indexx.ai/smart-crypto",
+            openInNewTab: true,
           },
         ],
       },
@@ -241,7 +248,6 @@ const header_data = [
           },
         ],
       },
-     
     ],
   },
   {
@@ -249,6 +255,7 @@ const header_data = [
     mainTextMob: "Eco",
     active: false,
     href: "https://indexx.ai",
+    openInNewTab: true,
     hasMegaDrop: true,
     dropDownContent: [
       {
@@ -262,6 +269,7 @@ const header_data = [
           {
             name: "Indexx.ai",
             href: "https://indexx.ai",
+            openInNewTab: true,
           },
         ],
       },
@@ -272,30 +280,37 @@ const header_data = [
           {
             name: "Lotto",
             href: "https://lotto.indexx.ai",
+            openInNewTab: true,
           },
           {
             name: "Exchange",
             href: "https://cex.indexx.ai/update/home?buyToken=INEX",
+            openInNewTab: true,
           },
           {
             name: "Shop",
             href: "https://shop.indexx.ai",
+            openInNewTab: true,
           },
           {
             name: "xToken",
             href: "https://indexx.ai/indexx-exchange/token-details",
+            openInNewTab: true,
           },
           {
             name: "Hive",
             href: "https://hive.indexx.ai",
+            openInNewTab: true,
           },
           {
             name: "Academy",
             href: "https://academy.indexx.ai",
+            openInNewTab: true,
           },
           {
             name: "Crypto Treasury",
             href: "https://cex.indexx.ai/smart-crypto",
+            openInNewTab: true,
           },
         ],
       },
@@ -305,26 +320,32 @@ const header_data = [
           {
             name: "Sign up on Exchange",
             href: "https://indexx.ai/auth/signup-email?redirectWebsiteLink=exchange",
+            openInNewTab: true,
           },
           {
             name: "Get Gift Cards",
             href: "https://shop.indexx.ai/?category=gift",
+            openInNewTab: true,
           },
           {
             name: "But Ticket",
             href: "https://lotto.indexx.ai/contest?contest=crypto",
+            openInNewTab: true,
           },
           {
             name: "Enroll to Academy",
             href: "https://indexx.ai/auth/signup-email?redirectWebsiteLink=academy",
+            openInNewTab: true,
           },
           {
             name: "Invest with Smart Crypto",
             href: "https://cex.indexx.ai/smart-crypto",
+            openInNewTab: true,
           },
           {
             name: "Invest with Smart APY",
             href: "https://cex.indexx.ai/smart-apy",
+            openInNewTab: true,
           },
         ],
       },
@@ -334,12 +355,12 @@ const header_data = [
           {
             name: "About Us",
             href: "https://indexx.ai/indexx-exchange/about",
+            openInNewTab: true,
           },
         ],
       },
     ],
   },
 ];
-
 
 export default header_data;

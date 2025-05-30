@@ -19,6 +19,7 @@ import {
 interface LinkItem {
   name: string;
   href: string;
+  openInNewTab?: boolean;
 }
 
 interface DropdownSection {
@@ -32,6 +33,7 @@ interface HeaderItem {
   mainTextMob: string;
   active: boolean;
   href: string;
+  openInNewTab?: boolean;
   hasMegaDrop: boolean;
   dropDownContent: DropdownSection[];
 }
@@ -66,6 +68,7 @@ const DropdownLink = memo(
     <li className="list-none flex flex-col text-left my-2">
       <Link
         href={link.href}
+        target={link.openInNewTab ? "_blank" : undefined}
         className={`${
           isMainList ? "text-[25px] font-semibold" : "text-xs"
         } text-tertiary block relative after:absolute after:left-0 after:-bottom-1 after:w-5 after:h-[3px] after:bg-primary after:opacity-0 hover:after:opacity-100 after:transition-opacity after:duration-300`}
@@ -252,6 +255,7 @@ const Navbar: React.FC = () => {
               >
                 <Link
                   href={element.href}
+                  target={element.openInNewTab ? "_blank" : undefined}
                   className={`text-sm font-normal transition-all duration-300 hover:text-primary ${
                     element.active ? "text-primary" : "text-tertiary"
                   } group-hover:text-primary`}
