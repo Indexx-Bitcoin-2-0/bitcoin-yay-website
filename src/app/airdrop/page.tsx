@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 import CountdownTimer from "@/components/CounterComponent";
 import CustomButton2 from "@/components/CustomButton2";
