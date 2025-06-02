@@ -22,7 +22,7 @@ const CustomButton = ({
   return (
     <div
       className={
-        "relative text-sm md:text-lg font-normal md:p-0 w-40 bg-transparent flex items-center justify-center text-center cursor-pointer hover:text-primary"
+        "relative text-sm md:text-lg font-normal md:p-0 bg-transparent flex items-center justify-center text-center cursor-pointer hover:text-primary"
       }
       onClick={() => handleButtonClick(index)}
       onMouseEnter={() => setIsHovered(true)}
@@ -32,13 +32,13 @@ const CustomButton = ({
         <Image
           src={ButtonBorderActive}
           alt="Button Border"
-          className="w-120 md:w-full"
+          className="w-26 md:w-36 lg:w-40"
         />
       ) : (
         <Image
           src={isHovered ? ButtonBorderActive : ButtonBorder}
           alt="Button Border"
-          className="w-120 md:w-full"
+          className="w-26 md:w-36 lg:w-40"
         />
       )}
       <p
