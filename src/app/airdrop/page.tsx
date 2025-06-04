@@ -8,47 +8,68 @@ import ArtImage2 from "@/assets/images/airdrop/art-2.webp";
 import ArtImage3 from "@/assets/images/airdrop/art-3.webp";
 import ArtImage4 from "@/assets/images/airdrop/art-4.webp";
 import ArtImage5 from "@/assets/images/airdrop/art-5.webp";
+import ArtImage6 from "@/assets/images/airdrop/art-6.webp";
 
-import BgArt1 from "@/assets/images/airdrop/bg-art/bg-art1.webp";
-import BgArt2 from "@/assets/images/airdrop/bg-art/bg-art2.webp";
+import WhatYouGetImage1 from "@/assets/images/airdrop/what-you-get-1.webp";
+import WhatYouGetImage2 from "@/assets/images/airdrop/what-you-get-2.webp";
+import WhatYouGetImage3 from "@/assets/images/airdrop/what-you-get-3.webp";
 
 import RegisterButtonImage from "@/assets/images/buttons/register-button.webp";
+import PowerButtonImage from "@/assets/images/buttons/power-button.webp";
+import PointFingerButtonImage from "@/assets/images/buttons/point-button.webp";
+
+import UserReviewCards from "@/components/UserReviewCards";
 
 export default function Airdrop() {
   return (
     <div className="mx-auto mt-40">
       <div className="relative">
-        <div className="w-full lg:w-[66%] flex items-start justify-center">
-          <div className="flex flex-col items-center justify-center gap-2 text-center px-4">
-            <h1 className="text-5xl md:text-7xl 2xl:text-9xl font-bold text-start">
-              FREE AIRDROP
-            </h1>
-            <h2 className="text-4xl lg:text-[68px] font-bold">
-              5 Days Turbo Mining Gopher
+        <div className="w-full lg:w-[80%] flex items-start justify-center">
+          <div className="px-4 md:px-20 xl:px-40 lg:items-start lg:justify-start">
+            <h2 className="text-5xl md:text-7xl xl:text-[110px] font-bold">
+              FREE Airdrop
             </h2>
-            <p className="text-5xl lg:text-8xl font-bold">+ </p>
-            <h3 className="text-4xl lg:text-8xl font-bold">2 Days</h3>
-            <h3 className="text-3xl lg:text-5xl font-bold mt-6">
-              Extended Turbo Mining Gopher
-            </h3>
-            <p className="text-sm text-primary mt-10">
-              Remaining days before the airdrop
+            <h2 className="text-5xl md:text-7xl xl:text-[110px] font-bold">
+              5 Days Turbo Mining Power On Us!
+            </h2>
+            <p className="mt-2 text-2xl lg:text-3xl max-w-220 text-tertiary">
+              Supported by our Turbo Gopher to supercharge your Bitcoin Yay
+              earnings to earn an extra
             </p>
-            <CountdownTimer targetDate={new Date("2025-06-15")} />
+            <h3 className="mt-6 text-9xl md:text-[150px] font-bold flex items-start text-tertiary leading-30">
+              <p className="text-7xl font-normal">$</p>250
+            </h3>
+            <div className="font-bold mt-10 flex flex-col justify-center items-center md:items-start">
+              <CustomButton2
+                image={PointFingerButtonImage}
+                text="Join the Airdrop"
+                link="/airdrop/register"
+              />
+              <p className="mt-2 text-base font-light italic text-bg3">
+                No credit card required. Instant activation. Cancel anytime
+              </p>
+            </div>
           </div>
         </div>
         <Image
           src={ArtImage1}
           alt="Airdrop Art 1"
-          className="w-90 md:w-140 2xl:w-240 absolute top-0 left-1/2 lg:left-auto lg:right-0 transform lg:transform-none -translate-x-1/2 lg:translate-x-0 -z-10 mt-160 lg:mt-0"
+          className="w-90 md:w-140 2xl:w-220 absolute top-0 left-1/2 xl:left-auto xl:right-0 transform xl:transform-none -translate-x-1/2 xl:translate-x-0 -z-10 mt-190 xl:mt-0"
         />
-        <div className="mt-130 md:mt-160 lg:mt-60 flex justify-center">
-          <CustomButton2
-            image={RegisterButtonImage}
-            text="Register for the FREE Airdrop Now!"
-            link="/airdrop/register"
-          />
-        </div>
+      </div>
+      <div className="mt-120 md:mt-140 xl:mt-100 flex items-center justify-center flex-col text-center px-4 md:px-20 xl:px-40">
+        <p className="text-5xl font-bold mb-20">
+          Remaining days before the Airdrop
+        </p>
+        <CountdownTimer targetDate={new Date("2025-06-15")} />
+      </div>
+
+      <div className="mt-40 md:mt-160 lg:mt-60 flex justify-center">
+        <CustomButton2
+          image={RegisterButtonImage}
+          text="Register for the FREE Airdrop Now!"
+          link="/airdrop/register"
+        />
       </div>
 
       {/* Part 2 */}
@@ -57,7 +78,7 @@ export default function Airdrop() {
         <Image
           src={ArtImage2}
           alt="Airdrop Art 2"
-          className="w-full lg:w-1/2"
+          className="w-full md:w-160 lg:w-120 xl:w-200"
         />
         <div className="flex flex-col items-start justify-center gap-4 mt-10 flex-1 px-4 md:px-20 xl:px-0">
           <h4 className="text-3xl font-bold text-primary">WHAT IS</h4>
@@ -79,70 +100,52 @@ export default function Airdrop() {
         />
       </div>
 
-      <div className="mt-80 flex flex-col justify-center text-center relative">
-        <div className="absolute w-[98vw] h-full -z-10">
-          <Image src={BgArt1} alt="" className="absolute w-80 top-0 right-0" />
-          <Image
-            src={BgArt2}
-            alt=""
-            className="absolute w-80 -bottom-40 md:-bottom-20 left-0"
-          />
-        </div>
-        <div>
-          <h4 className="text-2xl md:text-3xl font-bold text-primary">
-            TURBO MINING GOPHER
-          </h4>
-          <h2 className="mt-6 text-4xl md:text-8xl font-semibold">
-            Earnings in 5 Days
-          </h2>
-          <p className="text-xl mt-4 md:mt-16">
-            Normal Mining Gopher vs. Turbo Mining Gopher
-          </p>
-        </div>
-        <div className="px-4 flex justify-center">
-          <div className="my-10 overflow-x-auto max-w-screen mx-auto">
-            <table className="max-w-300 min-w-200 bg-transparent border-2 border-bg2 text-sm lg:text-xl lg:table-fixed">
-              <thead>
-                <tr className="border-b border-2 border-bg2 [&>th]:border-2 [&>th]:border-bg2 [&>th]:py-10 [&>th]:px-4 [&>th]:text-center [&>th]:min-w-32 [&>th]:whitespace-nowrap [&>th]:lg:w-1/6">
-                  <th>Mining Gopher</th>
-                  <th>Mining Speed</th>
-                  <th>Mining Rate (per hour)</th>
-                  <th>Total BTCY (per day)</th>
-                  <th>Total BTCY (in 5 days)</th>
-                  <th>Earnings in 5 Days (in USD)</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b border-2 border-bg2 [&>td]:border-2 [&>td]:border-bg2 [&>td]:py-10 [&>td]:px-4 [&>td]:text-center [&>td]:min-w-32 [&>td]:lg:w-1/6">
-                  <td className="font-normal">Normal Mining Gopher</td>
-                  <td>1x</td>
-                  <td>3 BTCY</td>
-                  <td>72</td>
-                  <td>360</td>
-                  <td>$36</td>
-                </tr>
-                <tr className="border-b border-2 border-bg2 text-2xl lg:text-3xl font-bold text-orange-400 [&>td]:border-2 [&>td]:border-bg2 xl:[&>td]:py-10 [&>td]:px-2 md:[&>td]:py-4 [&>td]:text-center [&>td]:min-w-32 [&>td]:lg:w-1/8">
-                  <td className="text-white">Turbo Mining Gopher</td>
-                  <td className="text-white">6x</td>
-                  <td className="text-white">18 BTCY</td>
-                  <td className="text-white">432</td>
-                  <td className="text-orange-400 text-3xl lg:text-5xl">2160</td>
-                  <td className="text-orange-400 text-3xl lg:text-5xl">$216</td>
-                </tr>
-              </tbody>
-            </table>
+      <div className="mt-40 px-4 md:px-20 xl:px-40">
+        <h2 className="text-6xl lg:text-8xl font-semibold">What you get</h2>
+        <div className="mt-20 w-full flex flex-col lg:flex-row justify-between items-center gap-20">
+          <div className="max-w-100">
+            <div className=" h-70 flex justify-center">
+              <Image
+                src={WhatYouGetImage1}
+                alt="What you get 1"
+                className="w-full"
+              />
+            </div>
+            <h4 className="mt-6 text-[40px] font-semibold">6× Mining Power</h4>
+            <p className="text-xl font-light">
+              Mine six times faster than standard users.
+            </p>
           </div>
-        </div>
-        <div className="flex items-center justify-center w-full">
-          <p className="text-primary text-xl max-w-260">
-            <span className="font-bold">Note: </span>Start mining on June 15,
-            2025, with your Turbo Mining Gopher. Keep mining for 5 consecutive
-            days to ensure you. don&apos;t lose your daily earnings.
-          </p>
+          <div className="max-w-100">
+            <div className=" h-70 flex justify-center">
+              <Image
+                src={WhatYouGetImage2}
+                alt="What you get 1"
+                className="w-60"
+              />
+            </div>
+            <h4 className="mt-6 text-[40px] font-semibold">5-Day Trial</h4>
+            <p className="text-xl font-light">
+              Mine six times faster than standard users.
+            </p>
+          </div>
+          <div className="max-w-100">
+            <div className=" h-70 flex justify-center">
+              <Image
+                src={WhatYouGetImage3}
+                alt="What you get 1"
+                className="w-60"
+              />
+            </div>
+            <h4 className="mt-6 text-[40px] font-semibold">Bonus Days</h4>
+            <p className="text-xl font-light">
+              Earn 2 extra days for every 4 referrals.
+            </p>
+          </div>
         </div>
       </div>
 
-      <div className="my-40 flex justify-center">
+      <div className="my-80 flex justify-center">
         <CustomButton2
           image={RegisterButtonImage}
           text="Register for the FREE Airdrop Now!"
@@ -152,61 +155,63 @@ export default function Airdrop() {
 
       {/* Part 3 */}
       <div className="mt-80 flex flex-col lg:flex-row items-center justify-center gap-20 px-4 md:px-20 xl:px-40">
-        <Image
-          src={ArtImage3}
-          alt="art image"
-          className="w-90 md:w-140 lg:w-90 2xl:w-150"
-        />
+        <div className="flex items-start">
+          <Image src={ArtImage3} alt="art image" className="w-120" />
+        </div>
         <div>
-          <h4 className="text-2xl md:text-3xl font-bold text-primary">
-            HOW TO MINE WITH
-          </h4>
-          <h2 className="mt-6 text-4xl md:text-8xl font-semibold">
-            Turbo Mining Gopher
+          <h2 className="mt-6 text-5xl md:text-8xl font-semibold">
+            How it works
           </h2>
-          <ul className="list-decimal list-inside text-xl font-light mt-10">
-            <li>
-              User must already be registered on{" "}
-              <a className="hover:underline hover:underline-offset-4 cursor-pointer hover:text-primary">
-                indexx.ai
-              </a>{" "}
-              to proceed with the airdrop registration.
+          <ol className="list-decimal px-6 text-2xl font-bold">
+            <li className="mt-10">
+              <h5>Sign Up Instantly</h5>
+              <ul className="list-disc px-6 text-lg font-light">
+                <li>
+                  Tap “Start My Trial” and register with your phone or email.
+                </li>
+              </ul>
             </li>
-            <li>
-              Make sure you read and understand the terms and condition of the
-              airdrop.
+            <li className="mt-10">
+              <h5>Activate Turbo Mode</h5>
+              <ul className=" list-disc px-6 text-lg font-light">
+                <li>
+                  Once inside the app, hit the “Turbo Mining Gopher” badge to
+                  enable 6× mining.
+                </li>
+              </ul>
             </li>
-            <li>
-              Click the{" "}
-              <span className="font-bold">
-                &quot;Register for FREE Airdrop Now!&quot;
-              </span>{" "}
-              button.
+            <li className="mt-10">
+              <h5>Track Your Earnings</h5>
+              <ul className=" list-disc px-6 text-lg font-light">
+                <li>
+                  Watch your BTCY balance grow faster—view real-time stats on
+                  the dashboard.
+                </li>
+              </ul>
             </li>
-            <li>Fill out the registration form.</li>
-            <li>Agree to the terms and conditions.</li>
-            <li>
-              Click <span className="font-bold">Submit.</span>
+            <li className="mt-10">
+              <h5>Extend Your Trial</h5>
+              <ul className=" list-disc px-6 text-lg font-light">
+                <li>
+                  Share your unique referral link. Every 4 friends who join
+                  gives you +2 days of turbo power.
+                </li>
+              </ul>
             </li>
-            <li>
-              Download the Mining App and log in using the email you registered
-              with for the airdrop.
+            <li className="mt-10">
+              <h5>Enjoy & Decide</h5>
+              <ul className=" list-disc px-6 text-lg font-light">
+                <li>
+                  After your trial ends, upgrade to a paid Turbo Mining Gopher
+                  subscription or revert to the free plan.
+                </li>
+              </ul>
             </li>
-            <li>
-              Enjoy mining BTCY with{" "}
-              <span className="font-bold">Turbo Mining Gopher</span> for{" "}
-              <span className="font-bold">5 days!</span>
-            </li>
-          </ul>
-          <p className="text-primary text-xl max-w-220 mt-10">
-            <span className="font-bold">Note: </span>On June 15, 2025, the
-            airdrop date, you can begin mining BTCY with the Turbo Mining
-            Gopher.
-          </p>
+          </ol>
         </div>
       </div>
 
-      <div className="my-40 flex justify-center">
+      <div className="mt-40 flex justify-center">
         <CustomButton2
           image={RegisterButtonImage}
           text="Register for the FREE Airdrop Now!"
@@ -214,87 +219,40 @@ export default function Airdrop() {
         />
       </div>
 
-      {/* Part 4 */}
-      <div className="mt-80 flex flex-col items-center justify-center px-4 md:px-20 xl:px-40">
-        <div className="flex flex-col items-center text-center">
-          <h4 className="text-2xl md:text-3xl font-bold text-primary">
-            REFER TO EXTEND TO
-          </h4>
-          <h2 className="mt-6 text-4xl md:text-5xl xl:text-8xl font-semibold md:leading-16 xl:leading-26">
-            2 or More days of
-            <br /> Free Turbo Mining Gopher
+      <div className="relative mt-80 w-full lg:overflow-hidden px-4 md:px-20 xl:px-40">
+        <div className="w-full lg:w-[80%]">
+          <h2 className="mt-6 text-5xl md:text-8xl font-semibold">
+            Referral Program Details
           </h2>
-          <p className="mt-10 text-3xl font-light max-w-200">
-            Refer more people and get a chance to extend your Turbo Mining
-            Gopher by an extra day or more!
+          <h4 className="mt-20 text-3xl font-bold">How to Refer: </h4>
+          <p className="mt-2 text-lg">
+            Copy and share your in-app link via WhatsApp, Telegram, or social
+            feeds.
+          </p>
+          <ul className="mt-10 list-disc pl-6 text-2xl font-bold">
+            <li>
+              <h5>Bonus Structure:</h5>
+              <ul className="mt-6 [&>li]:mt-4 list-disc pl-6 text-lg font-normal">
+                <li>4 referrals → +2 free days</li>
+                <li>8 referrals → +4 free days</li>
+                <li>And so on—stack up unlimited bonus days!</li>
+              </ul>
+            </li>
+          </ul>
+          <h4 className="mt-20 text-3xl font-bold">Referral Dashboard:</h4>
+          <p className="mt-2 text-lg">
+            {" "}
+            Displays progress toward your next bonus.
           </p>
         </div>
         <Image
           src={ArtImage4}
           alt="art"
-          className="mt-20 w-full md:w-140 lg:w-200 xl:w-260"
+          className="w-full mt-20 lg:w-160 xl:w-200 2xl:w-240 lg:absolute lg:-bottom-0 lg:-right-10"
         />
-        <div className="w-full md:w-180">
-          <div className="mt-20">
-            <h4 className="text-2xl font-bold text-primary">How it works:</h4>
-            <ul className="text-xl font-light list-decimal list-inside flex flex-col gap-2">
-              <li>Sign up for the Free Turbo Mining Gopher Airdrop.</li>
-              <li>Copy your unique referral code.</li>{" "}
-              <li>
-                Share it with your family and friends on WhatsApp, Telegram,
-                Instagram, and other platforms.
-              </li>
-              <li>
-                All successful referral sign-ups will be counted and
-                accumulated.
-              </li>
-            </ul>
-          </div>
-          <div className="mt-20">
-            <h4 className="text-2xl font-bold text-primary">
-              Refer to Extend Turbo Mining Gopher Table
-            </h4>
-
-            <table className="w-full mt-10 bg-transparent border-2 border-bg2 lg:text-xl lg:table-fixed">
-              <thead>
-                <tr className="border-b border-2 border-bg2 [&>th]:border-2 [&>th]:border-bg2 [&>th]:py-2 [&>th]:px-2 [&>th]:text-center [&>th]:min-w-32 [&>th]:whitespace-nowrap">
-                  <th>Number of Referrals</th>
-                  <th>Turbo Mining Gopher </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b border-2 border-bg2 [&>td]:border-2 [&>td]:border-bg2 [&>td]:py-2 [&>td]:px-2 [&>td]:text-center [&>td]:min-w-32">
-                  <td>3</td>
-                  <td>Extended to 2 Days</td>
-                </tr>
-                <tr className="border-b border-2 border-bg2 [&>td]:border-2 [&>td]:border-bg2 [&>td]:py-2 [&>td]:px-2 [&>td]:text-center [&>td]:min-w-32">
-                  <td>6</td>
-                  <td>Extended to 3 Days</td>
-                </tr>{" "}
-                <tr className="border-b border-2 border-bg2 [&>td]:border-2 [&>td]:border-bg2 [&>td]:py-2 [&>td]:px-2 [&>td]:text-center [&>td]:min-w-32">
-                  <td>9</td>
-                  <td>Extended to 4 Days</td>
-                </tr>{" "}
-                <tr className="border-b border-2 border-bg2 [&>td]:border-2 [&>td]:border-bg2 [&>td]:py-2 [&>td]:px-2 [&>td]:text-center [&>td]:min-w-32">
-                  <td>12</td>
-                  <td>Extended to 5 Days</td>
-                </tr>{" "}
-                <tr className="border-b border-2 border-bg2 [&>td]:border-2 [&>td]:border-bg2 [&>td]:py-2 [&>td]:px-2 [&>td]:text-center [&>td]:min-w-32">
-                  <td>15</td>
-                  <td>Extended to 6 Days</td>
-                </tr>
-              </tbody>
-            </table>
-
-            <p className="text-primary text-xl max-w-220 mt-10">
-              <span className="font-bold">Note: </span>The list continues using
-              a 3:1 ratio.
-            </p>
-          </div>
-        </div>
       </div>
 
-      <div className="my-40 flex justify-center">
+      <div className="mt-40 flex justify-center">
         <CustomButton2
           image={RegisterButtonImage}
           text="Register for the FREE Airdrop Now!"
@@ -302,141 +260,113 @@ export default function Airdrop() {
         />
       </div>
 
-      {/* Part 05 */}
-      <div className="mt-80 px-4 md:px-20 xl:px-40">
-        <div className="flex flex-col items-center text-center">
-          <h4 className="text-2xl md:text-3xl font-bold text-primary">
-            BITCOIN YAY
-          </h4>
-          <h2 className="mt-6 text-4xl md:text-5xl xl:text-8xl font-semibold md:leading-16 xl:leading-26">
-            Mining Comparison Chart
+      <div className="mt-80 flex flex-col lg:flex-row items-center justify-center gap-20 px-4 md:px-20 xl:px-40">
+        <div className="flex items-start">
+          <Image src={ArtImage5} alt="art image" className="w-120" />
+        </div>
+        <div>
+          <h4 className="text-3xl font-bold text-primary">BENEFITS OF</h4>
+          <h2 className="mt-6 text-5xl md:text-7xl font-semibold">
+            Turbo Mining Gopher
           </h2>
-          <p className="mt-10 text-3xl font-light max-w-200">
-            Bitcoin Yay offers mining Gophers from free to powerful upgrades.
-            Choose your Gopher and start mining!
+          <ul className="list-disc pl-6 text-2xl font-bold text-tertiary">
+            <li className="mt-6">
+              <h5>Maximized Earnings:</h5>
+              <p className="text-xl font-normal">
+                Six-fold mining rate exponentially boosts your daily BTCY yield.
+              </p>
+            </li>
+            <li className="mt-6">
+              <h5>Risk-Free Mining Opportunity</h5>
+              <p className="text-xl font-normal">
+                No payment details needed—evaluate before you upgrade.
+              </p>
+            </li>
+            <li className="mt-6">
+              <h5>Viral Growth: </h5>
+              <p className="text-xl font-normal">
+                Earn free bonus days simply by inviting friends.
+              </p>
+            </li>
+            <li className="mt-6">
+              <h5>Seamless Experience:</h5>
+              <p className="text-xl font-normal">
+                One-tap activation; withdrawals processed instantly.
+              </p>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div className="mt-40 flex justify-center">
+        <CustomButton2
+          image={RegisterButtonImage}
+          text="Register for the FREE Airdrop Now!"
+          link="/airdrop/register"
+        />
+      </div>
+
+      <div className="mt-80 px-4 md:px-20 xl:px-40">
+        <Image src={ArtImage6} alt="Airdrop Art 6" className="w-80" />
+        <h2 className="mt-10 text-8xl font-semibold">FAQs</h2>
+        <div className="text-tertiary">
+          <h5 className="mt-6 text-3xl font-bold">
+            Q: Will I be charged after the 5-day trial?
+          </h5>
+          <p className="mt-4 text-lg">
+            A: No—your trial expires automatically. To continue at Turbo speeds,
+            choose a monthly or yearly plan in Settings.
           </p>
-        </div>
-        <div className="px-4 flex justify-center">
-          <div className="my-10 overflow-x-auto max-w-screen mx-auto">
-            <table className="min-w-340 max-w-400 bg-transparent border-2 border-bg2 text-sm lg:text-xl lg:table-fixed">
-              <thead>
-                <tr className="border-b border-2 border-bg2 [&>th]:border-2 [&>th]:border-bg2 [&>th]:py-4 [&>th]:px-2 [&>th]:text-center [&>th]:min-w-32 [&>th]:whitespace-nowrap [&>th]:lg:w-1/7">
-                  <th>Mining Gopher</th>
-                  <th>Power (X)</th>
-                  <th>
-                    Cost
-                    <br />
-                    ($/month)
-                  </th>
-                  <th>
-                    BTCY
-                    <br />
-                    (per hour)
-                  </th>
-                  <th>
-                    BTCY
-                    <br />
-                    (per day)
-                  </th>
-                  <th>
-                    USD
-                    <br />
-                    (per day)
-                  </th>
-                  <th>
-                    BTCY
-                    <br />
-                    (per month)
-                  </th>
-                  <th>
-                    USD
-                    <br />
-                    (per month)
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b border-2 border-bg2 [&>td]:border-2 [&>td]:border-bg2 [&>td]:py-6 [&>td]:px-2 [&>td]:text-center [&>td]:min-w-32 [&>td]:lg:w-1/7">
-                  <td className="font-normal">Snatch Gopher (Free)</td>
-                  <td>1x</td>
-                  <td>$0 (ads/tasks)</td>
-                  <td>~3 BTCY</td>
-                  <td>72 BTCY</td>
-                  <td>$72.00</td>
-                  <td>2,160 BTCY</td>
-                  <td>$216.00</td>
-                </tr>
-                <tr className="border-b border-2 border-bg2 [&>td]:border-2 [&>td]:border-bg2 [&>td]:py-6 [&>td]:px-2 [&>td]:text-center [&>td]:min-w-32 [&>td]:lg:w-1/7">
-                  <td className="font-normal">Electric Mining Gopher</td>
-                  <td>300x</td>
-                  <td>$100.00</td>
-                  <td>~9 BTCY</td>
-                  <td>216 BTCY</td>
-                  <td>$21.00</td>
-                  <td>6,400 BTCY</td>
-                  <td>$648.00</td>
-                </tr>
-                <tr className="border-b border-2 border-bg2 [&>td]:border-2 [&>td]:border-bg2 [&>td]:py-6 [&>td]:px-2 [&>td]:text-center [&>td]:min-w-32 [&>td]:lg:w-1/7">
-                  <td>Turbo Mining Gopher</td>
-                  <td>600x</td>
-                  <td>$300.00</td>
-                  <td>~18 BTCY</td>
-                  <td>432 BTCY</td>
-                  <td>$43.20</td>
-                  <td>12,960 BTCY</td>
-                  <td>$1,296.00</td>
-                </tr>
-                <tr className="border-b border-2 border-bg2 [&>td]:border-2 [&>td]:border-bg2 [&>td]:py-6 [&>td]:px-2 [&>td]:text-center [&>td]:min-w-32 [&>td]:lg:w-1/7">
-                  <td className="font-normal">Nuclear Mining Gopher</td>
-                  <td>900x</td>
-                  <td>$600.00</td>
-                  <td>~27 BTCY</td>
-                  <td>648 BTCY</td>
-                  <td>$64.00</td>
-                  <td>19,440 BTCY</td>
-                  <td>$1,944.00</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
 
-      <div className="my-40 flex justify-center">
-        <CustomButton2
-          image={RegisterButtonImage}
-          text="Register for the FREE Airdrop Now!"
-          link="/airdrop/register"
-        />
-      </div>
+          <h5 className="mt-6 text-3xl font-bold">
+            Q: How do I see my referral count?
+          </h5>
+          <p className="mt-4 text-lg">
+            A: Open the Referral tab in the app menu to view your active invites
+            and earned bonus days.
+          </p>
 
-      {/* Part 06 */}
-      <div className="mt-80 px-4 md:px-20 xl:px-40">
-        <div className="flex flex-col items-center text-center">
-          <h4 className="text-2xl md:text-3xl font-bold text-primary">
-            HURRY! DON&apos;T FORGET TO
-          </h4>
-          <h2 className="mt-6 text-4xl md:text-5xl xl:text-8xl font-semibold md:leading-16 xl:leading-26">
-            Mark your calendar
-          </h2>
-          <Image
-            src={ArtImage5}
-            alt="art"
-            className="mt-20 w-90 md:w-160 xl:w-300"
-          />
-          <p className="mt-10 text-3xl font-light max-w-220">
-            Don&apos;t miss out on the upcoming FREE airdrop! Mark your calendar
-            and get ready to receive your Turbo Mining Gopher.
+          <h5 className="mt-6 text-3xl font-bold">
+            Q: Can I stack multiple free mining opportunity?
+          </h5>
+          <p className="mt-4 text-lg">
+            A: Only one initial free mining opportunity is granted per account,
+            but bonus days from referrals will extend your turbo period.
+          </p>
+
+          <h5 className="mt-6 text-3xl font-bold">
+            Q: What happens when my turbo days run out?
+          </h5>
+          <p className="mt-4 text-lg">
+            A: Your mining rate returns to the standard level (1×), but your
+            accumulated BTCY remains in your wallet.
           </p>
         </div>
       </div>
 
-      <div className="my-40 flex justify-center">
+      <div className="flex flex-col items-center justify-center mt-80 px-4 md:px-20 xl:px-40">
+        <h2 className="text-6xl md:text-7xl lg:text-[110px] font-semibold text-center max-w-320">
+          Ready to Turbo-Charge Your Earnings?
+        </h2>
+      </div>
+
+      <div className="mt-40 flex justify-center">
         <CustomButton2
-          image={RegisterButtonImage}
-          text="Register for the FREE Airdrop Now!"
+          image={PowerButtonImage}
+          text="Activate 5-Day Free Mining Oppurtunity"
           link="/airdrop/register"
         />
+      </div>
+
+      <div className="container mx-auto px-4 py-8 relative">
+        <div className="mt-80 md:mt-100 flex flex-col items-center justify-center text-center">
+          <div>
+            <h2 className="text-4xl md:text-7xl font-bold my-6">
+              What Our Minners Say?
+            </h2>
+          </div>
+          <UserReviewCards />
+        </div>
       </div>
     </div>
   );

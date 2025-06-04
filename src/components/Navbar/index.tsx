@@ -70,7 +70,7 @@ const DropdownLink = memo(
         href={link.href}
         target={link.openInNewTab ? "_blank" : undefined}
         className={`${
-          isMainList ? "text-[25px] font-semibold" : "text-xs"
+          isMainList ? "text-[17px] font-semibold" : "text-xs mt-4"
         } text-tertiary block relative after:absolute after:left-0 after:-bottom-1 after:w-5 after:h-[3px] after:bg-primary after:opacity-0 hover:after:opacity-100 after:transition-opacity after:duration-300`}
       >
         {link.name}

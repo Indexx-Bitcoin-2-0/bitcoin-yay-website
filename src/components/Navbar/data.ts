@@ -266,15 +266,10 @@ const header_data = [
             name: "Developer",
             href: "/coming-soon",
           },
-          {
-            name: "Indexx.ai",
-            href: "https://indexx.ai",
-            openInNewTab: true,
-          },
         ],
       },
       {
-        heading: "Ecosystem",
+        heading: "indexx.ai",
         mainList: true,
         links: [
           {
@@ -293,23 +288,8 @@ const header_data = [
             openInNewTab: true,
           },
           {
-            name: "xToken",
-            href: "https://indexx.ai/indexx-exchange/token-details",
-            openInNewTab: true,
-          },
-          {
-            name: "Hive",
-            href: "https://hive.indexx.ai",
-            openInNewTab: true,
-          },
-          {
             name: "Academy",
             href: "https://academy.indexx.ai",
-            openInNewTab: true,
-          },
-          {
-            name: "Crypto Treasury",
-            href: "https://cex.indexx.ai/smart-crypto",
             openInNewTab: true,
           },
         ],
