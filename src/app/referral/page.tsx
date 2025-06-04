@@ -25,7 +25,8 @@ export default function ReferralPage() {
 
     return (
         <div className="container mx-auto py-20 px-4 text-center">
-            <h2 className="text-5xl md:text-6xl font-bold">You're Invited!</h2>
+            <h2 className="text-5xl md:text-6xl font-bold">You&#39;re Invited!</h2>
+
 
             <Image
                 src={ArtImage1}
