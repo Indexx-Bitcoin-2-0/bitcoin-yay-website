@@ -1,9 +1,23 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  async rewrites() {
+    return [
+      {
+        source: '/referral=:referralCode',
+        destination: '/referral?code=:referralCode',
+      },
+    ];
+  },
   images: {
-    domains: [
-      'play.google.com',
-      'developer.apple.com',
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'play.google.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'developer.apple.com',
+      },
     ],
   },
 };
