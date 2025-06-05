@@ -78,6 +78,34 @@ const header_data = [
       },
     ],
   },
+  {
+    mainTextDesktop: "Chain",
+    mainTextMob: "Chain",
+    active: false,
+    href: "/coming-soon",
+    hasMegaDrop: true,
+    dropDownContent: [
+      {
+        heading: "Explore Chain",
+        mainList: true,
+        links: [
+          {
+            name: "Ying Yang Blockchain Expo",
+            href: "/coming-soon",
+          },
+        ],
+      },
+      {
+        heading: "Support",
+        links: [
+          {
+            name: "Contact Us",
+            href: "/support/#contact-us",
+          },
+        ],
+      },
+    ],
+  },
 
   {
     mainTextDesktop: "WIBS",
