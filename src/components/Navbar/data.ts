@@ -302,23 +302,19 @@ const header_data = [
         links: [
           {
             name: "Lotto",
-            href: "https://lotto.indexx.ai",
-            openInNewTab: true,
+            href: "/btcy-index-relationship",
           },
           {
             name: "Exchange",
-            href: "https://cex.indexx.ai/update/home?buyToken=INEX",
-            openInNewTab: true,
+            href: "/btcy-index-relationship",
           },
           {
             name: "Shop",
-            href: "https://shop.indexx.ai",
-            openInNewTab: true,
+            href: "/btcy-index-relationship",
           },
           {
             name: "Academy",
-            href: "https://academy.indexx.ai",
-            openInNewTab: true,
+            href: "/btcy-index-relationship",
           },
         ],
       },
