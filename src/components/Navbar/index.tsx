@@ -319,7 +319,7 @@ const Navbar: React.FC = () => {
               id="search-navbar"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="block w-80 h-15 p-2 text-lg text-tertiary border border-[#2F2F2F] rounded-lg outline-none hover:border-primary focus:border-primary"
+              className="block w-80 h-15 p-2 text-lg text-tertiary border border-bg2 rounded-lg outline-none hover:border-primary focus:border-primary"
               placeholder="Search"
             />
             <button type="submit" className="absolute right-2 top-2 ">

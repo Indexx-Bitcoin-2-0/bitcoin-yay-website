@@ -12,7 +12,8 @@ import {
 } from "@/components/ui/accordion";
 import ContactForm from "@/components/ContactForm";
 
-import SearchIcon from "../../assets/images/search-icon-2.svg";
+import SearchIcon1 from "@/assets/images/search-icon-1.svg";
+import SearchIcon2 from "../../assets/images/search-icon-2.svg";
 import CustomStyledConatiner from "@/components/CustomStyledContainer";
 import ArtImage1 from "@/assets/images/support/art-1.svg";
 
@@ -61,7 +62,7 @@ export default function support() {
         <p className="text-sm md:text-lg font-normal text-tertiary my-4">
           Follow these steps to find the right resources for your support needs.
         </p>
-        <form onSubmit={handleSearch} className="relative max-w-2xl my-6">
+        {/* <form onSubmit={handleSearch} className="relative max-w-2xl my-6">
           <input
             type="text"
             id="search-navbar"
@@ -75,6 +76,33 @@ export default function support() {
               src={SearchIcon}
               alt="Search Icon"
               className="w-5 lg:w-8 h-5 lg:h-8"
+            />
+          </button>
+        </form> */}
+
+        <form onSubmit={handleSearch} className="relative group max-w-2xl my-6">
+          <input
+            type="text"
+            id="search-navbar"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="block w-full h-15 p-5 text-lg text-tertiary border border-bg2 rounded-lg outline-none hover:border-primary focus:border-primary"
+            placeholder="Search"
+          />
+          <button type="submit" className="absolute right-2 top-2 ">
+            <Image
+              src={SearchIcon1}
+              alt="Search Icon"
+              className="group-hover:hidden group-focus-within:hidden"
+              width={44}
+              height={44}
+            />
+            <Image
+              src={SearchIcon2}
+              alt="Search Icon"
+              className="hidden group-hover:block group-focus-within:block mt-2 mr-2"
+              width={30}
+              height={30}
             />
           </button>
         </form>
