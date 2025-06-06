@@ -2,219 +2,6 @@ const baseURL = "/";
 
 const header_data = [
   {
-    mainTextDesktop: "Mining",
-    mainTextMob: "Mining",
-    active: false,
-    href: baseURL,
-    hasMegaDrop: true,
-    dropDownContent: [
-      {
-        heading: "Explore Mining",
-        mainList: true,
-        links: [
-          {
-            name: "Mobile Mining",
-            href: `/#mobile-mining`,
-          },
-        ],
-      },
-      {
-        heading: "Action",
-        links: [
-          {
-            name: "Download App on Apple Store",
-            href: "/#apple-store-download",
-          },
-          {
-            name: "Download on Google Play",
-            href: "/#google-play-download",
-          },
-        ],
-      },
-      {
-        heading: "Support",
-        links: [
-          {
-            name: "Contact Us",
-            href: "/support/#contact-us",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    mainTextDesktop: "DAO",
-    mainTextMob: "DAO",
-    active: false,
-    href: "/coming-soon",
-    hasMegaDrop: true,
-    dropDownContent: [
-      {
-        heading: "Explore YingYang DAO",
-        mainList: true,
-        links: [
-          {
-            name: "Proposal Studio",
-            href: "/coming-soon",
-          },
-          {
-            name: "Role-Based Governance",
-            href: "/coming-soon",
-          },
-          {
-            name: "Yin Yang Grant Rounds",
-            href: "/coming-soon",
-          },
-        ],
-      },
-      {
-        heading: "Support",
-        links: [
-          {
-            name: "Contact Us",
-            href: "/coming-soon",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    mainTextDesktop: "Chain",
-    mainTextMob: "Chain",
-    active: false,
-    href: "/coming-soon",
-    hasMegaDrop: true,
-    dropDownContent: [
-      {
-        heading: "Explore Chain",
-        mainList: true,
-        links: [
-          {
-            name: "Ying Yang Blockchain Expo",
-            href: "/coming-soon",
-          },
-        ],
-      },
-      {
-        heading: "Support",
-        links: [
-          {
-            name: "Contact Us",
-            href: "/support/#contact-us",
-          },
-        ],
-      },
-    ],
-  },
-
-  {
-    mainTextDesktop: "WIBS",
-    mainTextMob: "WIBS",
-    active: false,
-    href: "https://whoisbitcoinsatoshi.wtf",
-    openInNewTab: true,
-    hasMegaDrop: true,
-    dropDownContent: [
-      {
-        heading: "Explore WIBS",
-        mainList: true,
-        links: [
-          {
-            name: "Who is Bitcon Satoshi",
-            href: "https://whoisbitcoinsatoshi.wtf",
-            openInNewTab: true,
-          },
-        ],
-      },
-      {
-        heading: "Action",
-        mainList: false,
-        links: [
-          {
-            name: "Buy WIBS",
-            href: "https://cex.indexx.ai/update/home?buyToken=WIBS",
-            openInNewTab: true,
-          },
-          {
-            name: "Buy Gift Cards",
-            href: "https://shop.indexx.ai/?category=bitcoin-cards",
-            openInNewTab: true,
-          },
-          {
-            name: "Crypto Treasury",
-            href: "https://cex.indexx.ai/smart-crypto",
-            openInNewTab: true,
-          },
-        ],
-      },
-      {
-        heading: "Get Help",
-        mainList: false,
-        links: [
-          {
-            name: "Contact Us",
-            href: "https://whoisbitcoinsatoshi.wtf/contact-us",
-            openInNewTab: true,
-          },
-        ],
-      },
-    ],
-  },
-  {
-    mainTextDesktop: "Bitcoin",
-    mainTextMob: "Bitcoin",
-    active: false,
-    href: "/bitcoin",
-    hasMegaDrop: true,
-    dropDownContent: [
-      {
-        heading: "Explore Bitcoin",
-        mainList: true,
-        links: [
-          {
-            name: "BTCY Relationship",
-            href: "/bitcoin",
-          },
-
-          {
-            name: "Bitcoin for the Next Billion",
-            href: "/bitcoin/next-billion",
-          },
-        ],
-      },
-      {
-        heading: "Action",
-        links: [
-          {
-            name: "Buy BTCY",
-            href: "https://cex.indexx.ai/update/home?buyToken=BTCY",
-            openInNewTab: true,
-          },
-          {
-            name: "Mine Bitcoin-Yay",
-            href: "/#apple-store-download",
-          },
-          {
-            name: "Buy Gift Card",
-            href: "https://shop.indexx.ai/?category=bitcoin-cards",
-            openInNewTab: true,
-          },
-        ],
-      },
-      {
-        heading: "More",
-        links: [
-          {
-            name: "Crypto Treasury",
-            href: "https://cex.indexx.ai/smart-crypto",
-            openInNewTab: true,
-          },
-        ],
-      },
-    ],
-  },
-
-  {
     mainTextDesktop: "Bible",
     mainTextMob: "Bible",
     active: false,
@@ -279,6 +66,124 @@ const header_data = [
     ],
   },
   {
+    mainTextDesktop: "Bitcoin",
+    mainTextMob: "Bitcoin",
+    active: false,
+    href: "/bitcoin",
+    hasMegaDrop: true,
+    dropDownContent: [
+      {
+        heading: "Explore Bitcoin",
+        mainList: true,
+        links: [
+          {
+            name: "BTCY Relationship",
+            href: "/bitcoin",
+          },
+
+          {
+            name: "Bitcoin for the Next Billion",
+            href: "/bitcoin/next-billion",
+          },
+        ],
+      },
+      {
+        heading: "Action",
+        links: [
+          {
+            name: "Buy BTCY",
+            href: "https://cex.indexx.ai/update/home?buyToken=BTCY",
+            openInNewTab: true,
+          },
+          {
+            name: "Mine Bitcoin-Yay",
+            href: "/#apple-store-download",
+          },
+          {
+            name: "Buy Gift Card",
+            href: "https://shop.indexx.ai/?category=bitcoin-cards",
+            openInNewTab: true,
+          },
+        ],
+      },
+      {
+        heading: "More",
+        links: [
+          {
+            name: "Crypto Treasury",
+            href: "https://cex.indexx.ai/smart-crypto",
+            openInNewTab: true,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    mainTextDesktop: "Chain",
+    mainTextMob: "Chain",
+    active: false,
+    href: "/coming-soon",
+    hasMegaDrop: true,
+    dropDownContent: [
+      {
+        heading: "Explore Chain",
+        mainList: true,
+        links: [
+          {
+            name: "Ying Yang Blockchain Expo",
+            href: "/coming-soon",
+          },
+        ],
+      },
+      {
+        heading: "Support",
+        links: [
+          {
+            name: "Contact Us",
+            href: "/support/#contact-us",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    mainTextDesktop: "DAO",
+    mainTextMob: "DAO",
+    active: false,
+    href: "/coming-soon",
+    hasMegaDrop: true,
+    dropDownContent: [
+      {
+        heading: "Explore YingYang DAO",
+        mainList: true,
+        links: [
+          {
+            name: "Proposal Studio",
+            href: "/coming-soon",
+          },
+          {
+            name: "Role-Based Governance",
+            href: "/coming-soon",
+          },
+          {
+            name: "Yin Yang Grant Rounds",
+            href: "/coming-soon",
+          },
+        ],
+      },
+      {
+        heading: "Support",
+        links: [
+          {
+            name: "Contact Us",
+            href: "/coming-soon",
+          },
+        ],
+      },
+    ],
+  },
+
+  {
     mainTextDesktop: "Eco",
     mainTextMob: "Eco",
     active: false,
@@ -298,7 +203,6 @@ const header_data = [
       },
       {
         heading: "indexx.ai",
-        mainList: true,
         links: [
           {
             name: "Lotto",
@@ -359,6 +263,100 @@ const header_data = [
           {
             name: "About Us",
             href: "https://indexx.ai/indexx-exchange/about",
+            openInNewTab: true,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    mainTextDesktop: "Mining",
+    mainTextMob: "Mining",
+    active: false,
+    href: baseURL,
+    hasMegaDrop: true,
+    dropDownContent: [
+      {
+        heading: "Explore Mining",
+        mainList: true,
+        links: [
+          {
+            name: "Mobile Mining",
+            href: `/#mobile-mining`,
+          },
+        ],
+      },
+      {
+        heading: "Action",
+        links: [
+          {
+            name: "Download App on Apple Store",
+            href: "/#apple-store-download",
+          },
+          {
+            name: "Download on Google Play",
+            href: "/#google-play-download",
+          },
+        ],
+      },
+      {
+        heading: "Support",
+        links: [
+          {
+            name: "Contact Us",
+            href: "/support/#contact-us",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    mainTextDesktop: "WIBS",
+    mainTextMob: "WIBS",
+    active: false,
+    href: "https://whoisbitcoinsatoshi.wtf",
+    openInNewTab: true,
+    hasMegaDrop: true,
+    dropDownContent: [
+      {
+        heading: "Explore WIBS",
+        mainList: true,
+        links: [
+          {
+            name: "Who is Bitcon Satoshi",
+            href: "https://whoisbitcoinsatoshi.wtf",
+            openInNewTab: true,
+          },
+        ],
+      },
+      {
+        heading: "Action",
+        mainList: false,
+        links: [
+          {
+            name: "Buy WIBS",
+            href: "https://cex.indexx.ai/update/home?buyToken=WIBS",
+            openInNewTab: true,
+          },
+          {
+            name: "Buy Gift Cards",
+            href: "https://shop.indexx.ai/?category=bitcoin-cards",
+            openInNewTab: true,
+          },
+          {
+            name: "Crypto Treasury",
+            href: "https://cex.indexx.ai/smart-crypto",
+            openInNewTab: true,
+          },
+        ],
+      },
+      {
+        heading: "Get Help",
+        mainList: false,
+        links: [
+          {
+            name: "Contact Us",
+            href: "https://whoisbitcoinsatoshi.wtf/contact-us",
             openInNewTab: true,
           },
         ],
