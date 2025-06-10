@@ -262,14 +262,17 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="mt-40 flex justify-center text-center">
+        <div className="mt-40 flex flex-col justify-center text-center items-center">
           <h1 className="px-4 text-4xl md:text-5xl xl:text-6xl font-bold text-primary max-w-250 leading-10 md:leading-18">
             Bitcoin Yay Is The Micro Token And Petty Cash Of Bitcoin{" "}
           </h1>
+          <h2 className="mt-20 text-3xl md:text-[54px] max-w-250 font-semibold">
+            Download the App for Free Mining
+          </h2>
         </div>
 
         {/* Part 06 */}
-        <div className="flex flex-col md:flex-row gap-20 justify-center items-center mt-80 mx-10">
+        <div className="flex flex-col md:flex-row gap-20 justify-center items-center mt-40 md:mt-80 mx-10">
           <div
             className="flex flex-col items-center justify-center"
             id="apple-store-download"
@@ -302,6 +305,12 @@ export default function Home() {
               Download on the Google Play
             </p>
           </div>
+        </div>
+
+        <div className="mt-40 flex flex-col justify-center text-center items-center">
+          <h2 className="mt-20 text-3xl md:text-[54px] font-semibold">
+            Download the app now to start the free mining.
+          </h2>
         </div>
 
         {/* Part 07 */}
