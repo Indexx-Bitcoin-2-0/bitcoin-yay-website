@@ -17,6 +17,10 @@ const header_data = [
             href: "/bible/story",
           },
           {
+            name: "Story of Yatoshi",
+            href: "/bible/yatoshi",
+          },
+          {
             name: "Whitepaper",
             href: "/bible/whitepaper",
           },
