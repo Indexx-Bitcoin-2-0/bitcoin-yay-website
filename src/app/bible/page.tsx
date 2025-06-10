@@ -94,7 +94,7 @@ export default function Bible() {
             title="Yatoshi Nakamoto"
             description="Satoshi Nakamoto’s sibling"
             buttonText="Read More"
-            buttonLink="/bible/story"
+            buttonLink="/bible/yatoshi"
           />
           <CustomCard
             image={CardImage2}
