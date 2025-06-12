@@ -13,10 +13,10 @@ import {
 } from "@/components/ui/accordion";
 
 import ArtImage1 from "@/assets/images/eco/ambassador/art-1.webp";
-import ArtImage2 from "@/assets/images/eco/ambassador/turbo no token 6 copy.webp";
-import ArtImage3 from "@/assets/images/eco/ambassador/referral.webp";
-import ArtImage4 from "@/assets/images/eco/ambassador/hour-glasss.webp";
-import ArtImage5 from "@/assets/images/eco/ambassador/Star.webp";
+import ArtImage2 from "@/assets/images/eco/ambassador/art-2.webp";
+import ArtImage3 from "@/assets/images/eco/ambassador/art-3.webp";
+import ArtImage4 from "@/assets/images/eco/ambassador/art-4.webp";
+import ArtImage5 from "@/assets/images/eco/ambassador/art-5.webp";
 import ArtImage6 from "@/assets/images/eco/ambassador/art-6.webp";
 import ArtImage7 from "@/assets/images/eco/ambassador/art-7.webp";
 import ArtImage8 from "@/assets/images/eco/ambassador/art-8.webp";
