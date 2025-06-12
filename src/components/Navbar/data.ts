@@ -200,9 +200,9 @@ const header_data = [
         mainList: true,
         links: [
           {
-            name: "Developer",
-            href: "/coming-soon",
-          },
+            name: "Ambassador",
+            href: "/ecosystem/ambassador",
+          },  
         ],
       },
       {
