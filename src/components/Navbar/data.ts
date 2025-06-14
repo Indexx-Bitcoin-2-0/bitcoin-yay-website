@@ -200,13 +200,15 @@ const header_data = [
         mainList: true,
         links: [
           {
-            name: "Ambassador",
-            href: "/ecosystem/ambassador",
-          },  
+            name: "indexx.ai",
+            href: "https://indexx.ai",
+            openInNewTab: true,
+          },
         ],
       },
       {
-        heading: "indexx.ai",
+        heading: "Category",
+        mainList: true,
         links: [
           {
             name: "Lotto",
@@ -223,6 +225,10 @@ const header_data = [
           {
             name: "Academy",
             href: "/btcy-index-relationship",
+          },
+          {
+            name: "Ambassador",
+            href: "/ecosystem/ambassador",
           },
         ],
       },
