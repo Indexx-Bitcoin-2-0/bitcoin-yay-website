@@ -65,7 +65,7 @@ export default function BtcySat() {
         </ul>
       </div>
       <div className="mt-40 flex flex-col items-center justify-center px-4 max-w-6xl mx-auto">
-        <Image src={ArtImage1} alt="Art Image 1" className="w-100" />
+        <Image src={ArtImage1} alt="Art Image 1" className="w-140" />
       </div>
 
       <div className="my-40 flex flex-col items-center justify-center px-4 max-w-6xl mx-auto">
