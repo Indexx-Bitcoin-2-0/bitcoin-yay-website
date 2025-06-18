@@ -77,20 +77,34 @@ const Footer = ({}) => {
               </h3>
               <div className="flex flex-col md:flex-row gap-4 lg:gap-8 lg:mt-12">
                 <div className="flex flex-col items-start justify-start mt-6">
-                  <p className="text-xs font-semibold">App Store</p>
-                  <Image
-                    src={AppleQrCode}
-                    alt="App QR Code"
-                    className="h-44 w-44 mt-2 text-amber-50"
-                  />
+                  <p className="text-sm font-semibold text-primary">
+                    Scan or Click on the QR Code
+                  </p>
+                  <Link
+                    href="https://apps.apple.com/ph/app/bitcoin-yay/id6744868017"
+                    target="_blank"
+                  >
+                    <Image
+                      src={AppleQrCode}
+                      alt="App QR Code"
+                      className="h-44 w-44 mt-2 text-amber-50 hover:scale-105 transition-transform duration-300 ease-in-out"
+                    />
+                  </Link>
                 </div>
                 <div className="flex flex-col items-start justify-start mt-6">
-                  <p className="text-xs font-semibold">Google Play Store</p>
-                  <Image
-                    src={PlaystoreQrCode}
-                    alt="Google QR Code"
-                    className="h-44 w-44 mt-2 text-amber-50"
-                  />
+                  <p className="text-sm font-semibold text-primary">
+                    Scan or Click on the QR Code
+                  </p>
+                  <Link
+                    href="https://play.google.com/store/apps/details?id=com.bitcoin2&hl=en"
+                    target="_blank"
+                  >
+                    <Image
+                      src={PlaystoreQrCode}
+                      alt="Google QR Code"
+                      className="h-44 w-44 mt-2 text-amber-50 hover:scale-105 transition-transform duration-300 ease-in-out"
+                    />
+                  </Link>
                 </div>
               </div>
             </div>
