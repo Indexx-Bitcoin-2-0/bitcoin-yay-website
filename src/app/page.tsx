@@ -1,14 +1,21 @@
 "use client";
 import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 import BenefitCard from "@/components/BenefitCard";
 import HeroComponent from "@/components/HeroComponent";
+import PopupComponent from "@/components/PopupComponent";
 
 import IndexxLogo1 from "@/assets/images/indexx-logo-1.svg";
 import DownloadLogo from "../assets/images/download-button.svg";
 import AppleLogo from "@/assets/images/home/apple-logo.svg";
 import PlaystoreLogo from "@/assets/images/home/playstore-logo.svg";
+
+import PopupArt1 from "@/assets/images/home/popup/art-1.png";
+import PopupLogo from "@/assets/images/home/popup/logo.png";
+import PopupButton from "@/assets/images/home/popup/button.png";
+import PopupArt2 from "@/assets/images/home/popup/token.png";
 
 import PhoneImage1 from "../assets/images/home/phone-1.svg";
 import PhoneImage2 from "../assets/images/home/phone-2.svg";
@@ -33,8 +40,8 @@ import GopherImage4 from "@/assets/images/home/gophers/gopher-4.webp";
 import GopherImage5 from "@/assets/images/home/gophers/gopher-5.webp";
 import GopherImage6 from "@/assets/images/home/gophers/gopher-6.webp";
 
-import BirthdayBanner from "@/assets/images/home/BTCY-birthday-celebration.webp";
-import BirthdayBannerMobile from "@/assets/images/home/BTCY-birthday-celebration-mobile.webp";
+import BirthdayBanner from "@/assets/images/home/10K-celebration.png";
+import BirthdayBannerMobile from "@/assets/images/home/10K-celebration-mobile.png";
 import ApplestoreDownloadButton from "@/assets/images/buttons/get-on-applestore-button.webp";
 import PlaystoreDownloadButton from "@/assets/images/buttons/get-on-playstore-button.webp";
 
@@ -91,8 +98,71 @@ const GopherCard = ({
 };
 
 export default function Home() {
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  // Check if popup should be shown
+  useEffect(() => {
+    const checkPopupTiming = () => {
+      const lastPopupClosed = localStorage.getItem("bitcoinYayPopupLastClosed");
+      const now = new Date().getTime();
+
+      if (!lastPopupClosed) {
+        setIsPopupOpen(true);
+      } else {
+        const lastClosedTime = parseInt(lastPopupClosed);
+        const timeDifference = now - lastClosedTime;
+        const thirtyMinutesInMs = 3 * 60 * 1000; // 30 minutes in milliseconds
+
+        if (timeDifference >= thirtyMinutesInMs) {
+          setIsPopupOpen(true);
+        }
+      }
+    };
+
+    checkPopupTiming();
+  }, []);
+
+  // Handle popup close
+  const handlePopupClose = () => {
+    setIsPopupOpen(false);
+    // Store current time in localStorage
+    localStorage.setItem(
+      "bitcoinYayPopupLastClosed",
+      new Date().getTime().toString()
+    );
+  };
+
   return (
     <div className="overflow-hidden relative mt-40">
+      {/* Popup Component */}
+      <PopupComponent isOpen={isPopupOpen} onClose={handlePopupClose}>
+        <div className="flex flex-col items-center justify-center w-90 md:w-142 relative">
+          <div className="flex flex-col items-center justify-center">
+            <Image src={PopupArt1} alt="Popup Art 1" className="w-full" />
+            <Image src={PopupLogo} alt="Popup Logo" className="w-90" />
+            <h2 className="text-4xl md:text-5xl font-bold text-center mt-4">
+              We&apos;ve Hit <span className="text-primary">10K</span> Miners!
+            </h2>
+            <p className="text-lg md:text-[26px] uppercase font-semibold mt-4 text-center">
+              Only <span className="text-primary">21 days</span> since launch -
+              join the fastest-growing mining app today!
+            </p>
+            <Link href="#download-app" onClick={handlePopupClose}>
+              <Image
+                src={PopupButton}
+                alt="Popup Button"
+                className="mt-6 mb-30 md:mb-24 w-72 hover:scale-105 transition-transform duration-300 ease-in-out"
+              />
+            </Link>
+            <Image
+              src={PopupArt2}
+              alt="Popup Art 2"
+              className="absolute bottom-0 left-0"
+            />
+          </div>
+        </div>
+      </PopupComponent>
+
       <div className="mt-6 flex justify-center text-center">
         <h1 className="px-4 text-4xl md:text-5xl xl:text-6xl font-bold text-primary max-w-250 leading-10 md:leading-18">
           Bitcoin Yay Is The Micro Token And Petty Cash Of Bitcoin{" "}
@@ -101,7 +171,7 @@ export default function Home() {
       {/* Part 01 */}
       <HeroComponent />
 
-      <div className="mt-120 md:mt-40 xl:mt-100">
+      <div id="download-app" className="mt-120 md:mt-40 xl:mt-100">
         <Image
           src={BirthdayBanner}
           alt="Birthday Banner"
