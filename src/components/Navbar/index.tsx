@@ -15,6 +15,12 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
+import PopupArt1 from "@/assets/images/home/popup/art-1.png";
+import PopupLogo from "@/assets/images/home/popup/logo.png";
+import PopupButton from "@/assets/images/home/popup/button.png";
+import PopupArt2 from "@/assets/images/home/popup/token.png";
+import PopupComponent from "@/components/PopupComponent";
+
 // Types for better type safety
 interface LinkItem {
   name: string;
@@ -196,9 +202,70 @@ const Navbar: React.FC = () => {
     observer.observe(element);
     return () => observer.disconnect();
   }, []);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  // Check if popup should be shown
+  useEffect(() => {
+    const checkPopupTiming = () => {
+      const lastPopupClosed = localStorage.getItem("bitcoinYayPopupLastClosed");
+      const now = new Date().getTime();
+
+      if (!lastPopupClosed) {
+        setIsPopupOpen(true);
+      } else {
+        const lastClosedTime = parseInt(lastPopupClosed);
+        const timeDifference = now - lastClosedTime;
+        const thirtyMinutesInMs = 3 * 60 * 1000; // 30 minutes in milliseconds
+
+        if (timeDifference >= thirtyMinutesInMs) {
+          setIsPopupOpen(true);
+        }
+      }
+    };
+
+    checkPopupTiming();
+  }, []);
+
+  // Handle popup close
+
+  const handlePopupClose = () => {
+    setIsPopupOpen(false);
+    // Store current time in localStorage
+    localStorage.setItem(
+      "bitcoinYayPopupLastClosed",
+      new Date().getTime().toString()
+    );
+  };
 
   return (
     <nav className="w-full bg-bg fixed top-0 left-0 right-0 z-50">
+      <PopupComponent isOpen={isPopupOpen} onClose={handlePopupClose}>
+        <div className="flex flex-col items-center justify-center w-90 md:w-142 relative">
+          <div className="flex flex-col items-center justify-center">
+            <Image src={PopupArt1} alt="Popup Art 1" className="w-full" />
+            <Image src={PopupLogo} alt="Popup Logo" className="w-90" />
+            <h2 className="text-4xl md:text-5xl font-bold text-center mt-4">
+              We&apos;ve Hit <span className="text-primary">10K</span> Miners!
+            </h2>
+            <p className="text-lg md:text-[26px] uppercase font-semibold mt-4 text-center">
+              Only <span className="text-primary">21 days</span> since launch -
+              join the fastest-growing mining app today!
+            </p>
+            <Link href="#download-app" onClick={handlePopupClose}>
+              <Image
+                src={PopupButton}
+                alt="Popup Button"
+                className="mt-6 mb-30 md:mb-24 w-72 hover:scale-105 transition-transform duration-300 ease-in-out"
+              />
+            </Link>
+            <Image
+              src={PopupArt2}
+              alt="Popup Art 2"
+              className="absolute bottom-0 left-0"
+            />
+          </div>
+        </div>
+      </PopupComponent>
       <div className="relative flex items-center justify-between h-[150px] px-4 lg:px-[100px] mx-auto">
         {/* {!isMobile && <Backdrop visible={backdropVisibility} />}
         {isMobile && <Backdrop visible={menuOpen} />} */}
