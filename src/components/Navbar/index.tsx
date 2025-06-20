@@ -72,7 +72,7 @@ const Logo = () => (
 const DropdownLink = memo(
   ({ link, isMainList }: { link: LinkItem; isMainList?: boolean }) => (
     <li className="list-none flex flex-col text-left my-2">
-      <Link
+      <a
         href={link.href}
         target={link.openInNewTab ? "_blank" : undefined}
         className={`${
@@ -80,7 +80,7 @@ const DropdownLink = memo(
         } text-tertiary block relative after:absolute after:left-0 after:-bottom-1 after:w-5 after:h-[3px] after:bg-primary after:opacity-0 hover:after:opacity-100 after:transition-opacity after:duration-300`}
       >
         {link.name}
-      </Link>
+      </a>
     </li>
   )
 );
@@ -320,7 +320,7 @@ const Navbar: React.FC = () => {
                   updateBackDropVisibility(!element.hasMegaDrop ? "" : "leave")
                 }
               >
-                <Link
+                <a
                   href={element.href}
                   target={element.openInNewTab ? "_blank" : undefined}
                   className={`text-sm font-normal transition-all duration-300 hover:text-primary ${
@@ -336,7 +336,7 @@ const Navbar: React.FC = () => {
                   }
                 >
                   {element.mainTextDesktop}
-                </Link>
+                </a>
 
                 {element.hasMegaDrop && (
                   <div
