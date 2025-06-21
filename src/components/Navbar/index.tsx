@@ -215,7 +215,7 @@ const Navbar: React.FC = () => {
       } else {
         const lastClosedTime = parseInt(lastPopupClosed);
         const timeDifference = now - lastClosedTime;
-        const thirtyMinutesInMs = 1000; // 30 minutes in milliseconds
+        const thirtyMinutesInMs = 3 * 60 * 1000; // 30 minutes in milliseconds
 
         if (timeDifference >= thirtyMinutesInMs) {
           setIsPopupOpen(true);
