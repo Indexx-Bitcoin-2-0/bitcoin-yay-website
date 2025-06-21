@@ -215,7 +215,7 @@ const Navbar: React.FC = () => {
       } else {
         const lastClosedTime = parseInt(lastPopupClosed);
         const timeDifference = now - lastClosedTime;
-        const thirtyMinutesInMs = 3 * 60 * 1000; // 30 minutes in milliseconds
+        const thirtyMinutesInMs = 1000; // 30 minutes in milliseconds
 
         if (timeDifference >= thirtyMinutesInMs) {
           setIsPopupOpen(true);
@@ -247,7 +247,7 @@ const Navbar: React.FC = () => {
             <h2 className="text-4xl md:text-5xl font-bold text-center mt-4">
               We&apos;ve Hit <span className="text-primary">10K</span> Miners!
             </h2>
-            <p className="text-lg md:text-[26px] uppercase font-semibold mt-4 text-center">
+            <p className="text-lg md:text-[26px] uppercase font-semibold mt-4 text-center px-2">
               Only <span className="text-primary">21 days</span> since launch -
               join the fastest-growing mining app today!
             </p>

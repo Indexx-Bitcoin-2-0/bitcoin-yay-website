@@ -19,16 +19,16 @@ const PopupComponent: React.FC<PopupProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#6d6c6c25]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#68676763]">
       <div className="relative shadow-lg bg-bg z-100">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 flex items-center justify-center z-100"
+          className="absolute -top-10 right-0 md:top-1 md:-right-14 flex items-center justify-center z-100"
         >
           <Image
             src={CrossImage}
             alt="Close"
-            className="w-6 h-5 hover:scale-110 cursor-pointer"
+            className="w-10 h-8 hover:scale-110 cursor-pointer"
           />
         </button>
         <div>{children}</div>
