@@ -240,7 +240,7 @@ const Navbar: React.FC = () => {
         <div className="flex flex-col items-center justify-center w-90 md:w-142 relative">
           <Image src={PopupArt1} alt="Popup Art 1" className="w-full" />
           <Link
-            href="#download-app"
+            href="/#download-app"
             onClick={handlePopupClose}
             className="absolute bottom-14 md:bottom-24"
           >
