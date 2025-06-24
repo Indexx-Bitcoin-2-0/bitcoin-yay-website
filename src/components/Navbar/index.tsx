@@ -244,9 +244,9 @@ const Navbar: React.FC = () => {
             onClick={handlePopupClose}
             className="absolute bottom-14 md:bottom-24"
           >
-            <button className="border-2 border-primary text-primary px-4 py-4 rounded-md flex items-center justify-center cursor-pointer">
+            <button className="border-2 border-primary text-primary px-4 py-4 rounded-md flex items-center justify-center cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
               <p className="text-primary text-2xl md:text-3xl font-semibold">
-                Start Mining Free
+                Start Mining Free!
               </p>
             </button>
           </Link>
