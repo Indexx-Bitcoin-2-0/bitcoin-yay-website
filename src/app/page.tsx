@@ -14,7 +14,9 @@ import PhoneImage1 from "../assets/images/home/phone-1.svg";
 import PhoneImage2 from "../assets/images/home/phone-2.svg";
 import PhoneImage3 from "../assets/images/home/phone-3.svg";
 import PhoneImage4 from "../assets/images/home/phone-4.webp";
-import PhoneImage5 from "../assets/images/home/phone-5.webp";
+
+import AppStoreQR from "@/assets/images/apple-qr.webp";
+import PlayStoreQR from "@/assets/images/playstore-qr.webp";
 
 import BenefitLogo1 from "../assets/images/home/benefits/1.svg";
 import BenefitLogo2 from "../assets/images/home/benefits/2.svg";
@@ -93,7 +95,6 @@ const GopherCard = ({
 export default function Home() {
   return (
     <div className="overflow-hidden relative mt-40">
-
       <div className="mt-6 flex justify-center text-center">
         <h1 className="px-4 text-4xl md:text-5xl xl:text-6xl font-bold text-primary max-w-250 leading-10 md:leading-18">
           Bitcoin Yay Is The Micro Token And Petty Cash Of Bitcoin{" "}
@@ -279,6 +280,17 @@ export default function Home() {
             id="apple-store-download"
           >
             <div className="flex flex-col items-center justify-center relative">
+              <Image
+                src={AppStoreQR}
+                alt="App Store QR"
+                onClick={() => {
+                  window.open(
+                    "https://apps.apple.com/ph/app/bitcoin-yay/id6744868017",
+                    "_blank"
+                  );
+                }}
+                className="w-50 lg:w-72 xl:w-84 2xl:w-100 absolute hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
+              />
               <Image src={PhoneImage4} alt="Phone Image 4" />
               <Image
                 src={AppleLogo}
@@ -295,7 +307,19 @@ export default function Home() {
             id="google-play-download"
           >
             <div className="flex flex-col items-center justify-center relative">
-              <Image src={PhoneImage5} alt="Phone Image 4" />
+              <Image
+                src={PlayStoreQR}
+                alt="Play Store QR"
+                onClick={() => {
+                  window.open(
+                    "https://play.google.com/store/apps/details?id=com.bitcoin2&hl=en",
+                    "_blank"
+                  );
+                }}
+                className="w-50 lg:w-72 xl:w-84 2xl:w-100 absolute hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
+              />
+
+              <Image src={PhoneImage4} alt="Phone Image 4" />
               <Image
                 src={PlaystoreLogo}
                 alt="Apple Logo"
