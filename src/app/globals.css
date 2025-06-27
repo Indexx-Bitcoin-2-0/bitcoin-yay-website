@@ -4,12 +4,12 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --color-primary: #FF8728;
-  --color-secondary: #FFFFFF;
-  --color-tertiary: #D5D5D5;
+  --color-primary: #ff8728;
+  --color-secondary: #ffffff;
+  --color-tertiary: #d5d5d5;
   --color-bg: #202020;
   --color-bg1: #252525;
-  --color-bg2: #2F2F2F;
+  --color-bg2: #2f2f2f;
   --color-bg3: #818181;
 
   --color-background: var(--background);
@@ -59,14 +59,14 @@
 :root {
   --radius: 0.625rem;
   --background: #202020;
-  --foreground: #FFFFFF;
+  --foreground: #ffffff;
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: #FF8728;
+  --primary: #ff8728;
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: #FFFFFF;
+  --secondary: #ffffff;
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
@@ -93,14 +93,14 @@
 
 .dark {
   --background: #202020;
-  --foreground: #FFFFFF;
+  --foreground: #ffffff;
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
   --primary: oklch(0.922 0 0);
   --primary-foreground: oklch(0.205 0 0);
-  --secondary: #FFFFFF;
+  --secondary: #ffffff;
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
   --muted-foreground: oklch(0.708 0 0);
@@ -138,3 +138,11 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Hide scrollbar utility class */
+.scrollbar-hide {
+  -webkit-scrollbar: none; /* Safari and Chrome */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
