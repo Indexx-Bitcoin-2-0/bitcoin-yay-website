@@ -19,7 +19,7 @@ export default function DAO() {
         <h2 className="text-lg md:text-2xl mb-4 font-bold ">
           YingYang DAO
         </h2>
-        <h1 className="text-4xl md:text-7xl mb-4 font-semibold max-w-5xl text-primary">
+        <h1 className="text-3xl md:text-5xl xl:text-[82px] mb-4 font-semibold max-w-5xl text-primary">
           Welcome to Ying Yang DAO – Powered by Reputation
         </h1>
         <p className="text-xl md:text-2xl mt-4">

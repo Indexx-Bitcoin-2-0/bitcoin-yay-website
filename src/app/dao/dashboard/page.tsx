@@ -71,7 +71,7 @@ export default function Dashboard() {
             YingYang DAO
           </h2>
 
-          <h1 className="text-4xl md:text-7xl mb-4 font-semibold text-primary">
+          <h1 className="text-3xl md:text-5xl xl:text-[82px] mb-4 font-semibold text-primary">
             {userData.role.charAt(0).toUpperCase() + userData.role.slice(1)}{" "}
             Gopher Dashboard
           </h1>
