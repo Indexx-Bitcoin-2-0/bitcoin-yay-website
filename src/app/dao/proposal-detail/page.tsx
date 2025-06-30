@@ -13,7 +13,7 @@ import CustomButton from "@/components/CustomButton";
 
 const getProposalDetailData = () => ({
   proposalNumber: 24,
-  proposalTitle: "Enable IUSD+ Rewards Pool", 
+  proposalTitle: "Enable IUSD+ Rewards Pool",
   createdByRole: "manager",
   summary: "A new reward pool for IUSD+ is proposed....",
   votingPeriod: "May 28 – June 2",
@@ -38,12 +38,13 @@ export default function ProposalDetail() {
 
   return (
     <div className="mt-40 container mx-auto px-4">
-      <div className="mt-20 flex flex-col items-center justify-center text-center px-4">
-        <h2 className="text-2xl mb-4 font-bold text-primary">
+      <div className="mt-40 md:mt-60 flex flex-col items-center justify-center text-center px-4">
+        <h2 className="text-3xl md:text-5xl xl:text-[82px] mb-4 font-bold text-primary">
           DAO Proposal Detail & Voting
         </h2>
-        <h1 className="text-3xl md:text-5xl xl:text-[82px] mb-4 font-semibold">
-          Proposal #{proposal.proposalNumber} — {proposal.proposalTitle}
+        <h1 className="text-2xl mb-4 font-semibold">
+          Proposal <span className="text-5xl">#{proposal.proposalNumber}</span> —{" "}
+          {proposal.proposalTitle}
         </h1>
       </div>
 
@@ -128,7 +129,6 @@ export default function ProposalDetail() {
           </div>
         </div>
 
-
         <div className="mt-20 md:mt-40 flex items-center justify-center gap-10 md:gap-24 px-4">
           <CustomButton
             text="Vote Yes"
@@ -139,13 +139,13 @@ export default function ProposalDetail() {
           <CustomButton
             text="Vote No"
             index={1}
-            handleButtonClick={() => { }}
+            handleButtonClick={() => {}}
             isActive={false}
           />
           <CustomButton
             text="Abstain"
             index={2}
-            handleButtonClick={() => { }}
+            handleButtonClick={() => {}}
             isActive={false}
           />
         </div>
