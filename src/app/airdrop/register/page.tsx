@@ -3,29 +3,29 @@
 import { FormEvent, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-// import axios, { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 
-// import { AIRDROP_REGISTER_API_ROUTE } from "@/routes";
+import { AIRDROP_REGISTER_API_ROUTE } from "@/routes";
 
 import BgImage1 from "@/assets/images/airdrop/bg-art-1.webp";
 import BgImage2 from "@/assets/images/airdrop/bg-art-2.webp";
 import BackArrowIcon1 from "@/assets/images/icons/back-arrow-1.webp";
 import BackArrowIcon2 from "@/assets/images/icons/back-arrow-2.webp";
-// import CopyIcon1 from "@/assets/images/icons/copy-icon-1.webp";
-// import CopyIcon2 from "@/assets/images/icons/copy-icon-2.webp";
-// import InfoIcon from "@/assets/images/icons/info-icon.webp";
-// import DownloadButton from "@/assets/images/buttons/download-button.webp";
-// import BackButton from "@/assets/images/buttons/back-button.webp";
-// import IndexxButton from "@/assets/images/buttons/indexx-button.webp";
+import CopyIcon1 from "@/assets/images/icons/copy-icon-1.webp";
+import CopyIcon2 from "@/assets/images/icons/copy-icon-2.webp";
+import InfoIcon from "@/assets/images/icons/info-icon.webp";
+import DownloadButton from "@/assets/images/buttons/download-button.webp";
+import BackButton from "@/assets/images/buttons/back-button.webp";
+import IndexxButton from "@/assets/images/buttons/indexx-button.webp";
 import SubmitButtomImage from "@/assets/images/buttons/submit-button.webp";
-// import PopupArt1 from "@/assets/images/airdrop/popup-art.webp";
-// import PopupArt2 from "@/assets/images/airdrop/popup-art-1.webp";
-// import PopupArt3 from "@/assets/images/airdrop/popup-art-2.webp";
-import PopupArt4 from "@/assets/images/airdrop/popup-art-3.svg";
-import PopupArt5 from "@/assets/images/airdrop/popup-art-4.png";
+import PopupArt1 from "@/assets/images/airdrop/popup-art.webp";
+import PopupArt2 from "@/assets/images/airdrop/popup-art-1.webp";
+import PopupArt3 from "@/assets/images/airdrop/popup-art-2.webp";
+// import PopupArt4 from "@/assets/images/airdrop/popup-art-3.svg";
+// import PopupArt5 from "@/assets/images/airdrop/popup-art-4.png";
 
 import PopupComponent from "@/components/PopupComponent";
-// import CustomButton2 from "@/components/CustomButton2";
+import CustomButton2 from "@/components/CustomButton2";
 
 interface FormErrors {
   email?: string;
@@ -38,98 +38,98 @@ export default function AirdropRegisterPage() {
   const [email, setEmail] = useState<string>("");
   const [username, setUsername] = useState<string>("");
   const [referralLink, setReferralLink] = useState<string>("");
-  // const [userReferralLink, setUserReferralLink] = useState<string>(
-  //   "bitcoinyay.com/airdrop?ref="
-  // );
+  const [userReferralLink, setUserReferralLink] = useState<string>(
+    "bitcoinyay.com/airdrop?ref="
+  );
 
   const [acceptTerms, setAcceptTerms] = useState<boolean>(false);
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
-  // const [isRegistraionSuccessful, setIsRegistrationSuccessful] =
-  //   useState<boolean>(false);
+  const [isRegistraionSuccessful, setIsRegistrationSuccessful] =
+    useState<boolean>(false);
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
 
-  // const validateForm = (): boolean => {
-  //   const newErrors: FormErrors = {};
+  const validateForm = (): boolean => {
+    const newErrors: FormErrors = {};
 
-  //   if (!email.trim()) {
-  //     newErrors.email = "Email address is required.";
-  //   } else if (!/\S+@\S+\.\S+/.test(email)) {
-  //     newErrors.email = "Email address is invalid.";
-  //   }
+    if (!email.trim()) {
+      newErrors.email = "Email address is required.";
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = "Email address is invalid.";
+    }
 
-  //   if (!username.trim()) {
-  //     newErrors.username = "Name is required.";
-  //   } else if (username.length < 3) {
-  //     newErrors.username = "Name must be at least 3 characters long.";
-  //   }
+    if (!username.trim()) {
+      newErrors.username = "Name is required.";
+    } else if (username.length < 3) {
+      newErrors.username = "Name must be at least 3 characters long.";
+    }
 
-  //   if (!acceptTerms) {
-  //     newErrors.acceptTerms = "You must accept the Terms and conditions.";
-  //   }
+    if (!acceptTerms) {
+      newErrors.acceptTerms = "You must accept the Terms and conditions.";
+    }
 
-  //   setErrors(newErrors);
-  //   return Object.keys(newErrors).length === 0;
-  // };
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     setFormSubmitted(true);
-    setIsPopupOpen(true);
-    setEmail("");
-    setUsername("");
-    setAcceptTerms(false);
-    setErrors({});
+    // setIsPopupOpen(true);
+    // setEmail("");
+    // setUsername("");
+    // setAcceptTerms(false);
+    // setErrors({});
 
-    // if (validateForm()) {
-    //   try {
-    //     const res = await axios.post(AIRDROP_REGISTER_API_ROUTE, {
-    //       email: email,
-    //       referralCode: referralLink,
-    //       userType: "Indexx Exchange",
-    //       walletAddress: "",
-    //       walletProvider: "",
-    //       airdropAmount: 0,
-    //       tokenName: "BTCY",
-    //       eventType: "Bitcoin Yay Birthday airdrop",
-    //     });
+    if (validateForm()) {
+      try {
+        const res = await axios.post(AIRDROP_REGISTER_API_ROUTE, {
+          email: email,
+          referralCode: referralLink,
+          userType: "Indexx Exchange",
+          walletAddress: "",
+          walletProvider: "",
+          airdropAmount: 0,
+          tokenName: "BTCY",
+          eventType: "Bitcoin Yay Birthday airdrop",
+        });
 
-    //     if (res.status === 200 || res.status === 201) {
-    //       setIsRegistrationSuccessful(true);
-    //     } else {
-    //       setIsRegistrationSuccessful(false);
-    //     }
+        if (res.status === 200 || res.status === 201) {
+          setIsRegistrationSuccessful(true);
+        } else {
+          setIsRegistrationSuccessful(false);
+        }
 
-    //     console.log("Form data submitted:", { email, username, acceptTerms });
-    //     setUserReferralLink(userReferralLink + email);
-    //     setIsPopupOpen(true);
-    //     setEmail("");
-    //     setUsername("");
-    //     setAcceptTerms(false);
-    //     setErrors({});
-    //     setFormSubmitted(false);
-    //   } catch (error) {
-    //     console.error("Submission error:", error);
+        console.log("Form data submitted:", { email, username, acceptTerms });
+        setUserReferralLink(userReferralLink + email);
+        setIsPopupOpen(true);
+        setEmail("");
+        setUsername("");
+        setAcceptTerms(false);
+        setErrors({});
+        setFormSubmitted(false);
+      } catch (error) {
+        console.error("Submission error:", error);
 
-    //     let errorMessage = (error as AxiosError).response?.data;
-    //     errorMessage = (errorMessage as { data?: object })?.data;
+        let errorMessage = (error as AxiosError).response?.data;
+        errorMessage = (errorMessage as { data?: object })?.data;
 
-    //     setErrors({
-    //       general:
-    //         error instanceof Error && "response" in error
-    //           ? (errorMessage as { message?: string })?.message ||
-    //             "An error occurred"
-    //           : "Network error or server unavailable. Please try again.",
-    //     });
-    //     setIsPopupOpen(true);
-    //   }
-    // }
+        setErrors({
+          general:
+            error instanceof Error && "response" in error
+              ? (errorMessage as { message?: string })?.message ||
+                "An error occurred"
+              : "Network error or server unavailable. Please try again.",
+        });
+        setIsPopupOpen(true);
+      }
+    }
   };
 
-  // const copyReferralLink = (): void => {
-  //   navigator.clipboard.writeText(userReferralLink);
-  // };
+  const copyReferralLink = (): void => {
+    navigator.clipboard.writeText(userReferralLink);
+  };
   return (
     <div className="container mx-auto mt-60 flex flex-col justify-center items-center">
       {/* ###############  Bsckgroung Images   ############################# */}
@@ -153,7 +153,7 @@ export default function AirdropRegisterPage() {
           isOpen={isPopupOpen}
           onClose={() => setIsPopupOpen(false)}
         >
-          {/* {isRegistraionSuccessful ? (
+          {isRegistraionSuccessful ? (
             <div className="py-6 w-90 md:w-140 flex flex-col justify-center items-center text-center relative overflow-hidden">
               <div className="absolute inset-0 bg-cover bg-center -z-10">
                 <Image
@@ -252,9 +252,9 @@ export default function AirdropRegisterPage() {
                 />
               </div>
             </div>
-          )} */}
+          )}
 
-          <div>
+          {/* <div>
             <div className="flex flex-col items-center justify-center text-center w-90 md:w-164 p-4 md:p-8">
               <Image src={PopupArt4} alt="Popup Art 4" className="w-64 md:w-80 mt-4" />
               <div className="relative mt-10">
@@ -293,7 +293,7 @@ export default function AirdropRegisterPage() {
                 </p>
               </div>
             </div>
-          </div>
+          </div> */}
         </PopupComponent>
       </div>
 

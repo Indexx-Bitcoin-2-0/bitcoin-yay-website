@@ -6,8 +6,8 @@ import CustomButton2 from "@/components/CustomButton2";
 import ArtImage1 from "@/assets/images/airdrop/art-1.webp";
 // import ArtImage2 from "@/assets/images/airdrop/art-2.webp";
 import ArtImage3 from "@/assets/images/airdrop/art-3.webp";
-import ArtImage4 from "@/assets/images/airdrop/art-4.webp";
-import ArtImage5 from "@/assets/images/airdrop/art-5.webp";
+// import ArtImage4 from "@/assets/images/airdrop/art-4.webp";
+// import ArtImage5 from "@/assets/images/airdrop/art-5.webp";
 import ArtImage6 from "@/assets/images/airdrop/art-6.webp";
 
 import WhatYouGetImage1 from "@/assets/images/airdrop/what-you-get-1.webp";
@@ -17,7 +17,7 @@ import WhatYouGetImage4 from "@/assets/images/airdrop/what-you-get-4.webp";
 import WorldMapImage from "@/assets/images/airdrop/political-map-world.webp";
 
 import RegisterButtonImage from "@/assets/images/buttons/register-button.webp";
-import PowerButtonImage from "@/assets/images/buttons/power-button.webp";
+// import PowerButtonImage from "@/assets/images/buttons/power-button.webp";
 import PointFingerButtonImage from "@/assets/images/buttons/point-button.webp";
 
 import UserReviewCards from "@/components/UserReviewCards";
