@@ -83,7 +83,7 @@ export default function Airdrop() {
         <p className="text-5xl font-bold mb-20">
           Remaining days before the Airdrop
         </p>
-        <CountdownTimer targetDate={new Date("2025-06-15")} />
+        <CountdownTimer targetDate={new Date("2025-07-14")} />
       </div>
 
       <div className="mt-20 flex justify-center">
