@@ -39,7 +39,7 @@ export default function AirdropRegisterPage() {
   const [username, setUsername] = useState<string>("");
   const [referralLink, setReferralLink] = useState<string>("");
   const [userReferralLink, setUserReferralLink] = useState<string>(
-    "bitcoinyay.com/airdrop?ref="
+    "bitcoinyay.com/referral="
   );
 
   const [acceptTerms, setAcceptTerms] = useState<boolean>(false);
@@ -100,9 +100,8 @@ export default function AirdropRegisterPage() {
         } else {
           setIsRegistrationSuccessful(false);
         }
-
         console.log("Form data submitted:", { email, username, acceptTerms });
-        setUserReferralLink(userReferralLink + email);
+        setUserReferralLink(userReferralLink + res.data?.data?.referralCode);
         setIsPopupOpen(true);
         setEmail("");
         setUsername("");
