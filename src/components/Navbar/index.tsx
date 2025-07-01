@@ -15,7 +15,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-import PopupArt1 from "@/assets/images/popup/Pop-up.webp";
+import PopupArt1 from "@/assets/images/popup/airdrop-popup-1.webp";
 import PopupComponent from "@/components/PopupComponent";
 
 // Types for better type safety
@@ -237,16 +237,16 @@ const Navbar: React.FC = () => {
   return (
     <nav className="w-full bg-bg fixed top-0 left-0 right-0 z-50">
       <PopupComponent isOpen={isPopupOpen} onClose={handlePopupClose}>
-        <div className="flex flex-col items-center justify-center w-90 md:w-142 relative">
+        <div className="mt-10 mx-2 md:mx-4 flex flex-col items-center justify-center w-90 md:w-142 relative">
           <Image src={PopupArt1} alt="Popup Art 1" className="w-full" />
           <Link
-            href="/#download-app"
+            href="/airdrop"
             onClick={handlePopupClose}
-            className="absolute bottom-14 md:bottom-24"
+            className="mb-10 mt-4"
           >
-            <button className="border-2 border-primary text-primary px-4 py-4 rounded-md flex items-center justify-center cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
+            <button className="border-2 border-primary text-primary px-4 py-2 md:py-4 rounded-md flex items-center justify-center cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
               <p className="text-primary text-2xl md:text-3xl font-semibold">
-                Start Mining Free!
+                COUNT ME IN
               </p>
             </button>
           </Link>

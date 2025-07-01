@@ -35,10 +35,10 @@ import GopherImage4 from "@/assets/images/home/gophers/gopher-4.webp";
 import GopherImage5 from "@/assets/images/home/gophers/gopher-5.webp";
 import GopherImage6 from "@/assets/images/home/gophers/gopher-6.webp";
 
-import BirthdayBanner from "@/assets/images/home/10K-celebration.webp";
-import BirthdayBannerMobile from "@/assets/images/home/10K-celebration-mobile.webp";
-import ApplestoreDownloadButton from "@/assets/images/buttons/get-on-applestore-button.webp";
-import PlaystoreDownloadButton from "@/assets/images/buttons/get-on-playstore-button.webp";
+import BirthdayBanner from "@/assets/images/home/airdrop-4-july-banner.webp";
+import BirthdayBannerMobile from "@/assets/images/home/airdrop-4-july-banner-mobile.webp";
+// import ApplestoreDownloadButton from "@/assets/images/buttons/get-on-applestore-button.webp";
+// import PlaystoreDownloadButton from "@/assets/images/buttons/get-on-playstore-button.webp";
 
 import bgArtImage1 from "../assets/images/bitcoin-art-2.png";
 
@@ -103,7 +103,7 @@ export default function Home() {
       {/* Part 01 */}
       <HeroComponent />
 
-      <div id="download-app" className="mt-120 md:mt-40 xl:mt-100">
+      <div id="download-app" className="mt-120 md:mt-40 lg:mt-120 relative flex flex-col items-center justify-center">
         <Image
           src={BirthdayBanner}
           alt="Birthday Banner"
@@ -114,7 +114,14 @@ export default function Home() {
           alt="Birthday Banner"
           className="w-full md:hidden"
         />
-        <div className="mt-10 flex flex-col md:flex-row gap-10 md:gap-20 justify-center items-center">
+        <Link href="/airdrop" className="mb-10 mt-4 absolute bottom-50 md:-bottom-10 xl:bottom-0 ">
+          <button className="border-2 border-primary text-primary px-4 py-2 md:py-4 rounded-md flex items-center justify-center cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
+            <p className="text-primary text-2xl md:text-3xl xl:text-4xl font-semibold">
+              COUNT ME IN
+            </p>
+          </button>
+        </Link>
+        {/* <div className="mt-10 flex flex-col md:flex-row gap-10 md:gap-20 justify-center items-center">
           <Link
             href="https://apps.apple.com/ph/app/bitcoin-yay/id6744868017"
             target="_blank"
@@ -135,7 +142,7 @@ export default function Home() {
               className="w-64 h-24 mt-10 hover:scale-105 transition-transform duration-300 ease-in-out"
             />
           </Link>
-        </div>
+        </div> */}
       </div>
 
       <div className="container mx-auto px-4 py-8 relative">
