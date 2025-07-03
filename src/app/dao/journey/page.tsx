@@ -103,10 +103,10 @@ export default function Journey() {
         display: false,
       },
       tooltip: {
-        backgroundColor: "#FFFFFF",
+        backgroundColor: "#252525",
         titleColor: "#FFFFFF",
         bodyColor: "#FFFFFF",
-        borderColor: "#FFFFFF",
+        borderColor: "#252525",
         borderWidth: 1,
       },
     },
