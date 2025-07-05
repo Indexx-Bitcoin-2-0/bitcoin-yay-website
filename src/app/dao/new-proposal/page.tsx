@@ -4,7 +4,7 @@ import { useState, FormEvent } from "react";
 import { ChevronDown, Check } from "lucide-react";
 
 import CustomButton2 from "@/components/CustomButton2";
-import SubmitButton from "@/assets/images/buttons/submit-button.webp";
+import SubmitButton from "@/assets/images/buttons/arrow-up-button.webp";
 
 interface FormData {
   title: string;
