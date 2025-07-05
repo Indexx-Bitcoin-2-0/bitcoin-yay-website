@@ -132,7 +132,7 @@ export default function MemberManagement() {
   return (
     <div className="mx-auto mt-60 px-4 md:px-20 xl:px-40">
       <div>
-        <h1 className="text-3xl md:text-7xl font-semibold">
+        <h1 className="text-3xl md:text-7xl text-center font-semibold">
           Member Management
         </h1>
       </div>
@@ -183,7 +183,7 @@ export default function MemberManagement() {
 
       {/* Save Changes Button */}
       <div className="flex justify-center mt-20 mb-40 md:mt-30">
-        <div className="w-34">
+        <div className="w-34" onClick={handleSaveChanges}>
           <CustomButton2 image={CheckMarkButton} text="Save changes" link="#" />
         </div>
       </div>
