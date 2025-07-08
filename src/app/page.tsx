@@ -305,8 +305,8 @@ export default function Home() {
                 className="absolute bottom-0"
               />
             </div>
-            <p className="text-tertiary mt-10 text-lg">
-              Download on the Apple Store
+            <p className="text-tertiary mt-10 text-lg max-w-86 text-center">
+              Scan or Click on the QR to Download from the Apple Store
             </p>
           </div>
           <div
@@ -333,8 +333,8 @@ export default function Home() {
                 className="absolute bottom-0"
               />
             </div>
-            <p className="text-tertiary mt-10 text-lg">
-              Download on the Google Play
+            <p className="text-tertiary mt-10 text-lg max-w-86 text-center">
+              Scan or Click on the QR to Download from the Google Play
             </p>
           </div>
         </div>
