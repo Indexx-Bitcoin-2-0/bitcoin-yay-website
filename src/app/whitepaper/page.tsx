@@ -19,6 +19,17 @@ import Whitepaper09 from "@/assets/images/whitepaper/whitepaper-08.svg";
 import Whitepaper10 from "@/assets/images/whitepaper/whitepaper-09.svg";
 import Whitepaper11 from "@/assets/images/whitepaper/whitepaper-10.svg";
 
+export const metadata = {
+  title: "Bitcoin Yay Whitepaper - Technical Documentation & Tokenomics",
+  description:
+    "Read the official Bitcoin Yay whitepaper covering technical architecture, tokenomics, AI-powered mobile mining, and blockchain ecosystem. Learn about BTCY's 21 trillion token supply and Proof-of-Participation mechanism.",
+  openGraph: {
+    title: "Bitcoin Yay Whitepaper - Technical Documentation & Tokenomics",
+    description:
+      "Read the official Bitcoin Yay whitepaper covering technical architecture, tokenomics, AI-powered mobile mining, and blockchain ecosystem. Learn about BTCY's 21 trillion token supply and Proof-of-Participation mechanism.",
+  },
+};
+
 export default function whitepaper() {
   return (
     <div className=" mx-auto max-w-[90vw] lg:px-10 py-8 mt-40">

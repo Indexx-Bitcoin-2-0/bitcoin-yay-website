@@ -15,6 +15,17 @@ import PricingCardImage4 from "@/assets/images/pricing/pricing-card-4.svg";
 import PricingCardImage5 from "@/assets/images/pricing/pricing-card-5.svg";
 import PricingCardImage6 from "@/assets/images/pricing/pricing-card-6.svg";
 
+export const metadata = {
+  title: "Bitcoin Yay Pricing - Mining Plans & Gopher Packages",
+  description:
+    "Choose the perfect Bitcoin Yay mining plan. From Free Snatch Gopher to Nuclear Plan with 9x speed boost. Earn up to 27 BTCY/hour with our premium mining packages. Compare pricing and features.",
+  openGraph: {
+    title: "Bitcoin Yay Pricing - Mining Plans & Gopher Packages",
+    description:
+      "Choose the perfect Bitcoin Yay mining plan. From Free Snatch Gopher to Nuclear Plan with 9x speed boost. Earn up to 27 BTCY/hour with our premium mining packages. Compare pricing and features.",
+  },
+};
+
 const PricingCard = ({
   titleImage,
   title,

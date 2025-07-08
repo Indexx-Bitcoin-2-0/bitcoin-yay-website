@@ -22,6 +22,17 @@ import PointFingerButtonImage from "@/assets/images/buttons/point-button.webp";
 
 import UserReviewCards from "@/components/UserReviewCards";
 
+export const metadata = {
+  title: "Bitcoin Yay Airdrop - 4th July Freedom Boost FREE Mining",
+  description:
+    "Join the Bitcoin Yay Freedom Boost Airdrop! Get 5 days of FREE turbo mining power on July 4th. Register now for the worldwide airdrop and start earning BTCY tokens instantly.",
+  openGraph: {
+    title: "Bitcoin Yay Airdrop - 4th July Freedom Boost FREE Mining",
+    description:
+      "Join the Bitcoin Yay Freedom Boost Airdrop! Get 5 days of FREE turbo mining power on July 4th. Register now for the worldwide airdrop and start earning BTCY tokens instantly.",
+  },
+};
+
 export default function Airdrop() {
   return (
     <div className="mx-auto mt-40">

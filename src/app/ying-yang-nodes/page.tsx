@@ -8,6 +8,17 @@ import ArtImage5 from "@/assets/images/ying-yang-nodes/art-5.webp";
 import ArtImage6 from "@/assets/images/ying-yang-nodes/art-6.webp";
 import ArtImage7 from "@/assets/images/ying-yang-nodes/art-7.webp";
 
+export const metadata = {
+  title: "Ying Yang Nodes - Run Bitcoin Yay Blockchain Nodes on Your PC",
+  description:
+    "Learn about Ying Yang Nodes for Bitcoin Yay blockchain. Run lightweight nodes on personal computers, participate in consensus, and help secure the decentralized network. Four participation levels: Seeder, Sentinel, Guardian, Validator.",
+  openGraph: {
+    title: "Ying Yang Nodes - Run Bitcoin Yay Blockchain Nodes on Your PC",
+    description:
+      "Learn about Ying Yang Nodes for Bitcoin Yay blockchain. Run lightweight nodes on personal computers, participate in consensus, and help secure the decentralized network. Four participation levels: Seeder, Sentinel, Guardian, Validator.",
+  },
+};
+
 export default function YingYangNodes() {
   return (
     <div className="container mx-auto mt-40">

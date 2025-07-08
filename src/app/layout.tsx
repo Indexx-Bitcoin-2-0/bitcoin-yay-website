@@ -3,6 +3,29 @@ import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 
 export const metadata = {
+  title: {
+    default: "Bitcoin Yay - Mobile Mining App for Bitcoin Micro Tokens",
+    template: "%s | Bitcoin Yay",
+  },
+  description:
+    "Bitcoin Yay (BTCY) is the micro token and petty cash of Bitcoin. Download our mobile mining app to earn Bitcoin Yay tokens through AI-powered mining on your phone. Free to start, easy to use.",
+  keywords:
+    "Bitcoin Yay, BTCY, mobile mining, Bitcoin micro tokens, cryptocurrency app, free crypto mining, Bitcoin alternative, AI mining",
+  authors: [{ name: "Bitcoin Yay Team" }],
+  creator: "Bitcoin Yay",
+  publisher: "Bitcoin Yay",
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: "Bitcoin Yay",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
   icons: {
     icon: [
       { url: "/favicon.ico" },
@@ -14,7 +37,6 @@ export const metadata = {
     ],
     shortcut: ["/favicon.ico"],
   },
-  title: "Bitcoin Yay",
 };
 
 export default function RootLayout({

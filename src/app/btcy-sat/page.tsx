@@ -2,6 +2,17 @@ import Image from "next/image";
 
 import ArtImage1 from "@/assets/images/btcy-sat/art-1.webp";
 
+export const metadata = {
+  title: "BTCY vs SAT - Why Choose Bitcoin Yay Over Satcoin",
+  description:
+    "Compare Bitcoin Yay (BTCY) vs Satcoin (SAT). Discover why BTCY's mobile-first approach, instant transactions on Stellar, and low-energy mining model outperforms traditional PoW mining.",
+  openGraph: {
+    title: "BTCY vs SAT - Why Choose Bitcoin Yay Over Satcoin",
+    description:
+      "Compare Bitcoin Yay (BTCY) vs Satcoin (SAT). Discover why BTCY's mobile-first approach, instant transactions on Stellar, and low-energy mining model outperforms traditional PoW mining.",
+  },
+};
+
 export default function BtcySat() {
   return (
     <div className="container mx-auto mt-40">

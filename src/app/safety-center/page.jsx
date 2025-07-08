@@ -1,5 +1,17 @@
 import CustomStyledConatiner from "@/components/CustomStyledContainer";
 
+export const metadata = {
+  title: "Bitcoin Yay Safety Center - Security Guidelines & Official Channels",
+  description:
+    "Stay safe with Bitcoin Yay. Learn about official communication channels, authorized apps, and protect yourself from scams. Only trust verified Bitcoin Yay sources and URLs.",
+  openGraph: {
+    title:
+      "Bitcoin Yay Safety Center - Security Guidelines & Official Channels",
+    description:
+      "Stay safe with Bitcoin Yay. Learn about official communication channels, authorized apps, and protect yourself from scams. Only trust verified Bitcoin Yay sources and URLs.",
+  },
+};
+
 const SafetySection = ({ title, description }) => {
   return (
     <div className="  flex flex-col flex-1 min-w-[300px]">

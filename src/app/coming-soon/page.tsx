@@ -2,6 +2,17 @@ import Image from "next/image";
 
 import ArtImage1 from "@/assets/images/coming-soon/art-1.webp";
 
+export const metadata = {
+  title: "Coming Soon - Bitcoin Yay Features & Updates",
+  description:
+    "Exciting new Bitcoin Yay features and updates are coming soon. Stay tuned for the latest developments in mobile mining, BTCY tokens, and cryptocurrency innovations.",
+  openGraph: {
+    title: "Coming Soon - Bitcoin Yay Features & Updates",
+    description:
+      "Exciting new Bitcoin Yay features and updates are coming soon. Stay tuned for the latest developments in mobile mining, BTCY tokens, and cryptocurrency innovations.",
+  },
+};
+
 export default function ComingSoon() {
   return (
     <div className="container mx-auto my-40">

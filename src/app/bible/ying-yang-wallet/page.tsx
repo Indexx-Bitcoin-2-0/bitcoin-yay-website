@@ -4,6 +4,17 @@ import ArtImage1 from "@/assets/images/bible/wallet/art-1.webp";
 import ArtImage2 from "@/assets/images/bible/wallet/art-2.webp";
 import ArtImage3 from "@/assets/images/bible/wallet/art-3.webp";
 
+export const metadata = {
+  title: "Ying Yang Wallet - Next-Generation Digital Crypto Wallet",
+  description:
+    "Discover Ying Yang Wallet, the secure digital wallet for Bitcoin Yay (BTCY) and crypto assets. Features include local private key storage, multi-asset support, cross-chain bridging, and real-time notifications.",
+  openGraph: {
+    title: "Ying Yang Wallet - Next-Generation Digital Crypto Wallet",
+    description:
+      "Discover Ying Yang Wallet, the secure digital wallet for Bitcoin Yay (BTCY) and crypto assets. Features include local private key storage, multi-asset support, cross-chain bridging, and real-time notifications.",
+  },
+};
+
 export default function YingYangWalletPage() {
   return (
     <div className="mx-auto overflow-hidden mt-40">

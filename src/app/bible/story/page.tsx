@@ -7,6 +7,17 @@ import ArtImage4 from "@/assets/images/bible/story/art-4.webp";
 import ArtImage5 from "@/assets/images/bible/story/art-5.webp";
 import ArtImage6 from "@/assets/images/bible/story/art-6.webp";
 
+export const metadata = {
+  title: "Bitcoin Yay Story - The Hidden Genesis & Nakamoto Legacy",
+  description:
+    "Discover the origin story of Bitcoin Yay (BTCY) and its connection to Satoshi Nakamoto's vision. Learn how the forgotten code patterns led to the creation of a sustainable, AI-powered cryptocurrency alternative.",
+  openGraph: {
+    title: "Bitcoin Yay Story - The Hidden Genesis & Nakamoto Legacy",
+    description:
+      "Discover the origin story of Bitcoin Yay (BTCY) and its connection to Satoshi Nakamoto's vision. Learn how the forgotten code patterns led to the creation of a sustainable, AI-powered cryptocurrency alternative.",
+  },
+};
+
 export default function BibleStory() {
   return (
     <div className="mx-auto mt-40">
@@ -15,7 +26,11 @@ export default function BibleStory() {
           Bitcoin-YAY
         </h2>
         <h1 className="text-5xl md:text-7xl mb-4 font-semibold">Story</h1>
-        <Image src={ArtImage1} alt="Art Image 1" className="w-100 md:w-150 lg:w-320" />
+        <Image
+          src={ArtImage1}
+          alt="Art Image 1"
+          className="w-100 md:w-150 lg:w-320"
+        />
       </div>
 
       <div className="mt-20 flex flex-col items-center justify-center px-4">
@@ -156,7 +171,11 @@ export default function BibleStory() {
       {/* Part 06 */}
 
       <div className="my-80 flex flex-col lg:flex-row items-center justify-center gap-10 px-4 md:px-20 lg:px-40">
-        <Image src={ArtImage6} alt="Art Image 6" className="w-80 lg:w-80 xl:w-120"/>
+        <Image
+          src={ArtImage6}
+          alt="Art Image 6"
+          className="w-80 lg:w-80 xl:w-120"
+        />
         <h2 className="text-4xl mt-10 lg:text-6xl xl:text-7xl font-bold">
           &quot;The Chains Must Evolve. Let Yay Lead the Way.&quot;
         </h2>

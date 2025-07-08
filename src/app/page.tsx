@@ -103,7 +103,10 @@ export default function Home() {
       {/* Part 01 */}
       <HeroComponent />
 
-      <div id="download-app" className="mt-120 md:mt-40 lg:mt-120 relative flex flex-col items-center justify-center">
+      <div
+        id="download-app"
+        className="mt-120 md:mt-40 lg:mt-120 relative flex flex-col items-center justify-center"
+      >
         <Image
           src={BirthdayBanner}
           alt="Birthday Banner"
@@ -114,7 +117,10 @@ export default function Home() {
           alt="Birthday Banner"
           className="w-full md:hidden"
         />
-        <Link href="/airdrop" className="mb-10 mt-4 absolute bottom-40 md:-bottom-20 xl:-bottom-10 ">
+        <Link
+          href="/airdrop"
+          className="mb-10 mt-4 absolute bottom-40 md:-bottom-20 xl:-bottom-10 "
+        >
           <button className="border-2 border-primary text-primary px-4 py-2 md:py-4 rounded-md flex items-center justify-center cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
             <p className="text-primary text-2xl md:text-3xl xl:text-4xl font-semibold">
               COUNT ME IN

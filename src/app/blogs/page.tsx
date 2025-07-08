@@ -196,3 +196,14 @@ export default function Blogs() {
     </div>
   );
 }
+
+export const metadata = {
+  title: "Bitcoin Yay News & Blogs - Crypto Insights & Investment Tips",
+  description:
+    "Stay updated with the latest Bitcoin Yay news, crypto market insights, and smart investment strategies. Read expert analysis on cryptocurrency trends, market volatility, and financial opportunities.",
+  openGraph: {
+    title: "Bitcoin Yay News & Blogs - Crypto Insights & Investment Tips",
+    description:
+      "Stay updated with the latest Bitcoin Yay news, crypto market insights, and smart investment strategies. Read expert analysis on cryptocurrency trends, market volatility, and financial opportunities.",
+  },
+};

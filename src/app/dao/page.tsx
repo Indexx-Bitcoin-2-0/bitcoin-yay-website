@@ -12,6 +12,17 @@ import ArrowRightButtonImage from "@/assets/images/buttons/arrow-right-button.sv
 
 import CustomButton2 from "@/components/CustomButton2";
 
+export const metadata = {
+  title: "Ying Yang DAO - Decentralized Governance Powered by Reputation",
+  description:
+    "Join Ying Yang DAO, a decentralized governance platform where your contributions earn you reputation and influence. Participate as Leaders, Validators, Managers, Thinkers, or Contributors in shaping the future.",
+  openGraph: {
+    title: "Ying Yang DAO - Decentralized Governance Powered by Reputation",
+    description:
+      "Join Ying Yang DAO, a decentralized governance platform where your contributions earn you reputation and influence. Participate as Leaders, Validators, Managers, Thinkers, or Contributors in shaping the future.",
+  },
+};
+
 export default function DAO() {
   return (
     <div className="mx-auto mt-40">

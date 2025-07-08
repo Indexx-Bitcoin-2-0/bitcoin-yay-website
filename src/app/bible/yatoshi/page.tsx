@@ -5,6 +5,17 @@ import ArtImage2 from "@/assets/images/bible/yatoshi/art-2.webp";
 import ArtImage3 from "@/assets/images/bible/yatoshi/art-3.webp";
 import ArtImage4 from "@/assets/images/bible/yatoshi/art-4.webp";
 
+export const metadata = {
+  title: "Yatoshi Nakamoto - Meet Satoshi's Sibling & Bitcoin Yay Creator",
+  description:
+    "Learn about Yatoshi Nakamoto, the mysterious sibling of Bitcoin creator Satoshi Nakamoto. Discover how Yatoshi created Bitcoin Yay (BTCY) as a smarter, mobile-first evolution of Bitcoin through partnership with Indexx.ai.",
+  openGraph: {
+    title: "Yatoshi Nakamoto - Meet Satoshi's Sibling & Bitcoin Yay Creator",
+    description:
+      "Learn about Yatoshi Nakamoto, the mysterious sibling of Bitcoin creator Satoshi Nakamoto. Discover how Yatoshi created Bitcoin Yay (BTCY) as a smarter, mobile-first evolution of Bitcoin through partnership with Indexx.ai.",
+  },
+};
+
 export default function YatoshiPage() {
   return (
     <div className="container mx-auto mt-40 px-4">

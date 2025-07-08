@@ -5,6 +5,17 @@ import {
   CustomP,
 } from "@/components/CustomTypography";
 
+export const metadata = {
+  title: "Bitcoin Yay Terms of Service - Legal Terms & Conditions",
+  description:
+    "Read Bitcoin Yay's official Terms of Service covering user agreements, acceptable use policy, intellectual property rights, and legal obligations for using our cryptocurrency platform.",
+  openGraph: {
+    title: "Bitcoin Yay Terms of Service - Legal Terms & Conditions",
+    description:
+      "Read Bitcoin Yay's official Terms of Service covering user agreements, acceptable use policy, intellectual property rights, and legal obligations for using our cryptocurrency platform.",
+  },
+};
+
 export default function TermsOfService() {
   return (
     <div className=" mx-auto max-w-[90vw] lg:px-10 py-8 mt-40">

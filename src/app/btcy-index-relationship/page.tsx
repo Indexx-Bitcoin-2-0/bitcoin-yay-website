@@ -10,6 +10,17 @@ import ExchangeLogo from "@/assets/images/btcy-index-relationship/exchange.webp"
 import ShopLogo from "@/assets/images/btcy-index-relationship/shop.webp";
 import AcademyLogo from "@/assets/images/btcy-index-relationship/academy.webp";
 
+export const metadata = {
+  title: "BTCY & Indexx.ai Relationship - Complete Crypto Ecosystem",
+  description:
+    "Discover how Bitcoin Yay (BTCY) integrates with the Indexx.ai ecosystem. Mine BTCY, shop with rewards, trade on exchanges, and learn through academy courses in one complete platform.",
+  openGraph: {
+    title: "BTCY & Indexx.ai Relationship - Complete Crypto Ecosystem",
+    description:
+      "Discover how Bitcoin Yay (BTCY) integrates with the Indexx.ai ecosystem. Mine BTCY, shop with rewards, trade on exchanges, and learn through academy courses in one complete platform.",
+  },
+};
+
 export default function BtcyIndexRelationship() {
   return (
     <div className="container mx-auto mt-40">
