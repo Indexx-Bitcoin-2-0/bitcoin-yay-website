@@ -5,8 +5,8 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import logo from "@/assets/images/main-logo.svg";
-import SearchIcon1 from "@/assets/images/search-icon-1.svg";
-import SearchIcon2 from "@/assets/images/search-icon-2.svg";
+// import SearchIcon1 from "@/assets/images/search-icon-1.svg";
+// import SearchIcon2 from "@/assets/images/search-icon-2.svg";
 import Data from "./data";
 import {
   Accordion,
@@ -92,7 +92,7 @@ const Navbar: React.FC = () => {
   const [backdropVisibility, setBackdropVisibility] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  // const [searchQuery, setSearchQuery] = useState("");
   const currentPath = usePathname();
 
   // Update the active item
@@ -177,10 +177,10 @@ const Navbar: React.FC = () => {
     setMenuOpen(false);
   };
 
-  const handleSearch = (event: React.FormEvent) => {
-    event.preventDefault();
-    console.log("Searching for:", searchQuery);
-  };
+  // const handleSearch = (event: React.FormEvent) => {
+  //   event.preventDefault();
+  //   console.log("Searching for:", searchQuery);
+  // };
 
   // Initial check for dropdown visibility
   useEffect(() => {
@@ -365,7 +365,8 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Search Input (Desktop) */}
-        <div className="hidden xl:block">
+        <div className="w-80 hidden xl:block"></div>
+        {/* <div className="hidden xl:block">
           <form onSubmit={handleSearch} className="relative group">
             <input
               type="text"
@@ -392,16 +393,16 @@ const Navbar: React.FC = () => {
               />
             </button>
           </form>
-        </div>
+        </div> */}
 
         {/* Mobile Menu */}
         <div
-          className={`absolute left-0 top-30 w-full p-8 bg-bg shadow-lg transform z-20 ${
+          className={`absolute left-0 top-26 w-full p-8 bg-bg shadow-lg transform z-20 ${
             menuOpen ? "translate-y-0" : "-translate-y-[130%]"
           }  lg:hidden max-h-[calc(100vh-150px)] overflow-y-auto`}
         >
           {/* Search Input (Mobile) */}
-          <div className="mb-6">
+          {/* <div className="mb-6">
             <form
               onSubmit={handleSearch}
               className="relative border-primary group focus-within:border-0"
@@ -431,7 +432,7 @@ const Navbar: React.FC = () => {
                 />
               </button>
             </form>
-          </div>
+          </div> */}
 
           <Accordion
             type="single"
