@@ -334,7 +334,12 @@ const Navbar: React.FC = () => {
                     <div className="flex w-full justify-between h-auto my-10 px-[20px] pl-[210px]">
                       {element.dropDownContent.map((section, elemIdx) => (
                         <div
-                          className="w-[calc(25%-30px)] leading-[35px] flex flex-col"
+                          className={`w-[calc(25%-30px)] leading-[35px] flex flex-col ${
+                            section.mainList &&
+                            element.mainTextDesktop !== "Eco"
+                              ? "min-w-100"
+                              : "min-w-60"
+                          }`}
                           key={elemIdx}
                         >
                           <header className="text-xs font-medium my-6">
