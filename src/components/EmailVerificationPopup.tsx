@@ -75,7 +75,7 @@ const EmailVerificationPopup: React.FC<EmailVerificationPopupProps> = ({
 
   return (
     <PopupComponent isOpen={isOpen} onClose={onClose}>
-      <div className="w-90 md:w-100 bg-bg p-8 flex flex-col items-center">
+      <div className="w-90 md:w-120 bg-bg p-8 flex flex-col items-center">
         {/* Header */}
         <div className="text-center mb-8">
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
@@ -99,7 +99,7 @@ const EmailVerificationPopup: React.FC<EmailVerificationPopupProps> = ({
               value={verificationCode}
               onChange={setVerificationCode}
               disabled={isSubmitting}
-              className="mb-4"
+              className="mb-4 gap-4 w-14"
             />
             {error && (
               <p className="text-red-500 text-sm text-center mt-2">{error}</p>
@@ -123,7 +123,7 @@ const EmailVerificationPopup: React.FC<EmailVerificationPopupProps> = ({
             >
               <CustomButton2
                 image={SendButtonImage}
-                text={"Send"}
+                text={""}
                 link="#"
                 imageStyling="w-30"
               />

@@ -56,18 +56,13 @@ const ForgotPasswordPopup: React.FC<ForgotPasswordPopupProps> = ({
 
   return (
     <PopupComponent isOpen={isOpen} onClose={onClose}>
-      <div className="w-90 md:w-100 bg-bg p-8 flex flex-col items-center">
+      <div className="w-90 md:w-120 bg-bg p-8 flex flex-col items-center">
         {/* Header */}
         <div className="text-center mb-8">
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
-            Reset Password
+            Forgot Password
           </h2>
-          <p className="text-tertiary text-base">
-            Please enter your registered email of Indexx,
-          </p>
-          <p className="text-tertiary text-base">
-            digital and systems would contain a characters
-          </p>
+          
         </div>
 
         {/* Form */}
@@ -78,7 +73,7 @@ const ForgotPasswordPopup: React.FC<ForgotPasswordPopupProps> = ({
               htmlFor="reset-email"
               className="block text-bg3 text-lg mb-2"
             >
-              Email
+              Email/Phone Number 
             </label>
             <input
               type="email"
@@ -109,7 +104,7 @@ const ForgotPasswordPopup: React.FC<ForgotPasswordPopupProps> = ({
             >
               <CustomButton2
                 image={SubmitButtonImage}
-                text={"Send"}
+                text={""}
                 link="#"
                 imageStyling="w-30"
               />

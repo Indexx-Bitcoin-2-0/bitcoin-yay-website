@@ -77,10 +77,10 @@ const ResetPasswordPopup: React.FC<ResetPasswordPopupProps> = ({
             Reset Password
           </h2>
           <p className="text-tertiary text-base">
-            Please enter strong password times of length,
+            Please enter strong password mixer of words,
           </p>
           <p className="text-tertiary text-base">
-            digits and symbols would contain a characters
+            digits and symbols must contain 8 characters
           </p>
         </div>
 
