@@ -1,3 +1,4 @@
+"use client";
 
 import { useState } from "react";
 import Image from "next/image";
@@ -18,16 +19,6 @@ import ArtImage1 from "@/assets/images/support/art-1.svg";
 
 import faqData from "./data.json";
 
-export const metadata = {
-  title: "Bitcoin Yay Support - Customer Help & Contact Information",
-  description:
-    "Get help with Bitcoin Yay. Find answers to common questions, contact our support team, and access resources for using our mobile mining app and BTCY cryptocurrency platform.",
-  openGraph: {
-    title: "Bitcoin Yay Support - Customer Help & Contact Information",
-    description:
-      "Get help with Bitcoin Yay. Find answers to common questions, contact our support team, and access resources for using our mobile mining app and BTCY cryptocurrency platform.",
-  },
-};
 
 const CustomAccordionItem = ({ value, title, content }) => {
   return (
