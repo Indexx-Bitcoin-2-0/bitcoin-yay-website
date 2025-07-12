@@ -159,19 +159,19 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
 
   return (
     <PopupComponent isOpen={isOpen} onClose={onClose}>
-      <div className="w-90 md:w-120 bg-bg p-6 md:p-8 flex flex-col items-center max-h-[90vh] overflow-y-auto">
+      <div className="w-90 md:w-120 xl:w-160 bg-bg p-6 md:p-8 flex flex-col items-center max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="text-center mb-6">
           <p className="text-tertiary text-lg mb-4">Welcome To</p>
           <Image
             src={MainLogo}
             alt="Bitcoin Yay"
-            className="w-40 md:w-48 mx-auto mb-4"
+            className="w-40 md:w-48 xl:w-80 mx-auto mb-4"
           />
-          <h2 className="text-primary text-xl md:text-2xl">
+          <h2 className="text-primary text-xl md:text-3xl">
             Bitcoin Yay Is The Micro Token
           </h2>
-          <p className="text-primary text-xl md:text-2xl">
+          <p className="text-primary text-xl md:text-3xl">
             And Petty Cash Of Bitcoin
           </p>
         </div>
@@ -387,7 +387,7 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
           )}
 
           {/* Register Button */}
-          <div className="flex justify-center mb-4">
+          <div className="flex justify-center mb-4 mt-10">
             <div
               onClick={(e) => {
                 e.preventDefault();
@@ -403,7 +403,7 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
             >
               <CustomButton2
                 image={RegisterButtonImage}
-                text={"Register"}
+                text={""}
                 link="#"
                 imageStyling="w-30"
               />
@@ -418,7 +418,7 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
           </div>
 
           {/* Google Register */}
-          <div className="flex justify-center mb-4">
+          <div className="flex justify-center mb-4 mt-10">
             <div
               onClick={(e) => {
                 e.preventDefault();

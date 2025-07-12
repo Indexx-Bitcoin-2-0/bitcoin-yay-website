@@ -75,7 +75,7 @@ const EmailVerificationPopup: React.FC<EmailVerificationPopupProps> = ({
 
   return (
     <PopupComponent isOpen={isOpen} onClose={onClose}>
-      <div className="w-90 md:w-120 bg-bg p-8 flex flex-col items-center">
+      <div className="w-90 md:w-120 xl:w-160 bg-bg p-8 flex flex-col items-center">
         {/* Header */}
         <div className="text-center mb-8">
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
