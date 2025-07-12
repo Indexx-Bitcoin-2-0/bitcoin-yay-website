@@ -146,3 +146,13 @@ html {
 .scrollbar-hide::-webkit-scrollbar {
   display: none; /* Safari and Chrome */
 }
+
+/* Remove autofill styling from all inputs */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #202020 inset !important;
+  box-shadow: 0 0 0 30px #202020 inset !important;
+  -webkit-text-fill-color: #d5d5d5 !important;
+}

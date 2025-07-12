@@ -98,7 +98,6 @@ const ResetPasswordPopup: React.FC<ResetPasswordPopupProps> = ({
               type="password"
               id="new-password"
               className="w-full text-lg p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
-              placeholder="Enter new password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={isSubmitting}
@@ -120,7 +119,6 @@ const ResetPasswordPopup: React.FC<ResetPasswordPopupProps> = ({
               type="password"
               id="confirm-password"
               className="w-full text-lg p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
-              placeholder="Confirm new password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               disabled={isSubmitting}

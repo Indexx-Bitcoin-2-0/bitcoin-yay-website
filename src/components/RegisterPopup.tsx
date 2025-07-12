@@ -190,7 +190,6 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
               type="text"
               id="firstName"
               className="w-full text-base p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
-              placeholder="Enter your first name"
               value={formData.firstName}
               onChange={(e) => handleInputChange("firstName", e.target.value)}
               disabled={isSubmitting}
@@ -209,7 +208,6 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
               type="text"
               id="lastName"
               className="w-full text-base p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
-              placeholder="Enter your last name"
               value={formData.lastName}
               onChange={(e) => handleInputChange("lastName", e.target.value)}
               disabled={isSubmitting}
@@ -231,7 +229,6 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
               type="text"
               id="username"
               className="w-full text-base p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
-              placeholder="Choose a username"
               value={formData.username}
               onChange={(e) => handleInputChange("username", e.target.value)}
               disabled={isSubmitting}
@@ -305,7 +302,6 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
               type="tel"
               id="phoneNumber"
               className="w-full text-base p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
-              placeholder="Enter your phone number"
               value={formData.phoneNumber}
               onChange={(e) => handleInputChange("phoneNumber", e.target.value)}
               disabled={isSubmitting}
@@ -324,7 +320,6 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
               type="email"
               id="email"
               className="w-full text-base p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
-              placeholder="Enter your email"
               value={formData.email}
               onChange={(e) => handleInputChange("email", e.target.value)}
               disabled={isSubmitting}
@@ -343,7 +338,6 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
               type="password"
               id="password"
               className="w-full text-base p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
-              placeholder="Enter password"
               value={formData.password}
               onChange={(e) => handleInputChange("password", e.target.value)}
               disabled={isSubmitting}
@@ -365,7 +359,6 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
               type="password"
               id="confirmPassword"
               className="w-full text-base p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
-              placeholder="Confirm password"
               value={formData.confirmPassword}
               onChange={(e) =>
                 handleInputChange("confirmPassword", e.target.value)
