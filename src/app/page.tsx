@@ -46,6 +46,9 @@ import ArtImage1 from "@/assets/images/home/art-1.svg";
 import ArtImage2 from "@/assets/images/home/art-2.svg";
 import ArtImage3 from "@/assets/images/home/art-3.svg";
 
+import DollarButtonImage from "@/assets/images/buttons/dollar-button.webp";
+import InfoButtonImage from "@/assets/images/buttons/info-button.webp";
+
 import UserReviewCards from "@/components/UserReviewCards";
 import DisclaimerComponent from "@/components/DisclaimerComponent";
 import CustomButton2 from "@/components/CustomButton2";
@@ -358,19 +361,19 @@ export default function Home() {
           <h2 className="text-4xl md:text-6xl font-medium my-4">
             Crypto Paradise
           </h2>
-          <div className="flex items-center justify-center gap-10 mt-10">
-            <Link
-              href="https://indexx.ai/"
-              className="text-lg hover:text-primary"
-            >
-              Learn more
-            </Link>
-            <Link
-              href="https://cex.indexx.ai/"
-              className="text-lg text-primary hover:text-[#f96e0d]"
-            >
-              Buy Token
-            </Link>
+          <div className="flex items-center justify-center gap-30 mt-10 mx-10">
+            <CustomButton2
+              image={DollarButtonImage}
+              text="Buy Token"
+              link="https://cex.indexx.ai/"
+              imageStyling="w-30"
+            />
+            <CustomButton2
+              image={InfoButtonImage}
+              text="Learn More"
+              link="https://indexx.ai/"
+              imageStyling="w-30"
+            />
           </div>
         </div>
         <div className="mt-20 md:mt-40 w-screen relative left-1/2 right-1/2 -translate-x-1/2 flex flex-col items-center justify-center">
