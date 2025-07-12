@@ -37,6 +37,7 @@ import GopherImage6 from "@/assets/images/home/gophers/gopher-6.webp";
 
 import BirthdayBanner from "@/assets/images/home/airdrop-4-july-banner.webp";
 import BirthdayBannerMobile from "@/assets/images/home/airdrop-4-july-banner-mobile.webp";
+import ThumbsUpButtonImage from "@/assets/images/buttons/thumbs-up-button.webp";
 // import ApplestoreDownloadButton from "@/assets/images/buttons/get-on-applestore-button.webp";
 // import PlaystoreDownloadButton from "@/assets/images/buttons/get-on-playstore-button.webp";
 
@@ -120,7 +121,15 @@ export default function Home() {
           alt="Birthday Banner"
           className="w-full md:hidden"
         />
-        <Link
+        <div className="flex justify-center items-center md:-mt-10">
+          <CustomButton2
+            image={ThumbsUpButtonImage}
+            text="COUNT ME IN"
+            link="/airdrop"
+            imageStyling="w-30 md:w-40"
+          />
+        </div>
+        {/* <Link
           href="/airdrop"
           className="mb-10 mt-4 absolute bottom-40 md:-bottom-20 xl:-bottom-10 "
         >
@@ -129,7 +138,7 @@ export default function Home() {
               COUNT ME IN
             </p>
           </button>
-        </Link>
+        </Link> */}
         {/* <div className="mt-10 flex flex-col md:flex-row gap-10 md:gap-20 justify-center items-center">
           <Link
             href="https://apps.apple.com/ph/app/bitcoin-yay/id6744868017"
