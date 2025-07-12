@@ -16,6 +16,9 @@ import {
 } from "@/components/ui/accordion";
 
 import PopupArt1 from "@/assets/images/popup/airdrop-popup-1.webp";
+import ThumbsUpButtonImage from "@/assets/images/buttons/thumbs-up-button.webp";
+
+import CustomButton2 from "@/components/CustomButton2";
 import PopupComponent from "@/components/PopupComponent";
 
 // Types for better type safety
@@ -244,11 +247,12 @@ const Navbar: React.FC = () => {
             onClick={handlePopupClose}
             className="mb-10 mt-4"
           >
-            <button className="border-2 border-primary text-primary px-4 py-2 md:py-4 rounded-md flex items-center justify-center cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
-              <p className="text-primary text-2xl md:text-3xl font-semibold">
-                COUNT ME IN
-              </p>
-            </button>
+            <CustomButton2
+              image={ThumbsUpButtonImage}
+              text={"COUNT ME IN"}
+              link="/airdrop"
+              imageStyling="w-20 md:w-30"
+            />
           </Link>
         </div>
       </PopupComponent>
