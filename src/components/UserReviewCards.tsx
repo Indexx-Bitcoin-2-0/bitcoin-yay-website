@@ -95,8 +95,8 @@ export default function UserReviewCards() {
           ))}
         </CarouselContent>
         <div className="relative">
-          <CarouselPrevious className="absolute w-10 h-10 top-[calc(100%+0.5rem)] left-[48%] -translate-x-12 translate-y-6 hover:text-primary hover:bg-transparent hover:border-primary" />
-          <CarouselNext className="absolute w-10 h-10 top-[calc(100%+0.5rem)] left-[48%] translate-x-12 translate-y-6 hover:text-primary hover:bg-transparent hover:border-primary" />
+          <CarouselPrevious className="absolute w-10 h-10 top-[calc(100%+0.5rem)] left-[48%] -translate-x-12 translate-y-6 hover:text-primary hover:bg-transparent hover:border-primary cursor-pointer" />
+          <CarouselNext className="absolute w-10 h-10 top-[calc(100%+0.5rem)] left-[48%] translate-x-12 translate-y-6 hover:text-primary hover:bg-transparent hover:border-primary cursor-pointer" />
         </div>
       </Carousel>
     </div>
