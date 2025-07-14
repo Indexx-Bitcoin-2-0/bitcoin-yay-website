@@ -49,6 +49,8 @@ import ArtImage3 from "@/assets/images/home/art-3.svg";
 import UserReviewCards from "@/components/UserReviewCards";
 import DisclaimerComponent from "@/components/DisclaimerComponent";
 import CustomButton2 from "@/components/CustomButton2";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const CustomCard = ({
   image,
@@ -93,13 +95,56 @@ const GopherCard = ({
 };
 
 export default function Home() {
+  const [btcPrice, setBtcPrice] = useState<number | null>(null);
+  const [btcyPrice, setBtcyPrice] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchPrices = async () => {
+      try {
+        const res = await axios.get('https://api.coingecko.com/api/v3/simple/price', {
+          params: {
+            ids: 'bitcoin',
+            vs_currencies: 'usd',
+          },
+        });
+        const btc = res.data.bitcoin.usd;
+        const btcy = btc / 1_000_000;
+        setBtcPrice(btc);
+        setBtcyPrice(btcy);
+      } catch (error) {
+        console.error('Failed to fetch BTC price:', error);
+      }
+    };
+    fetchPrices();
+  }, []);
+
   return (
     <div className="overflow-hidden relative mt-40">
-      <div className="mt-6 flex justify-center text-center">
-        <h1 className="px-4 text-4xl md:text-5xl xl:text-6xl font-bold text-primary max-w-250 leading-10 md:leading-18">
-          Bitcoin Yay Is The Micro Token And Petty Cash Of Bitcoin{" "}
-        </h1>
+      <div className="mt-6 flex flex-col items-center text-center">
+        <div className="px-4 text-2xl font-bold text-primary max-w-250 leading-tight">
+          Bitcoin Yay Is The Micro Token
+        </div>
+        <div className="px-4 text-2xl font-bold text-primary max-w-250 leading-tight">
+          And Petty Cash Of Bitcoin
+        </div>
+
+
+        <div className="px-4 mt-4 text-5xl font-bold text-primary max-w-250 leading-snug">
+          {btcPrice !== null && btcyPrice !== null ? (
+            <>
+              Bitcoin ${btcPrice.toLocaleString()}, Bitcoin Yay ${btcyPrice.toFixed(4)}
+            </>
+          ) : (
+            'Loading prices...'
+          )}
+        </div>
+
+
+        <div className="px-4 mt-2 text-xs font-bold text-primary max-w-250">
+          1 Bitcoin = 1M Bitcoin Yay
+        </div>
       </div>
+
       {/* Part 01 */}
       <HeroComponent />
 
@@ -465,6 +510,6 @@ export default function Home() {
         {/* Part 10 */}
         <DisclaimerComponent />
       </div>
-    </div>
+    </div >
   );
 }
