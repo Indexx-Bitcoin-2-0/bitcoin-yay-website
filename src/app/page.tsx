@@ -1,6 +1,5 @@
 "use client";
 import Image, { StaticImageData } from "next/image";
-import Link from "next/link";
 
 import BenefitCard from "@/components/BenefitCard";
 import HeroComponent from "@/components/HeroComponent";
