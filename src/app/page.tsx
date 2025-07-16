@@ -1,6 +1,5 @@
 "use client";
 import Image, { StaticImageData } from "next/image";
-import Link from "next/link";
 
 import BenefitCard from "@/components/BenefitCard";
 import HeroComponent from "@/components/HeroComponent";
@@ -37,6 +36,7 @@ import GopherImage6 from "@/assets/images/home/gophers/gopher-6.webp";
 
 import BirthdayBanner from "@/assets/images/home/airdrop-4-july-banner.webp";
 import BirthdayBannerMobile from "@/assets/images/home/airdrop-4-july-banner-mobile.webp";
+import ThumbsUpButtonImage from "@/assets/images/buttons/thumbs-up-button.webp";
 // import ApplestoreDownloadButton from "@/assets/images/buttons/get-on-applestore-button.webp";
 // import PlaystoreDownloadButton from "@/assets/images/buttons/get-on-playstore-button.webp";
 
@@ -45,6 +45,9 @@ import bgArtImage1 from "../assets/images/bitcoin-art-2.png";
 import ArtImage1 from "@/assets/images/home/art-1.svg";
 import ArtImage2 from "@/assets/images/home/art-2.svg";
 import ArtImage3 from "@/assets/images/home/art-3.svg";
+
+import DollarButtonImage from "@/assets/images/buttons/dollar-button.webp";
+import InfoButtonImage from "@/assets/images/buttons/info-button.webp";
 
 import UserReviewCards from "@/components/UserReviewCards";
 import DisclaimerComponent from "@/components/DisclaimerComponent";
@@ -162,7 +165,15 @@ export default function Home() {
           alt="Birthday Banner"
           className="w-full md:hidden"
         />
-        <Link
+        <div className="flex justify-center items-center md:-mt-10">
+          <CustomButton2
+            image={ThumbsUpButtonImage}
+            text="COUNT ME IN"
+            link="/airdrop"
+            imageStyling="w-30 md:w-40"
+          />
+        </div>
+        {/* <Link
           href="/airdrop"
           className="mb-10 mt-4 absolute bottom-40 md:-bottom-20 xl:-bottom-10 "
         >
@@ -171,7 +182,7 @@ export default function Home() {
               COUNT ME IN
             </p>
           </button>
-        </Link>
+        </Link> */}
         {/* <div className="mt-10 flex flex-col md:flex-row gap-10 md:gap-20 justify-center items-center">
           <Link
             href="https://apps.apple.com/ph/app/bitcoin-yay/id6744868017"
@@ -403,19 +414,19 @@ export default function Home() {
           <h2 className="text-4xl md:text-6xl font-medium my-4">
             Crypto Paradise
           </h2>
-          <div className="flex items-center justify-center gap-10 mt-10">
-            <Link
-              href="https://indexx.ai/"
-              className="text-lg hover:text-primary"
-            >
-              Learn more
-            </Link>
-            <Link
-              href="https://cex.indexx.ai/"
-              className="text-lg text-primary hover:text-[#f96e0d]"
-            >
-              Buy Token
-            </Link>
+          <div className="flex items-center justify-center gap-30 mt-10 mx-10">
+            <CustomButton2
+              image={DollarButtonImage}
+              text="Buy Token"
+              link="https://cex.indexx.ai/"
+              imageStyling="w-30"
+            />
+            <CustomButton2
+              image={InfoButtonImage}
+              text="Learn More"
+              link="https://indexx.ai/"
+              imageStyling="w-30"
+            />
           </div>
         </div>
         <div className="mt-20 md:mt-40 w-screen relative left-1/2 right-1/2 -translate-x-1/2 flex flex-col items-center justify-center">
