@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import BitcoinYayLogo from "@/assets/images/logo.webp";
-import BgArtImage1 from "@/assets/images/alchemy/free-mining/bg-art-1.webp";
+import BgArtImage1 from "@/assets/images/alchemy/quantum/bg-art-1.webp";
 import PointingHandButtonImage from "@/assets/images/buttons/point-button.webp";
 
 import CustomButton2 from "@/components/CustomButton2";
@@ -16,18 +16,31 @@ interface AlchemyDetailPageProps {
   }>;
 }
 
+// Electric alchemy data for different tiers
 const alchemyData = {
   basic: {
-    input: "2,500 BTCY",
-    multiplier: "0.5x - 1.2x",
+    input: "10,000 BTCY",
+    multiplier: "0.5x - 1.4x",
+  },
+  pro: {
+    input: "20,000 BTCY",
+    multiplier: "0.4x - 2x",
   },
   premium: {
-    input: "5,000 BTCY",
-    multiplier: "0.8x - 1.5x",
+    input: "50,000 BTCY",
+    multiplier: "0.3x - 2.5x",
+  },
+  ultra: {
+    input: "100,000 BTCY",
+    multiplier: "0.2x - 3x",
+  },
+  exactive: {
+    input: "150,000 BTCY",
+    multiplier: "0.2x - 3x",
   },
   elite: {
-    input: "10,000 BTCY",
-    multiplier: "1.0x - 2.0x",
+    input: "200,000 BTCY",
+    multiplier: "0.1x - 3.2x",
   },
 };
 
@@ -80,7 +93,7 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
     <div className="mx-auto mt-60 px-4 md:px-20 xl:px-40">
       {/* Countdown Timer */}
       <div className="flex justify-center relative z-20">
-        <div className="bg-primary rounded-t-2xl px-8 py-6 md:px-10 md:py-8 lg:py-6 w-80 md:w-full max-w-xl relative z-20">
+        <div className="bg-[#5A4BCC] rounded-t-2xl px-8 py-6 md:px-10 md:py-8 lg:py-6 w-80 md:w-full max-w-xl relative z-20">
           <div className="text-center">
             <h2 className="text-lg mb-6">This Alchemy will end</h2>
             <div className="flex justify-center items-center gap-8 md:gap-12 lg:gap-16">
@@ -113,7 +126,7 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
       </div>
 
       <div className="bg-bg2 max-w-7xl mx-auto z-10">
-        <div className="absolute top-105 left-0 w-full h-full -z-20">
+        <div className="absolute top-20 left-0 w-full h-full -z-20">
           <Image src={BgArtImage1} alt="Bg Art 1" className="w-full" />
         </div>
         <div className="pt-20 flex flex-col lg:flex-row justify-center items-center gap-20 px-4 md:px-10 xl:px-20 relative z-10">
@@ -125,7 +138,7 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
             />
           </div>
           <div className="w-full lg:w-1/2 flex flex-col justify-start items-start relative z-10">
-            <h1 className="text-5xl font-semibold">Free Mining Alchemy</h1>
+            <h1 className="text-5xl font-semibold">Quantum Mining Alchemy</h1>
             <p className="mt-4 text-lg text-tertiary">
               This Alchemy will turn your current BTCY as Nuggets into BTCY
               microtoken
@@ -151,7 +164,7 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
               </div>
               <div className="w-full mt-2 h-[10px] bg-bg3 rounded-full">
                 <div
-                  className="h-full bg-primary rounded-full"
+                  className="h-full bg-[#5A4BCC] rounded-full"
                   style={{ width: "20%" }}
                 ></div>
               </div>
@@ -171,7 +184,7 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
         </div>
 
         <div className="mt-60 mb-20">
-          <div className="bg-primary rounded-2xl px-6 py-8 md:px-12 md:py-10 lg:px-16 lg:py-12">
+          <div className="bg-[#5A4BCC] rounded-2xl px-6 py-8 md:px-12 md:py-10 lg:px-16 lg:py-12">
             <div className="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-8">
               <div className="text-center lg:text-left">
                 <h3 className="text-2xl md:text-3xl font-semibold mb-2">
@@ -190,7 +203,7 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
                   />
                   <Link
                     href="#"
-                    className="absolute right-1 top-1 bottom-1 px-6 py-2 md:px-8 md:py-3 bg-[#6B6B6B] hover:bg-[#5A5A5A] font-semibold rounded-full transition-colors duration-200 text-base md:text-lg font-boldwhitespace-nowrap"
+                    className="absolute right-1 top-1 bottom-1 px-6 py-2 md:px-8 md:py-3 bg-primary hover:bg-[#F97400] font-semibold rounded-full transition-colors duration-200 text-base md:text-lg font-boldwhitespace-nowrap"
                   >
                     ACTION
                   </Link>

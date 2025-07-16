@@ -78,7 +78,7 @@ export default function AlchemyPage() {
 
         <div className="flex mt-30 gap-30 flex-wrap justify-center items-center">
           <Link
-            href="#"
+            href="/alchemy/free-mining"
             className="flex flex-col items-center justify-center group"
           >
             <div className="h-32 flex justify-center items-center">
@@ -98,7 +98,7 @@ export default function AlchemyPage() {
             </p>
           </Link>
           <Link
-            href="#"
+            href="/alchemy/electric"
             className="flex flex-col items-center justify-center group"
           >
             <div className="h-32 flex justify-center items-center">
@@ -118,7 +118,7 @@ export default function AlchemyPage() {
             </p>
           </Link>
           <Link
-            href="#"
+            href="/alchemy/turbo"
             className="flex flex-col items-center justify-center group"
           >
             <div className="h-32 flex justify-center items-center">
@@ -138,7 +138,7 @@ export default function AlchemyPage() {
             </p>
           </Link>
           <Link
-            href="#"
+            href="/alchemy/nuclear"
             className="flex flex-col items-center justify-center group"
           >
             <div className="h-32 flex justify-center items-center">
@@ -158,7 +158,7 @@ export default function AlchemyPage() {
             </p>
           </Link>
           <Link
-            href="#"
+            href="/alchemy/quantum"
             className="flex flex-col items-center justify-center group"
           >
             <div className="h-32 flex justify-center items-center">

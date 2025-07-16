@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -11,10 +11,30 @@ import PointingHandButtonImage from "@/assets/images/buttons/point-button.webp";
 import CustomButton2 from "@/components/CustomButton2";
 
 interface AlchemyDetailPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
+
+// Electric alchemy data for different tiers
+const alchemyData = {
+  basic: {
+    input: "2,500 BTCY",
+    multiplier: "0.3x - 1.3x",
+  },
+  premium: {
+    input: "5,000 BTCY",
+    multiplier: "0.4x - 1.7x",
+  },
+  elite: {
+    input: "20,000 BTCY",
+    multiplier: "0.2x - 2.8x",
+  },
+  ultra: {
+    input: "50,000 BTCY",
+    multiplier: "0.2x - 3.0x",
+  },
+};
 
 interface TimeLeft {
   hours: number;
@@ -22,9 +42,13 @@ interface TimeLeft {
   seconds: number;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
   const deadline = new Date("2025-07-16T12:00:00Z");
+  const resolvedParams = use(params) as { slug: string };
+  const data =
+    alchemyData[resolvedParams.slug as keyof typeof alchemyData] ||
+    alchemyData.basic;
+
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({
     hours: 1,
     minutes: 1,
@@ -106,7 +130,7 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
             />
           </div>
           <div className="w-full lg:w-1/2 flex flex-col justify-start items-start relative z-10">
-            <h1 className="text-5xl font-semibold">Free Mining Alchemy</h1>
+            <h1 className="text-5xl font-semibold">Electric Mining Alchemy</h1>
             <p className="mt-4 text-lg text-tertiary">
               This Alchemy will turn your current BTCY as Nuggets into BTCY
               microtoken
@@ -115,11 +139,13 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
             <div className="mt-16 w-full flex flex-col gap-4">
               <div className="flex justify-between items-center">
                 <p className="text-3xl md:text-4xl">Input:</p>
-                <p className="text-4xl xl:text-5xl font-bold">2,500 BTCY </p>
+                <p className="text-4xl xl:text-5xl font-bold">{data.input}</p>
               </div>
               <div className="flex justify-between items-center">
                 <p className="text-3xl md:text-4xl">Multiplier:</p>
-                <p className="text-4xl xl:text-5xl font-bold">0.5x - 1.2x</p>
+                <p className="text-4xl xl:text-5xl font-bold">
+                  {data.multiplier}
+                </p>
               </div>
             </div>
             {/* Progress bar */}
