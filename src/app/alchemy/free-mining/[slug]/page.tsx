@@ -18,16 +18,16 @@ interface AlchemyDetailPageProps {
 
 const alchemyData = {
   basic: {
-    input: "2,500 BTCY",
+    input: "5,000 BTCY",
     multiplier: "0.5x - 1.2x",
   },
   premium: {
-    input: "5,000 BTCY",
-    multiplier: "0.8x - 1.5x",
+    input: "10,000 BTCY",
+    multiplier: "0.4x - 1.3x",
   },
   elite: {
     input: "10,000 BTCY",
-    multiplier: "1.0x - 2.0x",
+    multiplier: "0.3x - 1.5x",
   },
 };
 

@@ -56,18 +56,18 @@ export default function FreeMiningPage() {
       </div>
       <div className="mt-40 flex flex-wrap justify-center items-center gap-10 p-4 z-20">
         <CustomCard
-          inputBTCY="Input: 2,500 BTCY"
+          inputBTCY="Input: 5,000 BTCY"
           multiplier="Multiplier: 0.5x - 1.2x"
           slug="basic"
         />
         <CustomCard
-          inputBTCY="Input: 5,000 BTCY"
-          multiplier="Multiplier: 0.8x - 1.5x"
+          inputBTCY="Input: 10,000 BTCY"
+          multiplier="Multiplier: 0.4x - 1.3x"
           slug="premium"
         />
         <CustomCard
-          inputBTCY="Input: 10,000 BTCY"
-          multiplier="Multiplier: 1.0x - 2.0x"
+          inputBTCY="Input: 50,000 BTCY"
+          multiplier="Multiplier: 0.3x - 1.5x"
           slug="elite"
         />
       </div>

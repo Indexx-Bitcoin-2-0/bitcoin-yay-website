@@ -78,7 +78,7 @@ export default function AlchemyPage() {
         <Image
           src={BgArtImage1}
           alt="Bg Art 1"
-          className="absolute -top-60 left-0"
+          className="absolute -top-60 left-0 -z-20"
         />
       </div>
       <div className="">
@@ -109,6 +109,46 @@ export default function AlchemyPage() {
             </div>
             <p className="mt-2 text-2xl font-semibold group-hover:text-primary">
               FREE MINING
+            </p>
+          </Link>
+          <Link
+            href="/alchemy/quantum"
+            className="flex flex-col items-center justify-center group"
+          >
+            <div className="h-32 flex justify-center items-center">
+              <Image
+                src={QuantumMiningButtonImage}
+                alt="Electric Mining"
+                className="w-32 group-hover:hidden"
+              />
+              <Image
+                src={QuantumMiningButtonImage2}
+                alt="Electric Mining"
+                className="w-32 hidden group-hover:block"
+              />
+            </div>
+            <p className="mt-2 text-2xl font-semibold group-hover:text-primary">
+              POWER MINING
+            </p>
+          </Link>
+          <Link
+            href="/alchemy/quantum"
+            className="flex flex-col items-center justify-center group"
+          >
+            <div className="h-32 flex justify-center items-center">
+              <Image
+                src={QuantumMiningButtonImage}
+                alt="Electric Mining"
+                className="w-32 group-hover:hidden"
+              />
+              <Image
+                src={QuantumMiningButtonImage2}
+                alt="Electric Mining"
+                className="w-32 hidden group-hover:block"
+              />
+            </div>
+            <p className="mt-2 text-2xl font-semibold group-hover:text-primary">
+              QUANTUM MINING
             </p>
           </Link>
           <Link
@@ -171,26 +211,7 @@ export default function AlchemyPage() {
               NUCLEAR
             </p>
           </Link>
-          <Link
-            href="/alchemy/quantum"
-            className="flex flex-col items-center justify-center group"
-          >
-            <div className="h-32 flex justify-center items-center">
-              <Image
-                src={QuantumMiningButtonImage}
-                alt="Electric Mining"
-                className="w-32 group-hover:hidden"
-              />
-              <Image
-                src={QuantumMiningButtonImage2}
-                alt="Electric Mining"
-                className="w-32 hidden group-hover:block"
-              />
-            </div>
-            <p className="mt-2 text-2xl font-semibold group-hover:text-primary">
-              QUANTUM
-            </p>
-          </Link>
+          
         </div>
       </div>
 
@@ -198,7 +219,7 @@ export default function AlchemyPage() {
         <Image
           src={BgArtImage2}
           alt="Bg Art 2"
-          className="absolute -bottom-100 right-0 max-w-260"
+          className="absolute -bottom-100 right-0 max-w-260 -z-20"
         />
       </div>
 
