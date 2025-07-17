@@ -5,7 +5,6 @@ import AlchemyLogo from "@/assets/images/alchemy/alchemy-logo.webp";
 import ArtImage1 from "@/assets/images/alchemy/home/art-1.webp";
 import PointingButtonImage from "@/assets/images/buttons/point-button.webp";
 
-import CustomButton2 from "@/components/CustomButton2";
 import FreeMiningButtonImage from "@/assets/images/alchemy/home/free-art.webp";
 import FreeMiningButtonImage2 from "@/assets/images/alchemy/home/free02-art.webp";
 import ElectricMiningButtonImage from "@/assets/images/alchemy/home/electric-art.webp";
@@ -16,6 +15,11 @@ import NuclearMiningButtonImage from "@/assets/images/alchemy/home/nuclear-art.w
 import NuclearMiningButtonImage2 from "@/assets/images/alchemy/home/nuclear-02-art.webp";
 import QuantumMiningButtonImage from "@/assets/images/alchemy/home/quantum-art.webp";
 import QuantumMiningButtonImage2 from "@/assets/images/alchemy/home/quantum2-art.webp";
+
+import BgArtImage1 from "@/assets/images/bitcoin-art-3.svg";
+import BgArtImage2 from "@/assets/images/bitcoin-art-4.svg";
+
+import CustomButton2 from "@/components/CustomButton2";
 
 export default function AlchemyPage() {
   return (
@@ -52,11 +56,14 @@ export default function AlchemyPage() {
       </div>
 
       <div className="mt-40 xl:mt-120 2xl:mt-160">
-        <h2 className="text-4xl md:text-5xl xl:text-7xl font-medium text-center max-w-7xl mx-auto xl:leading-20">
-          Turn your BTCY into passive income! Secure the network, earn rewards,
-          and grow your holdings—stake your Bitcoin Yay now and let your crypto
-          work for you.
+        <h2 className="text-4xl md:text-5xl xl:text-9xl font-bold text-center max-w-7xl mx-auto ">
+          Turn your BTCY
+          <br /> into passive income!
         </h2>
+        <p className="mt-10 text-3xl md:text-4xl xl:text-[42px] font-light text-center max-w-7xl mx-auto">
+          Secure the network, earn rewards, and grow your holdings. Stake your
+          Bitcoin Yay now and let your crypto work for you.
+        </p>
         <div className="flex justify-center items-center mt-20">
           <CustomButton2
             text="Start Alchemy"
@@ -67,7 +74,14 @@ export default function AlchemyPage() {
         </div>
       </div>
 
-      <div className="mt-80">
+      <div className="relative mt-100">
+        <Image
+          src={BgArtImage1}
+          alt="Bg Art 1"
+          className="absolute -top-60 left-0"
+        />
+      </div>
+      <div className="">
         <h2 className="text-5xl md:text-7xl xl:text-[120px] font-semibold">
           ALCHEMY GATEWAY
         </h2>
@@ -76,7 +90,7 @@ export default function AlchemyPage() {
           based on the category odds!
         </p>
 
-        <div className="flex mt-30 gap-30 flex-wrap justify-center items-center">
+        <div className="flex mt-30 gap-40 flex-wrap justify-center items-center max-w-4xl mx-auto">
           <Link
             href="/alchemy/free-mining"
             className="flex flex-col items-center justify-center group"
@@ -180,6 +194,14 @@ export default function AlchemyPage() {
         </div>
       </div>
 
+      <div className="relative mt-120">
+        <Image
+          src={BgArtImage2}
+          alt="Bg Art 2"
+          className="absolute -bottom-100 right-0 max-w-260"
+        />
+      </div>
+
       <div className="mt-80 mb-80">
         <h2 className="text-5xl md:text-7xl xl:text-[120px] font-semibold">
           How BTCY Alchemy works
@@ -206,6 +228,66 @@ export default function AlchemyPage() {
             </li>
           </ul>
         </div>
+      </div>
+
+      <div className="mt-80 font-light flex flex-col gap-2 mb-40">
+        <h3 className="text-xl font-semibold">Disclaimer</h3>
+        <p>
+          By participating in the BTCY Alchemy process, you acknowledge the
+          following:
+        </p>
+
+        <p>Claim Options:</p>
+
+        <p>CEX (Centralized Exchange – Indexx Exchange)</p>
+        <p>
+          Claiming to CEX will send your reward directly to your Indexx Exchange
+          account.
+        </p>
+        <ul className="list-disc pl-4">
+          <li>Fast processing</li>
+          <li>No gas fees</li>
+          <li>Managed by Indexx</li>
+        </ul>
+
+        <p>You need a registered and verified Indexx account.</p>
+
+        <p>DEX (Decentralized Exchange – Wallet Claim, e.g., MetaMask)</p>
+        <p>
+          Claiming to DEX sends your reward to your connected blockchain wallet.
+        </p>
+        <ul className="list-disc pl-4">
+          <li>Full user control</li>
+          <li>Can interact with DeFi, staking, swaps</li>
+        </ul>
+
+        <p>You pay gas fees (on the blockchain network)</p>
+        <p>
+          Make sure your wallet is connected and ready (MetaMask, WalletConnect,
+          etc.)
+        </p>
+
+        <p>Important Notes:</p>
+        <ul className="list-disc pl-4">
+          <li>You can “only claim once per reward”</li>
+          <li>
+            Claims are “recorded on-chain or in our backend” for verification.
+          </li>
+          <li>
+            If you choose DEX, ensure you understand how to manage blockchain
+            wallets.
+          </li>
+          <li>Lost tokens due to incorrect addresses are “non-recoverable”.</li>
+          <li>
+            For CEX claims, Indexx manages all custody and record-keeping.
+          </li>
+        </ul>
+
+        <p>Security Reminder:</p>
+        <ul className="list-disc pl-4">
+          <li>Never share your wallet private keys or seed phrases.</li>
+          <li>Only use official Indexx DApp links for claiming.</li>
+        </ul>
       </div>
     </div>
   );
