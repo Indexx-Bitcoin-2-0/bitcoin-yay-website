@@ -30,6 +30,7 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
     email: "",
     password: "",
     confirmPassword: "",
+    invitationCode : ""
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -126,6 +127,7 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
           email: "",
           password: "",
           confirmPassword: "",
+          invitationCode: ""
         });
       } catch {
         setErrors({ general: "Registration failed. Please try again." });
@@ -368,6 +370,30 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
             {errors.confirmPassword && (
               <p className="text-red-500 text-xs mt-1">
                 {errors.confirmPassword}
+              </p>
+            )}
+          </div>
+
+          <div className="mb-4">
+            <label
+              htmlFor="invitatino-code"
+              className="block text-bg3 text-base mb-2"
+            >
+              Invitation Code (Optional)
+            </label>
+            <input
+              type="text"
+              id="=invitationCode"
+              className="w-full text-base p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
+              value={formData.invitationCode}
+              onChange={(e) =>
+                handleInputChange("invitationCode", e.target.value)
+              }
+              disabled={isSubmitting}
+            />
+            {errors.invitationCode && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.invitationCode}
               </p>
             )}
           </div>
