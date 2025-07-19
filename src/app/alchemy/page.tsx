@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -6,15 +9,15 @@ import ArtImage1 from "@/assets/images/alchemy/home/art-1.webp";
 import PointingButtonImage from "@/assets/images/buttons/point-button.webp";
 
 import FreeMiningButtonImage from "@/assets/images/alchemy/home/free-art.webp";
-import FreeMiningButtonImage2 from "@/assets/images/alchemy/home/free02-art.webp";
+import PowerMiningButtonImage from "@/assets/images/alchemy/home/power-mining-art.webp";
+import QuantumMiningButtonImage from "@/assets/images/alchemy/home/quantum-art.webp";
+
 import ElectricMiningButtonImage from "@/assets/images/alchemy/home/electric-art.webp";
 import ElectricMiningButtonImage2 from "@/assets/images/alchemy/home/electric2-art.webp";
 import TurbineMiningButtonImage from "@/assets/images/alchemy/home/turbo-art.webp";
 import TurbineMiningButtonImage2 from "@/assets/images/alchemy/home/turbo2-art.webp";
 import NuclearMiningButtonImage from "@/assets/images/alchemy/home/nuclear-art.webp";
 import NuclearMiningButtonImage2 from "@/assets/images/alchemy/home/nuclear-02-art.webp";
-import QuantumMiningButtonImage from "@/assets/images/alchemy/home/quantum-art.webp";
-import QuantumMiningButtonImage2 from "@/assets/images/alchemy/home/quantum2-art.webp";
 
 import BgArtImage1 from "@/assets/images/bitcoin-art-3.svg";
 import BgArtImage2 from "@/assets/images/bitcoin-art-4.svg";
@@ -22,6 +25,8 @@ import BgArtImage2 from "@/assets/images/bitcoin-art-4.svg";
 import CustomButton2 from "@/components/CustomButton2";
 
 export default function AlchemyPage() {
+  const [isPowerMiningActive, setIsPowerMiningActive] = useState(false);
+
   return (
     <div className="mx-auto mt-40 px-4 md:px-20 xl:px-40 relative max-w-[2000px]">
       <div className="flex flex-col xl:flex-row ">
@@ -99,38 +104,29 @@ export default function AlchemyPage() {
               <Image
                 src={FreeMiningButtonImage}
                 alt="Free Mining"
-                className="w-32 group-hover:hidden"
-              />
-              <Image
-                src={FreeMiningButtonImage2}
-                alt="Free Mining"
-                className="w-32 hidden group-hover:block"
+                className="w-32 group-hover:scale-105 transition-all duration-300"
               />
             </div>
             <p className="mt-2 text-2xl font-semibold group-hover:text-primary">
               FREE MINING
             </p>
           </Link>
-          <Link
-            href="/alchemy/quantum"
-            className="flex flex-col items-center justify-center group"
+          <button
+            type="button"
+            onClick={() => setIsPowerMiningActive(!isPowerMiningActive)}
+            className="flex flex-col items-center justify-center group cursor-pointer"
           >
             <div className="h-32 flex justify-center items-center">
               <Image
-                src={QuantumMiningButtonImage}
+                src={PowerMiningButtonImage}
                 alt="Electric Mining"
-                className="w-32 group-hover:hidden"
-              />
-              <Image
-                src={QuantumMiningButtonImage2}
-                alt="Electric Mining"
-                className="w-32 hidden group-hover:block"
+                className="w-32 group-hover:scale-105 transition-all duration-300"
               />
             </div>
-            <p className="mt-2 text-2xl font-semibold group-hover:text-primary">
+            <p className="mt-4 text-2xl font-semibold group-hover:text-primary">
               POWER MINING
             </p>
-          </Link>
+          </button>
           <Link
             href="/alchemy/quantum"
             className="flex flex-col items-center justify-center group"
@@ -139,79 +135,77 @@ export default function AlchemyPage() {
               <Image
                 src={QuantumMiningButtonImage}
                 alt="Electric Mining"
-                className="w-32 group-hover:hidden"
-              />
-              <Image
-                src={QuantumMiningButtonImage2}
-                alt="Electric Mining"
-                className="w-32 hidden group-hover:block"
+                className="w-32 group-hover:scale-105 transition-all duration-300"
               />
             </div>
             <p className="mt-2 text-2xl font-semibold group-hover:text-primary">
               QUANTUM MINING
             </p>
           </Link>
-          <Link
-            href="/alchemy/electric"
-            className="flex flex-col items-center justify-center group"
-          >
-            <div className="h-32 flex justify-center items-center">
-              <Image
-                src={ElectricMiningButtonImage}
-                alt="Electric Mining"
-                className="w-32 group-hover:hidden"
-              />
-              <Image
-                src={ElectricMiningButtonImage2}
-                alt="Electric Mining"
-                className="w-32 hidden group-hover:block"
-              />
-            </div>
-            <p className="mt-2 text-2xl font-semibold group-hover:text-primary">
-              ELECTRIC
-            </p>
-          </Link>
-          <Link
-            href="/alchemy/turbo"
-            className="flex flex-col items-center justify-center group"
-          >
-            <div className="h-32 flex justify-center items-center">
-              <Image
-                src={TurbineMiningButtonImage}
-                alt="Electric Mining"
-                className="w-32 group-hover:hidden"
-              />
-              <Image
-                src={TurbineMiningButtonImage2}
-                alt="Electric Mining"
-                className="w-32 hidden group-hover:block"
-              />
-            </div>
-            <p className="mt-2 text-2xl font-semibold group-hover:text-primary">
-              TURBO
-            </p>
-          </Link>
-          <Link
-            href="/alchemy/nuclear"
-            className="flex flex-col items-center justify-center group"
-          >
-            <div className="h-32 flex justify-center items-center">
-              <Image
-                src={NuclearMiningButtonImage}
-                alt="Electric Mining"
-                className="w-32 group-hover:hidden"
-              />
-              <Image
-                src={NuclearMiningButtonImage2}
-                alt="Electric Mining"
-                className="w-32 hidden group-hover:block"
-              />
-            </div>
-            <p className="mt-2 text-2xl font-semibold group-hover:text-primary">
-              NUCLEAR
-            </p>
-          </Link>
-          
+          {isPowerMiningActive && (
+            <>
+              <Link
+                href="/alchemy/electric"
+                className="flex flex-col items-center justify-center group"
+              >
+                <div className="h-32 flex justify-center items-center">
+                  <Image
+                    src={ElectricMiningButtonImage}
+                    alt="Electric Mining"
+                    className="w-18 group-hover:hidden"
+                  />
+                  <Image
+                    src={ElectricMiningButtonImage2}
+                    alt="Electric Mining"
+                    className="w-18 hidden group-hover:block"
+                  />
+                </div>
+                <p className="mt-2 text-2xl font-semibold group-hover:text-primary">
+                  ELECTRIC
+                </p>
+              </Link>
+              <Link
+                href="/alchemy/turbo"
+                className="flex flex-col items-center justify-center group"
+              >
+                <div className="h-32 flex justify-center items-center">
+                  <Image
+                    src={TurbineMiningButtonImage}
+                    alt="Electric Mining"
+                    className="w-28 group-hover:hidden"
+                  />
+                  <Image
+                    src={TurbineMiningButtonImage2}
+                    alt="Electric Mining"
+                    className="w-28 hidden group-hover:block"
+                  />
+                </div>
+                <p className="mt-2 text-2xl font-semibold group-hover:text-primary">
+                  TURBO
+                </p>
+              </Link>
+              <Link
+                href="/alchemy/nuclear"
+                className="flex flex-col items-center justify-center group"
+              >
+                <div className="h-32 flex justify-center items-center">
+                  <Image
+                    src={NuclearMiningButtonImage}
+                    alt="Electric Mining"
+                    className="w-30 group-hover:hidden"
+                  />
+                  <Image
+                    src={NuclearMiningButtonImage2}
+                    alt="Electric Mining"
+                    className="w-30 hidden group-hover:block"
+                  />
+                </div>
+                <p className="mt-2 text-2xl font-semibold group-hover:text-primary">
+                  NUCLEAR
+                </p>
+              </Link>
+            </>
+          )}
         </div>
       </div>
 

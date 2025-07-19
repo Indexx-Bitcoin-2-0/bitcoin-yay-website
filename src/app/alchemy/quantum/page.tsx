@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import QuantumMiningButtonImage from "@/assets/images/alchemy/home/quantum-art.webp";
 import AlchemyLogo from "@/assets/images/alchemy/alchemy-logo.webp";
 import ArtImage1 from "@/assets/images/alchemy/quantum/art-1.webp";
 import BitcoinYayLogo from "@/assets/images/logo.webp";
@@ -36,7 +37,7 @@ const CustomCard = ({
 
 export default function FreeMiningPage() {
   return (
-    <div className="mx-auto mt-60 px-4 md:px-20 xl:px-40">
+    <div className="mx-auto mt-40 lg:mt-60 px-4 md:px-20 xl:px-40">
       <div className="flex items-center gap-6">
         <Image src={AlchemyLogo} alt="Alchemy Logo" className="w-16" />
         <h1 className="text-3xl md:text-[52px] font-semibold">
@@ -44,7 +45,12 @@ export default function FreeMiningPage() {
         </h1>
       </div>
       <div className="mt-20 flex flex-col items-center text-center">
-        <h1 className="text-5xl md:text-[80px] font-bold">
+        <Image
+          src={QuantumMiningButtonImage}
+          alt="Quantum Mining"
+          className="w-40"
+        />
+        <h1 className="mt-10 text-5xl md:text-[80px] font-bold">
           QUANTUM MINING GOPHER
         </h1>
         <h2 className="mt-2 text-3xl md:text-[50px] font-bold">
