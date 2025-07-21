@@ -79,7 +79,6 @@ const ForgotPasswordPopup: React.FC<ForgotPasswordPopupProps> = ({
               type="email"
               id="reset-email"
               className="w-full text-lg p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
-              placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={isSubmitting}

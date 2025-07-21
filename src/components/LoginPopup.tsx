@@ -223,7 +223,6 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
                 type="email"
                 id="login-email"
                 className="w-full text-lg p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
-                placeholder="Enter your email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={isSubmitting}
@@ -245,7 +244,6 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
                 type="password"
                 id="login-password"
                 className="w-full text-lg p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
-                placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={isSubmitting}
