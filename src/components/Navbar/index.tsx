@@ -15,8 +15,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-import PopupArt1 from "@/assets/images/popup/airdrop-popup-1.webp";
-import ThumbsUpButtonImage from "@/assets/images/buttons/thumbs-up-button.webp";
+import PopupArt1 from "@/assets/images/popup/airdrop-popup.webp";
+import RegisterButtonImage from "@/assets/images/buttons/register-button.webp";
 
 import CustomButton2 from "@/components/CustomButton2";
 import PopupComponent from "@/components/PopupComponent";
@@ -240,7 +240,7 @@ const Navbar: React.FC = () => {
   return (
     <nav className="w-full bg-bg fixed top-0 left-0 right-0 z-50">
       <PopupComponent isOpen={isPopupOpen} onClose={handlePopupClose}>
-        <div className="mt-10 mx-2 md:mx-4 flex flex-col items-center justify-center w-90 md:w-142 relative">
+        <div className="mt-10 mx-2 md:mx-4 flex flex-col items-center justify-center w-90 md:w-120 xl:w-140 relative">
           <Image src={PopupArt1} alt="Popup Art 1" className="w-full" />
           <Link
             href="/airdrop"
@@ -248,8 +248,8 @@ const Navbar: React.FC = () => {
             className="mb-10 mt-4"
           >
             <CustomButton2
-              image={ThumbsUpButtonImage}
-              text={"COUNT ME IN"}
+              image={RegisterButtonImage}
+              text={"REGISTER NOW!"}
               link="/airdrop"
               imageStyling="w-20 md:w-30"
             />
