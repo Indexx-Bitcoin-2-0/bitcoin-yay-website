@@ -100,7 +100,6 @@ export default function AirdropRegisterPage() {
         } else {
           setIsRegistrationSuccessful(false);
         }
-        console.log("Form data submitted:", { email, username, acceptTerms });
         setUserReferralLink(userReferralLink + res.data?.data?.referralCode);
         setIsPopupOpen(true);
         setEmail("");
@@ -109,11 +108,10 @@ export default function AirdropRegisterPage() {
         setErrors({});
         setFormSubmitted(false);
       } catch (error) {
-        console.error("Submission error:", error);
 
         let errorMessage = (error as AxiosError).response?.data;
         errorMessage = (errorMessage as { data?: object })?.data;
-
+        setIsRegistrationSuccessful(false);
         setErrors({
           general:
             error instanceof Error && "response" in error
@@ -316,9 +314,9 @@ export default function AirdropRegisterPage() {
       <div className="text-center flex flex-col items-center justify-center">
         <h4 className="text-3xl font-semibold text-primary">Sign Up for the</h4>
         <h2 className="mt-6 text-5xl md:text-7xl font-bold">
-          Turbo Mining Gopher
+          Bitcoin Yay
           <br />
-          Free Airdrop
+          <span className="text-primary">Lotto Airdrop!</span>
         </h2>
         <p className="mt-16 text-xl font-medium">
           To claim airdrop you need to be a Miner. Download the app and join now
@@ -333,7 +331,7 @@ export default function AirdropRegisterPage() {
           </Link>
         </p>
       </div>
-      <div className="w-full flex justify-center mt-10">
+      <div className="w-full flex justify-center mt-10 mb-40">
         <form
           onSubmit={handleSubmit}
           className="w-full p-8 flex flex-col justify-center max-w-3xl"
