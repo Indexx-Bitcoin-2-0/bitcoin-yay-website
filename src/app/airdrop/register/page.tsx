@@ -418,7 +418,7 @@ export default function AirdropRegisterPage() {
             referral link to share.
           </p>
           <div className="flex justify-center mt-20">
-            <button type="submit" disabled={true}>
+            <button type="submit">
               <Image
                 src={SubmitButtomImage}
                 alt="Submit Button"
