@@ -34,9 +34,10 @@ import GopherImage4 from "@/assets/images/home/gophers/gopher-4.webp";
 import GopherImage5 from "@/assets/images/home/gophers/gopher-5.webp";
 import GopherImage6 from "@/assets/images/home/gophers/gopher-6.webp";
 
-import BirthdayBanner from "@/assets/images/home/airdrop-4-july-banner.webp";
-import BirthdayBannerMobile from "@/assets/images/home/airdrop-4-july-banner-mobile.webp";
-import ThumbsUpButtonImage from "@/assets/images/buttons/thumbs-up-button.webp";
+import BirthdayBanner from "@/assets/images/home/airdrop-1-aug-banner-desktop.webp";
+import BirthdayBannerTablet from "@/assets/images/home/airdrop-1-aug-banner-tablet.webp";
+import BirthdayBannerMobile from "@/assets/images/home/airdrop-1-aug-banner-mobile.webp";
+import RegisterButtonImage from "@/assets/images/buttons/register-button.webp";
 // import ApplestoreDownloadButton from "@/assets/images/buttons/get-on-applestore-button.webp";
 // import PlaystoreDownloadButton from "@/assets/images/buttons/get-on-playstore-button.webp";
 
@@ -113,19 +114,25 @@ export default function Home() {
         <Image
           src={BirthdayBanner}
           alt="Birthday Banner"
-          className="w-full hidden md:block"
+          className="w-full hidden lg:block"
         />
+         <Image
+          src={BirthdayBannerTablet}
+          alt="Birthday Banner"
+          className="w-full hidden md:block lg:hidden"
+        />
+        
         <Image
           src={BirthdayBannerMobile}
           alt="Birthday Banner"
           className="w-full md:hidden"
         />
-        <div className="flex justify-center items-center md:-mt-10">
+        <div className="flex justify-center items-center mt-10 md:mt-20 lg:-mt-50 xl:-mt-64 2xl:-mt-80 lg:ml-10">
           <CustomButton2
-            image={ThumbsUpButtonImage}
-            text="COUNT ME IN"
+            image={RegisterButtonImage}
+            text="REGISTER NOW!"
             link="/airdrop"
-            imageStyling="w-30 md:w-40"
+            imageStyling="w-30 md:w-30 xl:w-40"
           />
         </div>
         {/* <Link
