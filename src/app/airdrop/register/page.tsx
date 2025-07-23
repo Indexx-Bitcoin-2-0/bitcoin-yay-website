@@ -92,7 +92,7 @@ export default function AirdropRegisterPage() {
           walletProvider: "",
           airdropAmount: 0,
           tokenName: "BTCY",
-          eventType: "Bitcoin Yay Birthday airdrop",
+          eventType: "Bitcoin Yay Lotto airdrop",
         });
 
         if (res.status === 200 || res.status === 201) {
