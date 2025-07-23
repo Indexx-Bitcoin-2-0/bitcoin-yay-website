@@ -169,8 +169,7 @@ export default function AirdropRegisterPage() {
                 Congratulations!
               </h2>
               <p className="mt-6 max-w-100 lg:text-xl">
-                You have successfully registered for the FREE Turbo Mining
-                Gopher airdrop.
+                You have successfully registered for the Lotto Airdrop.
               </p>
 
               <div className="mb-6 mt-2 lg:mt-8 w-full px-4 md:px-8 text-start">
