@@ -65,39 +65,50 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
     await submitLogin();
   };
 
-  const submitLogin = async () => {
-    setIsSubmitting(true);
-    setErrors({});
+const submitLogin = async () => {
+  setIsSubmitting(true);
+  setErrors({});
 
-    if (validateForm()) {
-      try {
-        // For now, simulate a successful login
-        // In a real app, you would make an API call here
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API delay
+  if (!validateForm()) {
+    setIsSubmitting(false);
+    return;
+  }
 
-        // Mock user data - replace with actual API response
-        const userData = {
-          email: email,
-          name: email.split("@")[0], // Use email prefix as name for demo
-          token: "mock-jwt-token-" + Date.now(),
-        };
+  try {
+    const res = await fetch("/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
 
-        saveAuthData(userData);
-        onLoginSuccess();
-        onClose();
+    const data = await res.json();
 
-        // Reset form
-        setEmail("");
-        setPassword("");
-      } catch {
-        setErrors({
-          general: "Login failed. Please check your credentials and try again.",
-        });
-      }
+    console.log("Login response data:", data);
+    console.log("Login data.data:", data.data);
+    console.log("Login ata.access_token:", data.data.data.access_token);
+    if (!res.ok) {
+      setErrors({ general: data?.error || "Login failed. Try again." });
+      setIsSubmitting(false);
+      return;
     }
 
+    const userData = {
+      email,
+      token: data.data.data.access_token || "token-placeholder",
+      name: email.split("@")[0],
+    };
+
+    saveAuthData(userData);
+    onLoginSuccess();
+    onClose();
+    setEmail("");
+    setPassword("");
+  } catch (err) {
+    setErrors({ general: "Something went wrong. Please try again." });
+  } finally {
     setIsSubmitting(false);
-  };
+  }
+};
 
   const handleGoogleLogin = () => {
     // Implement Google OAuth login here

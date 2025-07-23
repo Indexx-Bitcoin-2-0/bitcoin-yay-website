@@ -22,8 +22,9 @@ export async function POST(request: Request) {
       { email, password }
     );
 
+    console.log("Login response:", response.data);
     return NextResponse.json(
-      { message: response.data.message },
+      { data: response.data },
       { status: 200 }
     );
 

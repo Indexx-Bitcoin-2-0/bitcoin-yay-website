@@ -30,7 +30,7 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
     email: "",
     password: "",
     confirmPassword: "",
-    invitationCode : ""
+    invitationCode: ""
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -105,38 +105,55 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
 
     if (validateForm()) {
       try {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        const userData = {
+        const payload = {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          username: formData.username,
+          countryCode: formData.country.split(" ")[1]?.replace(/[()]/g, "") || "+1",
+          country: formData.country.split(" ")[0],
+          phoneNumber: formData.phoneNumber,
           email: formData.email,
-          name: `${formData.firstName} ${formData.lastName}`,
-          token: "mock-jwt-token-" + Date.now(),
+          password: formData.password,
+          confirmPassword: formData.confirmPassword,
+          referralCode: formData.invitationCode
         };
 
-        saveAuthData(userData);
-        onRegisterSuccess();
-        onClose();
-
-        // Reset form
-        setFormData({
-          firstName: "",
-          lastName: "",
-          username: "",
-          country: "United States (+1)",
-          phoneNumber: "",
-          email: "",
-          password: "",
-          confirmPassword: "",
-          invitationCode: ""
+        const res = await fetch("/api/register", {
+          method: "POST",
+          body: JSON.stringify(payload),
+          headers: {
+            "Content-Type": "application/json",
+          },
         });
-      } catch {
-        setErrors({ general: "Registration failed. Please try again." });
+
+        const data = await res.json();
+
+        if (res.ok && data?.token) {
+          saveAuthData(data);
+          onRegisterSuccess();
+          onClose();
+
+          setFormData({
+            firstName: "",
+            lastName: "",
+            username: "",
+            country: "United States (+1)",
+            phoneNumber: "",
+            email: "",
+            password: "",
+            confirmPassword: "",
+            invitationCode: ""
+          });
+        } else {
+          setErrors({ general: data?.error || "Registration failed" });
+        }
+      } catch (error: any) {
+        setErrors({ general: "Something went wrong. Please try again." });
       }
     }
 
     setIsSubmitting(false);
   };
-
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
