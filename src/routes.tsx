@@ -10,3 +10,6 @@ export const LOGIN_API_ROUTE =
 
 export const REGISTER_API_ROUTE =
   "https://api.v1.indexx.ai/api/v1/inex/user/registerwithapp";
+
+export const GOOGLE_LOGIN_API_ROUTE =
+  "https://api.v1.indexx.ai/api/v1/inex/user/login/google";
