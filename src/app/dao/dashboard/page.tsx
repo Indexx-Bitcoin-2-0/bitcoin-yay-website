@@ -14,33 +14,36 @@ import CorrectIcon from "@/assets/images/dao/dashboard/correct-icon.svg";
 import CrossIcon from "@/assets/images/dao/dashboard/cross-icon.svg";
 import PendingIcon from "@/assets/images/dao/dashboard/pending-icon.svg";
 
-// Dummy API data - in real app this would come from API
-const getDashboardData = () => {
-  // Simulate API call - this would normally come from your backend
-  return {
-    role: "leader", // This would be determined by the API based on user
-    reputation: 800,
-    maxReputation: 1000,
-    profileCompletion: 40,
-    powers: [
-      { name: "Call vote", status: "completed" },
-      { name: "Assign Wallets tasks", status: "completed" },
-      { name: "Create proposals", status: "completed" },
-    ],
-    assignedTasks: [
-      { id: 1, name: "Task 1 - Review proposal XYZ", status: "completed" },
-      { id: 2, name: "Task 2 - Moderate community", status: "pending" },
-    ],
-    recentActivity: [
-      { id: 1, name: "Voted on 'Changing Staking Rules'", status: "completed" },
-      { id: 2, name: "Task: Design update review", status: "failed" },
-      { id: 3, name: "Submitted a new proposal", status: "completed" },
-    ],
-  };
-};
+interface Power {
+  name: string;
+  status: "completed" | "pending" | "failed";
+}
+
+interface Task {
+  id: number;
+  name: string;
+  status: "completed" | "pending" | "failed";
+}
+
+interface Activity {
+  id: number;
+  name: string;
+  status: "completed" | "failed";
+}
+
+interface DashboardData {
+  role: string;
+  reputation: number;
+  maxReputation: number;
+  profileCompletion: number;
+  powers: Power[];
+  assignedTasks: Task[];
+  recentActivity: Activity[];
+}
 
 export default function Dashboard() {
-  const [userData, setUserData] = useState(getDashboardData());
+  const [userData, setUserData] = useState<DashboardData | null>(null);
+
 
   const roleImages = {
     leader: RoleImage1,
@@ -50,18 +53,35 @@ export default function Dashboard() {
     contributor: RoleImage5,
   };
 
-  // Simulate API call on component mount
   useEffect(() => {
-    // In real app, this would be an actual API call
-    const fetchUserData = async () => {
-      // const response = await fetch('/api/dashboard');
-      // const data = await response.json();
-      const data = getDashboardData();
-      setUserData(data);
+    const fetchDashboardData = async () => {
+      try {
+        const response = await fetch("https://api.v1.indexx.ai/api/v1/dao/getDashboard", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: "user@example.com" }), // replace with dynamic user email if available
+        });
+
+        const data = await response.json();
+
+        setUserData(data);
+      } catch (err) {
+        console.error("Failed to fetch dashboard data:", err);
+      }
     };
 
-    fetchUserData();
+    fetchDashboardData();
   }, []);
+
+  if (!userData) {
+    return (
+      <div className="mt-40 text-center text-3xl">
+        Loading dashboard data...
+      </div>
+    );
+  }
 
   return (
     <div className="mt-40 container mx-auto px-4">
@@ -125,9 +145,8 @@ export default function Dashboard() {
               <div
                 className="bg-primary h-6 rounded-full transition-all duration-300"
                 style={{
-                  width: `${
-                    (userData.reputation / userData.maxReputation) * 100
-                  }%`,
+                  width: `${(userData.reputation / userData.maxReputation) * 100
+                    }%`,
                 }}
               ></div>
             </div>
@@ -178,8 +197,8 @@ export default function Dashboard() {
                         task.status === "completed"
                           ? CorrectIcon
                           : task.status === "failed"
-                          ? CrossIcon
-                          : PendingIcon
+                            ? CrossIcon
+                            : PendingIcon
                       }
                       alt="Status icon"
                       className="w-8 ml-4"

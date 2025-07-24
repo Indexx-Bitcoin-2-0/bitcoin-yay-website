@@ -64,23 +64,88 @@ export default function NewProposal() {
   };
 
 
-  const handleFormSubmit = (e: FormEvent<HTMLFormElement>): void => {
+  const handleFormSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     setFormSubmitted(true);
 
-    if (validateForm()) {
-      // Handle form submission here
-      console.log("Form submitted:", formData);
-      // Reset form after successful submission
-      setFormData({
-        title: "",
-        summary: "",
-        category: "",
+    if (!validateForm()) return;
+
+    try {
+      const timestamp = new Date().toISOString().split('T')[0].replace(/-/g, '');
+      const proposalId = `prop_${timestamp}_${formData.category.replace(/\s+/g, '_').toLowerCase()}_001`;
+      const taskId = `task_${timestamp}_${formData.category.replace(/\s+/g, '_').toLowerCase()}_001`;
+
+      // Simulate IPFS upload or placeholder
+      const attachmentUrls = formData.attachment
+        ? [`https://ipfs.io/ipfs/fakeHash/${formData.attachment.name}`]
+        : [];
+
+      const payload = {
+        title: formData.title,
+        taskId,
+        proposalId,
+        description: formData.summary,
+        status: "Voting",
+        tags: formData.title
+          .toLowerCase()
+          .split(' ')
+          .filter((word) => word.length > 2), // basic tag generator
+        startDate: new Date().toISOString(),
+        endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days later
+        attachments: attachmentUrls,
+        comments: [],
+        upvotes: 0,
+        downvotes: 0,
+        upvotedBy: [],
+        downvotedBy: [],
+        isActive: true,
+        isCompleted: false,
+        isRejected: false,
+        isDraft: false,
+        isArchived: false,
+        isApproved: false,
+        isClaimed: false,
+        isSubmitted: true,
+        isVoting: true,
+        isTask: false,
+        isProposal: true,
+        summary: formData.summary.slice(0, 160), // short summary
+        createdBy: "support@bitcoinyay.com", // Replace with dynamic user email if available
+        category: formData.category,
+        votingDeadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        roleRequired: "Member",
+        votes: [],
+        deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      };
+
+      const response = await fetch("https://api.v1.indexx.ai/api/v1/dao/createProposal", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
       });
-      setFormSubmitted(false);
-      setErrors({});
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Proposal submitted successfully!");
+        setFormData({
+          title: "",
+          summary: "",
+          category: "",
+        });
+        setFormSubmitted(false);
+        setErrors({});
+      } else {
+        alert("Submission failed: " + (data.message || "Unknown error"));
+      }
+    } catch (error) {
+      console.error("Submission error:", error);
+      alert("An unexpected error occurred while submitting the proposal.");
     }
   };
+
 
   const handleInputChange = (field: keyof FormData, value: string) => {
     setFormData((prev) => ({

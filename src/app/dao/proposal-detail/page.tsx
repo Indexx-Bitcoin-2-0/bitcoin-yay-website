@@ -11,19 +11,18 @@ import RoleImage5 from "@/assets/images/dao/Contributors.webp";
 
 import CustomButton from "@/components/CustomButton";
 
-const getProposalDetailData = () => ({
-  proposalNumber: 24,
-  proposalTitle: "Enable IUSD+ Rewards Pool",
-  createdByRole: "manager",
-  summary: "A new reward pool for IUSD+ is proposed....",
-  votingPeriod: "May 28 – June 2",
-  requiredRole: "Worker Bee or higher",
-  voteResults: 70,
-});
+interface Proposal {
+  proposalNumber: number;
+  proposalTitle: string;
+  createdByRole: string;
+  summary: string;
+  votingPeriod: string;
+  requiredRole: string;
+  voteResults: number;
+}
+
 
 export default function ProposalDetail() {
-  const [proposal, setProposal] = useState(getProposalDetailData());
-
   const roleImages = {
     leader: RoleImage1,
     validator: RoleImage2,
@@ -32,9 +31,46 @@ export default function ProposalDetail() {
     contributor: RoleImage5,
   };
 
+  const [proposal, setProposal] = useState<Proposal | null>(null);
+
   useEffect(() => {
-    setProposal(getProposalDetailData());
+    const fetchProposal = async () => {
+      try {
+        const response = await fetch(
+          "https://api.v1.indexx.ai/getProposalDetail/685e9d113fff7ac9045ab8fa"
+        );
+        const data = await response.json();
+
+        // You may need to adjust these based on actual API response shape
+        const mappedProposal: Proposal = {
+          proposalNumber: data.proposalNumber ?? 0,
+          proposalTitle: data.title ?? "Untitled",
+          createdByRole: data.createdByRole?.toLowerCase() ?? "manager",
+          summary: data.summary ?? data.description ?? "No summary provided.",
+          votingPeriod: "July 24 – July 31", // You can format data.startDate & data.endDate
+          requiredRole: data.roleRequired ?? "Member",
+          voteResults: Math.round(
+            (data.upvotes / (data.upvotes + data.downvotes)) * 100
+          ) || 0,
+        };
+
+        setProposal(mappedProposal);
+      } catch (err) {
+        console.error("Failed to fetch proposal details:", err);
+      }
+    };
+
+    fetchProposal();
   }, []);
+
+  if (!proposal) {
+    return (
+      <div className="mt-40 container mx-auto px-4 text-center text-3xl">
+        Loading proposal...
+      </div>
+    );
+  }
+
 
   return (
     <div className="mt-40 container mx-auto px-4">
@@ -133,19 +169,19 @@ export default function ProposalDetail() {
           <CustomButton
             text="Vote Yes"
             index={0}
-            handleButtonClick={() => {}}
+            handleButtonClick={() => { }}
             isActive={false}
           />
           <CustomButton
             text="Vote No"
             index={1}
-            handleButtonClick={() => {}}
+            handleButtonClick={() => { }}
             isActive={false}
           />
           <CustomButton
             text="Abstain"
             index={2}
-            handleButtonClick={() => {}}
+            handleButtonClick={() => { }}
             isActive={false}
           />
         </div>
