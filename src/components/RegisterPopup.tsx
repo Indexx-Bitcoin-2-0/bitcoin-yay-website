@@ -5,12 +5,13 @@ import Image from "next/image";
 import axios from "axios";
 import PopupComponent from "@/components/PopupComponent";
 import { useAuth } from "@/contexts/AuthContext";
-import { REGISTER_API_ROUTE } from "@/routes";
+import { GOOGLE_REGISTER_API_ROUTE, REGISTER_API_ROUTE } from "@/routes";
 import MainLogo from "@/assets/images/main-logo.svg";
 import RegisterButtonImage from "@/assets/images/buttons/register-text-button.webp";
 import GoogleRegisterButtonImage from "@/assets/images/buttons/google-button.webp";
 import CustomButton2 from "@/components/CustomButton2";
 import { ChevronDown, Check } from "lucide-react";
+import { useGoogleLogin } from "@react-oauth/google";
 
 interface RegisterPopupProps {
   isOpen: boolean;
@@ -229,23 +230,71 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
       : `${formData.country} (${formData.countryCode})`;
   };
 
-  const handleGoogleRegister = () => {
-    // Implement Google OAuth registration here
-    console.log("Google register clicked");
-    // For demo purposes, simulate a successful Google registration
-    const userData = {
-      email: "demo@google.com",
-      name: "Google User",
-      access_token: "google-mock-access-token-" + Date.now(),
-      refresh_token: "google-mock-refresh-token-" + Date.now(),
-      role: "Standard",
-      userType: "Indexx Exchange",
-      shortToken: "google-mock-short-token",
-    };
-    login(userData);
-    onRegisterSuccess();
-    onClose();
-  };
+  const handleGoogleRegister = useGoogleLogin({
+    onSuccess: async (tokenResponse: any) => {
+      const googleToken = tokenResponse.access_token;
+
+      try {
+        const language = navigator.language || 'en';
+        const codeToLabel: { [key: string]: string } = {
+          en: "English",
+          zh: "Chinese",
+          es: "Spanish",
+          fr: "French",
+        };
+        const selectedLanguageLabel = codeToLabel[language.slice(0, 2)] || "English";
+
+        const res = await axios.post(GOOGLE_REGISTER_API_ROUTE, {
+          googleToken,
+          language: selectedLanguageLabel,
+        });
+
+        if (res.status === 200 && res.data?.access_token) {
+          login({
+            email: res.data.email,
+            name: res.data.name,
+            access_token: res.data.access_token,
+            refresh_token: res.data.refresh_token,
+            role: res.data.role || "Standard",
+            userType: res.data.userType || "Indexx Exchange",
+            shortToken: res.data.shortToken || "google-short-token",
+          });
+
+          onRegisterSuccess();
+          onClose();
+        } else {
+          setErrors({
+            general: res?.data?.message || "Google signup failed.",
+          });
+        }
+      } catch (error: any) {
+        if (axios.isAxiosError(error)) {
+          const msg = error.response?.data?.message || "";
+
+          if (msg.includes("Email already registered with direct email process")) {
+            setErrors({
+              email: "Email already registered. Please log in with email and password.",
+            });
+          } else if (msg.includes("Email already registered with Google")) {
+            setErrors({
+              email: "Email already registered with Google. Please log in with Google.",
+            });
+          } else {
+            setErrors({
+              general: msg || "Google signup failed. Please try again.",
+            });
+          }
+        } else {
+          setErrors({ general: "Unexpected error occurred. Please try again." });
+        }
+      }
+    },
+    onError: () => {
+      setErrors({ general: "Google Sign Up failed or was cancelled." });
+    },
+  });
+
+
 
   return (
     <PopupComponent isOpen={isOpen} onClose={onClose}>

@@ -1,15 +1,17 @@
 export const CONTACT_US_ROUTE =
-  "https://api.indexx.ai/api/v1/inex/basic/emailToAdmin";
+  `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/basic/emailToAdmin`;
 
 export const AIRDROP_REGISTER_API_ROUTE =
-  "https://api.v1.indexx.ai/api/v1/inex/basic/registerbtcyairdrop";
+  `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/basic/registerbtcyairdrop`;
 
-// Authentication API Routes
 export const LOGIN_API_ROUTE =
-  "https://api.v1.indexx.ai/api/v1/inex/user/login";
+  `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/login`;
 
 export const REGISTER_API_ROUTE =
-  "https://api.v1.indexx.ai/api/v1/inex/user/registerwithapp";
+  `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/registerwithapp`;
 
 export const GOOGLE_LOGIN_API_ROUTE =
-  "https://api.v1.indexx.ai/api/v1/inex/user/login/google";
+  `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/login/google`;
+
+export const GOOGLE_REGISTER_API_ROUTE =
+  `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/register/google`;

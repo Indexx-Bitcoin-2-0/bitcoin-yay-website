@@ -2,6 +2,7 @@ import "./globals.css";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { GoogleOAuthProvider } from "@react-oauth/google"; // ✅ Import this
 
 export const metadata = {
   icons: {
@@ -26,11 +27,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        <AuthProvider>
-          <Navbar />
-          <main>{children}</main>
-          <Footer />
-        </AuthProvider>
+        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
+          <AuthProvider>
+            <Navbar />
+            <main>{children}</main>
+            <Footer />
+          </AuthProvider>
+        </GoogleOAuthProvider>
       </body>
     </html>
   );

@@ -9,12 +9,13 @@ import EmailVerificationPopup from "@/components/EmailVerificationPopup";
 import ResetPasswordPopup from "@/components/ResetPasswordPopup";
 import RegisterPopup from "@/components/RegisterPopup";
 import { useAuth } from "@/contexts/AuthContext";
-import { LOGIN_API_ROUTE } from "@/routes";
+import { GOOGLE_LOGIN_API_ROUTE, LOGIN_API_ROUTE } from "@/routes";
 
 import MainLogo from "@/assets/images/main-logo.svg";
 import LoginButtonImage from "@/assets/images/buttons/login-button.webp";
 import GoogleLoginButtonImage from "@/assets/images/buttons/google-button.webp";
 import CustomButton2 from "@/components/CustomButton2";
+import { useGoogleLogin } from "@react-oauth/google";
 
 interface LoginPopupProps {
   isOpen: boolean;
@@ -142,23 +143,93 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
     setIsSubmitting(false);
   };
 
-  const handleGoogleLogin = () => {
-    // Implement Google OAuth login here
-    console.log("Google login clicked");
-    // For demo purposes, simulate a successful Google login
-    const userData = {
-      email: "demo@google.com",
-      name: "Google User",
-      access_token: "google-mock-access-token-" + Date.now(),
-      refresh_token: "google-mock-refresh-token-" + Date.now(),
-      role: "Standard",
-      userType: "Indexx Exchange",
-      shortToken: "google-mock-short-token",
-    };
-    login(userData);
-    onLoginSuccess();
-    onClose();
-  };
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse: any) => {
+      const googleToken = tokenResponse.access_token;
+
+      try {
+        const language = navigator.language || 'en';
+        const codeToLabel: { [key: string]: string } = {
+          en: "English",
+          zh: "Chinese",
+          es: "Spanish",
+          fr: "French",
+        };
+        const selectedLanguageLabel =
+          codeToLabel[language.slice(0, 2)] || "English";
+
+        const res = await axios.post(GOOGLE_LOGIN_API_ROUTE, {
+          googleToken,
+          language: selectedLanguageLabel,
+        });
+        console.log("Google login response:", res);
+        if (res?.status === 200 && res.data?.data?.access_token) {
+          // Success
+          login({
+            email: res.data?.data?.email,
+            name: res.data?.data?.name || res.data?.data?.email.split("@")[0],
+            access_token: res.data?.data.access_token,
+            refresh_token: res.data?.data.refresh_token,
+            role: res.data?.data.role || "Standard",
+            userType: res.data?.data.userType || "Indexx Exchange",
+            shortToken: res.data?.data.shortToken || "google-short-token",
+          });
+
+          onLoginSuccess();
+          onClose();
+        } else if (
+          res?.status === 500 &&
+          res?.data?.data?.message?.includes("Please log in using direct email process")
+        ) {
+          // ✳️ Account exists with direct login (not Google)
+          setErrors({
+            general:
+              "Email already registered with direct email process. Please log in with email and password.",
+          });
+        } else {
+          // Any other backend response
+          setErrors({
+            general:
+              res?.data?.message ||
+              "No account found for this Google account. Please register first.",
+          });
+        }
+      } catch (error: any) {
+        if (axios.isAxiosError(error)) {
+          const msg = error.response?.data?.data?.message || "";
+          console.log("Google login error message:", msg);
+          if (
+            msg.includes("Please log in using direct email process")
+          ) {
+            setErrors({
+              general:
+                "Email already registered with direct email process. Please log in with email and password.",
+            });
+          } else if (
+            msg.includes("No account associated") ||
+            msg.includes("not registered")
+          ) {
+            setErrors({
+              general:
+                "No account found for this Google account. Please register first.",
+            });
+          } else {
+            setErrors({
+              general: msg || "Google login failed. Please try again.",
+            });
+          }
+        } else {
+          setErrors({
+            general: "Unexpected error occurred. Please try again.",
+          });
+        }
+      }
+    },
+    onError: () => {
+      setErrors({ general: "Google Login failed or was cancelled." });
+    },
+  });
+
 
   // Close all popups helper
   const closeAllPopups = () => {
