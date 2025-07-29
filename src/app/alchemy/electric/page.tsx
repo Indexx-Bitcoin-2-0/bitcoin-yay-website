@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -6,18 +9,20 @@ import AlchemyLogo from "@/assets/images/alchemy/alchemy-logo.webp";
 import ArtImage1 from "@/assets/images/alchemy/electric/art-1.webp";
 import BitcoinYayLogo from "@/assets/images/logo.webp";
 
+import { getAlchemyConfig, AlchemyConfigItem } from "@/lib/alchemy";
+
 const CustomCard = ({
   inputBTCY,
   multiplier,
-  slug,
+  planIndex,
 }: {
   inputBTCY: string;
   multiplier: string;
-  slug: string;
+  planIndex: number;
 }) => {
   return (
     <Link
-      href={`/alchemy/electric/${slug}`}
+      href={`/alchemy/electric/${planIndex}`}
       className="w-100 bg-[#22B868] z-10 hover:scale-105 transition-all duration-300"
     >
       <div className="flex flex-col items-center justify-center">
@@ -35,7 +40,66 @@ const CustomCard = ({
   );
 };
 
-export default function FreeMiningPage() {
+export default function ElectricMiningPage() {
+  const [electricPlans, setElectricPlans] = useState<AlchemyConfigItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchElectricPlans = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const response = await getAlchemyConfig();
+
+        if (!response.success) {
+          throw new Error(response.error || "Failed to fetch alchemy config");
+        }
+
+        if (response.session?.electric) {
+          setElectricPlans(response.session.electric);
+        }
+      } catch (err) {
+        console.error("Failed to fetch electric plans:", err);
+        setError(
+          err instanceof Error ? err.message : "Failed to fetch electric plans"
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchElectricPlans();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="mx-auto mt-40 lg:mt-60 px-4 md:px-20 xl:px-40">
+        <div className="flex justify-center items-center min-h-96">
+          <div className="text-center">
+            <p className="text-2xl font-semibold">Loading Electric Plans...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="mx-auto mt-40 lg:mt-60 px-4 md:px-20 xl:px-40">
+        <div className="flex justify-center items-center min-h-96">
+          <div className="text-center">
+            <p className="text-2xl font-semibold text-red-500 mb-4">
+              Failed to Load Electric Plans
+            </p>
+            <p className="text-lg text-tertiary">{error}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto mt-40 lg:mt-60 px-4 md:px-20 xl:px-40">
       <div className="flex items-center gap-6">
@@ -62,26 +126,14 @@ export default function FreeMiningPage() {
         </p>
       </div>
       <div className="mt-40 flex flex-wrap justify-center items-center gap-10 p-4 z-20">
-        <CustomCard
-          inputBTCY="Input: 2,500 BTCY"
-          multiplier="Multiplier: 0.3x - 1.3x"
-          slug="basic"
-        />
-        <CustomCard
-          inputBTCY="Input: 5,000 BTCY"
-          multiplier="Multiplier: 0.4x - 1.7x"
-          slug="premium"
-        />
-        <CustomCard
-          inputBTCY="Input: 20,000 BTCY"
-          multiplier="Multiplier: 0.2x - 2.8x"
-          slug="elite"
-        />
-        <CustomCard
-          inputBTCY="Input: 50,000 BTCY"
-          multiplier="Multiplier: 0.2x - 3.0x"
-          slug="ultra"
-        />
+        {electricPlans.map((plan, index) => (
+          <CustomCard
+            key={index}
+            inputBTCY={`Input: ${plan.input.toLocaleString()} BTCY`}
+            multiplier={`Multiplier: ${plan.multiplierRange}`}
+            planIndex={index}
+          />
+        ))}
       </div>
       <div className="-mt-40 mx-auto z-0 w-full flex justify-start">
         <Image

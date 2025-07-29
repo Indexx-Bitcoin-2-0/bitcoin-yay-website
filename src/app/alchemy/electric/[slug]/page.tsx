@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, use } from "react";
+import { useState, use, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -10,7 +10,12 @@ import PointingHandButtonImage from "@/assets/images/buttons/point-button.webp";
 import CustomButton2 from "@/components/CustomButton2";
 
 import { getAuthData } from "@/lib/auth";
-import { createAlchemy, completeAlchemy } from "@/lib/alchemy";
+import {
+  createAlchemy,
+  completeAlchemy,
+  getAlchemyConfig,
+  AlchemyConfigItem,
+} from "@/lib/alchemy";
 
 import CongratulationsPage from "@/app/alchemy/congratulations/page";
 import RetainedPage from "@/app/alchemy/retained/page";
@@ -21,35 +26,15 @@ interface AlchemyDetailPageProps {
   }>;
 }
 
-// Electric alchemy data for different tiers
-const alchemyData = {
-  basic: {
-    input: "2,500 BTCY",
-    inputAmount: 2500,
-    multiplier: "0.3x - 1.3x",
-  },
-  premium: {
-    input: "5,000 BTCY",
-    inputAmount: 5000,
-    multiplier: "0.4x - 1.7x",
-  },
-  elite: {
-    input: "20,000 BTCY",
-    inputAmount: 20000,
-    multiplier: "0.2x - 2.8x",
-  },
-  ultra: {
-    input: "50,000 BTCY",
-    inputAmount: 50000,
-    multiplier: "0.2x - 3.0x",
-  },
-};
-
 export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
   const resolvedParams = use(params) as { slug: string };
-  const data =
-    alchemyData[resolvedParams.slug as keyof typeof alchemyData] ||
-    alchemyData.basic;
+  const planIndex = parseInt(resolvedParams.slug);
+
+  const [configLoading, setConfigLoading] = useState(true);
+  const [configError, setConfigError] = useState<string | null>(null);
+  const [currentPlan, setCurrentPlan] = useState<AlchemyConfigItem | null>(
+    null
+  );
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -63,7 +48,50 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
     multiplier: number;
   } | null>(null);
 
+  // Fetch alchemy config on component mount
+  useEffect(() => {
+    const fetchAlchemyConfig = async () => {
+      try {
+        setConfigLoading(true);
+        setConfigError(null);
+
+        const response = await getAlchemyConfig();
+
+        if (!response.success) {
+          throw new Error(response.error || "Failed to fetch alchemy config");
+        }
+
+        if (response.session?.electric) {
+          if (planIndex >= 0 && planIndex < response.session.electric.length) {
+            setCurrentPlan(response.session.electric[planIndex]);
+          } else {
+            throw new Error("Invalid plan index");
+          }
+        } else {
+          throw new Error("No electric plans found");
+        }
+      } catch (err) {
+        console.error("Failed to fetch alchemy config:", err);
+        setConfigError(
+          err instanceof Error ? err.message : "Failed to fetch alchemy config"
+        );
+      } finally {
+        setConfigLoading(false);
+      }
+    };
+
+    // Only fetch if planIndex is a valid number
+    if (!isNaN(planIndex)) {
+      fetchAlchemyConfig();
+    } else {
+      setConfigError("Invalid plan index");
+      setConfigLoading(false);
+    }
+  }, [planIndex]);
+
   const handleStartAlchemy = async () => {
+    if (!currentPlan) return;
+
     setIsLoading(true);
     setError(null);
     setSuccess(false);
@@ -78,7 +106,7 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
       // Step 1: Create alchemy session
       const createResult = await createAlchemy({
         email: authData.email,
-        inputAmount: data.inputAmount,
+        inputAmount: currentPlan.input,
         userType: "electric",
       });
 
@@ -145,6 +173,61 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
     return <RetainedPage retainedAmount={alchemyResult.resultAmount} />;
   }
 
+  // Show loading state while fetching config
+  if (configLoading) {
+    return (
+      <div className="mx-auto mt-60 px-4 md:px-20 xl:px-40">
+        <div className="bg-bg2 max-w-7xl mx-auto z-10">
+          <div className="pt-20 flex justify-center items-center min-h-96">
+            <div className="text-center">
+              <p className="text-2xl font-semibold">
+                Loading Alchemy Configuration...
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state if config fetch failed
+  if (configError) {
+    return (
+      <div className="mx-auto mt-60 px-4 md:px-20 xl:px-40">
+        <div className="bg-bg2 max-w-7xl mx-auto z-10">
+          <div className="pt-20 flex justify-center items-center min-h-96">
+            <div className="text-center">
+              <p className="text-2xl font-semibold text-red-500 mb-4">
+                Failed to Load Alchemy Configuration
+              </p>
+              <p className="text-lg text-tertiary">{configError}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show fallback if no current plan is available
+  if (!currentPlan) {
+    return (
+      <div className="mx-auto mt-60 px-4 md:px-20 xl:px-40">
+        <div className="bg-bg2 max-w-7xl mx-auto z-10">
+          <div className="pt-20 flex justify-center items-center min-h-96">
+            <div className="text-center">
+              <p className="text-2xl font-semibold text-yellow-500 mb-4">
+                No Alchemy Plan Available
+              </p>
+              <p className="text-lg text-tertiary">
+                Unable to find the requested alchemy plan.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto mt-60 px-4 md:px-20 xl:px-40">
       <div className="bg-bg2 max-w-7xl mx-auto z-10">
@@ -169,12 +252,14 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
             <div className="mt-16 w-full flex flex-col gap-4">
               <div className="flex justify-between items-center">
                 <p className="text-3xl md:text-4xl">Input:</p>
-                <p className="text-4xl xl:text-5xl font-bold">{data.input}</p>
+                <p className="text-4xl xl:text-5xl font-bold">
+                  {currentPlan.input.toLocaleString()} BTCY
+                </p>
               </div>
               <div className="flex justify-between items-center">
                 <p className="text-3xl md:text-4xl">Multiplier:</p>
                 <p className="text-4xl xl:text-5xl font-bold">
-                  {data.multiplier}
+                  {currentPlan.multiplierRange}
                 </p>
               </div>
             </div>

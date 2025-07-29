@@ -1,4 +1,8 @@
-import { ALCHEMY_CREATE_API_ROUTE, ALCHEMY_COMPLETE_API_ROUTE } from "@/routes";
+import {
+  ALCHEMY_CREATE_API_ROUTE,
+  ALCHEMY_COMPLETE_API_ROUTE,
+  ALCHEMY_CONFIG_API_ROUTE,
+} from "@/routes";
 
 export interface CreateAlchemyData {
   email: string;
@@ -58,6 +62,26 @@ export interface CompleteAlchemyResponse {
     __v: number;
     completedAt: string;
     durationMinutes: number;
+  };
+  error?: string;
+}
+
+export interface AlchemyConfigItem {
+  input: number;
+  multiplierRange: string;
+  probabilities: Record<string, number>;
+}
+
+export interface AlchemyConfigResponse {
+  success: boolean;
+  message?: string;
+  status?: number;
+  session?: {
+    free: AlchemyConfigItem[];
+    electric: AlchemyConfigItem[];
+    turbo: AlchemyConfigItem[];
+    nuclear: AlchemyConfigItem[];
+    quantum: AlchemyConfigItem[];
   };
   error?: string;
 }
@@ -159,6 +183,49 @@ export async function completeAlchemy(
         error instanceof Error
           ? error.message
           : "Failed to complete alchemy session",
+    };
+  }
+}
+
+/**
+ * Fetches alchemy configuration for all types
+ */
+export async function getAlchemyConfig(): Promise<AlchemyConfigResponse> {
+  try {
+    const accessToken = getAccessToken();
+
+    if (!accessToken) {
+      throw new Error("No access token found. Please login first.");
+    }
+
+    const response = await fetch(ALCHEMY_CONFIG_API_ROUTE, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || "Failed to fetch alchemy config");
+    }
+
+    return {
+      success: true,
+      message: result.message,
+      status: result.status,
+      session: result.session,
+    };
+  } catch (error) {
+    console.error("Get alchemy config error:", error);
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to fetch alchemy config",
     };
   }
 }
