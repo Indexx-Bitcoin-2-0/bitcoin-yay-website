@@ -7,8 +7,13 @@ import Link from "next/link";
 import BitcoinYayLogo from "@/assets/images/logo.webp";
 import BgArtImage1 from "@/assets/images/alchemy/electric/bg-art-1.webp";
 import PointingHandButtonImage from "@/assets/images/buttons/point-button.webp";
-
 import CustomButton2 from "@/components/CustomButton2";
+
+import { getAuthData } from "@/lib/auth";
+import { createAlchemy, completeAlchemy } from "@/lib/alchemy";
+
+import CongratulationsPage from "@/app/alchemy/congratulations/page";
+import RetainedPage from "@/app/alchemy/retained/page";
 
 interface AlchemyDetailPageProps {
   params: Promise<{
@@ -20,18 +25,22 @@ interface AlchemyDetailPageProps {
 const alchemyData = {
   basic: {
     input: "2,500 BTCY",
+    inputAmount: 2500,
     multiplier: "0.3x - 1.3x",
   },
   premium: {
     input: "5,000 BTCY",
+    inputAmount: 5000,
     multiplier: "0.4x - 1.7x",
   },
   elite: {
     input: "20,000 BTCY",
+    inputAmount: 20000,
     multiplier: "0.2x - 2.8x",
   },
   ultra: {
     input: "50,000 BTCY",
+    inputAmount: 50000,
     multiplier: "0.2x - 3.0x",
   },
 };
@@ -54,6 +63,18 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
     minutes: 1,
     seconds: 1,
   });
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+  const [showResult, setShowResult] = useState<
+    "congratulations" | "retained" | null
+  >(null);
+  const [alchemyResult, setAlchemyResult] = useState<{
+    inputAmount: number;
+    resultAmount: number;
+    multiplier: number;
+  } | null>(null);
 
   useEffect(() => {
     const calculateTimeLeft = () => {
@@ -80,6 +101,88 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
 
     return () => clearInterval(timer);
   }, []);
+
+  const handleStartAlchemy = async () => {
+    setIsLoading(true);
+    setError(null);
+    setSuccess(false);
+
+    try {
+      const authData = getAuthData();
+
+      if (!authData || !authData.email) {
+        throw new Error("User not authenticated");
+      }
+
+      // Step 1: Create alchemy session
+      const createResult = await createAlchemy({
+        email: authData.email,
+        inputAmount: data.inputAmount,
+        userType: "electric",
+      });
+
+      if (!createResult.success) {
+        throw new Error(
+          createResult.error || "Failed to start alchemy session"
+        );
+      }
+
+      // Step 2: Complete alchemy session immediately
+      if (createResult.session?.sessionId) {
+        const completeResult = await completeAlchemy({
+          sessionId: createResult.session.sessionId,
+        });
+
+        if (!completeResult.success) {
+          throw new Error(
+            completeResult.error || "Failed to complete alchemy session"
+          );
+        }
+
+        // Check multiplier and show result component
+        if (completeResult.session) {
+          const session = completeResult.session;
+          setAlchemyResult({
+            inputAmount: session.inputAmount,
+            resultAmount: session.resultAmount,
+            multiplier: session.multiplier,
+          });
+
+          // Show result based on multiplier
+          if (session.multiplier >= 1) {
+            setShowResult("congratulations");
+          } else {
+            setShowResult("retained");
+          }
+        } else {
+          setSuccess(true);
+        }
+      } else {
+        // If complete alchemy failed, show success for create but note the completion issue
+        setError("Alchemy created but failed to complete. Please try again.");
+      }
+    } catch (err) {
+      console.error("Failed to start alchemy session:", err);
+      setError(
+        err instanceof Error ? err.message : "Failed to start alchemy session"
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // If showing result, render the appropriate component
+  if (showResult === "congratulations" && alchemyResult) {
+    const gainedAmount = Math.max(
+      0,
+      alchemyResult.resultAmount - alchemyResult.inputAmount
+    );
+    return <CongratulationsPage gainedAmount={gainedAmount} />;
+  }
+
+  if (showResult === "retained" && alchemyResult) {
+    return <RetainedPage retainedAmount={alchemyResult.resultAmount} />;
+  }
 
   return (
     <div className="mx-auto mt-60 px-4 md:px-20 xl:px-40">
@@ -167,12 +270,38 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
           </div>
         </div>
 
-        <div className="mt-40 flex justify-center items-center relative z-10">
-          <CustomButton2
-            text="Start Alchemy"
-            image={PointingHandButtonImage}
-            link="#"
-          />
+        <div className="mt-40 flex flex-col items-center justify-center relative z-10">
+          {success ? (
+            <div className="text-center">
+              <p className="text-2xl font-semibold text-green-500 mb-4">
+                Alchemy Session Started Successfully!
+              </p>
+              <p className="text-lg text-tertiary">
+                Your alchemy has been processed. Redirecting you to results...
+              </p>
+            </div>
+          ) : (
+            <>
+              <div
+                onClick={handleStartAlchemy}
+                className={`${
+                  isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                }`}
+              >
+                <CustomButton2
+                  image={PointingHandButtonImage}
+                  text={isLoading ? "Starting..." : "Start Alchemy"}
+                  link="#"
+                  imageStyling="w-36 mt-8"
+                />
+              </div>
+              {error && (
+                <p className="mt-4 text-red-500 text-center max-w-md">
+                  {error}
+                </p>
+              )}
+            </>
+          )}
         </div>
 
         <div className="mt-60 mb-20">

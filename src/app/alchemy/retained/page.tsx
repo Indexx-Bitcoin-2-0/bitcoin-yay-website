@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Image from "next/image";
 
 import ArtImage1 from "@/assets/images/alchemy/retained/art-1.webp";
@@ -10,24 +9,18 @@ import ArtImage1 from "@/assets/images/alchemy/retained/art-1.webp";
 
 // import CustomButton2 from "@/components/CustomButton2";
 
-export default function CongratulationsPage() {
-  const [alchemyResult, setAlchemyResult] = useState<{
-    inputAmount: number;
-    resultAmount: number;
-    multiplier: number;
-  } | null>(null);
+interface RetainedPageProps {
+  retainedAmount?: number;
+  inputAmount?: number;
+  resultAmount?: number;
+  multiplier?: number;
+  sessionId?: string;
+  tier?: string;
+}
 
-  useEffect(() => {
-    // Load alchemy result from localStorage
-    const savedResult = localStorage.getItem("lastAlchemyResult");
-    if (savedResult) {
-      setAlchemyResult(JSON.parse(savedResult));
-    }
-  }, []);
-
-  // Use the actual result amount
-  const retainedAmount = alchemyResult ? alchemyResult.resultAmount : 0; // fallback value
-
+export default function RetainedPage({
+  retainedAmount = 0,
+}: RetainedPageProps) {
   return (
     <div className="mx-auto mt-20 lg:mt-60">
       <Image

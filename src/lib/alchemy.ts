@@ -3,7 +3,7 @@ import { ALCHEMY_CREATE_API_ROUTE, ALCHEMY_COMPLETE_API_ROUTE } from "@/routes";
 export interface CreateAlchemyData {
   email: string;
   inputAmount: number;
-  userType: "free" | "premium";
+  userType: "free" | "electric" | "quantum" | "nuclear" | "turbo";
 }
 
 export interface CreateAlchemyResponse {

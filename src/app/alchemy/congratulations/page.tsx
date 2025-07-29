@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Image from "next/image";
 
 import ArtImage1 from "@/assets/images/alchemy/congratulations/art-1.webp";
@@ -11,26 +10,18 @@ import ArtImage3 from "@/assets/images/alchemy/congratulations/art-3.webp";
 
 // import CustomButton2 from "@/components/CustomButton2";
 
-export default function CongratulationsPage() {
-  const [alchemyResult, setAlchemyResult] = useState<{
-    inputAmount: number;
-    resultAmount: number;
-    multiplier: number;
-  } | null>(null);
+interface CongratulationsPageProps {
+  gainedAmount?: number;
+  inputAmount?: number;
+  resultAmount?: number;
+  multiplier?: number;
+  sessionId?: string;
+  tier?: string;
+}
 
-  useEffect(() => {
-    // Load alchemy result from localStorage
-    const savedResult = localStorage.getItem("lastAlchemyResult");
-    if (savedResult) {
-      setAlchemyResult(JSON.parse(savedResult));
-    }
-  }, []);
-
-  // Calculate gained amount (result - input)
-  const gainedAmount = alchemyResult
-    ? Math.max(0, alchemyResult.resultAmount - alchemyResult.inputAmount)
-    : 0; // fallback value
-
+export default function CongratulationsPage({
+  gainedAmount = 0,
+}: CongratulationsPageProps) {
   return (
     <div className="mx-auto mt-20 lg:mt-60 relative">
       <div className="absolute w-full">

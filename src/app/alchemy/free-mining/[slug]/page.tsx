@@ -1,16 +1,19 @@
 "use client";
 
 import { useState, useEffect, use } from "react";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 
 import BitcoinYayLogo from "@/assets/images/logo.webp";
 import BgArtImage1 from "@/assets/images/alchemy/free-mining/bg-art-1.webp";
 import PointingHandButtonImage from "@/assets/images/buttons/point-button.webp";
+import CustomButton2 from "@/components/CustomButton2";
 
 import { getAuthData } from "@/lib/auth";
 import { createAlchemy, completeAlchemy } from "@/lib/alchemy";
+
+import CongratulationsPage from "@/app/alchemy/congratulations/page";
+import RetainedPage from "@/app/alchemy/retained/page";
 
 interface AlchemyDetailPageProps {
   params: Promise<{
@@ -43,7 +46,6 @@ interface TimeLeft {
 }
 
 export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
-  const router = useRouter();
   const deadline = new Date("2025-07-16T12:00:00Z");
   const resolvedParams = use(params) as { slug: string };
   const data =
@@ -59,6 +61,14 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [showResult, setShowResult] = useState<
+    "congratulations" | "retained" | null
+  >(null);
+  const [alchemyResult, setAlchemyResult] = useState<{
+    inputAmount: number;
+    resultAmount: number;
+    multiplier: number;
+  } | null>(null);
 
   useEffect(() => {
     const calculateTimeLeft = () => {
@@ -123,21 +133,20 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
           );
         }
 
-        // Check multiplier and redirect accordingly
+        // Check multiplier and show result component
         if (completeResult.session) {
-          const multiplier = completeResult.session.multiplier;
+          const session = completeResult.session;
+          setAlchemyResult({
+            inputAmount: session.inputAmount,
+            resultAmount: session.resultAmount,
+            multiplier: session.multiplier,
+          });
 
-          // Store the session data (can be used by the destination pages)
-          localStorage.setItem(
-            "lastAlchemyResult",
-            JSON.stringify(completeResult.session)
-          );
-
-          // Redirect based on multiplier
-          if (multiplier >= 1) {
-            router.push("/alchemy/congratulations");
+          // Show result based on multiplier
+          if (session.multiplier >= 1) {
+            setShowResult("congratulations");
           } else {
-            router.push("/alchemy/retained");
+            setShowResult("retained");
           }
         } else {
           setSuccess(true);
@@ -155,6 +164,19 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
       setIsLoading(false);
     }
   };
+
+  // If showing result, render the appropriate component
+  if (showResult === "congratulations" && alchemyResult) {
+    const gainedAmount = Math.max(
+      0,
+      alchemyResult.resultAmount - alchemyResult.inputAmount
+    );
+    return <CongratulationsPage gainedAmount={gainedAmount} />;
+  }
+
+  if (showResult === "retained" && alchemyResult) {
+    return <RetainedPage retainedAmount={alchemyResult.resultAmount} />;
+  }
 
   return (
     <div className="mx-auto mt-60 px-4 md:px-20 xl:px-40">
@@ -254,22 +276,19 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
             </div>
           ) : (
             <>
-              <button
+              <div
                 onClick={handleStartAlchemy}
-                disabled={isLoading}
-                className="cursor-pointer text-tertiary group flex flex-col items-center justify-center w-fit disabled:opacity-50 disabled:cursor-not-allowed"
+                className={`${
+                  isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                }`}
               >
-                <Image
-                  src={PointingHandButtonImage}
-                  alt="Start Alchemy"
-                  className="w-36 mt-8 group-hover:scale-110 transition-transform duration-300"
+                <CustomButton2
+                  image={PointingHandButtonImage}
+                  text={isLoading ? "Starting..." : "Start Alchemy"}
+                  link="#"
+                  imageStyling="w-36 mt-8"
                 />
-                <div className="flex justify-center mt-4 text-center">
-                  <p className="text-lg group-hover:text-primary">
-                    {isLoading ? "Starting..." : "Start Alchemy"}
-                  </p>
-                </div>
-              </button>
+              </div>
               {error && (
                 <p className="mt-4 text-red-500 text-center max-w-md">
                   {error}
