@@ -116,7 +116,7 @@ export default function FreeMiningPage() {
         <h2 className="mt-2 text-3xl md:text-[50px] font-bold">
           ALCHEMY GATEWAY
         </h2>
-        <p className="mt-6 text-xl md:text-3xl font-light">
+        <p className="mt-6 text-xl font-light">
           You are eligible to join the Free Mining Gopher Alchemy Gateway
         </p>
       </div>

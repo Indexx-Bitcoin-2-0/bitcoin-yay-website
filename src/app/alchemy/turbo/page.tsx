@@ -120,7 +120,7 @@ export default function TurboMiningPage() {
         <h2 className="mt-2 text-3xl md:text-[50px] font-bold">
           ALCHEMY GATEWAY
         </h2>
-        <p className="mt-6 text-xl md:text-3xl font-light max-w-5xl">
+        <p className="mt-6 text-xl font-light max-w-5xl">
           Eligibility for the Power Mining Turbo Alchemy Gateway requires an
           active Turbo Power Mining subscription.
         </p>
