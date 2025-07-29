@@ -1,13 +1,33 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Image from "next/image";
 
 import ArtImage1 from "@/assets/images/alchemy/retained/art-1.webp";
 
-import RetryButtonImage from "@/assets/images/buttons/retry-button.webp";
-import StarButtonImage from "@/assets/images/buttons/star-button.webp";
+// import RetryButtonImage from "@/assets/images/buttons/retry-button.webp";
+// import StarButtonImage from "@/assets/images/buttons/star-button.webp";
 
-import CustomButton2 from "@/components/CustomButton2";
+// import CustomButton2 from "@/components/CustomButton2";
 
 export default function CongratulationsPage() {
+  const [alchemyResult, setAlchemyResult] = useState<{
+    inputAmount: number;
+    resultAmount: number;
+    multiplier: number;
+  } | null>(null);
+
+  useEffect(() => {
+    // Load alchemy result from localStorage
+    const savedResult = localStorage.getItem("lastAlchemyResult");
+    if (savedResult) {
+      setAlchemyResult(JSON.parse(savedResult));
+    }
+  }, []);
+
+  // Use the actual result amount
+  const retainedAmount = alchemyResult ? alchemyResult.resultAmount : 0; // fallback value
+
   return (
     <div className="mx-auto mt-20 lg:mt-60">
       <Image
@@ -20,11 +40,12 @@ export default function CongratulationsPage() {
         <h2 className=" text-8xl font-bold">Ops!</h2>
         <h2 className="mt-20 text-4xl md:text-6xl">You retained</h2>
         <p className="mt-10 text-7xl md:text-[160px] font-bold">
-          1,000 <span className="text-5xl md:text-8xl">BTCY</span>
+          {retainedAmount.toLocaleString()}{" "}
+          <span className="text-5xl md:text-8xl">BTCY</span>
         </p>
       </div>
       <div className="mt-20 xl:mt-40 mb-40 flex items-center justify-center gap-40 px-10">
-        <CustomButton2
+        {/* <CustomButton2
           image={RetryButtonImage}
           text="Re-enter"
           link="#"
@@ -35,7 +56,7 @@ export default function CongratulationsPage() {
           text="Claim"
           link="#"
           imageStyling="w-30"
-        />
+        /> */}
       </div>
     </div>
   );
