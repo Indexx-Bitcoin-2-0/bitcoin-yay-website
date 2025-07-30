@@ -5,9 +5,10 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import logo from "@/assets/images/main-logo.svg";
-// import SearchIcon1 from "@/assets/images/search-icon-1.svg";
-// import SearchIcon2 from "@/assets/images/search-icon-2.svg";
 import Data from "./data";
+import { useAuth } from "@/contexts/AuthContext";
+import LoginPopup from "@/components/LoginPopup";
+import RegisterPopup from "@/components/RegisterPopup";
 import {
   Accordion,
   AccordionContent,
@@ -47,9 +48,8 @@ interface HeaderItem {
 // Extract backdrop component for readability
 const Backdrop = memo(({ visible }: { visible: boolean }) => (
   <div
-    className={`fixed left-0 w-full top-30 z-[10] backdrop-blur-md transition-opacity duration-300 delay-100 bg-black/50 ${
-      visible ? "opacity-100 h-screen" : "opacity-0 h-0"
-    }`}
+    className={`fixed left-0 w-full top-30 z-[10] backdrop-blur-md transition-opacity duration-300 delay-100 bg-black/50 ${visible ? "opacity-100 h-screen" : "opacity-0 h-0"
+      }`}
   />
 ));
 
@@ -75,9 +75,8 @@ const DropdownLink = memo(
       <a
         href={link.href}
         target={link.openInNewTab ? "_blank" : undefined}
-        className={`${
-          isMainList ? "text-[25px] font-semibold" : "text-xs mt-4"
-        } text-tertiary block relative after:absolute after:left-0 after:-bottom-1 after:w-5 after:h-[3px] after:bg-primary after:opacity-0 hover:after:opacity-100 after:transition-opacity after:duration-300`}
+        className={`${isMainList ? "text-[25px] font-semibold" : "text-xs mt-4"
+          } text-tertiary block relative after:absolute after:left-0 after:-bottom-1 after:w-5 after:h-[3px] after:bg-primary after:opacity-0 hover:after:opacity-100 after:transition-opacity after:duration-300`}
       >
         {link.name}
       </a>
@@ -95,8 +94,12 @@ const Navbar: React.FC = () => {
   const [backdropVisibility, setBackdropVisibility] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  // const [searchQuery, setSearchQuery] = useState("");
   const currentPath = usePathname();
+
+  // Auth related states
+  const { user, isAuthenticated, logout } = useAuth();
+  const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
+  const [isRegisterPopupOpen, setIsRegisterPopupOpen] = useState(false);
 
   // Update the active item
   useEffect(() => {
@@ -180,10 +183,20 @@ const Navbar: React.FC = () => {
     setMenuOpen(false);
   };
 
-  // const handleSearch = (event: React.FormEvent) => {
-  //   event.preventDefault();
-  //   console.log("Searching for:", searchQuery);
-  // };
+  // Auth handlers
+  const handleLoginSuccess = () => {
+    setIsLoginPopupOpen(false);
+    setIsRegisterPopupOpen(false);
+  };
+
+  const handleRegisterSuccess = () => {
+    setIsLoginPopupOpen(false);
+    setIsRegisterPopupOpen(false);
+  };
+
+  const handleLogout = () => {
+    logout();
+  };
 
   // Initial check for dropdown visibility
   useEffect(() => {
@@ -202,6 +215,7 @@ const Navbar: React.FC = () => {
     observer.observe(element);
     return () => observer.disconnect();
   }, []);
+
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   // Check if popup should be shown
@@ -227,7 +241,6 @@ const Navbar: React.FC = () => {
   }, []);
 
   // Handle popup close
-
   const handlePopupClose = () => {
     setIsPopupOpen(false);
     // Store current time in localStorage
@@ -313,9 +326,8 @@ const Navbar: React.FC = () => {
                 <a
                   href={element.href}
                   target={element.openInNewTab ? "_blank" : undefined}
-                  className={`text-sm font-normal transition-all duration-300 hover:text-primary ${
-                    element.active ? "text-primary" : "text-tertiary"
-                  } group-hover:text-primary`}
+                  className={`text-sm font-normal transition-all duration-300 hover:text-primary ${element.active ? "text-primary" : "text-tertiary"
+                    } group-hover:text-primary`}
                   onMouseEnter={() =>
                     updateBackDropVisibility(
                       !element.hasMegaDrop ? "" : "enter"
@@ -338,12 +350,11 @@ const Navbar: React.FC = () => {
                     <div className="flex w-full justify-between h-auto my-10 px-[20px] pl-[210px]">
                       {element.dropDownContent.map((section, elemIdx) => (
                         <div
-                          className={`w-[calc(25%-30px)] leading-[35px] flex flex-col ${
-                            section.mainList &&
-                            element.mainTextDesktop !== "Eco"
+                          className={`w-[calc(25%-30px)] leading-[35px] flex flex-col ${section.mainList &&
+                              element.mainTextDesktop !== "Eco"
                               ? "min-w-100"
                               : "min-w-60"
-                          }`}
+                            }`}
                           key={elemIdx}
                         >
                           <header className="text-xs font-medium my-6">
@@ -373,82 +384,80 @@ const Navbar: React.FC = () => {
           </ul>
         </div>
 
-        {/* Search Input (Desktop) */}
-        <div className="hidden lg:block">
-          <div className="text-sm font-normal transition-all duration-300 flex gap-10">
-            <Link href="#" className="hover:text-primary">Login</Link>
-            <Link href="#" className="hover:text-primary">Register</Link>
-          </div>
-          {/* <form onSubmit={handleSearch} className="relative group">
-            <input
-              type="text"
-              id="search-navbar"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="block w-80 h-15 p-2 text-lg text-tertiary border border-bg2 rounded-lg outline-none hover:border-primary focus:border-primary"
-              placeholder="Search"
-            />
-            <button type="submit" className="absolute right-2 top-2 ">
-              <Image
-                src={SearchIcon1}
-                alt="Search Icon"
-                className="group-hover:hidden group-focus-within:hidden"
-                width={44}
-                height={44}
-              />
-              <Image
-                src={SearchIcon2}
-                alt="Search Icon"
-                className="hidden group-hover:block group-focus-within:block mt-2 mr-2"
-                width={30}
-                height={30}
-              />
-            </button>
-          </form> */}
+        {/* Auth Section (Desktop) */}
+        <div className="hidden xl:block">
+          {isAuthenticated && user ? (
+            <div className="text-sm font-normal transition-all duration-300 flex gap-10">
+              <button
+                onClick={handleLogout}
+                className="hover:text-primary text-tertiary cursor-pointer"
+              >
+                Logout
+              </button>
+              <span className="text-tertiary">{user.email}</span>
+
+            </div>
+          ) : (
+            <div className="text-sm font-normal transition-all duration-300 flex gap-10">
+              <button
+                onClick={() => setIsLoginPopupOpen(true)}
+                className="hover:text-primary text-tertiary cursor-pointer"
+              >
+                Login
+              </button>
+              <button
+                onClick={() => setIsRegisterPopupOpen(true)}
+                className="hover:text-primary text-tertiary cursor-pointer"
+              >
+                Register
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Mobile Menu */}
         <div
-          className={`absolute left-0 top-26 w-full p-8 bg-bg shadow-lg transform z-20 ${
-            menuOpen ? "translate-y-0" : "-translate-y-[130%]"
-          }  lg:hidden max-h-[calc(100vh-150px)] overflow-y-auto`}
+          className={`absolute left-0 top-26 w-full p-8 bg-bg shadow-lg transform z-20 ${menuOpen ? "translate-y-0" : "-translate-y-[130%]"
+            }  lg:hidden max-h-[calc(100vh-150px)] overflow-y-auto`}
         >
-          <div className="text-xl lg:text-sm font-normal transition-all duration-300 flex items-center justify-center w-full gap-10">
-            <Link href="#" className="hover:text-primary">Login</Link>
-            <Link href="#" className="hover:text-primary">Register</Link>
+          {/* Auth Section (Mobile) */}
+          <div className="mb-6">
+            {isAuthenticated && user ? (
+              <div className="text-xl lg:text-sm font-normal transition-all duration-300 flex items-center justify-center w-full gap-10">
+                <span className="text-tertiary">{user.email}</span>
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    closeMobileMenu();
+                  }}
+                  className="hover:text-primary text-tertiary cursor-pointer"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <div className="text-xl lg:text-sm font-normal transition-all duration-300 flex items-center justify-center w-full gap-10">
+                <button
+                  onClick={() => {
+                    setIsLoginPopupOpen(true);
+                    closeMobileMenu();
+                  }}
+                  className="hover:text-primary text-tertiary cursor-pointer"
+                >
+                  Login
+                </button>
+                <button
+                  onClick={() => {
+                    setIsRegisterPopupOpen(true);
+                    closeMobileMenu();
+                  }}
+                  className="hover:text-primary text-tertiary cursor-pointer"
+                >
+                  Register
+                </button>
+              </div>
+            )}
           </div>
-          {/* Search Input (Mobile) */}
-          {/* <div className="mb-6">
-            <form
-              onSubmit={handleSearch}
-              className="relative border-primary group focus-within:border-0"
-            >
-              <input
-                type="text"
-                id="search-navbar-mobile"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="block h-15 w-full p-3 text-lg text-tertiary bg-transparent border border-[#2F2F2F] rounded-lg focus:border-primary hover:border-primary outline-none"
-                placeholder="Search"
-              />
-              <button type="submit" className="absolute right-2 top-2 ">
-                <Image
-                  src={SearchIcon1}
-                  alt="Search Icon"
-                  className="group-hover:hidden group-focus-within:hidden"
-                  width={44}
-                  height={44}
-                />
-                <Image
-                  src={SearchIcon2}
-                  alt="Search Icon"
-                  className="hidden group-hover:block group-focus-within:block mt-2 mr-2"
-                  width={30}
-                  height={30}
-                />
-              </button>
-            </form>
-          </div> */}
 
           <Accordion
             type="single"
@@ -476,9 +485,8 @@ const Navbar: React.FC = () => {
                             <Link
                               key={linkIdx}
                               href={link.href}
-                              className={`block text-lg my-3 hover:text-primary ${
-                                section.mainList ? "font-bold text-xl" : ""
-                              }`}
+                              className={`block text-lg my-3 hover:text-primary ${section.mainList ? "font-bold text-xl" : ""
+                                }`}
                               onClick={closeMobileMenu}
                             >
                               {link.name}
@@ -508,6 +516,20 @@ const Navbar: React.FC = () => {
           </Accordion>
         </div>
       </div>
+
+      {/* Login Popup */}
+      <LoginPopup
+        isOpen={isLoginPopupOpen}
+        onClose={() => setIsLoginPopupOpen(false)}
+        onLoginSuccess={handleLoginSuccess}
+      />
+
+      {/* Register Popup */}
+      <RegisterPopup
+        isOpen={isRegisterPopupOpen}
+        onClose={() => setIsRegisterPopupOpen(false)}
+        onRegisterSuccess={handleRegisterSuccess}
+      />
     </nav>
   );
 };

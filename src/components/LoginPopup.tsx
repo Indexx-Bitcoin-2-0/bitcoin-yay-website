@@ -2,29 +2,33 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import axios from "axios";
 import PopupComponent from "@/components/PopupComponent";
 import ForgotPasswordPopup from "@/components/ForgotPasswordPopup";
 import EmailVerificationPopup from "@/components/EmailVerificationPopup";
 import ResetPasswordPopup from "@/components/ResetPasswordPopup";
 import RegisterPopup from "@/components/RegisterPopup";
-import { saveAuthData } from "@/lib/auth";
+import { useAuth } from "@/contexts/AuthContext";
+import { GOOGLE_LOGIN_API_ROUTE, LOGIN_API_ROUTE } from "@/routes";
 
 import MainLogo from "@/assets/images/main-logo.svg";
 import LoginButtonImage from "@/assets/images/buttons/login-button.webp";
 import GoogleLoginButtonImage from "@/assets/images/buttons/google-button.webp";
 import CustomButton2 from "@/components/CustomButton2";
+import { useGoogleLogin } from "@react-oauth/google";
 
 interface LoginPopupProps {
   isOpen: boolean;
   onClose: () => void;
-  onLoginSuccess: () => void;
+  onLoginSuccess: () => 
+    void;
 }
-
 const LoginPopup: React.FC<LoginPopupProps> = ({
   isOpen,
   onClose,
   onLoginSuccess,
 }) => {
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<{
@@ -65,64 +69,167 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
     await submitLogin();
   };
 
-const submitLogin = async () => {
-  setIsSubmitting(true);
-  setErrors({});
+  const submitLogin = async () => {
+    setIsSubmitting(true);
+    setErrors({});
 
-  if (!validateForm()) {
-    setIsSubmitting(false);
-    return;
-  }
+    if (validateForm()) {
+      try {
+        const response = await axios.post(LOGIN_API_ROUTE, {
+          email: email.trim(),
+          password: password,
+        });
 
-  try {
-    const res = await fetch("/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+        if (response.status === 200 && response.data) {
+          // Extract user data from API response
+          const apiData = response.data.data; // API returns data inside 'data' property
 
-    const data = await res.json();
+          const userData = {
+            email: apiData.email,
+            name: apiData.name || email.split("@")[0], // Use email prefix as fallback for name
+            access_token: apiData.access_token,
+            refresh_token: apiData.refresh_token,
+            role: apiData.role,
+            userType: apiData.userType,
+            shortToken: apiData.shortToken,
+          };
 
-    console.log("Login response data:", data);
-    console.log("Login data.data:", data.data);
-    console.log("Login ata.access_token:", data.data.data.access_token);
-    if (!res.ok) {
-      setErrors({ general: data?.error || "Login failed. Try again." });
-      setIsSubmitting(false);
-      return;
+          login(userData);
+          onLoginSuccess();
+          onClose();
+
+          // Reset form
+          setEmail("");
+          setPassword("");
+        } else {
+          setErrors({
+            general:
+              "Login failed. Please check your credentials and try again.",
+          });
+        }
+      } catch (error: unknown) {
+        console.error("Login error:", error);
+
+        // Handle different error types
+        if (axios.isAxiosError(error)) {
+          if (error.response?.status === 401) {
+            setErrors({
+              general: "Invalid email or password. Please try again.",
+            });
+          } else if (error.response?.status === 400) {
+            setErrors({
+              general:
+                error.response.data?.message ||
+                "Invalid request. Please check your input.",
+            });
+          } else if (error.response?.data?.message) {
+            setErrors({
+              general: error.response.data.message,
+            });
+          } else {
+            setErrors({
+              general:
+                "Login failed. Please check your connection and try again.",
+            });
+          }
+        } else {
+          setErrors({
+            general: "Login failed. Please try again.",
+          });
+        }
+      }
     }
 
-    const userData = {
-      email,
-      token: data.data.data.access_token || "token-placeholder",
-      name: email.split("@")[0],
-    };
-
-    saveAuthData(userData);
-    onLoginSuccess();
-    onClose();
-    setEmail("");
-    setPassword("");
-  } catch (err) {
-    setErrors({ general: "Something went wrong. Please try again." });
-  } finally {
     setIsSubmitting(false);
-  }
-};
-
-  const handleGoogleLogin = () => {
-    // Implement Google OAuth login here
-    console.log("Google login clicked");
-    // For demo purposes, simulate a successful Google login
-    const userData = {
-      email: "demo@google.com",
-      name: "Google User",
-      token: "google-mock-token-" + Date.now(),
-    };
-    saveAuthData(userData);
-    onLoginSuccess();
-    onClose();
   };
+
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse: any) => {
+      const googleToken = tokenResponse.access_token;
+
+      try {
+        const language = navigator.language || 'en';
+        const codeToLabel: { [key: string]: string } = {
+          en: "English",
+          zh: "Chinese",
+          es: "Spanish",
+          fr: "French",
+        };
+        const selectedLanguageLabel =
+          codeToLabel[language.slice(0, 2)] || "English";
+
+        const res = await axios.post(GOOGLE_LOGIN_API_ROUTE, {
+          googleToken,
+          language: selectedLanguageLabel,
+        });
+        console.log("Google login response:", res);
+        if (res?.status === 200 && res.data?.data?.access_token) {
+          // Success
+          login({
+            email: res.data?.data?.email,
+            name: res.data?.data?.name || res.data?.data?.email.split("@")[0],
+            access_token: res.data?.data.access_token,
+            refresh_token: res.data?.data.refresh_token,
+            role: res.data?.data.role || "Standard",
+            userType: res.data?.data.userType || "Indexx Exchange",
+            shortToken: res.data?.data.shortToken || "google-short-token",
+          });
+
+          onLoginSuccess();
+          onClose();
+        } else if (
+          res?.status === 500 &&
+          res?.data?.data?.message?.includes("Please log in using direct email process")
+        ) {
+          // ✳️ Account exists with direct login (not Google)
+          setErrors({
+            general:
+              "Email already registered with direct email process. Please log in with email and password.",
+          });
+        } else {
+          // Any other backend response
+          setErrors({
+            general:
+              res?.data?.message ||
+              "No account found for this Google account. Please register first.",
+          });
+        }
+      } catch (error: any) {
+        if (axios.isAxiosError(error)) {
+          const msg = error.response?.data?.data?.message || "";
+          console.log("Google login error message:", msg);
+          if (
+            msg.includes("Please log in using direct email process")
+          ) {
+            setErrors({
+              general:
+                "Email already registered with direct email process. Please log in with email and password.",
+            });
+          } else if (
+            msg.includes("No account associated") ||
+            msg.includes("not registered")
+          ) {
+            setErrors({
+              general:
+                "No account found for this Google account. Please register first.",
+            });
+          } else {
+            setErrors({
+              general: msg || "Google login failed. Please try again.",
+            });
+          }
+        } else {
+          setErrors({
+            general: "Unexpected error occurred. Please try again.",
+          });
+        }
+      }
+    },
+    onError: () => {
+      setErrors({ general: "Google Login failed or was cancelled." });
+    },
+  });
+
 
   // Close all popups helper
   const closeAllPopups = () => {

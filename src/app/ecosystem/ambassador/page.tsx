@@ -74,7 +74,7 @@ export default function Ambassador() {
 
         // Make API call
         const response = await axios.post(
-          "https://api.v1.indexx.ai/api/v1/inex/user/ambassadors",
+          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/ambassadors`,
           requestData,
           {
             headers: {

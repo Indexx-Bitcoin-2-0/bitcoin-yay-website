@@ -2,13 +2,17 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import axios from "axios";
 import PopupComponent from "@/components/PopupComponent";
-import { saveAuthData } from "@/lib/auth";
+import { useAuth } from "@/contexts/AuthContext";
+import { GOOGLE_REGISTER_API_ROUTE, REGISTER_API_ROUTE } from "@/routes";
 import MainLogo from "@/assets/images/main-logo.svg";
 import RegisterButtonImage from "@/assets/images/buttons/register-text-button.webp";
 import GoogleRegisterButtonImage from "@/assets/images/buttons/google-button.webp";
 import CustomButton2 from "@/components/CustomButton2";
 import { ChevronDown, Check } from "lucide-react";
+import { useGoogleLogin } from "@react-oauth/google";
+
 
 interface RegisterPopupProps {
   isOpen: boolean;
@@ -16,35 +20,43 @@ interface RegisterPopupProps {
   onRegisterSuccess: () => void;
 }
 
+interface CountryOption {
+  name: string;
+  code: string;
+  display: string;
+}
+
 const RegisterPopup: React.FC<RegisterPopupProps> = ({
   isOpen,
   onClose,
   onRegisterSuccess,
 }) => {
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     username: "",
-    country: "United States (+1)",
+    countryCode: "+1",
+    country: "United States",
     phoneNumber: "",
     email: "",
     password: "",
     confirmPassword: "",
-    invitationCode: ""
+    invitationCode: "",
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
 
-  const countryOptions = [
-    "United States (+1)",
-    "Canada (+1)",
-    "United Kingdom (+44)",
-    "Australia (+61)",
-    "Germany (+49)",
-    "France (+33)",
-    "Japan (+81)",
-    "Other",
+  const countryOptions: CountryOption[] = [
+    { name: "United States", code: "+1", display: "United States (+1)" },
+    { name: "Canada", code: "+1", display: "Canada (+1)" },
+    { name: "United Kingdom", code: "+44", display: "United Kingdom (+44)" },
+    { name: "Australia", code: "+61", display: "Australia (+61)" },
+    { name: "Germany", code: "+49", display: "Germany (+49)" },
+    { name: "France", code: "+33", display: "France (+33)" },
+    { name: "Japan", code: "+81", display: "Japan (+81)" },
+    { name: "Other", code: "+1", display: "Other" },
   ];
 
   const validateForm = (): boolean => {
@@ -105,50 +117,87 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
 
     if (validateForm()) {
       try {
-        const payload = {
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          username: formData.username,
-          countryCode: formData.country.split(" ")[1]?.replace(/[()]/g, "") || "+1",
-          country: formData.country.split(" ")[0],
-          phoneNumber: formData.phoneNumber,
-          email: formData.email,
+        const registrationData = {
+          firstName: formData.firstName.trim(),
+          lastName: formData.lastName.trim(),
+          username: formData.username.trim(),
+          countryCode: formData.countryCode,
+          country: formData.country,
+          phoneNumber: formData.phoneNumber.trim(),
+          email: formData.email.trim(),
           password: formData.password,
           confirmPassword: formData.confirmPassword,
-          referralCode: formData.invitationCode
         };
 
-        const res = await fetch("/api/register", {
-          method: "POST",
-          body: JSON.stringify(payload),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await axios.post(REGISTER_API_ROUTE, registrationData);
 
-        const data = await res.json();
+        if (response.status === 200 || response.status === 201) {
+          // Extract user data from API response
+          const apiData = response.data.data || response.data; // Handle both response structures
 
-        if (res.ok && data?.token) {
-          saveAuthData(data);
+          const userData = {
+            email: formData.email.trim(),
+            name: `${formData.firstName} ${formData.lastName}`,
+            access_token:
+              apiData.access_token || "temp-access-token-" + Date.now(),
+            refresh_token:
+              apiData.refresh_token || "temp-refresh-token-" + Date.now(),
+            role: apiData.role || "Standard",
+            userType: apiData.userType || "Indexx Exchange",
+            shortToken: apiData.shortToken || "temp-short-token",
+          };
+
+          login(userData);
           onRegisterSuccess();
           onClose();
 
+          // Reset form
           setFormData({
             firstName: "",
             lastName: "",
             username: "",
-            country: "United States (+1)",
+            countryCode: "+1",
+            country: "United States",
             phoneNumber: "",
             email: "",
             password: "",
             confirmPassword: "",
-            invitationCode: ""
+            invitationCode: "",
           });
         } else {
-          setErrors({ general: data?.error || "Registration failed" });
+          setErrors({ general: "Registration failed. Please try again." });
         }
-      } catch (error: any) {
-        setErrors({ general: "Something went wrong. Please try again." });
+      } catch (error: unknown) {
+        console.error("Registration error:", error);
+
+        // Handle different error types
+        if (axios.isAxiosError(error)) {
+          if (error.response?.status === 400) {
+            const errorMessage =
+              error.response.data?.message ||
+              "Invalid request. Please check your input.";
+            if (errorMessage.toLowerCase().includes("email")) {
+              setErrors({ email: "This email is already registered." });
+            } else if (errorMessage.toLowerCase().includes("username")) {
+              setErrors({ username: "This username is already taken." });
+            } else {
+              setErrors({ general: errorMessage });
+            }
+          } else if (error.response?.status === 409) {
+            setErrors({
+              general: "User already exists with this email or username.",
+            });
+          } else if (error.response?.data?.message) {
+            setErrors({ general: error.response.data.message });
+          } else {
+            setErrors({
+              general:
+                "Registration failed. Please check your connection and try again.",
+            });
+          }
+        } else {
+          setErrors({ general: "Registration failed. Please try again." });
+        }
       }
     }
 
@@ -162,19 +211,90 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
     }
   };
 
-  const handleGoogleRegister = () => {
-    // Implement Google OAuth registration here
-    console.log("Google register clicked");
-    // For demo purposes, simulate a successful Google registration
-    const userData = {
-      email: "demo@google.com",
-      name: "Google User",
-      token: "google-mock-token-" + Date.now(),
-    };
-    saveAuthData(userData);
-    onRegisterSuccess();
-    onClose();
+  const handleCountrySelect = (option: CountryOption) => {
+    setFormData((prev) => ({
+      ...prev,
+      country: option.name,
+      countryCode: option.code,
+    }));
+    setShowCountryDropdown(false);
   };
+
+  const getSelectedCountryDisplay = () => {
+    const selectedOption = countryOptions.find(
+      (option) =>
+        option.name === formData.country && option.code === formData.countryCode
+    );
+    return selectedOption
+      ? selectedOption.display
+      : `${formData.country} (${formData.countryCode})`;
+  };
+
+  const handleGoogleRegister = useGoogleLogin({
+    onSuccess: async (tokenResponse: any) => {
+      const googleToken = tokenResponse.access_token;
+
+      try {
+        const language = navigator.language || 'en';
+        const codeToLabel: { [key: string]: string } = {
+          en: "English",
+          zh: "Chinese",
+          es: "Spanish",
+          fr: "French",
+        };
+        const selectedLanguageLabel = codeToLabel[language.slice(0, 2)] || "English";
+
+        const res = await axios.post(GOOGLE_REGISTER_API_ROUTE, {
+          googleToken,
+          language: selectedLanguageLabel,
+        });
+
+        if (res.status === 200 && res.data?.access_token) {
+          login({
+            email: res.data.email,
+            name: res.data.name,
+            access_token: res.data.access_token,
+            refresh_token: res.data.refresh_token,
+            role: res.data.role || "Standard",
+            userType: res.data.userType || "Indexx Exchange",
+            shortToken: res.data.shortToken || "google-short-token",
+          });
+
+          onRegisterSuccess();
+          onClose();
+        } else {
+          setErrors({
+            general: res?.data?.message || "Google signup failed.",
+          });
+        }
+      } catch (error: any) {
+        if (axios.isAxiosError(error)) {
+          const msg = error.response?.data?.message || "";
+
+          if (msg.includes("Email already registered with direct email process")) {
+            setErrors({
+              email: "Email already registered. Please log in with email and password.",
+            });
+          } else if (msg.includes("Email already registered with Google")) {
+            setErrors({
+              email: "Email already registered with Google. Please log in with Google.",
+            });
+          } else {
+            setErrors({
+              general: msg || "Google signup failed. Please try again.",
+            });
+          }
+        } else {
+          setErrors({ general: "Unexpected error occurred. Please try again." });
+        }
+      }
+    },
+    onError: () => {
+      setErrors({ general: "Google Sign Up failed or was cancelled." });
+    },
+  });
+
+
 
   return (
     <PopupComponent isOpen={isOpen} onClose={onClose}>
@@ -252,13 +372,12 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
               onChange={(e) => handleInputChange("username", e.target.value)}
               disabled={isSubmitting}
             />
-
             {errors.username && (
               <p className="text-red-500 text-xs mt-1">{errors.username}</p>
             )}
             {!errors.username && (
               <p className="text-tertiary text-xs mt-1">
-                Username must be 4 to 20 characters, only number and letters
+                Username must be 8 to 20 characters, only number and letters
               </p>
             )}
           </div>
@@ -276,7 +395,7 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
                 disabled={isSubmitting}
               >
                 <span className="text-base flex-1 text-left">
-                  {formData.country}
+                  {getSelectedCountryDisplay()}
                 </span>
                 <ChevronDown className="w-5 h-5" strokeWidth={2.5} />
               </button>
@@ -288,19 +407,17 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
                       <button
                         key={index}
                         type="button"
-                        onClick={() => {
-                          handleInputChange("country", option);
-                          setShowCountryDropdown(false);
-                        }}
+                        onClick={() => handleCountrySelect(option)}
                         className="w-full px-4 py-3 text-left text-tertiary hover:bg-primary hover:text-bg transition-colors text-base cursor-pointer flex items-center gap-3"
                       >
-                        <span className="flex-1">{option}</span>
-                        {formData.country === option && (
-                          <Check
-                            className="w-5 h-5 ml-auto"
-                            strokeWidth={2.5}
-                          />
-                        )}
+                        <span className="flex-1">{option.display}</span>
+                        {formData.country === option.name &&
+                          formData.countryCode === option.code && (
+                            <Check
+                              className="w-5 h-5 ml-auto"
+                              strokeWidth={2.5}
+                            />
+                          )}
                       </button>
                     ))}
                   </div>
@@ -393,14 +510,14 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
 
           <div className="mb-4">
             <label
-              htmlFor="invitatino-code"
+              htmlFor="invitationCode"
               className="block text-bg3 text-base mb-2"
             >
               Invitation Code (Optional)
             </label>
             <input
               type="text"
-              id="=invitationCode"
+              id="invitationCode"
               className="w-full text-base p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
               value={formData.invitationCode}
               onChange={(e) =>

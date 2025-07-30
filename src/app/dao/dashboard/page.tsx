@@ -13,6 +13,7 @@ import RoleImage5 from "@/assets/images/dao/Contributors.webp";
 import CorrectIcon from "@/assets/images/dao/dashboard/correct-icon.svg";
 import CrossIcon from "@/assets/images/dao/dashboard/cross-icon.svg";
 import PendingIcon from "@/assets/images/dao/dashboard/pending-icon.svg";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Power {
   name: string;
@@ -27,6 +28,7 @@ interface Task {
 
 interface Activity {
   id: number;
+  _id: string;
   name: string;
   status: "completed" | "failed";
 }
@@ -42,8 +44,8 @@ interface DashboardData {
 }
 
 export default function Dashboard() {
+  const { user, isLoading } = useAuth(); // Get authenticated user
   const [userData, setUserData] = useState<DashboardData | null>(null);
-
 
   const roleImages = {
     leader: RoleImage1,
@@ -55,25 +57,33 @@ export default function Dashboard() {
 
   useEffect(() => {
     const fetchDashboardData = async () => {
+      if (!user?.email) return;
+
       try {
-        const response = await fetch("https://api.v1.indexx.ai/api/v1/dao/getDashboard", {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/dao/getDashboard`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ email: "user@example.com" }), // replace with dynamic user email if available
+          body: JSON.stringify({ email: user.email }), // use email from checkAuth
         });
 
-        const data = await response.json();
-
-        setUserData(data);
+        console.log(response)
+        const result = await response.json();
+        console.log("result", result)
+        setUserData(result.data);
       } catch (err) {
         console.error("Failed to fetch dashboard data:", err);
       }
     };
 
     fetchDashboardData();
-  }, []);
+
+  }, [user]);
+
+  if (isLoading || !user) {
+    return <div className="mt-40 text-center text-3xl">Loading user data...</div>;
+  }
 
   if (!userData) {
     return (
@@ -82,6 +92,15 @@ export default function Dashboard() {
       </div>
     );
   }
+
+  const getRoleKey = (role: string): keyof typeof roleImages => {
+    const normalized = role.toLowerCase().split(" ")[0]; // e.g., "Leader Gopher" → "leader"
+    if (["leader", "validator", "manager", "thinker", "contributor"].includes(normalized)) {
+      return normalized as keyof typeof roleImages;
+    }
+    return "contributor";
+  };
+
 
   return (
     <div className="mt-40 container mx-auto px-4">
@@ -92,16 +111,17 @@ export default function Dashboard() {
           </h2>
 
           <h1 className="text-3xl md:text-5xl xl:text-[82px] mb-4 font-semibold text-primary">
-            {userData.role.charAt(0).toUpperCase() + userData.role.slice(1)}{" "}
-            Gopher Dashboard
+            {userData.role}{" "}
+            Dashboard
           </h1>
 
           <div className="flex justify-center mt-6">
             <Image
-              src={roleImages[userData.role as keyof typeof roleImages]}
+              src={roleImages[getRoleKey(userData.role)]}
               alt="Role image"
               className="w-90"
             />
+
           </div>
 
           <p className="mt-6 text-tertiary text-lg">
@@ -120,12 +140,13 @@ export default function Dashboard() {
 
             <div className="mt-6 flex items-center">
               <Image
-                src={roleImages[userData.role as keyof typeof roleImages]}
+                src={roleImages[getRoleKey(userData.role)]}
                 alt="Role image"
                 className="w-14 mr-4"
               />
+
               <p className="text-3xl">
-                {userData.role.charAt(0).toUpperCase() + userData.role.slice(1)}{" "}
+                {userData.role}{" "}
                 Gopher
               </p>
             </div>
@@ -158,7 +179,7 @@ export default function Dashboard() {
               Role-specific Powers
             </h3>
             <div className="space-y-4 mt-6">
-              {userData.powers.map(
+              {(userData.powers || []).map(
                 (power: { name: string; status: string }, index: number) => (
                   <div key={index} className="flex items-center">
                     <Image
@@ -179,7 +200,7 @@ export default function Dashboard() {
         {/* Activity & Tasks */}
         <div className="mt-40 mb-40">
           <h2 className="text-5xl md:text-6xl xl:text-8xl font-bold mb-8">
-            (Activity & Tasks - 60%)
+            (Activity & Tasks)
           </h2>
 
           {/* Assigned Tasks */}
@@ -188,7 +209,7 @@ export default function Dashboard() {
               Assigned Tasks
             </h3>
             <ul className="mt-6 list-disc pl-6 space-y-4">
-              {userData.assignedTasks.map((task) => (
+              {userData?.assignedTasks.map((task) => (
                 <li key={task.id} className="text-3xl">
                   <div className="flex items-center">
                     <span className="text-3xl">{task.name}</span>
@@ -216,7 +237,7 @@ export default function Dashboard() {
             </h3>
             <div className="space-y-4 mt-6">
               {userData.recentActivity.map((activity) => (
-                <div key={activity.id} className="flex items-center">
+                <div key={activity?._id} className="flex items-center">
                   <Image
                     src={
                       activity.status === "completed" ? CorrectIcon : CrossIcon

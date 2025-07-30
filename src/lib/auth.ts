@@ -2,7 +2,11 @@
 export interface User {
   email: string;
   name: string;
-  token: string;
+  access_token: string;
+  refresh_token: string;
+  role: string;
+  userType: string;
+  shortToken: string;
 }
 
 export const AUTH_STORAGE_KEY = "bitcoinYayAuth";
