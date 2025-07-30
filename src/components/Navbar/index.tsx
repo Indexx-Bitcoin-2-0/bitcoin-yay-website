@@ -374,9 +374,12 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Search Input (Desktop) */}
-        <div className="w-80 hidden xl:block"></div>
-        {/* <div className="hidden xl:block">
-          <form onSubmit={handleSearch} className="relative group">
+        <div className="hidden lg:block">
+          <div className="text-sm font-normal transition-all duration-300 flex gap-10">
+            <Link href="#" className="hover:text-primary">Login</Link>
+            <Link href="#" className="hover:text-primary">Register</Link>
+          </div>
+          {/* <form onSubmit={handleSearch} className="relative group">
             <input
               type="text"
               id="search-navbar"
@@ -401,8 +404,8 @@ const Navbar: React.FC = () => {
                 height={30}
               />
             </button>
-          </form>
-        </div> */}
+          </form> */}
+        </div>
 
         {/* Mobile Menu */}
         <div
@@ -410,6 +413,10 @@ const Navbar: React.FC = () => {
             menuOpen ? "translate-y-0" : "-translate-y-[130%]"
           }  lg:hidden max-h-[calc(100vh-150px)] overflow-y-auto`}
         >
+          <div className="text-xl lg:text-sm font-normal transition-all duration-300 flex items-center justify-center w-full gap-10">
+            <Link href="#" className="hover:text-primary">Login</Link>
+            <Link href="#" className="hover:text-primary">Register</Link>
+          </div>
           {/* Search Input (Mobile) */}
           {/* <div className="mb-6">
             <form

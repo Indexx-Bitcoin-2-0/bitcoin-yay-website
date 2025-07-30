@@ -1,0 +1,344 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { MoreVertical, ChevronLeft, ChevronRight } from "lucide-react";
+import PopupComponent from "@/components/PopupComponent";
+import CustomButton from "@/components/CustomButton";
+import axios from "axios";
+
+export default function Proposals() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const proposalsPerPage = 10;
+  const [openDropdown, setOpenDropdown] = useState<number | null>(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [selectedProposal, setSelectedProposal] = useState<any>(null);
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("Popular");
+
+  const [proposals, setProposals] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchProposals = async () => {
+      try {
+        const response = await axios.get("https://api.v1.indexx.ai/api/v1/dao/listProposal");
+        const data = response.data?.data || [];
+
+        const mappedData = data.map((item: any, index: number) => {
+          const timeRemaining = calculateTimeRemaining(item.endDate);
+          return {
+            id: index + 1,
+            title: item.title,
+            description: item.description,
+            status: item.status,
+            creator: item.createdBy,
+            createdOn: new Date(item.startDate).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            }),
+            proposalId: item.proposalId,
+            timeRemaining,
+            yesVotes: item.upvotes,
+            noVotes: item.downvotes,
+            hoursRemaining: extractHoursLeft(timeRemaining),
+          };
+        });
+
+        setProposals(mappedData);
+      } catch (err) {
+        setError("Failed to fetch proposals.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProposals();
+  }, []);
+
+  function calculateTimeRemaining(endDate: string): string {
+    const now = new Date();
+    const end = new Date(endDate);
+    const diff = end.getTime() - now.getTime();
+
+    if (diff <= 0) return "Completed";
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    return `${days}d ${hours}h`;
+  }
+
+  function extractHoursLeft(time: string): number {
+    const match = time.match(/(\d+)d\s*(\d+)h/);
+    if (match) {
+      return parseInt(match[1]) * 24 + parseInt(match[2]);
+    }
+    return 999;
+  }
+
+  const getFilteredProposals = () => {
+    switch (selectedCategory) {
+      case "Recent":
+        return [...proposals].sort((a, b) => new Date(b.createdOn).getTime() - new Date(a.createdOn).getTime());
+      case "Popular":
+        return [...proposals].sort((a, b) => (b.yesVotes + b.noVotes) - (a.yesVotes + a.noVotes));
+      case "Ending Soon":
+        return proposals
+          .filter((p) => p.status === "Voting" && p.timeRemaining !== "Completed")
+          .sort((a, b) => a.hoursRemaining - b.hoursRemaining);
+      default:
+        return proposals;
+    }
+  };
+
+  const filteredProposals = getFilteredProposals();
+  const totalPages = Math.ceil(filteredProposals.length / proposalsPerPage);
+  const startIndex = (currentPage - 1) * proposalsPerPage;
+  const endIndex = startIndex + proposalsPerPage;
+  const currentProposals = filteredProposals.slice(startIndex, endIndex);
+
+  const categories = ["Recent", "Popular", "Ending Soon"];
+
+  const handleCategoryClick = (index: number) => {
+    const category = categories[index];
+    setSelectedCategory(category);
+    setCurrentPage(1);
+  };
+
+  const handleTitleClick = (proposal: any) => {
+    setSelectedProposal(proposal);
+    setIsDescriptionExpanded(false);
+    setIsPopupOpen(true);
+  };
+
+  const getCleanDescription = (description: string) => {
+    return description.replace(/\.{3,}$/, "").trim();
+  };
+
+  const handleViewDetails = (proposal: any) => {
+    setSelectedProposal(proposal);
+    setIsPopupOpen(true);
+  };
+
+  const handleVoteNow = (proposalId: number) => {
+    console.log("Vote on proposal:", proposalId);
+    setOpenDropdown(null);
+  };
+
+  const StatusBadge = ({ status }: { status: string }) => {
+    const getStatusColor = (status: string) => {
+      switch (status.toLowerCase()) {
+        case "voting":
+          return "bg-primary";
+        case "passed":
+          return "bg-green-500";
+        case "rejected":
+          return "bg-red-500";
+        default:
+          return "bg-bg3";
+      }
+    };
+
+    return (
+      <div className="flex items-center gap-2">
+        <div className={`w-4 h-4 rounded-full ${getStatusColor(status)}`}></div>
+        <span className="text-base text-secondary">{status}</span>
+      </div>
+    );
+  };
+
+  const VoteBreakdown = ({ yesVotes, noVotes }: { yesVotes: number; noVotes: number }) => (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between text-sm">
+        <span className="text-primary">Yes: {yesVotes}%</span>
+        <span className="text-bg3">No: {noVotes}%</span>
+      </div>
+      <div className="w-full bg-secondary rounded-full h-2">
+        <div className="bg-primary h-2 rounded-l-full transition-all duration-300" style={{ width: `${yesVotes}%` }}></div>
+      </div>
+    </div>
+  );
+
+  const ActionDropdown = ({ proposal }: { proposal: any }) => (
+    <div className="relative">
+      <button
+        onClick={() => setOpenDropdown(openDropdown === proposal.id ? null : proposal.id)}
+        className="p-2 hover:bg-bg2 rounded-full cursor-pointer"
+      >
+        <MoreVertical className="w-6 h-6" />
+      </button>
+      {openDropdown === proposal.id && (
+        <div className="absolute right-0 top-full mt-1 w-40 bg-bg2 rounded-md shadow-lg z-10">
+          <div className="py-1">
+            <button
+              onClick={() => handleViewDetails(proposal)}
+              className="w-full px-4 py-2 text-left text-secondary hover:bg-primary hover:text-bg transition-colors text-lg cursor-pointer"
+            >
+              View Details
+            </button>
+          </div>
+          <div className="py-1">
+            <button
+              onClick={() => handleVoteNow(proposal.id)}
+              className="w-full px-4 py-2 text-left text-secondary hover:bg-primary hover:text-bg transition-colors text-lg cursor-pointer"
+            >
+              Vote Now
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  const Pagination = () => {
+    const getPageNumbers = () => {
+      const pages = [];
+      const maxVisiblePages = 5;
+      let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+      const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+      if (endPage - startPage + 1 < maxVisiblePages) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+      }
+      for (let i = startPage; i <= endPage; i++) {
+        pages.push(i);
+      }
+      return pages;
+    };
+
+    const canGoPrevious = currentPage > 1;
+    const canGoNext = currentPage < totalPages;
+
+    return (
+      <div className="flex items-center gap-2 mt-8">
+        <button onClick={() => canGoPrevious && setCurrentPage(currentPage - 1)} disabled={!canGoPrevious}
+          className={`w-12 h-12 rounded-full flex items-center justify-center ${canGoPrevious ? "bg-primary text-secondary hover:scale-105" : "bg-[#c06b0a] cursor-not-allowed"}`}>
+          <ChevronLeft className="w-6 h-6" />
+        </button>
+
+        {getPageNumbers().map((page) => (
+          <button key={page} onClick={() => setCurrentPage(page)}
+            className={`w-12 h-12 rounded-full border-1 flex items-center justify-center text-lg font-medium ${page === currentPage ? "border-primary text-primary" : "text-secondary hover:bg-bg2"}`}>
+            {page}
+          </button>
+        ))}
+
+        <button onClick={() => canGoNext && setCurrentPage(currentPage + 1)} disabled={!canGoNext}
+          className={`w-12 h-12 rounded-full flex items-center justify-center ${canGoNext ? "bg-primary text-secondary hover:scale-105" : "bg-[#c06b0a] cursor-not-allowed"}`}>
+          <ChevronRight className="w-6 h-6" />
+        </button>
+      </div>
+    );
+  };
+
+  return (
+    <div className="mt-40 container mx-auto px-4">
+      {/* Header */}
+      <div className="text-center mt-20">
+        <h2 className="text-lg md:text-2xl mb-4 font-bold">DAO Governance</h2>
+        <h1 className="text-3xl md:text-5xl xl:text-[82px] mb-4 font-semibold text-primary">Proposal Card List</h1>
+        <p className="text-xl md:text-2xl mt-4">Review and vote on community proposals</p>
+      </div>
+
+      {/* Category Filters */}
+      <div className="flex md:gap-4 items-center mt-10 justify-center">
+        {categories.map((category, index) => (
+          <CustomButton key={index} index={index} text={category} handleButtonClick={handleCategoryClick} isActive={selectedCategory === category} />
+        ))}
+      </div>
+
+      {/* Proposals Table */}
+      <div className="mt-40">
+        <div className="w-full overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-bg3">
+                <th className="text-left py-6 px-4 text-base md:text-2xl font-bold">Proposal Title</th>
+                <th className="text-left py-6 px-4 text-base md:text-2xl font-bold">Status Badge</th>
+                <th className="text-left py-6 px-4 text-base md:text-2xl font-bold">Creator</th>
+                <th className="text-left py-6 px-4 text-base md:text-2xl font-bold">Time Remaining</th>
+                <th className="text-left py-6 px-4 text-base md:text-2xl font-bold">Votes Breakdown</th>
+                <th className="text-left py-6 px-4 text-base md:text-2xl font-bold">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentProposals.map((proposal) => (
+                <tr key={proposal.id} className="border-b border-bg3">
+                  <td className="py-6 px-4">
+                    <span onClick={() => handleTitleClick(proposal)} className="text-base text-secondary underline cursor-pointer hover:text-primary">
+                      {proposal.title}
+                    </span>
+                  </td>
+                  <td className="py-6 px-4"><StatusBadge status={proposal.status} /></td>
+                  <td className="py-6 px-4 text-secondary">{proposal.creator}</td>
+                  <td className="py-6 px-4 text-secondary">{proposal.timeRemaining}</td>
+                  <td className="py-6 px-4"><VoteBreakdown yesVotes={proposal.yesVotes} noVotes={proposal.noVotes} /></td>
+                  <td className="py-6 px-4"><ActionDropdown proposal={proposal} /></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination */}
+        <Pagination />
+
+        {/* No Data Message */}
+        {currentProposals.length === 0 && !loading && (
+          <div className="text-center py-8">
+            <p className="text-bg3 text-lg">No proposals found.</p>
+          </div>
+        )}
+      </div>
+
+      {/* Proposal Detail Popup */}
+      <PopupComponent
+        isOpen={isPopupOpen}
+        onClose={() => {
+          setIsPopupOpen(false);
+          setIsDescriptionExpanded(false);
+        }}
+      >
+        {selectedProposal && (
+          <div className="w-90 md:w-140 xl:w-200 py-10 xl:py-20 px-10 md:px-14 xl:px-30 bg-bg">
+            <h2 className="text-2xl md:text-5xl font-bold mb-6 text-center">Proposal Description</h2>
+            <div className="space-y-4 text-tertiary">
+              <div className="text-base md:text-xl leading-relaxed">
+                <div className={`${isDescriptionExpanded ? "max-h-30 overflow-y-auto" : "max-h-24 overflow-hidden"} transition-all duration-300 ease-in-out`}>
+                  <p className="mb-4">
+                    {isDescriptionExpanded
+                      ? getCleanDescription(selectedProposal.description)
+                      : selectedProposal.description}
+                  </p>
+                </div>
+                <div className="mt-2">
+                  <button onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)} className="text-primary cursor-pointer hover:underline font-medium">
+                    {isDescriptionExpanded ? "Read Less" : "Read More"}
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-3 mt-8 text-tertiary">
+                <div className="flex items-center gap-2">
+                  <p className="text-xl font-bold">Status:</p><p className="text-xl">{selectedProposal.status}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <p className="text-xl font-bold">Creator:</p><p className="text-xl">{selectedProposal.creator}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <p className="text-xl font-bold">Created On:</p><p className="text-xl">{selectedProposal.createdOn}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <p className="text-xl font-bold">Proposal ID:</p><p className="text-xl">{selectedProposal.proposalId}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <p className="text-xl font-bold">Voting Deadline:</p><p className="text-xl">Ends in {selectedProposal.timeRemaining}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </PopupComponent>
+    </div>
+  );
+}

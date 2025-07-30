@@ -27,10 +27,8 @@ export default function DAO() {
   return (
     <div className="mx-auto mt-40">
       <div className="mt-20 flex flex-col items-center justify-center text-center px-4">
-        <h2 className="text-lg md:text-2xl mb-4 font-bold text-primary">
-          YingYang DAO
-        </h2>
-        <h1 className="text-4xl md:text-7xl mb-4 font-semibold max-w-5xl">
+        <h2 className="text-lg md:text-2xl mb-4 font-bold ">YingYang DAO</h2>
+        <h1 className="text-3xl md:text-5xl xl:text-[82px] mb-4 font-semibold max-w-5xl text-primary">
           Welcome to Ying Yang DAO – Powered by Reputation
         </h1>
         <p className="text-xl md:text-2xl mt-4">
