@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useEffect } from "react";
 import { ChevronDown, Check } from "lucide-react";
 
 import CustomButton2 from "@/components/CustomButton2";
 import SubmitButton from "@/assets/images/buttons/arrow-up-button.webp";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
 
 interface FormData {
   title: string;
@@ -30,6 +32,40 @@ export default function NewProposal() {
   const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] =
     useState<boolean>(false);
+  const { user } = useAuth();
+  const router = useRouter();
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/dao/getDashboard`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: user?.email }), // use email from checkAuth
+        });
+        const data = await res.json();
+        console.log("role", data?.data.role)
+        if (res.ok && data?.data.role) {
+          setUserRole(data?.data.role.toLowerCase());
+          if (data?.data.role.toLowerCase() !== "leader gopher") {
+            router.push("/dao"); // redirect to proposals if not leader
+          }
+        } else {
+          router.push("/dao"); // fallback redirect
+        }
+      } catch (err) {
+        console.error("Error fetching role", err);
+        router.push("/dao");
+      }
+    };
+
+    if (user?.email) {
+      fetchUserRole();
+    }
+  }, [user]);
 
   const categories = [
     "Treasury Management",
@@ -41,6 +77,10 @@ export default function NewProposal() {
     "Governance",
     "Other",
   ];
+
+  if (!userRole) {
+    return <div className="mt-60 text-center text-2xl">Checking access...</div>;
+  }
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
