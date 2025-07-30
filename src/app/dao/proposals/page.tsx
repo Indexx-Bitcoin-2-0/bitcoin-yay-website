@@ -21,7 +21,6 @@ export default function Proposals() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [voteMessage, setVoteMessage] = useState<string | null>(null);
-  const [hasVoted, setHasVoted] = useState(false);
 
   const [votingProposalId, setVotingProposalId] = useState<string | null>(null);
   const [isVotePopupOpen, setIsVotePopupOpen] = useState(false);
@@ -38,15 +37,13 @@ export default function Proposals() {
       const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/dao/listProposal`);
       const data = response.data?.data || [];
 
-      if (user?.email && data?.data?.votes?.some((v: any) => v.user === user.email)) {
-        setHasVoted(true);
-      }
-
       const mappedData = data.map((item: any, index: number) => {
         const timeRemaining = calculateTimeRemaining(item.endDate);
 
         const yesVotes = item.votes.filter((v: any) => v.vote === "yes").length;
         const noVotes = item.votes.filter((v: any) => v.vote === "no").length;
+
+        const userHasVoted = user?.email && item.votes?.some((v: any) => v.user === user.email);
 
         return {
           id: index + 1,
@@ -64,6 +61,7 @@ export default function Proposals() {
           yesVotes,
           noVotes,
           hoursRemaining: extractHoursLeft(timeRemaining),
+          hasVoted: userHasVoted,
         };
       });
 
@@ -147,11 +145,14 @@ export default function Proposals() {
 
 
   const handleVoteNow = (proposalId: string) => {
-    console.log("Vote on proposal:", proposalId);
+    const selected = proposals.find(p => p.proposalId === proposalId);
     setVotingProposalId(proposalId);
+    setVoteMessage(null);
+    setSelectedProposal(selected); // track the full proposal
     setIsVotePopupOpen(true);
     setOpenDropdown(null);
   };
+
 
 
   const StatusBadge = ({ status }: { status: string }) => {
@@ -409,7 +410,7 @@ export default function Proposals() {
         <div className="w-80 md:w-120 p-6 md:p-10">
           <h2 className="text-xl md:text-3xl font-bold text-center text-primary mb-6">Cast Your Vote</h2>
 
-          {hasVoted ? (
+          {selectedProposal?.hasVoted ? (
             <p className="text-lg text-center text-blue-600 font-medium">
               ✅ You have already voted on this proposal.
             </p>
