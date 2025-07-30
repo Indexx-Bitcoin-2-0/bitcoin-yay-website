@@ -27,7 +27,7 @@ interface Proposal {
 
 export default function ProposalDetailPage() {
   const searchParams = useSearchParams();
-  const { user, isLoading } = useAuth();
+  const { user } = useAuth();
   const proposalId = searchParams.get("id");
 
   const [proposal, setProposal] = useState<Proposal | null>(null);
@@ -37,6 +37,7 @@ export default function ProposalDetailPage() {
   const [yesPct, setYesPct] = useState(0);
   const [noPct, setNoPct] = useState(0);
   const [abstainPct, setAbstainPct] = useState(0);
+  const [hasVoted, setHasVoted] = useState(false);
 
 
   const roleImages = {
@@ -67,6 +68,11 @@ export default function ProposalDetailPage() {
           requiredRole: data?.data?.roleRequired ?? "Member",
           votes: data?.data?.votes ?? [],
         };
+
+        if (user?.email && data?.data?.votes?.some((v: any) => v.user === user.email)) {
+          setHasVoted(true);
+        }
+
 
         setYesPct(Math.round((yesVotes / totalVotes) * 100) || 0);
         setNoPct(Math.round((noVotes / totalVotes) * 100) || 0);
@@ -181,43 +187,48 @@ export default function ProposalDetailPage() {
           </div>
         </div>
 
+        {hasVoted ? (
+          <p className="text-blue-600 text-xl mt-4">✅ You have already voted on this proposal.</p>
+        ) : (
+          <>
+            {/* Voting Buttons */}
+            <div className="mt-20 md:mt-40 flex flex-col items-center gap-10">
+              <div className="flex gap-10 md:gap-24">
+                <CustomButton
+                  text="Vote Yes"
+                  index={0}
+                  handleButtonClick={() => setSelectedVote("yes")}
+                  isActive={selectedVote === "yes"}
+                />
+                <CustomButton
+                  text="Vote No"
+                  index={1}
+                  handleButtonClick={() => setSelectedVote("no")}
+                  isActive={selectedVote === "no"}
+                />
+                <CustomButton
+                  text="Abstain"
+                  index={2}
+                  handleButtonClick={() => setSelectedVote("abstain")}
+                  isActive={selectedVote === "abstain"}
+                />
+              </div>
 
-        {/* Voting Buttons */}
-        <div className="mt-20 md:mt-40 flex flex-col items-center gap-10">
-          <div className="flex gap-10 md:gap-24">
-            <CustomButton
-              text="Vote Yes"
-              index={0}
-              handleButtonClick={() => setSelectedVote("yes")}
-              isActive={selectedVote === "yes"}
-            />
-            <CustomButton
-              text="Vote No"
-              index={1}
-              handleButtonClick={() => setSelectedVote("no")}
-              isActive={selectedVote === "no"}
-            />
-            <CustomButton
-              text="Abstain"
-              index={2}
-              handleButtonClick={() => setSelectedVote("abstain")}
-              isActive={selectedVote === "abstain"}
-            />
-          </div>
+              {selectedVote && (
+                <CustomButton
+                  text={loadingVote ? "Submitting..." : `Submit ${selectedVote.toUpperCase()}`}
+                  index={3}
+                  handleButtonClick={submitVote}
+                  isActive={true}
+                />
+              )}
 
-          {selectedVote && (
-            <CustomButton
-              text={loadingVote ? "Submitting..." : `Submit ${selectedVote.toUpperCase()}`}
-              index={3}
-              handleButtonClick={submitVote}
-              isActive={true}
-            />
-          )}
-
-          {voteSuccess && (
-            <p className="text-green-600 text-xl mt-4">✅ Vote submitted successfully!</p>
-          )}
-        </div>
+              {voteSuccess && (
+                <p className="text-green-600 text-xl mt-4">✅ Vote submitted successfully!</p>
+              )}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

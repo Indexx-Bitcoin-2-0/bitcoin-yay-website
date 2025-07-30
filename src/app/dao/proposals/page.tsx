@@ -21,6 +21,7 @@ export default function Proposals() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [voteMessage, setVoteMessage] = useState<string | null>(null);
+  const [hasVoted, setHasVoted] = useState(false);
 
   const [votingProposalId, setVotingProposalId] = useState<string | null>(null);
   const [isVotePopupOpen, setIsVotePopupOpen] = useState(false);
@@ -36,6 +37,10 @@ export default function Proposals() {
     try {
       const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/dao/listProposal`);
       const data = response.data?.data || [];
+
+      if (user?.email && data?.data?.votes?.some((v: any) => v.user === user.email)) {
+        setHasVoted(true);
+      }
 
       const mappedData = data.map((item: any, index: number) => {
         const timeRemaining = calculateTimeRemaining(item.endDate);
@@ -66,6 +71,7 @@ export default function Proposals() {
       setProposals(mappedData);
     } catch (err) {
       setError("Failed to fetch proposals.");
+      console.log("err", error)
     } finally {
       setLoading(false);
     }
@@ -403,27 +409,35 @@ export default function Proposals() {
         <div className="w-80 md:w-120 p-6 md:p-10">
           <h2 className="text-xl md:text-3xl font-bold text-center text-primary mb-6">Cast Your Vote</h2>
 
-          <p className="text-base md:text-lg text-center text-secondary mb-6">
-            Do you support this proposal?
-          </p>
+          {hasVoted ? (
+            <p className="text-lg text-center text-blue-600 font-medium">
+              ✅ You have already voted on this proposal.
+            </p>
+          ) : (
+            <>
+              <p className="text-base md:text-lg text-center text-secondary mb-6">
+                Do you support this proposal?
+              </p>
 
-          <div className="flex justify-center gap-6">
-            <CustomButton
-              text={isVoting ? "Voting..." : "Vote Yes"}
-              index={0}
-              handleButtonClick={() => submitVote("yes")}
-            />
-            <CustomButton
-              text={isVoting ? "Voting..." : "Vote No"}
-              index={1}
-              handleButtonClick={() => submitVote("no")}
-            />
-          </div>
+              <div className="flex justify-center gap-6">
+                <CustomButton
+                  text={isVoting ? "Voting..." : "Vote Yes"}
+                  index={0}
+                  handleButtonClick={() => submitVote("yes")}
+                />
+                <CustomButton
+                  text={isVoting ? "Voting..." : "Vote No"}
+                  index={1}
+                  handleButtonClick={() => submitVote("no")}
+                />
+              </div>
 
-          {voteMessage && (
-            <div className="mt-6 text-center text-lg font-medium text-tertiary">
-              {voteMessage}
-            </div>
+              {voteMessage && (
+                <div className="mt-6 text-center text-lg font-medium text-tertiary">
+                  {voteMessage}
+                </div>
+              )}
+            </>
           )}
         </div>
       </PopupComponent>
