@@ -5,6 +5,8 @@ import { MoreVertical, ChevronLeft, ChevronRight } from "lucide-react";
 import PopupComponent from "@/components/PopupComponent";
 import CustomButton from "@/components/CustomButton";
 import axios from "axios";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Proposals() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -14,46 +16,62 @@ export default function Proposals() {
   const [selectedProposal, setSelectedProposal] = useState<any>(null);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("Popular");
-
+  const [isVoting, setIsVoting] = useState(false);
   const [proposals, setProposals] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [voteMessage, setVoteMessage] = useState<string | null>(null);
+
+  const [votingProposalId, setVotingProposalId] = useState<string | null>(null);
+  const [isVotePopupOpen, setIsVotePopupOpen] = useState(false);
+
+  const router = useRouter();
+  const { user } = useAuth();
+
+  const handleViewDetailsOnNewPage = (proposal: any) => {
+    router.push(`/dao/proposal-detail?id=${proposal.proposalId}`);
+  };
+
+  const fetchProposals = async () => {
+    try {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/dao/listProposal`);
+      const data = response.data?.data || [];
+
+      const mappedData = data.map((item: any, index: number) => {
+        const timeRemaining = calculateTimeRemaining(item.endDate);
+
+        const yesVotes = item.votes.filter((v: any) => v.vote === "yes").length;
+        const noVotes = item.votes.filter((v: any) => v.vote === "no").length;
+
+        return {
+          id: index + 1,
+          title: item.title,
+          description: item.description,
+          status: item.status,
+          creator: item.createdBy,
+          createdOn: new Date(item.startDate).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          }),
+          proposalId: item.proposalId,
+          timeRemaining,
+          yesVotes,
+          noVotes,
+          hoursRemaining: extractHoursLeft(timeRemaining),
+        };
+      });
+
+
+      setProposals(mappedData);
+    } catch (err) {
+      setError("Failed to fetch proposals.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchProposals = async () => {
-      try {
-        const response = await axios.get("https://api.v1.indexx.ai/api/v1/dao/listProposal");
-        const data = response.data?.data || [];
-
-        const mappedData = data.map((item: any, index: number) => {
-          const timeRemaining = calculateTimeRemaining(item.endDate);
-          return {
-            id: index + 1,
-            title: item.title,
-            description: item.description,
-            status: item.status,
-            creator: item.createdBy,
-            createdOn: new Date(item.startDate).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-            }),
-            proposalId: item.proposalId,
-            timeRemaining,
-            yesVotes: item.upvotes,
-            noVotes: item.downvotes,
-            hoursRemaining: extractHoursLeft(timeRemaining),
-          };
-        });
-
-        setProposals(mappedData);
-      } catch (err) {
-        setError("Failed to fetch proposals.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchProposals();
   }, []);
 
@@ -121,10 +139,14 @@ export default function Proposals() {
     setIsPopupOpen(true);
   };
 
-  const handleVoteNow = (proposalId: number) => {
+
+  const handleVoteNow = (proposalId: string) => {
     console.log("Vote on proposal:", proposalId);
+    setVotingProposalId(proposalId);
+    setIsVotePopupOpen(true);
     setOpenDropdown(null);
   };
+
 
   const StatusBadge = ({ status }: { status: string }) => {
     const getStatusColor = (status: string) => {
@@ -148,18 +170,6 @@ export default function Proposals() {
     );
   };
 
-  const VoteBreakdown = ({ yesVotes, noVotes }: { yesVotes: number; noVotes: number }) => (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between text-sm">
-        <span className="text-primary">Yes: {yesVotes}%</span>
-        <span className="text-bg3">No: {noVotes}%</span>
-      </div>
-      <div className="w-full bg-secondary rounded-full h-2">
-        <div className="bg-primary h-2 rounded-l-full transition-all duration-300" style={{ width: `${yesVotes}%` }}></div>
-      </div>
-    </div>
-  );
-
   const ActionDropdown = ({ proposal }: { proposal: any }) => (
     <div className="relative">
       <button
@@ -172,7 +182,7 @@ export default function Proposals() {
         <div className="absolute right-0 top-full mt-1 w-40 bg-bg2 rounded-md shadow-lg z-10">
           <div className="py-1">
             <button
-              onClick={() => handleViewDetails(proposal)}
+              onClick={() => handleViewDetailsOnNewPage(proposal)}
               className="w-full px-4 py-2 text-left text-secondary hover:bg-primary hover:text-bg transition-colors text-lg cursor-pointer"
             >
               View Details
@@ -180,7 +190,7 @@ export default function Proposals() {
           </div>
           <div className="py-1">
             <button
-              onClick={() => handleVoteNow(proposal.id)}
+              onClick={() => handleVoteNow(proposal.proposalId)}
               className="w-full px-4 py-2 text-left text-secondary hover:bg-primary hover:text-bg transition-colors text-lg cursor-pointer"
             >
               Vote Now
@@ -230,6 +240,48 @@ export default function Proposals() {
       </div>
     );
   };
+
+  const VoteBreakdown = ({ yesVotes, noVotes }: { yesVotes: number; noVotes: number }) => {
+    const totalVotes = yesVotes + noVotes;
+    const yesPercent = totalVotes ? (yesVotes / totalVotes) * 100 : 0;
+    const noPercent = totalVotes ? (noVotes / totalVotes) * 100 : 0;
+
+    return (
+      <div className="space-y-2">
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-primary">Yes: {yesPercent.toFixed(1)}%</span>
+          <span className="text-bg3">No: {noPercent.toFixed(1)}%</span>
+        </div>
+        <div className="w-full bg-secondary rounded-full h-2">
+          <div className="bg-primary h-2 rounded-l-full transition-all duration-300" style={{ width: `${yesPercent}%` }}></div>
+        </div>
+      </div>
+    );
+  };
+
+  const submitVote = async (vote: "yes" | "no") => {
+    if (!votingProposalId) return;
+
+    setIsVoting(true);
+    setVoteMessage(null); // Reset message
+    try {
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/dao/voteProposal`, {
+        proposalId: votingProposalId,
+        vote,
+        user: user?.email,
+      });
+
+      setVoteMessage("✅ Your vote has been recorded.");
+      fetchProposals();
+    } catch (error) {
+      console.error("Vote submission failed:", error);
+      setVoteMessage("❌ Failed to submit your vote. Please try again.");
+    } finally {
+      setIsVoting(false);
+    }
+  };
+
+
 
   return (
     <div className="mt-40 container mx-auto px-4">
@@ -339,6 +391,44 @@ export default function Proposals() {
           </div>
         )}
       </PopupComponent>
+
+      <PopupComponent
+        isOpen={isVotePopupOpen}
+        onClose={() => {
+          setIsVotePopupOpen(false);
+          setVotingProposalId(null);
+          setVoteMessage(null); // clear message
+        }}
+      >
+        <div className="w-80 md:w-120 p-6 md:p-10">
+          <h2 className="text-xl md:text-3xl font-bold text-center text-primary mb-6">Cast Your Vote</h2>
+
+          <p className="text-base md:text-lg text-center text-secondary mb-6">
+            Do you support this proposal?
+          </p>
+
+          <div className="flex justify-center gap-6">
+            <CustomButton
+              text={isVoting ? "Voting..." : "Vote Yes"}
+              index={0}
+              handleButtonClick={() => submitVote("yes")}
+            />
+            <CustomButton
+              text={isVoting ? "Voting..." : "Vote No"}
+              index={1}
+              handleButtonClick={() => submitVote("no")}
+            />
+          </div>
+
+          {voteMessage && (
+            <div className="mt-6 text-center text-lg font-medium text-tertiary">
+              {voteMessage}
+            </div>
+          )}
+        </div>
+      </PopupComponent>
+
+
     </div>
   );
 }

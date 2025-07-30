@@ -1,6 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+
 import Image from "next/image";
 
 import RoleImage1 from "@/assets/images/dao/Leader.webp";
@@ -10,6 +12,7 @@ import RoleImage4 from "@/assets/images/dao/Thinkers.webp";
 import RoleImage5 from "@/assets/images/dao/Contributors.webp";
 
 import CustomButton from "@/components/CustomButton";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Proposal {
   proposalNumber: number;
@@ -18,11 +21,24 @@ interface Proposal {
   summary: string;
   votingPeriod: string;
   requiredRole: string;
-  voteResults: number;
+  votes: { vote: "yes" | "no" | "abstain" }[];
 }
 
 
-export default function ProposalDetail() {
+export default function ProposalDetailPage() {
+  const searchParams = useSearchParams();
+  const { user, isLoading } = useAuth();
+  const proposalId = searchParams.get("id");
+
+  const [proposal, setProposal] = useState<Proposal | null>(null);
+  const [selectedVote, setSelectedVote] = useState<"yes" | "no" | "abstain" | null>(null);
+  const [loadingVote, setLoadingVote] = useState(false);
+  const [voteSuccess, setVoteSuccess] = useState(false);
+  const [yesPct, setYesPct] = useState(0);
+  const [noPct, setNoPct] = useState(0);
+  const [abstainPct, setAbstainPct] = useState(0);
+
+
   const roleImages = {
     leader: RoleImage1,
     validator: RoleImage2,
@@ -31,28 +47,31 @@ export default function ProposalDetail() {
     contributor: RoleImage5,
   };
 
-  const [proposal, setProposal] = useState<Proposal | null>(null);
-
   useEffect(() => {
     const fetchProposal = async () => {
       try {
-        const response = await fetch(
-          "https://api.v1.indexx.ai/getProposalDetail/685e9d113fff7ac9045ab8fa"
-        );
+        const response = await fetch(`https://api.v1.indexx.ai/api/v1/dao/getProposalDetail/${proposalId}`);
         const data = await response.json();
 
-        // You may need to adjust these based on actual API response shape
+        const yesVotes = data?.data?.votes?.filter((v: any) => v.vote === "yes").length ?? 0;
+        const noVotes = data?.data?.votes?.filter((v: any) => v.vote === "no").length ?? 0;
+        const abstainVotes = data?.data?.votes?.filter((v: any) => v.vote === "abstain").length ?? 0;
+        const totalVotes = yesVotes + noVotes + abstainVotes;
+
         const mappedProposal: Proposal = {
-          proposalNumber: data.proposalNumber ?? 0,
-          proposalTitle: data.title ?? "Untitled",
-          createdByRole: data.createdByRole?.toLowerCase() ?? "manager",
-          summary: data.summary ?? data.description ?? "No summary provided.",
-          votingPeriod: "July 24 – July 31", // You can format data.startDate & data.endDate
-          requiredRole: data.roleRequired ?? "Member",
-          voteResults: Math.round(
-            (data.upvotes / (data.upvotes + data.downvotes)) * 100
-          ) || 0,
+          proposalNumber: data?.data?.proposalNumber ?? 0,
+          proposalTitle: data?.data?.title ?? "Untitled",
+          createdByRole: data?.data?.createdByRole?.toLowerCase() ?? "manager",
+          summary: data?.data?.summary ?? data?.data?.description ?? "No summary provided.",
+          votingPeriod: formatVotingPeriod(data?.data?.startDate, data?.data?.endDate),
+          requiredRole: data?.data?.roleRequired ?? "Member",
+          votes: data?.data?.votes ?? [],
         };
+
+        setYesPct(Math.round((yesVotes / totalVotes) * 100) || 0);
+        setNoPct(Math.round((noVotes / totalVotes) * 100) || 0);
+        setAbstainPct(Math.round((abstainVotes / totalVotes) * 100) || 0);
+
 
         setProposal(mappedProposal);
       } catch (err) {
@@ -61,129 +80,143 @@ export default function ProposalDetail() {
     };
 
     fetchProposal();
-  }, []);
+  }, [proposalId]);
+
+  const formatVotingPeriod = (start: string, end: string) => {
+    const s = new Date(start);
+    const e = new Date(end);
+    return `${s.toLocaleDateString()} – ${e.toLocaleDateString()}`;
+  };
 
   if (!proposal) {
-    return (
-      <div className="mt-40 container mx-auto px-4 text-center text-3xl">
-        Loading proposal...
-      </div>
-    );
+    return <div className="mt-40 container mx-auto px-4 text-center text-3xl">Loading proposal...</div>;
   }
 
+  const submitVote = async () => {
+    if (!proposalId || !selectedVote) return;
+    setLoadingVote(true);
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/dao/voteProposal`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          proposalId,
+          vote: selectedVote,
+          user: user?.email,
+        }),
+      });
+
+      if (res.ok) {
+        setVoteSuccess(true);
+      } else {
+        const errorData = await res.json();
+        alert("Vote failed: " + errorData.message);
+      }
+    } catch (err) {
+      console.error("Error submitting vote:", err);
+      alert("Vote submission failed.");
+    } finally {
+      setLoadingVote(false);
+    }
+  };
 
   return (
     <div className="mt-40 container mx-auto px-4">
       <div className="mt-40 md:mt-60 flex flex-col items-center justify-center text-center px-4">
-        <h2 className="text-3xl md:text-5xl xl:text-[82px] mb-4 font-bold text-primary">
-          DAO Proposal Detail & Voting
-        </h2>
+        <h2 className="text-3xl md:text-5xl xl:text-[82px] mb-4 font-bold text-primary">DAO Proposal Detail & Voting</h2>
         <h1 className="text-2xl mb-4 font-semibold">
-          Proposal <span className="text-5xl">#{proposal.proposalNumber}</span> —{" "}
-          {proposal.proposalTitle}
+          Proposal <span className="text-5xl">#{proposal.proposalNumber}</span> — {proposal.proposalTitle}
         </h1>
       </div>
 
       <div className="mt-20 md:mt-40">
-        <h2 className="text-3xl md:text-6xl xl:text-8xl font-bold mb-8">
-          Proposal Details
-        </h2>
+        <h2 className="text-3xl md:text-6xl xl:text-8xl font-bold mb-8">Proposal Details</h2>
 
-        {/* Created By */}
         <div className="mt-0 md:mt-20">
-          <h3 className="text-2xl md:text-4xl xl:text-[54px] font-semibold">
-            Created By
-          </h3>
+          <h3 className="text-2xl md:text-4xl xl:text-[54px] font-semibold">Created By</h3>
           <div className="mt-6 flex items-center">
-            <Image
-              src={
-                roleImages[proposal.createdByRole as keyof typeof roleImages]
-              }
-              alt="Role image"
-              className="w-14 mr-2 md:mr-4"
-            />
+            <Image src={roleImages[proposal.createdByRole as keyof typeof roleImages]} alt="Role image" className="w-14 mr-2 md:mr-4" />
             <p className="text-2xl md:text-3xl">
-              {proposal.createdByRole.charAt(0).toUpperCase() +
-                proposal.createdByRole.slice(1)}{" "}
-              Gopher
+              {proposal.createdByRole.charAt(0).toUpperCase() + proposal.createdByRole.slice(1)} Gopher
             </p>
           </div>
         </div>
 
-        {/* Summary */}
         <div className="mt-10 md:mt-20">
-          <h3 className="text-2xl md:text-4xl xl:text-[54px] font-semibold">
-            Summary:
-          </h3>
+          <h3 className="text-2xl md:text-4xl xl:text-[54px] font-semibold">Summary:</h3>
           <div className="mt-6">
-            <span className="text-xl md:text-2xl xl:text-3xl">
-              {proposal.summary}
-            </span>
+            <span className="text-xl md:text-2xl xl:text-3xl">{proposal.summary}</span>
           </div>
         </div>
 
-        {/* Voting Period */}
         <div className="mt-10 md:mt-20">
-          <h3 className="text-2xl md:text-4xl xl:text-[54px] font-semibold">
-            Voting Period:
-          </h3>
+          <h3 className="text-2xl md:text-4xl xl:text-[54px] font-semibold">Voting Period:</h3>
           <div className="mt-6">
-            <span className="text-xl md:text-2xl xl:text-3xl">
-              {proposal.votingPeriod}
-            </span>
+            <span className="text-xl md:text-2xl xl:text-3xl">{proposal.votingPeriod}</span>
           </div>
         </div>
 
-        {/* Required Role */}
         <div className="mt-10 md:mt-20">
-          <h3 className="text-2xl md:text-4xl xl:text-[54px] font-semibold">
-            Required Role
-          </h3>
+          <h3 className="text-2xl md:text-4xl xl:text-[54px] font-semibold">Required Role</h3>
           <div className="mt-6">
-            <span className="text-xl md:text-2xl xl:text-3xl">
-              {proposal.requiredRole}
-            </span>
+            <span className="text-xl md:text-2xl xl:text-3xl">{proposal.requiredRole}</span>
           </div>
         </div>
 
-        {/* Current Vote Results */}
         <div className="mt-10 md:mt-20">
-          <h3 className="text-2xl md:text-4xl xl:text-[54px] font-semibold">
-            Current Vote Results
-          </h3>
+          <h3 className="text-2xl md:text-4xl xl:text-[54px] font-semibold">Current Vote Results</h3>
           <div className="mt-10 max-w-2xl">
-            <div className="flex items-center justify-between text-xl md:text-2xl xl:text-3xl mb-1">
-              <span className="text-primary">Yes: {proposal.voteResults}%</span>
-              <span>NO: {100 - proposal.voteResults}%</span>
+            <div className="flex justify-between mb-2 text-xl md:text-2xl xl:text-3xl">
+              <span className="text-green-600">Yes: {yesPct}%</span>
+              <span className="text-red-600">No: {noPct}%</span>
+              <span className="text-gray-600">Abstain: {abstainPct}%</span>
             </div>
-            <div className="w-full mt-6 bg-secondary rounded-full h-4 md:h-6">
-              <div
-                className="bg-primary h-4 md:h-6 rounded-full transition-all duration-300"
-                style={{ width: `${proposal.voteResults}%` }}
-              ></div>
+            <div className="relative w-full h-4 md:h-6 bg-secondary rounded-full overflow-hidden">
+              <div className="absolute h-full bg-green-600" style={{ width: `${yesPct}%` }} />
+              <div className="absolute h-full bg-red-600 left-[${yesPct}%]" style={{ width: `${noPct}%` }} />
+              <div className="absolute h-full bg-gray-500 left-[${yesPct + noPct}%] rounded-r-full" style={{ width: `${abstainPct}%` }} />
             </div>
           </div>
         </div>
 
-        <div className="mt-20 md:mt-40 flex items-center justify-center gap-10 md:gap-24 px-4">
-          <CustomButton
-            text="Vote Yes"
-            index={0}
-            handleButtonClick={() => { }}
-            isActive={false}
-          />
-          <CustomButton
-            text="Vote No"
-            index={1}
-            handleButtonClick={() => { }}
-            isActive={false}
-          />
-          <CustomButton
-            text="Abstain"
-            index={2}
-            handleButtonClick={() => { }}
-            isActive={false}
-          />
+
+        {/* Voting Buttons */}
+        <div className="mt-20 md:mt-40 flex flex-col items-center gap-10">
+          <div className="flex gap-10 md:gap-24">
+            <CustomButton
+              text="Vote Yes"
+              index={0}
+              handleButtonClick={() => setSelectedVote("yes")}
+              isActive={selectedVote === "yes"}
+            />
+            <CustomButton
+              text="Vote No"
+              index={1}
+              handleButtonClick={() => setSelectedVote("no")}
+              isActive={selectedVote === "no"}
+            />
+            <CustomButton
+              text="Abstain"
+              index={2}
+              handleButtonClick={() => setSelectedVote("abstain")}
+              isActive={selectedVote === "abstain"}
+            />
+          </div>
+
+          {selectedVote && (
+            <CustomButton
+              text={loadingVote ? "Submitting..." : `Submit ${selectedVote.toUpperCase()}`}
+              index={3}
+              handleButtonClick={submitVote}
+              isActive={true}
+            />
+          )}
+
+          {voteSuccess && (
+            <p className="text-green-600 text-xl mt-4">✅ Vote submitted successfully!</p>
+          )}
         </div>
       </div>
     </div>

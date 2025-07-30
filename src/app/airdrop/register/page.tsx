@@ -321,15 +321,15 @@ export default function AirdropRegisterPage() {
           Free Airdrop
         </h2>
         <p className="mt-16 text-xl font-medium">
-          This airdrop is exclusive to all indexxers. Don’t have an account?
+          To claim airdrop you need to be a Miner. Download the app and join now
+          if you haven&apos;t already!
         </p>
         <p className="mt-2 text-xl font-medium">
-          Register{" "}
           <Link
-            href="https://indexx.ai"
+            href="/#apple-store-download"
             className="text-primary hover:underline hover:underline-offset-4 cursor-pointer"
           >
-            Here!
+            Download Now!
           </Link>
         </p>
       </div>

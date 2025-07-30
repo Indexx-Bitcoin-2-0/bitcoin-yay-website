@@ -113,24 +113,24 @@ export default function DAO() {
       </div>
 
       <div className="mt-40 flex items-center justify-center gap-10 md:gap-24 px-4">
-        <CustomButton2
+       <CustomButton2
           image={ArrowRightButtonImage}
           text="View My Dashboard"
-          link="#"
+          link="/dao/dashboard"
           imageStyling="w-42"
-        />{" "}
+        />
         <CustomButton2
+          image={ArrowRightButtonImage}
+          text="View Proposals"
+          link="/dao/proposals"
+          imageStyling="w-42"
+        />
+        {/* <CustomButton2
           image={ArrowRightButtonImage}
           text="Explore Tasks"
           link="#"
           imageStyling="w-42"
-        />{" "}
-        <CustomButton2
-          image={ArrowRightButtonImage}
-          text="View Proposals"
-          link="#"
-          imageStyling="w-42"
-        />
+        />{" "} */}
       </div>
     </div>
   );

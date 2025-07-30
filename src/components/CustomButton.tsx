@@ -8,7 +8,7 @@ interface CustomButtonProps {
   index: number;
   text: string;
   handleButtonClick: (key: number) => void;
-  isActive: boolean;
+  isActive?: boolean;
 }
 
 const CustomButton = ({

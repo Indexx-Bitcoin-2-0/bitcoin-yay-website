@@ -54,7 +54,9 @@ const InputOTP = React.forwardRef<HTMLDivElement, InputOTPProps>(
         {Array.from({ length }).map((_, index) => (
           <input
             key={index}
-            ref={(el) => (refs.current[index] = el)}
+            ref={(el) => {
+              refs.current[index] = el;
+            }}
             type="text"
             inputMode="numeric"
             maxLength={1}

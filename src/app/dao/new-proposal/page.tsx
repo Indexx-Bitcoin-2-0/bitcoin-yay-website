@@ -118,7 +118,7 @@ export default function NewProposal() {
         deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
       };
 
-      const response = await fetch("https://api.v1.indexx.ai/api/v1/dao/createProposal", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/dao/createProposal`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

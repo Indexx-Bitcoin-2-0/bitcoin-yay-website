@@ -5,9 +5,10 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import logo from "@/assets/images/main-logo.svg";
-import SearchIcon1 from "@/assets/images/search-icon-1.svg";
-import SearchIcon2 from "@/assets/images/search-icon-2.svg";
 import Data from "./data";
+import { useAuth } from "@/contexts/AuthContext";
+import LoginPopup from "@/components/LoginPopup";
+import RegisterPopup from "@/components/RegisterPopup";
 import {
   Accordion,
   AccordionContent,
@@ -15,7 +16,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-import PopupArt1 from "@/assets/images/popup/Pop-up.webp";
+import PopupArt1 from "@/assets/images/popup/airdrop-popup-1.webp";
 import PopupComponent from "@/components/PopupComponent";
 
 // Types for better type safety
@@ -92,8 +93,12 @@ const Navbar: React.FC = () => {
   const [backdropVisibility, setBackdropVisibility] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
   const currentPath = usePathname();
+
+  // Auth related states
+  const { user, isAuthenticated, logout } = useAuth();
+  const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
+  const [isRegisterPopupOpen, setIsRegisterPopupOpen] = useState(false);
 
   // Update the active item
   useEffect(() => {
@@ -177,9 +182,19 @@ const Navbar: React.FC = () => {
     setMenuOpen(false);
   };
 
-  const handleSearch = (event: React.FormEvent) => {
-    event.preventDefault();
-    console.log("Searching for:", searchQuery);
+  // Auth handlers
+  const handleLoginSuccess = () => {
+    setIsLoginPopupOpen(false);
+    setIsRegisterPopupOpen(false);
+  };
+
+  const handleRegisterSuccess = () => {
+    setIsLoginPopupOpen(false);
+    setIsRegisterPopupOpen(false);
+  };
+
+  const handleLogout = () => {
+    logout();
   };
 
   // Initial check for dropdown visibility
@@ -199,6 +214,7 @@ const Navbar: React.FC = () => {
     observer.observe(element);
     return () => observer.disconnect();
   }, []);
+
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   // Check if popup should be shown
@@ -224,7 +240,6 @@ const Navbar: React.FC = () => {
   }, []);
 
   // Handle popup close
-
   const handlePopupClose = () => {
     setIsPopupOpen(false);
     // Store current time in localStorage
@@ -237,16 +252,16 @@ const Navbar: React.FC = () => {
   return (
     <nav className="w-full bg-bg fixed top-0 left-0 right-0 z-50">
       <PopupComponent isOpen={isPopupOpen} onClose={handlePopupClose}>
-        <div className="flex flex-col items-center justify-center w-90 md:w-142 relative">
+        <div className="mt-10 mx-2 md:mx-4 flex flex-col items-center justify-center w-90 md:w-142 relative">
           <Image src={PopupArt1} alt="Popup Art 1" className="w-full" />
           <Link
-            href="/#download-app"
+            href="/airdrop"
             onClick={handlePopupClose}
-            className="absolute bottom-14 md:bottom-24"
+            className="mb-10 mt-4"
           >
-            <button className="border-2 border-primary text-primary px-4 py-4 rounded-md flex items-center justify-center cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
+            <button className="border-2 border-primary text-primary px-4 py-2 md:py-4 rounded-md flex items-center justify-center cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
               <p className="text-primary text-2xl md:text-3xl font-semibold">
-                Start Mining Free!
+                COUNT ME IN
               </p>
             </button>
           </Link>
@@ -364,38 +379,35 @@ const Navbar: React.FC = () => {
           </ul>
         </div>
 
-        {/* Search Input (Desktop) */}
-        <div className="hidden lg:block">
-          <div className="text-sm font-normal transition-all duration-300 flex gap-10">
-            <Link href="#" className="hover:text-primary">Login</Link>
-            <Link href="#" className="hover:text-primary">Register</Link>
-          </div>
-          {/* <form onSubmit={handleSearch} className="relative group">
-            <input
-              type="text"
-              id="search-navbar"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="block w-80 h-15 p-2 text-lg text-tertiary border border-bg2 rounded-lg outline-none hover:border-primary focus:border-primary"
-              placeholder="Search"
-            />
-            <button type="submit" className="absolute right-2 top-2 ">
-              <Image
-                src={SearchIcon1}
-                alt="Search Icon"
-                className="group-hover:hidden group-focus-within:hidden"
-                width={44}
-                height={44}
-              />
-              <Image
-                src={SearchIcon2}
-                alt="Search Icon"
-                className="hidden group-hover:block group-focus-within:block mt-2 mr-2"
-                width={30}
-                height={30}
-              />
-            </button>
-          </form> */}
+        {/* Auth Section (Desktop) */}
+        <div className="hidden xl:block">
+          {isAuthenticated && user ? (
+            <div className="text-sm font-normal transition-all duration-300 flex gap-10">
+              <button
+                onClick={handleLogout}
+                className="hover:text-primary text-tertiary cursor-pointer"
+              >
+                Logout
+              </button>
+              <span className="text-tertiary">{user.email}</span>
+
+            </div>
+          ) : (
+            <div className="text-sm font-normal transition-all duration-300 flex gap-10">
+              <button
+                onClick={() => setIsLoginPopupOpen(true)}
+                className="hover:text-primary text-tertiary cursor-pointer"
+              >
+                Login
+              </button>
+              <button
+                onClick={() => setIsRegisterPopupOpen(true)}
+                className="hover:text-primary text-tertiary cursor-pointer"
+              >
+                Register
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Mobile Menu */}
@@ -404,42 +416,44 @@ const Navbar: React.FC = () => {
             menuOpen ? "translate-y-0" : "-translate-y-[130%]"
           }  lg:hidden max-h-[calc(100vh-150px)] overflow-y-auto`}
         >
-          <div className="text-xl lg:text-sm font-normal transition-all duration-300 flex items-center justify-center w-full gap-10">
-            <Link href="#" className="hover:text-primary">Login</Link>
-            <Link href="#" className="hover:text-primary">Register</Link>
+          {/* Auth Section (Mobile) */}
+          <div className="mb-6">
+            {isAuthenticated && user ? (
+              <div className="text-xl lg:text-sm font-normal transition-all duration-300 flex items-center justify-center w-full gap-10">
+                <span className="text-tertiary">{user.email}</span>
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    closeMobileMenu();
+                  }}
+                  className="hover:text-primary text-tertiary cursor-pointer"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <div className="text-xl lg:text-sm font-normal transition-all duration-300 flex items-center justify-center w-full gap-10">
+                <button
+                  onClick={() => {
+                    setIsLoginPopupOpen(true);
+                    closeMobileMenu();
+                  }}
+                  className="hover:text-primary text-tertiary cursor-pointer"
+                >
+                  Login
+                </button>
+                <button
+                  onClick={() => {
+                    setIsRegisterPopupOpen(true);
+                    closeMobileMenu();
+                  }}
+                  className="hover:text-primary text-tertiary cursor-pointer"
+                >
+                  Register
+                </button>
+              </div>
+            )}
           </div>
-          {/* Search Input (Mobile) */}
-          {/* <div className="mb-6">
-            <form
-              onSubmit={handleSearch}
-              className="relative border-primary group focus-within:border-0"
-            >
-              <input
-                type="text"
-                id="search-navbar-mobile"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="block h-15 w-full p-3 text-lg text-tertiary bg-transparent border border-[#2F2F2F] rounded-lg focus:border-primary hover:border-primary outline-none"
-                placeholder="Search"
-              />
-              <button type="submit" className="absolute right-2 top-2 ">
-                <Image
-                  src={SearchIcon1}
-                  alt="Search Icon"
-                  className="group-hover:hidden group-focus-within:hidden"
-                  width={44}
-                  height={44}
-                />
-                <Image
-                  src={SearchIcon2}
-                  alt="Search Icon"
-                  className="hidden group-hover:block group-focus-within:block mt-2 mr-2"
-                  width={30}
-                  height={30}
-                />
-              </button>
-            </form>
-          </div> */}
 
           <Accordion
             type="single"
@@ -499,6 +513,20 @@ const Navbar: React.FC = () => {
           </Accordion>
         </div>
       </div>
+
+      {/* Login Popup */}
+      <LoginPopup
+        isOpen={isLoginPopupOpen}
+        onClose={() => setIsLoginPopupOpen(false)}
+        onLoginSuccess={handleLoginSuccess}
+      />
+
+      {/* Register Popup */}
+      <RegisterPopup
+        isOpen={isRegisterPopupOpen}
+        onClose={() => setIsRegisterPopupOpen(false)}
+        onRegisterSuccess={handleRegisterSuccess}
+      />
     </nav>
   );
 };
