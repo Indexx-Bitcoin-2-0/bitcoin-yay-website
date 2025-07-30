@@ -48,6 +48,10 @@ export default function ProposalDetailPage() {
     contributor: RoleImage5,
   };
 
+  const extractProposalNumber = (id: string): number => {
+    const match = id?.match(/\d+/); // extract the first number
+    return match ? parseInt(match[0]) : 0;
+  };
   useEffect(() => {
     const fetchProposal = async () => {
       try {
@@ -97,11 +101,6 @@ export default function ProposalDetailPage() {
   if (!proposal) {
     return <div className="mt-40 container mx-auto px-4 text-center text-3xl">Loading proposal...</div>;
   }
-
-  const extractProposalNumber = (id: string): number => {
-    const match = id?.match(/\d+/); // extract the first number
-    return match ? parseInt(match[0]) : 0;
-  };
 
   const submitVote = async () => {
     if (!proposalId || !selectedVote) return;
