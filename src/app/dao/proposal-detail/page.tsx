@@ -60,7 +60,7 @@ export default function ProposalDetailPage() {
         const totalVotes = yesVotes + noVotes + abstainVotes;
 
         const mappedProposal: Proposal = {
-          proposalNumber: data?.data?.proposalNumber ?? 0,
+          proposalNumber: extractProposalNumber(data?.data?.proposalId),
           proposalTitle: data?.data?.title ?? "Untitled",
           createdByRole: data?.data?.createdByRole?.toLowerCase() ?? "manager",
           summary: data?.data?.summary ?? data?.data?.description ?? "No summary provided.",
@@ -97,6 +97,11 @@ export default function ProposalDetailPage() {
   if (!proposal) {
     return <div className="mt-40 container mx-auto px-4 text-center text-3xl">Loading proposal...</div>;
   }
+
+  const extractProposalNumber = (id: string): number => {
+    const match = id?.match(/\d+/); // extract the first number
+    return match ? parseInt(match[0]) : 0;
+  };
 
   const submitVote = async () => {
     if (!proposalId || !selectedVote) return;
