@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import axios from "axios";
+import { useSearchParams } from "next/navigation";
 import PopupComponent from "@/components/PopupComponent";
 import { useAuth } from "@/contexts/AuthContext";
 import { GOOGLE_REGISTER_API_ROUTE, REGISTER_API_ROUTE } from "@/routes";
@@ -35,6 +36,7 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
   onRegisterSuccess,
 }) => {
   const { login } = useAuth();
+  const searchParams = useSearchParams();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -50,6 +52,20 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
+
+  useEffect(() => {
+    let code = searchParams.get("code");
+
+    if (!code) {
+      const raw = window.location.href;
+      const match = raw.match(/referral=([^&]+)/);
+      if (match?.[1]) code = match[1];
+    }
+
+    if (code) {
+      setFormData((prev) => ({ ...prev, invitationCode: code }));
+    }
+  }, [searchParams]);
 
   const countryOptions: CountryOption[] = [
     { name: "United States", code: "+1", display: "United States (+1)" },

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState, useCallback, memo } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import logo from "@/assets/images/main-logo.svg";
@@ -95,11 +95,29 @@ const Navbar: React.FC = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const currentPath = usePathname();
+  const searchParams = useSearchParams();
 
   // Auth related states
   const { user, isAuthenticated, logout } = useAuth();
   const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
   const [isRegisterPopupOpen, setIsRegisterPopupOpen] = useState(false);
+
+  // Check for referral code and auto-open register popup
+  useEffect(() => {
+    if (isAuthenticated) return;
+
+    let code = searchParams.get("referral");
+
+    if (!code) {
+      const raw = window.location.href;
+      const match = raw.match(/referral=([^&]+)/);
+      if (match?.[1]) code = match[1];
+    }
+
+    if (code) {
+      setIsRegisterPopupOpen(true);
+    }
+  }, [searchParams, isAuthenticated]);
 
   // Update the active item
   useEffect(() => {
@@ -391,11 +409,7 @@ const Navbar: React.FC = () => {
                 Logout
               </button>
               <div className="flex items-center gap-2">
-                <Image
-                  src={ProfileIcon}
-                  alt="Profile Icon"
-                  className="w-14"
-                />
+                <Image src={ProfileIcon} alt="Profile Icon" className="w-14" />
                 <span className="text-tertiary">{user.email}</span>
               </div>
             </div>
