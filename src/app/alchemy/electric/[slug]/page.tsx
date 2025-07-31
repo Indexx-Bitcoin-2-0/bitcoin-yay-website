@@ -3,6 +3,7 @@
 import { useState, use, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import BitcoinYayLogo from "@/assets/images/logo.webp";
 import BgArtImage1 from "@/assets/images/alchemy/electric/bg-art-1.webp";
@@ -15,6 +16,7 @@ import {
   completeAlchemy,
   getAlchemyConfig,
   AlchemyConfigItem,
+  getUserSubscription,
 } from "@/lib/alchemy";
 
 import CongratulationsPage from "@/app/alchemy/congratulations/page";
@@ -29,6 +31,7 @@ interface AlchemyDetailPageProps {
 export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
   const resolvedParams = use(params) as { slug: string };
   const planIndex = parseInt(resolvedParams.slug);
+const router = useRouter();
 
   const [configLoading, setConfigLoading] = useState(true);
   const [configError, setConfigError] = useState<string | null>(null);
@@ -60,7 +63,7 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
         if (!response.success) {
           throw new Error(response.error || "Failed to fetch alchemy config");
         }
-
+        console.log("i am here")
         if (response.session?.electric) {
           if (planIndex >= 0 && planIndex < response.session.electric.length) {
             setCurrentPlan(response.session.electric[planIndex]);
@@ -89,6 +92,24 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
     }
   }, [planIndex]);
 
+  function isPlanAllowed(plan: string | null, required: string): boolean {
+    const planAccessMap: Record<string, string[]> = {
+      "free mining": ["free"],
+      "electric power": ["electric"],
+      "turbo power": ["electric", "turbo"],
+      "nuclear power": ["electric", "turbo", "nuclear"],
+      "quantum mining": ["quantum"],
+    };
+
+    if (!plan) return false;
+
+    const normalizedPlan = plan.trim().toLowerCase();
+    const normalizedRequired = required.trim().toLowerCase();
+
+    return planAccessMap[normalizedPlan]?.includes(normalizedRequired) || false;
+  }
+
+
   const handleStartAlchemy = async () => {
     if (!currentPlan) return;
 
@@ -102,6 +123,60 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
       if (!authData || !authData.email) {
         throw new Error("User not authenticated");
       }
+
+      // ✅ Check user's subscription eligibility
+      const subscriptionResult = await getUserSubscription(authData.email);
+      if (!subscriptionResult.data?.userType) {
+        throw new Error("Unable to fetch user subscription type");
+      }
+
+      const userType = subscriptionResult.data.userType?.toLowerCase(); // "free mining" or "power mining"
+      const subscriptionPlan = subscriptionResult.data.plan?.toLowerCase(); // e.g., "turbo power"
+      const planType = "electric"; // current page type
+
+      const userTypeAccessMap: Record<string, string[]> = {
+        "free mining": ["free"],
+        "power mining": ["electric", "turbo", "nuclear"],
+        "quantum mining": ["quantum"],
+      };
+
+      const redirectMap: Record<string, string> = {
+        free: "/alchemy/free",
+        electric: "/alchemy/electric",
+        turbo: "/alchemy/turbo",
+        nuclear: "/alchemy/nuclear",
+        quantum: "/alchemy/quantum",
+      };
+
+      const normalizedUserType = userType?.trim().toLowerCase() || "";
+      const normalizedPlan = subscriptionPlan?.trim().toLowerCase() || "";
+      const normalizedPlanType = planType?.trim().toLowerCase() || "";
+
+      const isUserTypeAllowed =
+        userTypeAccessMap[normalizedUserType]?.includes(normalizedPlanType);
+
+      const isPlanMatch = normalizedPlan.includes(normalizedPlanType);
+
+      if (!isUserTypeAllowed || !isPlanMatch) {
+        let redirectPath = "/alchemy/free";
+
+        if (normalizedUserType === "free mining") {
+          redirectPath = "/alchemy/free";
+        } else if (normalizedUserType === "power mining") {
+          if (normalizedPlan.includes("electric")) redirectPath = "/alchemy/electric";
+          else if (normalizedPlan.includes("turbo")) redirectPath = "/alchemy/turbo";
+          else if (normalizedPlan.includes("nuclear")) redirectPath = "/alchemy/nuclear";
+        } else if (normalizedUserType === "quantum mining") {
+          redirectPath = "/alchemy/quantum";
+        }
+
+        setError(
+          `❌ Your current user type "${subscriptionResult.data.userType}" with plan "${subscriptionResult.data.plan}" does not allow access to this page.\n\n👉 Please go to: ${redirectPath}`
+        );
+        setIsLoading(false);
+        return;
+      }
+
 
       // Step 1: Create alchemy session
       const createResult = await createAlchemy({
@@ -280,9 +355,8 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
             <>
               <div
                 onClick={handleStartAlchemy}
-                className={`${
-                  isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-                }`}
+                className={`${isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                  }`}
               >
                 <CustomButton2
                   image={PointingHandButtonImage}

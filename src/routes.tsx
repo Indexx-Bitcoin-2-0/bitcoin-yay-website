@@ -15,3 +15,6 @@ export const ALCHEMY_CREATE_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/
 export const ALCHEMY_COMPLETE_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/alchemy/complete`;
 
 export const ALCHEMY_CONFIG_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/alchemy/config`;
+
+export const ALCHEMY_GET_USER_SUBSCRIPTION = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/mining/getUserSubscriptionPlan/BTCY`;
+

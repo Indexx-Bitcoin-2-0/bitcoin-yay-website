@@ -3,6 +3,7 @@
 import { useState, use, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import BitcoinYayLogo from "@/assets/images/logo.webp";
 import BgArtImage1 from "@/assets/images/alchemy/free-mining/bg-art-1.webp";
@@ -15,6 +16,8 @@ import {
   completeAlchemy,
   getAlchemyConfig,
   AlchemyConfigItem,
+  getUserSubscription,
+  isPlanAllowed,
 } from "@/lib/alchemy";
 
 import CongratulationsPage from "@/app/alchemy/congratulations/page";
@@ -29,6 +32,7 @@ interface AlchemyDetailPageProps {
 export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
   const resolvedParams = use(params) as { slug: string };
   const planIndex = parseInt(resolvedParams.slug);
+const router = useRouter();
 
   const [configLoading, setConfigLoading] = useState(true);
   const [configError, setConfigError] = useState<string | null>(null);
@@ -103,6 +107,55 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
         throw new Error("User not authenticated");
       }
 
+      // ✅ Check user's subscription eligibility
+      const subscriptionResult = await getUserSubscription(authData.email);
+      if (!subscriptionResult.data?.userType) {
+        throw new Error("Unable to fetch user subscription type");
+      }
+
+      const userTypeRaw = subscriptionResult.data?.userType;
+      const subscriptionPlanRaw = subscriptionResult.data?.plan;
+
+      if (!userTypeRaw) {
+        throw new Error("Unable to fetch user subscription type");
+      }
+
+      const userType = userTypeRaw.trim().toLowerCase();       // "free mining"
+      const subscriptionPlan = subscriptionResult.data.plan?.toLowerCase(); // e.g., "turbo power"
+      const planType = "free"; // current page type
+
+      const userTypeAccessMap: Record<string, string[]> = {
+        "free mining": ["free"],
+        "power mining": ["electric", "turbo", "nuclear"],
+        "quantum mining": ["quantum"],
+      };
+
+      const isUserTypeAllowed = userTypeAccessMap[userType]?.includes(planType);
+      const isPlanMatch = subscriptionPlan?.includes(planType);
+
+      if (!isUserTypeAllowed || !isPlanMatch) {
+        let redirectPath = "/alchemy/free";
+
+        if (userType === "power mining") {
+          if (subscriptionPlan?.includes("electric")) {
+            redirectPath = "/alchemy/electric";
+          } else if (subscriptionPlan?.includes("turbo")) {
+            redirectPath = "/alchemy/turbo";
+          } else if (subscriptionPlan?.includes("nuclear")) {
+            redirectPath = "/alchemy/nuclear";
+          }
+        } else if (userType === "quantum mining") {
+          redirectPath = "/alchemy/quantum";
+        }
+
+        setError(
+          `❌ Your current user type "${userTypeRaw}" with plan "${subscriptionPlanRaw}" does not allow access to this Alchemy page.\n\n👉 Please visit: ${redirectPath}`
+        );
+        setIsLoading(false);
+        return;
+      }
+
+      console.log("isUserTypeAllowed", isUserTypeAllowed)
       // Step 1: Create alchemy session
       const createResult = await createAlchemy({
         email: authData.email,
@@ -280,9 +333,8 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
             <>
               <div
                 onClick={handleStartAlchemy}
-                className={`${
-                  isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-                }`}
+                className={`${isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                  }`}
               >
                 <CustomButton2
                   image={PointingHandButtonImage}
