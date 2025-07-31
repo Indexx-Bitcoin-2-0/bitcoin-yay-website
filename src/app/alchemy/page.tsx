@@ -89,7 +89,8 @@ export default function AlchemyPage() {
           </p>
         </Link>
         <Link
-          href="/alchemy/trade"
+          href="/coming-soon"
+          // href="/alchemy/trade"
           className="flex flex-col items-center justify-center group"
         >
           <div className="h-32 flex justify-center items-center">
