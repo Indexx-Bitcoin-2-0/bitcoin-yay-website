@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import axios from "axios";
-import { useSearchParams } from "next/navigation";
 import PopupComponent from "@/components/PopupComponent";
 import { useAuth } from "@/contexts/AuthContext";
 import { GOOGLE_REGISTER_API_ROUTE, REGISTER_API_ROUTE } from "@/routes";
@@ -18,6 +17,7 @@ interface RegisterPopupProps {
   isOpen: boolean;
   onClose: () => void;
   onRegisterSuccess: () => void;
+  referralCode?: string;
 }
 
 interface CountryOption {
@@ -34,9 +34,9 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
   isOpen,
   onClose,
   onRegisterSuccess,
+  referralCode,
 }) => {
   const { login } = useAuth();
-  const searchParams = useSearchParams();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -53,19 +53,12 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
 
+  // Update invitation code when referralCode prop changes
   useEffect(() => {
-    let code = searchParams.get("code");
-
-    if (!code) {
-      const raw = window.location.href;
-      const match = raw.match(/referral=([^&]+)/);
-      if (match?.[1]) code = match[1];
+    if (referralCode) {
+      setFormData((prev) => ({ ...prev, invitationCode: referralCode }));
     }
-
-    if (code) {
-      setFormData((prev) => ({ ...prev, invitationCode: code }));
-    }
-  }, [searchParams]);
+  }, [referralCode]);
 
   const countryOptions: CountryOption[] = [
     { name: "United States", code: "+1", display: "United States (+1)" },
@@ -146,6 +139,7 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
           email: formData.email.trim(),
           password: formData.password,
           confirmPassword: formData.confirmPassword,
+          invitationCode: formData.invitationCode.trim(),
         };
 
         const response = await axios.post(REGISTER_API_ROUTE, registrationData);
