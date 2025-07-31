@@ -114,18 +114,20 @@ export default function AlchemyTradePage() {
           <div className="">
             <OrderBook />
           </div>
-          <div className="mt-10 lg:mt-4 flex gap-20 md:gap-20 justify-center items-center">
+          <div className="mt-10 lg:mt-10 flex gap-20 md:gap-20 justify-center items-center">
             <CustomButton2
               text="Buy"
               image={ConnectBUttonImage}
-              link="#"
-              imageStyling="w-30"
+              link="https://cex.indexx.ai/update/home"
+              imageStyling="w-26"
+              _blank={true}
             />
             <CustomButton2
               text="Sell"
               image={ConnectBUttonImage}
-              link="#"
-              imageStyling="w-30"
+              link="https://cex.indexx.ai/update/home"
+              imageStyling="w-26"
+              _blank={true}
             />
           </div>
         </div>

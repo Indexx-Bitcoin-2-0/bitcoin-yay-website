@@ -20,7 +20,7 @@ const AdvancedRealTimeChart = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="h-[820px] bg-bg2 animate-pulse rounded flex items-center justify-center">
+      <div className="h-180 bg-bg2 animate-pulse rounded flex items-center justify-center">
         Loading Chart...
       </div>
     ),
@@ -38,7 +38,7 @@ export default function TradingViewWidgets() {
     return (
       <div>
         <div className="h-8 bg-bg2 animate-pulse rounded mb-4" />
-        <div className="h-[820px] bg-bg2 animate-pulse rounded flex items-center justify-center">
+        <div className="h-180 bg-bg2 animate-pulse rounded flex items-center justify-center">
           Loading Trading Interface...
         </div>
       </div>
