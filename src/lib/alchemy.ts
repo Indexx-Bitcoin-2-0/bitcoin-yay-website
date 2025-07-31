@@ -2,6 +2,7 @@ import {
   ALCHEMY_CREATE_API_ROUTE,
   ALCHEMY_COMPLETE_API_ROUTE,
   ALCHEMY_CONFIG_API_ROUTE,
+  ALCHEMY_GET_USER_SUBSCRIPTION,
 } from "@/routes";
 
 export interface CreateAlchemyData {
@@ -229,3 +230,59 @@ export async function getAlchemyConfig(): Promise<AlchemyConfigResponse> {
     };
   }
 }
+
+export interface UserSubscriptionResponse {
+  status: number;
+  data: {
+    email: string;
+    plan: string;
+    speedBoost: number;
+    userType: string; // "Free Mining", "Power Mining", etc.
+  };
+  error?: string;
+}
+
+export async function getUserSubscription(email: string): Promise<UserSubscriptionResponse> {
+  try {
+    const response = await fetch(
+      `${ALCHEMY_GET_USER_SUBSCRIPTION}/${email}`,
+      {
+        method: "GET",
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || "Failed to fetch user subscription");
+    }
+
+    return result;
+  } catch (error) {
+    console.error("getUserSubscription error:", error);
+    return {
+      status: 500,
+      data: { email, plan: "", speedBoost: 0, userType: "" },
+      error:
+        error instanceof Error ? error.message : "Failed to fetch user subscription",
+    };
+  }
+}
+
+
+export function isPlanAllowed(plan: string | null, required: string): boolean {
+    const planAccessMap: Record<string, string[]> = {
+      "free mining": ["free"],
+      "electric power": ["electric"],
+      "turbo power": ["electric", "turbo"],
+      "nuclear power": ["electric", "turbo", "nuclear"],
+      "quantum mining": ["quantum"],
+    };
+
+    if (!plan) return false;
+
+    const normalizedPlan = plan.trim().toLowerCase();
+    const normalizedRequired = required.trim().toLowerCase();
+
+    return planAccessMap[normalizedPlan]?.includes(normalizedRequired) || false;
+  }
