@@ -6,15 +6,18 @@ export default function CustomButton2({
   text,
   link,
   imageStyling = "w-36 mt-8",
+  _blank = false,
 }: {
   image: StaticImageData;
   text: string;
   link: string;
   imageStyling?: string;
+  _blank?: boolean;
 }) {
   return (
     <Link
       href={link}
+      target={_blank ? "_blank" : undefined}
       className="cursor-pointer text-tertiary group flex flex-col items-center justify-center w-fit"
     >
       <Image

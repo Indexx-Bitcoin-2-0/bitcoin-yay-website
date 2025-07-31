@@ -22,10 +22,10 @@ import NuclearMiningButtonImage2 from "@/assets/images/alchemy/home/nuclear-02-a
 import BgArtImage1 from "@/assets/images/bitcoin-art-3.svg";
 import BgArtImage2 from "@/assets/images/bitcoin-art-4.svg";
 
-import AlchemyGatewayIcon1 from "@/assets/images/alchemy/home/alchemy-gateway-logo.webp";
-import AlchemyGatewayIcon2 from "@/assets/images/alchemy/home/alchemy-gateway-logo-primary.webp";
-import AlchemyTradeIcon1 from "@/assets/images/alchemy/home/alchemy-trade-logo.webp";
-import AlchemyTradeIcon2 from "@/assets/images/alchemy/home/alchemy-trade-logo-primary.webp";
+import AlchemyGatewayIcon1 from "@/assets/images/alchemy/alchemy-gateway-logo.webp";
+import AlchemyGatewayIcon2 from "@/assets/images/alchemy/alchemy-gateway-logo-primary.webp";
+import AlchemyTradeIcon1 from "@/assets/images/alchemy/alchemy-trade-logo.webp";
+import AlchemyTradeIcon2 from "@/assets/images/alchemy/alchemy-trade-logo-primary.webp";
 
 import CustomButton2 from "@/components/CustomButton2";
 
@@ -45,9 +45,9 @@ export default function AlchemyPage() {
           </div>
           <div className="w-9/10">
             <h1 className="text-5xl md:text-[120px] font-semibold">
-              Alchemy Gateway
+              Alchemy
             </h1>
-            <p className="mt-10 text-xl md:text-xl">
+            <p className="mt-10 text-xl md:text-2xl">
               This is the beginning of the transformation layer between mined
               BTCY and real BTCY tokens on the Bitcoin Yay network. Inspired by
               the ancient idea of alchemy — turning base metals into gold — this
@@ -65,20 +65,20 @@ export default function AlchemyPage() {
         </div>
       </div>
 
-      <div className="mt-160 flex gap-40 justify-center items-center">
+      <div id="alchemy-options" className="mt-160 flex gap-40 justify-center items-center">
         <Link
-          href="/alchemy/turbo"
+          href="/alchemy#alchemy-gateway"
           className="flex flex-col items-center justify-center group"
         >
           <div className="h-32 flex justify-center items-center">
             <Image
               src={AlchemyGatewayIcon2}
-              alt="Electric Mining"
+              alt="Alchemy Gateway"
               className="w-40 group-hover:hidden"
             />
             <Image
               src={AlchemyGatewayIcon1}
-              alt="Electric Mining"
+              alt="Alchemy Gateway"
               className="w-40 hidden group-hover:block"
             />
           </div>
@@ -89,18 +89,19 @@ export default function AlchemyPage() {
           </p>
         </Link>
         <Link
-          href="/alchemy/turbo"
+          href="/coming-soon"
+          // href="/alchemy/trade"
           className="flex flex-col items-center justify-center group"
         >
           <div className="h-32 flex justify-center items-center">
             <Image
               src={AlchemyTradeIcon2}
-              alt="Electric Mining"
+              alt="Alchemy Trade"
               className="w-40 group-hover:hidden"
             />
             <Image
               src={AlchemyTradeIcon1}
-              alt="Electric Mining"
+              alt="Alchemy Trade"
               className="w-40 hidden group-hover:block"
             />
           </div>
@@ -138,7 +139,7 @@ export default function AlchemyPage() {
           className="absolute -top-60 left-0 -z-20"
         />
       </div>
-      <div className="">
+      <div id="alchemy-gateway">
         <div className="flex justify-center items-center">
           <Image
             src={AlchemyGatewayIcon1}
@@ -296,7 +297,7 @@ export default function AlchemyPage() {
             text="Start Alchemy"
             image={PointingButtonImage}
             imageStyling="w-20 md:w-30"
-            link="#"
+            link="#alchemy-options"
           />
         </div>
       </div>

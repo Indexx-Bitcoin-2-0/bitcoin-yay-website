@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import axios from "axios";
 import PopupComponent from "@/components/PopupComponent";
@@ -18,6 +18,7 @@ interface RegisterPopupProps {
   isOpen: boolean;
   onClose: () => void;
   onRegisterSuccess: () => void;
+  referralCode?: string;
 }
 
 interface CountryOption {
@@ -34,6 +35,7 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
   isOpen,
   onClose,
   onRegisterSuccess,
+  referralCode,
 }) => {
   const { login } = useAuth();
   const [formData, setFormData] = useState({
@@ -51,6 +53,13 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
+
+  // Update invitation code when referralCode prop changes
+  useEffect(() => {
+    if (referralCode) {
+      setFormData((prev) => ({ ...prev, invitationCode: referralCode }));
+    }
+  }, [referralCode]);
 
   const countryOptions: CountryOption[] = [
     { name: "United States", code: "+1", display: "United States (+1)" },
@@ -131,6 +140,7 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
           email: formData.email.trim(),
           password: formData.password,
           confirmPassword: formData.confirmPassword,
+          invitationCode: formData.invitationCode.trim(),
         };
 
         const response = await axios.post(REGISTER_API_ROUTE, registrationData);

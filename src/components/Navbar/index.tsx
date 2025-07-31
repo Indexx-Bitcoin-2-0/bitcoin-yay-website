@@ -1,6 +1,13 @@
 "use client";
 
-import React, { useEffect, useRef, useState, useCallback, memo } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  memo,
+  Suspense,
+} from "react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,6 +17,7 @@ import Data from "./data";
 import { useAuth } from "@/contexts/AuthContext";
 import LoginPopup from "@/components/LoginPopup";
 import RegisterPopup from "@/components/RegisterPopup";
+import ReferralHandler from "@/components/ReferralHandler";
 import {
   Accordion,
   AccordionContent,
@@ -101,6 +109,12 @@ const Navbar: React.FC = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
   const [isRegisterPopupOpen, setIsRegisterPopupOpen] = useState(false);
+  const [referralCode, setReferralCode] = useState("");
+
+  const handleReferralDetected = useCallback((code: string) => {
+    setReferralCode(code);
+    setIsRegisterPopupOpen(true);
+  }, []);
 
   // Update the active item
   useEffect(() => {
@@ -253,6 +267,11 @@ const Navbar: React.FC = () => {
 
   return (
     <nav className="w-full bg-bg fixed top-0 left-0 right-0 z-50">
+      {/* Referral Handler with Suspense boundary */}
+      <Suspense fallback={null}>
+        <ReferralHandler onReferralDetected={handleReferralDetected} />
+      </Suspense>
+
       <PopupComponent isOpen={isPopupOpen} onClose={handlePopupClose}>
         <div className="mt-10 mx-2 md:mx-4 flex flex-col items-center justify-center w-90 md:w-120 xl:w-140 relative">
           <Image src={PopupArt1} alt="Popup Art 1" className="w-full" />
@@ -396,11 +415,7 @@ const Navbar: React.FC = () => {
                 Logout
               </button>
               <div className="flex items-center gap-2">
-                <Image
-                  src={ProfileIcon}
-                  alt="Profile Icon"
-                  className="w-14"
-                />
+                <Image src={ProfileIcon} alt="Profile Icon" className="w-14" />
                 <span className="text-tertiary">{user.email}</span>
               </div>
             </div>
@@ -543,6 +558,7 @@ const Navbar: React.FC = () => {
         isOpen={isRegisterPopupOpen}
         onClose={() => setIsRegisterPopupOpen(false)}
         onRegisterSuccess={handleRegisterSuccess}
+        referralCode={referralCode}
       />
     </nav>
   );
