@@ -133,7 +133,9 @@ const router = useRouter();
       const isUserTypeAllowed = userTypeAccessMap[userType]?.includes(planType);
       const isPlanMatch = subscriptionPlan?.includes(planType);
 
-      if (!isUserTypeAllowed || !isPlanMatch) {
+      console.log(isUserTypeAllowed)
+
+      if (!isUserTypeAllowed) {
         let redirectPath = "/alchemy/free";
 
         if (userType === "power mining") {
@@ -163,6 +165,7 @@ const router = useRouter();
         userType: "free",
       });
 
+      console.log(createResult)
       if (!createResult.success) {
         throw new Error(
           createResult.error || "Failed to start alchemy session"
@@ -174,6 +177,7 @@ const router = useRouter();
         const completeResult = await completeAlchemy({
           sessionId: createResult.session.sessionId,
         });
+
 
         if (!completeResult.success) {
           throw new Error(
