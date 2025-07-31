@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -6,18 +9,20 @@ import AlchemyLogo from "@/assets/images/alchemy/alchemy-logo.webp";
 import ArtImage1 from "@/assets/images/alchemy/quantum/art-1.webp";
 import BitcoinYayLogo from "@/assets/images/logo.webp";
 
+import { getAlchemyConfig, AlchemyConfigItem } from "@/lib/alchemy";
+
 const CustomCard = ({
   inputBTCY,
   multiplier,
-  slug,
+  planIndex,
 }: {
   inputBTCY: string;
   multiplier: string;
-  slug: string;
+  planIndex: number;
 }) => {
   return (
     <Link
-      href={`/alchemy/quantum/${slug}`}
+      href={`/alchemy/quantum/${planIndex}`}
       className="w-100 bg-[#5A4BCC] z-10 hover:scale-105 transition-all duration-300"
     >
       <div className="flex flex-col items-center justify-center">
@@ -35,7 +40,66 @@ const CustomCard = ({
   );
 };
 
-export default function FreeMiningPage() {
+export default function QuantumMiningPage() {
+  const [quantumPlans, setQuantumPlans] = useState<AlchemyConfigItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchQuantumPlans = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const response = await getAlchemyConfig();
+
+        if (!response.success) {
+          throw new Error(response.error || "Failed to fetch alchemy config");
+        }
+
+        if (response.session?.quantum) {
+          setQuantumPlans(response.session.quantum);
+        }
+      } catch (err) {
+        console.error("Failed to fetch quantum plans:", err);
+        setError(
+          err instanceof Error ? err.message : "Failed to fetch quantum plans"
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchQuantumPlans();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="mx-auto mt-40 lg:mt-60 px-4 md:px-20 xl:px-40">
+        <div className="flex justify-center items-center min-h-96">
+          <div className="text-center">
+            <p className="text-2xl font-semibold">Loading Quantum Plans...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="mx-auto mt-40 lg:mt-60 px-4 md:px-20 xl:px-40">
+        <div className="flex justify-center items-center min-h-96">
+          <div className="text-center">
+            <p className="text-2xl font-semibold text-red-500 mb-4">
+              Failed to Load Quantum Plans
+            </p>
+            <p className="text-lg text-tertiary">{error}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto mt-40 lg:mt-60 px-4 md:px-20 xl:px-40">
       <div className="flex items-center gap-6">
@@ -56,42 +120,20 @@ export default function FreeMiningPage() {
         <h2 className="mt-2 text-3xl md:text-[50px] font-bold">
           ALCHEMY GATEWAY
         </h2>
-        <p className="mt-6 text-xl md:text-3xl font-light max-w-5xl">
+        <p className="mt-6 text-xl font-light max-w-5xl">
           Eligibility for the Quantum Mining Gopher Alchemy Gateway requires an
           active Turbo Power Mining subscription.
         </p>
       </div>
       <div className="mt-40 flex flex-wrap justify-center items-center gap-10 p-4 z-20">
-        <CustomCard
-          inputBTCY="Input: 10,000 BTCY"
-          multiplier="Multiplier: 0.5x - 1.4x"
-          slug="basic"
-        />
-        <CustomCard
-          inputBTCY="Input: 20,000 BTCY"
-          multiplier="Multiplier: 0.4x - 2x"
-          slug="pro"
-        />
-        <CustomCard
-          inputBTCY="Input: 50,000 BTCY"
-          multiplier="Multiplier: 0.3x - 2.5x"
-          slug="premium"
-        />
-        <CustomCard
-          inputBTCY="Input: 100,000 BTCY"
-          multiplier="Multiplier: 0.2x - 3x"
-          slug="ultra"
-        />
-        <CustomCard
-          inputBTCY="Input: 150,000 BTCY"
-          multiplier="Multiplier: 0.2x - 3x"
-          slug="exactive"
-        />
-        <CustomCard
-          inputBTCY="Input: 200,000 BTCY"
-          multiplier="Multiplier: 0.1x - 3.2x"
-          slug="elite"
-        />
+        {quantumPlans.map((plan, index) => (
+          <CustomCard
+            key={index}
+            inputBTCY={`Input: ${plan.input.toLocaleString()} BTCY`}
+            multiplier={`Multiplier: ${plan.multiplierRange}`}
+            planIndex={index}
+          />
+        ))}
       </div>
       <div className="md:-mt-10 mx-auto z-0 w-full flex justify-center">
         <Image

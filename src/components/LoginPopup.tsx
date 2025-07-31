@@ -17,6 +17,10 @@ import GoogleLoginButtonImage from "@/assets/images/buttons/google-button.webp";
 import CustomButton2 from "@/components/CustomButton2";
 import { useGoogleLogin } from "@react-oauth/google";
 
+interface GoogleTokenResponse {
+  access_token: string;
+}
+
 interface LoginPopupProps {
   isOpen: boolean;
   onClose: () => void;
@@ -110,32 +114,17 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
       } catch (error: unknown) {
         console.error("Login error:", error);
 
-        // Handle different error types
+        // Show server message directly
         if (axios.isAxiosError(error)) {
-          if (error.response?.status === 401) {
-            setErrors({
-              general: "Invalid email or password. Please try again.",
-            });
-          } else if (error.response?.status === 400) {
-            setErrors({
-              general:
-                error.response.data?.message ||
-                "Invalid request. Please check your input.",
-            });
-          } else if (error.response?.data?.message) {
-            setErrors({
-              general: error.response.data.message,
-            });
-          } else {
-            setErrors({
-              general:
-                "Login failed. Please check your connection and try again.",
-            });
-          }
+          console.log("Login error:", error);
+          const errorMessage =
+            error.response?.data?.data?.message ||
+            error.response?.data?.message ||
+            "Login failed. Please try again.";
+          console.log("Login error message:", errorMessage);
+          setErrors({ general: errorMessage });
         } else {
-          setErrors({
-            general: "Login failed. Please try again.",
-          });
+          setErrors({ general: "Login failed. Please try again." });
         }
       }
     }
@@ -144,11 +133,11 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
   };
 
   const handleGoogleLogin = useGoogleLogin({
-    onSuccess: async (tokenResponse: any) => {
+    onSuccess: async (tokenResponse: GoogleTokenResponse) => {
       const googleToken = tokenResponse.access_token;
 
       try {
-        const language = navigator.language || 'en';
+        const language = navigator.language || "en";
         const codeToLabel: { [key: string]: string } = {
           en: "English",
           zh: "Chinese",
@@ -177,47 +166,21 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
 
           onLoginSuccess();
           onClose();
-        } else if (
-          res?.status === 500 &&
-          res?.data?.data?.message?.includes("Please log in using direct email process")
-        ) {
-          // ✳️ Account exists with direct login (not Google)
-          setErrors({
-            general:
-              "Email already registered with direct email process. Please log in with email and password.",
-          });
         } else {
           // Any other backend response
-          setErrors({
-            general:
-              res?.data?.message ||
-              "No account found for this Google account. Please register first.",
-          });
+          const errorMessage =
+            res?.data?.data?.message ||
+            res?.data?.message ||
+            "Google login failed. Please try again.";
+          setErrors({ general: errorMessage });
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
-          const msg = error.response?.data?.data?.message || "";
-          console.log("Google login error message:", msg);
-          if (
-            msg.includes("Please log in using direct email process")
-          ) {
-            setErrors({
-              general:
-                "Email already registered with direct email process. Please log in with email and password.",
-            });
-          } else if (
-            msg.includes("No account associated") ||
-            msg.includes("not registered")
-          ) {
-            setErrors({
-              general:
-                "No account found for this Google account. Please register first.",
-            });
-          } else {
-            setErrors({
-              general: msg || "Google login failed. Please try again.",
-            });
-          }
+          const errorMessage =
+            error.response?.data?.data?.message ||
+            error.response?.data?.message ||
+            "Google login failed. Please try again.";
+          setErrors({ general: errorMessage });
         } else {
           setErrors({
             general: "Unexpected error occurred. Please try again.",
@@ -229,7 +192,6 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
       setErrors({ general: "Google Login failed or was cancelled." });
     },
   });
-
 
   // Close all popups helper
   const closeAllPopups = () => {

@@ -26,6 +26,10 @@ interface CountryOption {
   display: string;
 }
 
+interface GoogleTokenResponse {
+  access_token: string;
+}
+
 const RegisterPopup: React.FC<RegisterPopupProps> = ({
   isOpen,
   onClose,
@@ -168,33 +172,12 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
           setErrors({ general: "Registration failed. Please try again." });
         }
       } catch (error: unknown) {
-        console.error("Registration error:", error);
-
-        // Handle different error types
         if (axios.isAxiosError(error)) {
-          if (error.response?.status === 400) {
-            const errorMessage =
-              error.response.data?.message ||
-              "Invalid request. Please check your input.";
-            if (errorMessage.toLowerCase().includes("email")) {
-              setErrors({ email: "This email is already registered." });
-            } else if (errorMessage.toLowerCase().includes("username")) {
-              setErrors({ username: "This username is already taken." });
-            } else {
-              setErrors({ general: errorMessage });
-            }
-          } else if (error.response?.status === 409) {
-            setErrors({
-              general: "User already exists with this email or username.",
-            });
-          } else if (error.response?.data?.message) {
-            setErrors({ general: error.response.data.message });
-          } else {
-            setErrors({
-              general:
-                "Registration failed. Please check your connection and try again.",
-            });
-          }
+          const errorMessage =
+            error.response?.data?.data?.message ||
+            error.response?.data?.message ||
+            "Registration failed. Please try again.";
+          setErrors({ general: errorMessage });
         } else {
           setErrors({ general: "Registration failed. Please try again." });
         }
@@ -231,18 +214,19 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
   };
 
   const handleGoogleRegister = useGoogleLogin({
-    onSuccess: async (tokenResponse: any) => {
+    onSuccess: async (tokenResponse: GoogleTokenResponse) => {
       const googleToken = tokenResponse.access_token;
 
       try {
-        const language = navigator.language || 'en';
+        const language = navigator.language || "en";
         const codeToLabel: { [key: string]: string } = {
           en: "English",
           zh: "Chinese",
           es: "Spanish",
           fr: "French",
         };
-        const selectedLanguageLabel = codeToLabel[language.slice(0, 2)] || "English";
+        const selectedLanguageLabel =
+          codeToLabel[language.slice(0, 2)] || "English";
 
         const res = await axios.post(GOOGLE_REGISTER_API_ROUTE, {
           googleToken,
@@ -267,25 +251,16 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
             general: res?.data?.message || "Google signup failed.",
           });
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
-          const msg = error.response?.data?.message || "";
-
-          if (msg.includes("Email already registered with direct email process")) {
-            setErrors({
-              email: "Email already registered. Please log in with email and password.",
-            });
-          } else if (msg.includes("Email already registered with Google")) {
-            setErrors({
-              email: "Email already registered with Google. Please log in with Google.",
-            });
-          } else {
-            setErrors({
-              general: msg || "Google signup failed. Please try again.",
-            });
-          }
+          const errorMessage =
+            error.response?.data?.message ||
+            "Google signup failed. Please try again.";
+          setErrors({ general: errorMessage });
         } else {
-          setErrors({ general: "Unexpected error occurred. Please try again." });
+          setErrors({
+            general: "Unexpected error occurred. Please try again.",
+          });
         }
       }
     },
@@ -293,8 +268,6 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
       setErrors({ general: "Google Sign Up failed or was cancelled." });
     },
   });
-
-
 
   return (
     <PopupComponent isOpen={isOpen} onClose={onClose}>

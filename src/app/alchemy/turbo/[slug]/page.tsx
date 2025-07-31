@@ -1,14 +1,27 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
+import { useState, use, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import BitcoinYayLogo from "@/assets/images/logo.webp";
 import BgArtImage1 from "@/assets/images/alchemy/turbo/bg-art-1.webp";
 import PointingHandButtonImage from "@/assets/images/buttons/point-button.webp";
-
 import CustomButton2 from "@/components/CustomButton2";
+
+import { getAuthData } from "@/lib/auth";
+import {
+  createAlchemy,
+  completeAlchemy,
+  getAlchemyConfig,
+  AlchemyConfigItem,
+  getUserSubscription,
+  isPlanAllowed,
+} from "@/lib/alchemy";
+
+import CongratulationsPage from "@/app/alchemy/congratulations/page";
+import RetainedPage from "@/app/alchemy/retained/page";
 
 interface AlchemyDetailPageProps {
   params: Promise<{
@@ -16,107 +29,266 @@ interface AlchemyDetailPageProps {
   }>;
 }
 
-// Electric alchemy data for different tiers
-const alchemyData = {
-  basic: {
-    input: "5,000 BTCY",
-    multiplier: "0.5x - 1.4x",
-  },
-  premium: {
-    input: "10,000 BTCY",
-    multiplier: "0.4x - 2x",
-  },
-  elite: {
-    input: "20,000 BTCY",
-    multiplier: "0.3x - 2.5x",
-  },
-  ultra: {
-    input: "50,000 BTCY",
-    multiplier: "0.2x - 3x",
-  },
-};
-
-interface TimeLeft {
-  hours: number;
-  minutes: number;
-  seconds: number;
-}
+// Turbo alchemy data for different tiers
 
 export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
-  const deadline = new Date("2025-07-16T12:00:00Z");
   const resolvedParams = use(params) as { slug: string };
-  const data =
-    alchemyData[resolvedParams.slug as keyof typeof alchemyData] ||
-    alchemyData.basic;
+  const planIndex = parseInt(resolvedParams.slug);
+const router = useRouter();
 
-  const [timeLeft, setTimeLeft] = useState<TimeLeft>({
-    hours: 1,
-    minutes: 1,
-    seconds: 1,
-  });
+  const [configLoading, setConfigLoading] = useState(true);
+  const [configError, setConfigError] = useState<string | null>(null);
+  const [currentPlan, setCurrentPlan] = useState<AlchemyConfigItem | null>(
+    null
+  );
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+  const [showResult, setShowResult] = useState<
+    "congratulations" | "retained" | null
+  >(null);
+  const [alchemyResult, setAlchemyResult] = useState<{
+    inputAmount: number;
+    resultAmount: number;
+    multiplier: number;
+  } | null>(null);
+
+  // Fetch alchemy config on component mount
   useEffect(() => {
-    const calculateTimeLeft = () => {
-      const now = new Date().getTime();
-      const difference = deadline.getTime() - now;
+    const fetchAlchemyConfig = async () => {
+      try {
+        setConfigLoading(true);
+        setConfigError(null);
 
-      if (difference > 0) {
-        const hours = Math.floor(
-          (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-        );
-        const minutes = Math.floor(
-          (difference % (1000 * 60 * 60)) / (1000 * 60)
-        );
-        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+        const response = await getAlchemyConfig();
 
-        setTimeLeft({ hours, minutes, seconds });
-      } else {
-        setTimeLeft({ hours: 0, minutes: 0, seconds: 0 });
+        if (!response.success) {
+          throw new Error(response.error || "Failed to fetch alchemy config");
+        }
+
+        if (response.session?.turbo) {
+          if (planIndex >= 0 && planIndex < response.session.turbo.length) {
+            setCurrentPlan(response.session.turbo[planIndex]);
+          } else {
+            throw new Error("Invalid plan index");
+          }
+        } else {
+          throw new Error("No turbo plans found");
+        }
+      } catch (err) {
+        console.error("Failed to fetch alchemy config:", err);
+        setConfigError(
+          err instanceof Error ? err.message : "Failed to fetch alchemy config"
+        );
+      } finally {
+        setConfigLoading(false);
       }
     };
 
-    calculateTimeLeft();
-    const timer = setInterval(calculateTimeLeft, 1000);
+    // Only fetch if planIndex is a valid number
+    if (!isNaN(planIndex)) {
+      fetchAlchemyConfig();
+    } else {
+      setConfigError("Invalid plan index");
+      setConfigLoading(false);
+    }
+  }, [planIndex]);
 
-    return () => clearInterval(timer);
-  }, []);
+  const handleStartAlchemy = async () => {
+    if (!currentPlan) return;
 
-  return (
-    <div className="mx-auto mt-60 px-4 md:px-20 xl:px-40">
-      {/* Countdown Timer */}
-      <div className="flex justify-center relative z-20">
-        <div className="bg-[#2056BA] rounded-t-2xl px-8 py-6 md:px-10 md:py-8 lg:py-6 w-80 md:w-full max-w-xl relative z-20">
-          <div className="text-center">
-            <h2 className="text-lg mb-6">This Alchemy will end</h2>
-            <div className="flex justify-center items-center gap-8 md:gap-12 lg:gap-16">
-              {/* Hours */}
-              <div className="flex flex-col items-center">
-                <div className="text-[40px] font-bold leading-none">
-                  {timeLeft.hours.toString().padStart(2, "0")}
-                </div>
-                <div className="text-xs mt-2">Hours</div>
-              </div>
+    setIsLoading(true);
+    setError(null);
+    setSuccess(false);
 
-              {/* Minutes */}
-              <div className="flex flex-col items-center">
-                <div className="text-[40px] font-bold leading-none">
-                  {timeLeft.minutes.toString().padStart(2, "0")}
-                </div>
-                <div className="text-xs mt-2">Minutes</div>
-              </div>
+    try {
+      const authData = getAuthData();
 
-              {/* Seconds */}
-              <div className="flex flex-col items-center">
-                <div className="text-[40px] font-bold leading-none">
-                  {timeLeft.seconds.toString().padStart(2, "0")}
-                </div>
-                <div className="text-xs mt-2">Seconds</div>
-              </div>
+      if (!authData || !authData.email) {
+        throw new Error("User not authenticated");
+      }
+
+      // ✅ Check user's subscription eligibility
+      const subscriptionResult = await getUserSubscription(authData.email);
+      if (!subscriptionResult.data?.userType) {
+        throw new Error("Unable to fetch user subscription type");
+      }
+
+      const userType = subscriptionResult.data.userType?.toLowerCase(); // "free mining" or "power mining"
+      const subscriptionPlan = subscriptionResult.data.plan?.toLowerCase(); // e.g., "turbo power"
+      const planType = "turbo"; // current page type
+
+      const userTypeAccessMap: Record<string, string[]> = {
+        "free mining": ["free"],
+        "power mining": ["electric", "turbo", "nuclear"],
+        "quantum mining": ["quantum"],
+      };
+
+      const redirectMap: Record<string, string> = {
+        free: "/alchemy/free",
+        electric: "/alchemy/electric",
+        turbo: "/alchemy/turbo",
+        nuclear: "/alchemy/nuclear",
+        quantum: "/alchemy/quantum",
+      };
+
+      const normalizedUserType = userType?.trim().toLowerCase() || "";
+      const normalizedPlan = subscriptionPlan?.trim().toLowerCase() || "";
+      const normalizedPlanType = planType?.trim().toLowerCase() || "";
+
+      const isUserTypeAllowed =
+        userTypeAccessMap[normalizedUserType]?.includes(normalizedPlanType);
+
+      const isPlanMatch = normalizedPlan.includes(normalizedPlanType);
+
+      if (!isUserTypeAllowed || !isPlanMatch) {
+        let redirectPath = "/alchemy/free";
+
+        if (normalizedUserType === "free mining") {
+          redirectPath = "/alchemy/free";
+        } else if (normalizedUserType === "power mining") {
+          if (normalizedPlan.includes("electric")) redirectPath = "/alchemy/electric";
+          else if (normalizedPlan.includes("turbo")) redirectPath = "/alchemy/turbo";
+          else if (normalizedPlan.includes("nuclear")) redirectPath = "/alchemy/nuclear";
+        } else if (normalizedUserType === "quantum mining") {
+          redirectPath = "/alchemy/quantum";
+        }
+
+        setError(
+          `❌ Your current user type "${subscriptionResult.data.userType}" with plan "${subscriptionResult.data.plan}" does not allow access to this page.\n\n👉 Please go to: ${redirectPath}`
+        );
+        setIsLoading(false);
+        return;
+      }
+
+      // Step 1: Create alchemy session
+      const createResult = await createAlchemy({
+        email: authData.email,
+        inputAmount: currentPlan.input,
+        userType: "turbo",
+      });
+
+      if (!createResult.success) {
+        throw new Error(
+          createResult.error || "Failed to start alchemy session"
+        );
+      }
+
+      // Step 2: Complete alchemy session immediately
+      if (createResult.session?.sessionId) {
+        const completeResult = await completeAlchemy({
+          sessionId: createResult.session.sessionId,
+        });
+
+        if (!completeResult.success) {
+          throw new Error(
+            completeResult.error || "Failed to complete alchemy session"
+          );
+        }
+
+        // Check multiplier and show result component
+        if (completeResult.session) {
+          const session = completeResult.session;
+          setAlchemyResult({
+            inputAmount: session.inputAmount,
+            resultAmount: session.resultAmount,
+            multiplier: session.multiplier,
+          });
+
+          // Show result based on multiplier
+          if (session.multiplier >= 1) {
+            setShowResult("congratulations");
+          } else {
+            setShowResult("retained");
+          }
+        } else {
+          setSuccess(true);
+        }
+      } else {
+        // If complete alchemy failed, show success for create but note the completion issue
+        setError("Alchemy created but failed to complete. Please try again.");
+      }
+    } catch (err) {
+      console.error("Failed to start alchemy session:", err);
+      setError(
+        err instanceof Error ? err.message : "Failed to start alchemy session"
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // If showing result, render the appropriate component
+  if (showResult === "congratulations" && alchemyResult) {
+    const gainedAmount = Math.max(
+      0,
+      alchemyResult.resultAmount - alchemyResult.inputAmount
+    );
+    return <CongratulationsPage gainedAmount={gainedAmount} />;
+  }
+
+  if (showResult === "retained" && alchemyResult) {
+    return <RetainedPage retainedAmount={alchemyResult.resultAmount} />;
+  }
+
+  // Show loading state while fetching config
+  if (configLoading) {
+    return (
+      <div className="mx-auto mt-60 px-4 md:px-20 xl:px-40">
+        <div className="bg-bg2 max-w-7xl mx-auto z-10">
+          <div className="pt-20 flex justify-center items-center min-h-96">
+            <div className="text-center">
+              <p className="text-2xl font-semibold">
+                Loading Alchemy Configuration...
+              </p>
             </div>
           </div>
         </div>
       </div>
+    );
+  }
 
+  // Show error state if config fetch failed
+  if (configError) {
+    return (
+      <div className="mx-auto mt-60 px-4 md:px-20 xl:px-40">
+        <div className="bg-bg2 max-w-7xl mx-auto z-10">
+          <div className="pt-20 flex justify-center items-center min-h-96">
+            <div className="text-center">
+              <p className="text-2xl font-semibold text-red-500 mb-4">
+                Failed to Load Alchemy Configuration
+              </p>
+              <p className="text-lg text-tertiary">{configError}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show fallback if no current plan is available
+  if (!currentPlan) {
+    return (
+      <div className="mx-auto mt-60 px-4 md:px-20 xl:px-40">
+        <div className="bg-bg2 max-w-7xl mx-auto z-10">
+          <div className="pt-20 flex justify-center items-center min-h-96">
+            <div className="text-center">
+              <p className="text-2xl font-semibold text-yellow-500 mb-4">
+                No Alchemy Plan Available
+              </p>
+              <p className="text-lg text-tertiary">
+                Unable to find the requested alchemy plan.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mx-auto mt-60 px-4 md:px-20 xl:px-40">
       <div className="bg-bg2 max-w-7xl mx-auto z-10">
         <div className="absolute top-105 left-0 w-full h-full -z-20">
           <Image src={BgArtImage1} alt="Bg Art 1" className="w-full" />
@@ -139,40 +311,51 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
             <div className="mt-16 w-full flex flex-col gap-4">
               <div className="flex justify-between items-center">
                 <p className="text-3xl md:text-4xl">Input:</p>
-                <p className="text-4xl xl:text-5xl font-bold">{data.input}</p>
+                <p className="text-4xl xl:text-5xl font-bold">
+                  {currentPlan.input.toLocaleString()} BTCY
+                </p>
               </div>
               <div className="flex justify-between items-center">
                 <p className="text-3xl md:text-4xl">Multiplier:</p>
                 <p className="text-4xl xl:text-5xl font-bold">
-                  {data.multiplier}
+                  {currentPlan.multiplierRange}
                 </p>
               </div>
-            </div>
-            {/* Progress bar */}
-            <div className="mt-20 w-full">
-              <div className="flex justify-between items-center">
-                <p className="text-base font-semibold">20</p>
-                <p className="text-base font-semibold">100</p>
-              </div>
-              <div className="w-full mt-2 h-[10px] bg-bg3 rounded-full">
-                <div
-                  className="h-full bg-[#2056BA] rounded-full"
-                  style={{ width: "20%" }}
-                ></div>
-              </div>
-              <p className="mt-2 text-sm text-tertiary">
-                Only 80 participants remaining!
-              </p>
             </div>
           </div>
         </div>
 
-        <div className="mt-40 flex justify-center items-center relative z-10">
-          <CustomButton2
-            text="Start Alchemy"
-            image={PointingHandButtonImage}
-            link="#"
-          />
+        <div className="mt-40 flex flex-col items-center justify-center relative z-10">
+          {success ? (
+            <div className="text-center">
+              <p className="text-2xl font-semibold text-green-500 mb-4">
+                Alchemy Session Started Successfully!
+              </p>
+              <p className="text-lg text-tertiary">
+                Your alchemy has been processed. Redirecting you to results...
+              </p>
+            </div>
+          ) : (
+            <>
+              <div
+                onClick={handleStartAlchemy}
+                className={`${isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                  }`}
+              >
+                <CustomButton2
+                  image={PointingHandButtonImage}
+                  text={isLoading ? "Starting..." : "Start Alchemy"}
+                  link="#"
+                  imageStyling="w-36 mt-8"
+                />
+              </div>
+              {error && (
+                <p className="mt-4 text-red-500 text-center max-w-md">
+                  {error}
+                </p>
+              )}
+            </>
+          )}
         </div>
 
         <div className="mt-60 mb-20">

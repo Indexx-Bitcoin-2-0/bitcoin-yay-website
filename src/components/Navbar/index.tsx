@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import logo from "@/assets/images/main-logo.svg";
+import ProfileIcon from "@/assets/images/profile-icon.webp";
 import Data from "./data";
 import { useAuth } from "@/contexts/AuthContext";
 import LoginPopup from "@/components/LoginPopup";
@@ -385,7 +386,7 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Auth Section (Desktop) */}
-        <div className="hidden xl:block">
+        <div className="hidden lg:block">
           {isAuthenticated && user ? (
             <div className="text-sm font-normal transition-all duration-300 flex gap-10">
               <button
@@ -394,8 +395,14 @@ const Navbar: React.FC = () => {
               >
                 Logout
               </button>
-              <span className="text-tertiary">{user.email}</span>
-
+              <div className="flex items-center gap-2">
+                <Image
+                  src={ProfileIcon}
+                  alt="Profile Icon"
+                  className="w-14"
+                />
+                <span className="text-tertiary">{user.email}</span>
+              </div>
             </div>
           ) : (
             <div className="text-sm font-normal transition-all duration-300 flex gap-10">
@@ -423,8 +430,15 @@ const Navbar: React.FC = () => {
           {/* Auth Section (Mobile) */}
           <div className="mb-6">
             {isAuthenticated && user ? (
-              <div className="text-xl lg:text-sm font-normal transition-all duration-300 flex items-center justify-center w-full gap-10">
-                <span className="text-tertiary">{user.email}</span>
+              <div className="text-xl lg:text-sm font-normal transition-all duration-300 flex flex-col items-center justify-center w-full gap-4">
+                <div className="flex items-center gap-2">
+                  <Image
+                    src={ProfileIcon}
+                    alt="Profile Icon"
+                    className="w-14"
+                  />
+                  <span className="text-tertiary">{user.email}</span>
+                </div>
                 <button
                   onClick={() => {
                     handleLogout();

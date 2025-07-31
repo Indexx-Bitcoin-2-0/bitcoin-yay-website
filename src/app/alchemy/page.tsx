@@ -22,6 +22,11 @@ import NuclearMiningButtonImage2 from "@/assets/images/alchemy/home/nuclear-02-a
 import BgArtImage1 from "@/assets/images/bitcoin-art-3.svg";
 import BgArtImage2 from "@/assets/images/bitcoin-art-4.svg";
 
+import AlchemyGatewayIcon1 from "@/assets/images/alchemy/home/alchemy-gateway-logo.webp";
+import AlchemyGatewayIcon2 from "@/assets/images/alchemy/home/alchemy-gateway-logo-primary.webp";
+import AlchemyTradeIcon1 from "@/assets/images/alchemy/home/alchemy-trade-logo.webp";
+import AlchemyTradeIcon2 from "@/assets/images/alchemy/home/alchemy-trade-logo-primary.webp";
+
 import CustomButton2 from "@/components/CustomButton2";
 
 export default function AlchemyPage() {
@@ -42,7 +47,7 @@ export default function AlchemyPage() {
             <h1 className="text-5xl md:text-[120px] font-semibold">
               Alchemy Gateway
             </h1>
-            <p className="mt-10 text-xl md:text-3xl">
+            <p className="mt-10 text-xl md:text-xl">
               This is the beginning of the transformation layer between mined
               BTCY and real BTCY tokens on the Bitcoin Yay network. Inspired by
               the ancient idea of alchemy — turning base metals into gold — this
@@ -60,23 +65,70 @@ export default function AlchemyPage() {
         </div>
       </div>
 
+      <div className="mt-160 flex gap-40 justify-center items-center">
+        <Link
+          href="/alchemy/turbo"
+          className="flex flex-col items-center justify-center group"
+        >
+          <div className="h-32 flex justify-center items-center">
+            <Image
+              src={AlchemyGatewayIcon2}
+              alt="Electric Mining"
+              className="w-40 group-hover:hidden"
+            />
+            <Image
+              src={AlchemyGatewayIcon1}
+              alt="Electric Mining"
+              className="w-40 hidden group-hover:block"
+            />
+          </div>
+          <p className="mt-6 text-lg md:text-4xl font-semibold text-center text-primary group-hover:text-secondary leading-12">
+            Alchemy
+            <br />
+            Gateway
+          </p>
+        </Link>
+        <Link
+          href="/alchemy/turbo"
+          className="flex flex-col items-center justify-center group"
+        >
+          <div className="h-32 flex justify-center items-center">
+            <Image
+              src={AlchemyTradeIcon2}
+              alt="Electric Mining"
+              className="w-40 group-hover:hidden"
+            />
+            <Image
+              src={AlchemyTradeIcon1}
+              alt="Electric Mining"
+              className="w-40 hidden group-hover:block"
+            />
+          </div>
+          <p className="mt-6 text-lg md:text-4xl font-semibold text-center text-primary group-hover:text-secondary leading-12">
+            Alchemy
+            <br />
+            Trade
+          </p>
+        </Link>
+      </div>
+
       <div className="mt-40 xl:mt-120 2xl:mt-160">
         <h2 className="text-4xl md:text-5xl xl:text-9xl font-bold text-center max-w-7xl mx-auto ">
           Turn your BTCY
           <br /> into passive income!
         </h2>
-        <p className="mt-10 text-3xl md:text-4xl xl:text-[42px] font-light text-center max-w-7xl mx-auto">
+        <p className="mt-10 text-xl font-light text-center max-w-7xl mx-auto">
           Secure the network, earn rewards, and grow your holdings. Stake your
           Bitcoin Yay now and let your crypto work for you.
         </p>
-        <div className="flex justify-center items-center mt-20">
+        {/* <div className="flex justify-center items-center mt-20">
           <CustomButton2
             text="Start Alchemy"
             image={PointingButtonImage}
             imageStyling="w-20 md:w-30"
             link="#"
           />
-        </div>
+        </div> */}
       </div>
 
       <div className="relative mt-100">
@@ -87,15 +139,22 @@ export default function AlchemyPage() {
         />
       </div>
       <div className="">
-        <h2 className="text-5xl md:text-7xl xl:text-[120px] font-semibold">
+        <div className="flex justify-center items-center">
+          <Image
+            src={AlchemyGatewayIcon1}
+            alt="Alchemy Gateway"
+            className="w-36"
+          />
+        </div>
+        <h2 className="mt-10 text-5xl md:text-7xl xl:text-[120px] font-semibold text-center">
           ALCHEMY GATEWAY
         </h2>
-        <p className="mt-10 text-xl md:text-4xl">
+        <p className="mt-10 text-xl text-center">
           Select an input, start alchemy, and get a random multiplier result
           based on the category odds!
         </p>
 
-        <div className="flex mt-30 gap-40 flex-wrap justify-center items-center max-w-4xl mx-auto">
+        <div className="flex mt-30 gap-24 flex-wrap justify-center items-center max-w-4xl mx-auto">
           <Link
             href="/alchemy/free-mining"
             className="flex flex-col items-center justify-center group"
@@ -104,10 +163,10 @@ export default function AlchemyPage() {
               <Image
                 src={FreeMiningButtonImage}
                 alt="Free Mining"
-                className="w-32 group-hover:scale-105 transition-all duration-300"
+                className="w-40 group-hover:scale-105 transition-all duration-300"
               />
             </div>
-            <p className="mt-2 text-2xl font-semibold group-hover:text-primary">
+            <p className="mt-2 text-lg font-semibold group-hover:text-primary">
               FREE MINING
             </p>
           </Link>
@@ -120,10 +179,14 @@ export default function AlchemyPage() {
               <Image
                 src={PowerMiningButtonImage}
                 alt="Electric Mining"
-                className="w-32 group-hover:scale-105 transition-all duration-300"
+                className="w-42 group-hover:scale-105 transition-all duration-300 mb-8"
               />
             </div>
-            <p className="mt-4 text-2xl font-semibold group-hover:text-primary">
+            <p
+              className={`mt-4 text-lg font-semibold group-hover:text-primary ${
+                isPowerMiningActive ? "text-primary" : ""
+              }`}
+            >
               POWER MINING
             </p>
           </button>
@@ -135,15 +198,15 @@ export default function AlchemyPage() {
               <Image
                 src={QuantumMiningButtonImage}
                 alt="Electric Mining"
-                className="w-32 group-hover:scale-105 transition-all duration-300"
+                className="w-50 group-hover:scale-105 transition-all duration-300 mb-4"
               />
             </div>
-            <p className="mt-2 text-2xl font-semibold group-hover:text-primary">
+            <p className="mt-2 text-lg font-semibold group-hover:text-primary">
               QUANTUM MINING
             </p>
           </Link>
           {isPowerMiningActive && (
-            <>
+            <div className="flex flex-wrap gap-30 items-center justify-center">
               <Link
                 href="/alchemy/electric"
                 className="flex flex-col items-center justify-center group"
@@ -160,7 +223,7 @@ export default function AlchemyPage() {
                     className="w-18 hidden group-hover:block"
                   />
                 </div>
-                <p className="mt-2 text-2xl font-semibold group-hover:text-primary">
+                <p className="mt-2 text-lg font-semibold group-hover:text-primary">
                   ELECTRIC
                 </p>
               </Link>
@@ -180,7 +243,7 @@ export default function AlchemyPage() {
                     className="w-28 hidden group-hover:block"
                   />
                 </div>
-                <p className="mt-2 text-2xl font-semibold group-hover:text-primary">
+                <p className="mt-2 text-lg font-semibold group-hover:text-primary">
                   TURBO
                 </p>
               </Link>
@@ -200,11 +263,11 @@ export default function AlchemyPage() {
                     className="w-30 hidden group-hover:block"
                   />
                 </div>
-                <p className="mt-2 text-2xl font-semibold group-hover:text-primary">
+                <p className="mt-2 text-lg font-semibold group-hover:text-primary">
                   NUCLEAR
                 </p>
               </Link>
-            </>
+            </div>
           )}
         </div>
       </div>
@@ -217,12 +280,33 @@ export default function AlchemyPage() {
         />
       </div>
 
+      <div className="">
+        <div className="flex justify-center items-center">
+          <Image
+            src={AlchemyTradeIcon1}
+            alt="Alchemy Trade"
+            className="w-36"
+          />
+        </div>
+        <h2 className="mt-10 text-5xl md:text-7xl xl:text-[120px] font-semibold text-center">
+          ALCHEMY TRADE
+        </h2>
+        <div className="flex justify-center items-center mt-40">
+          <CustomButton2
+            text="Start Alchemy"
+            image={PointingButtonImage}
+            imageStyling="w-20 md:w-30"
+            link="#"
+          />
+        </div>
+      </div>
+
       <div className="mt-80 mb-80">
         <h2 className="text-5xl md:text-7xl xl:text-[120px] font-semibold">
-          How BTCY Alchemy works
+          How Alchemy works
         </h2>
-        <div className="mt-10 text-xl md:text-3xl xl:text-4xl">
-          <ul className="list-decimal leading-10 md:leading-16 pl-4 md:pl-10">
+        <div className="mt-10 text-xl">
+          <ul className="list-decimal leading-10 pl-4 md:pl-10">
             <li>
               Select Input Amount <br /> Choose how many BTCY to commit —
               options depend on your user tier (Free, Electric, Turbo, Nuclear,
