@@ -98,9 +98,9 @@ export default function AlchemyTradePage() {
           </div>
           <div className="mt-10 lg:mt-2 flex gap-20 justify-center p-4">
             <CustomButton2
-              text="Buy"
+              text="Connect"
               image={ConnectBUttonImage}
-              link="#"
+              link="/coming-soon"
               imageStyling="w-30"
             />
           </div>
