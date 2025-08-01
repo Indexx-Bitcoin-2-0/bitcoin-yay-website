@@ -149,7 +149,7 @@ export default function NewProposal() {
         isVoting: true,
         isTask: false,
         isProposal: true,
-        summary: formData.summary.slice(0, 160), // short summary
+        summary: formData.summary, // short summary
         createdBy: "support@bitcoinyay.com", // Replace with dynamic user email if available
         category: formData.category,
         votingDeadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),

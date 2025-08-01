@@ -66,7 +66,7 @@ export default function ProposalDetailPage() {
         const mappedProposal: Proposal = {
           proposalNumber: extractProposalNumber(data?.data?.proposalId),
           proposalTitle: data?.data?.title ?? "Untitled",
-          createdByRole: data?.data?.createdByRole?.toLowerCase() ?? "Leader",
+          createdByRole: data?.data?.createdByRole?.toLowerCase() ?? "leader",
           summary: data?.data?.summary ?? data?.data?.description ?? "No summary provided.",
           votingPeriod: formatVotingPeriod(data?.data?.startDate, data?.data?.endDate),
           requiredRole: data?.data?.roleRequired ?? "Member",

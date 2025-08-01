@@ -126,7 +126,7 @@ const header_data = [
     mainTextDesktop: "Chain",
     mainTextMob: "Chain",
     active: false,
-    href: "/coming-soon",
+    href: "/blockchain",
     hasMegaDrop: true,
     dropDownContent: [
       {
@@ -135,7 +135,7 @@ const header_data = [
         links: [
           {
             name: "Ying Yang Blockchain Expo",
-            href: "/coming-soon",
+            href: "/bible/blockchain/details",
           },
         ],
       },
@@ -172,7 +172,7 @@ const header_data = [
         links: [
           {
             name: "Contact Us",
-            href: "/coming-soon",
+            href: "/support",
           },
         ],
       },
