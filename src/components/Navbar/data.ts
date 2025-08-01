@@ -154,7 +154,7 @@ const header_data = [
     mainTextDesktop: "DAO",
     mainTextMob: "DAO",
     active: false,
-    href: "/coming-soon",
+    href: "/dao",
     hasMegaDrop: true,
     dropDownContent: [
       {
@@ -163,15 +163,7 @@ const header_data = [
         links: [
           {
             name: "Proposal Studio",
-            href: "/coming-soon",
-          },
-          {
-            name: "Role-Based Governance",
-            href: "/coming-soon",
-          },
-          {
-            name: "Yin Yang Grant Rounds",
-            href: "/coming-soon",
+            href: "/dao",
           },
         ],
       },
