@@ -172,7 +172,7 @@ const header_data = [
         links: [
           {
             name: "Contact Us",
-            href: "/coming-soon",
+            href: "/support",
           },
         ],
       },
