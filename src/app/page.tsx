@@ -156,7 +156,7 @@ export default function Home() {
         id="download-app"
         className="mt-120 md:mt-40 lg:mt-120 relative flex flex-col items-center justify-center"
       >
-        <Image
+        {/* <Image
           src={BirthdayBanner}
           alt="Birthday Banner"
           className="w-full hidden lg:block"
@@ -179,7 +179,7 @@ export default function Home() {
             link="/airdrop"
             imageStyling="w-30 md:w-30 xl:w-40"
           />
-        </div>
+        </div> */}
         {/* <Link
           href="/airdrop"
           className="mb-10 mt-4 absolute bottom-40 md:-bottom-20 xl:-bottom-10 "
