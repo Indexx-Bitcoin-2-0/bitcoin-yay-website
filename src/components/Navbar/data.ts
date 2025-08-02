@@ -329,7 +329,7 @@ const header_data = [
           },
           {
             name: "Alchemy Trade",
-            href: `/alchemy/trade`,
+            href: `/coming-soon`,
           },
           
         ],
