@@ -31,6 +31,13 @@ import RegisterButtonImage from "@/assets/images/buttons/register-button.webp";
 import CustomButton2 from "@/components/CustomButton2";
 import PopupComponent from "@/components/PopupComponent";
 
+// ALchmey Popup
+import AlchemyPopupArt1 from "@/assets/images/alchemy/alchemy-logo.webp";
+import ThumbsUpButtonImage from "@/assets/images/buttons/thumbs-up-button.webp";
+
+// DAO Popup
+import DaoPopupArt1 from "@/assets/images/dao/art-1.svg";
+
 // Types for better type safety
 interface LinkItem {
   name: string;
@@ -232,6 +239,8 @@ const Navbar: React.FC = () => {
   }, []);
 
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [isAlchemyPopupOpen, setIsAlchemyPopupOpen] = useState(false);
+  const [isDaoPopupOpen, setIsDaoPopupOpen] = useState(false);
 
   // Check if popup should be shown
   useEffect(() => {
@@ -255,6 +264,60 @@ const Navbar: React.FC = () => {
     checkPopupTiming();
   }, []);
 
+  // Check if alchemy popup should be shown
+  useEffect(() => {
+    const checkAlchemyPopupTiming = () => {
+      if (!currentPath.startsWith("/alchemy")) {
+        setIsAlchemyPopupOpen(false);
+        return;
+      }
+
+      const lastPopupClosed = localStorage.getItem("alchemyPopupLastClosed");
+      const now = new Date().getTime();
+
+      if (!lastPopupClosed) {
+        setIsAlchemyPopupOpen(true);
+      } else {
+        const lastClosedTime = parseInt(lastPopupClosed);
+        const timeDifference = now - lastClosedTime;
+        const thirtyMinutesInMs = 30 * 60 * 1000; // 30 minutes in milliseconds
+
+        if (timeDifference >= thirtyMinutesInMs) {
+          setIsAlchemyPopupOpen(true);
+        }
+      }
+    };
+
+    checkAlchemyPopupTiming();
+  }, [currentPath]);
+
+  // Check if dao popup should be shown
+  useEffect(() => {
+    const checkDaoPopupTiming = () => {
+      if (!currentPath.startsWith("/dao")) {
+        setIsDaoPopupOpen(false);
+        return;
+      }
+
+      const lastPopupClosed = localStorage.getItem("daoPopupLastClosed");
+      const now = new Date().getTime();
+
+      if (!lastPopupClosed) {
+        setIsDaoPopupOpen(true);
+      } else {
+        const lastClosedTime = parseInt(lastPopupClosed);
+        const timeDifference = now - lastClosedTime;
+        const thirtyMinutesInMs = 30 * 60 * 1000; // 30 minutes in milliseconds
+
+        if (timeDifference >= thirtyMinutesInMs) {
+          setIsDaoPopupOpen(true);
+        }
+      }
+    };
+
+    checkDaoPopupTiming();
+  }, [currentPath]);
+
   // Handle popup close
   const handlePopupClose = () => {
     setIsPopupOpen(false);
@@ -263,6 +326,23 @@ const Navbar: React.FC = () => {
       "bitcoinYayPopupLastClosed",
       new Date().getTime().toString()
     );
+  };
+
+  // Handle alchemy popup close
+  const handleAlchemyPopupClose = () => {
+    setIsAlchemyPopupOpen(false);
+    // Store current time in localStorage
+    localStorage.setItem(
+      "alchemyPopupLastClosed",
+      new Date().getTime().toString()
+    );
+  };
+
+  // Handle dao popup close
+  const handleDaoPopupClose = () => {
+    setIsDaoPopupOpen(false);
+    // Store current time in localStorage
+    localStorage.setItem("daoPopupLastClosed", new Date().getTime().toString());
   };
 
   return (
@@ -287,6 +367,81 @@ const Navbar: React.FC = () => {
               imageStyling="w-20 md:w-30"
             />
           </Link>
+        </div>
+      </PopupComponent>
+
+      {/* Alchemy Popup */}
+      <PopupComponent
+        isOpen={isAlchemyPopupOpen}
+        onClose={handleAlchemyPopupClose}
+      >
+        <div className="mt-10 mx-2 px-10 flex flex-col items-center justify-center w-90 md:w-120 xl:w-140 relative">
+          <Image
+            src={AlchemyPopupArt1}
+            alt="Alchemy Popup Art 1"
+            className="w-30"
+          />
+          <h1 className="mt-4 xl:mt-8 text-3xl xl:text-4xl text-center font-bold text-[#5000AD]">
+            “Beta Version Notice”
+          </h1>
+          <ul className="list-decimal pl-4 mt-4 xl:mt-8 text-lg xl:text-xl font-light flex flex-col gap-2">
+            <li> “You’re viewing a beta version of our Alchemy features.”</li>
+            <li>“Functionality is still in testing and subject to change.”</li>
+            <li>
+              “If you encounter any bugs or errors, please let us know via
+              Contact Us.”
+            </li>
+          </ul>
+          <div className="flex gap-20 my-4 xl:my-8">
+            <div onClick={() => handleAlchemyPopupClose()}>
+              <CustomButton2
+                image={ThumbsUpButtonImage}
+                text={"Got it"}
+                link=""
+                imageStyling="w-20 lg:w-24"
+              />
+            </div>
+            <CustomButton2
+              image={RegisterButtonImage}
+              text={"Contact Us"}
+              link="/support/#contact-us"
+              imageStyling="w-20 lg:w-24"
+            />
+          </div>
+        </div>
+      </PopupComponent>
+
+      {/* DAO Popup */}
+      <PopupComponent isOpen={isDaoPopupOpen} onClose={handleDaoPopupClose}>
+        <div className="mt-4 xl:mt-10 mx-2 px-4 xl:px-10 flex flex-col items-center justify-center w-90 md:w-120 xl:w-150 relative">
+          <Image src={DaoPopupArt1} alt="DAO Popup Art 1" className="w-full" />
+          <h1 className="mt-4 xl:mt-8 text-3xl xl:text-4xl text-center font-bold text-[#5000AD]">
+            “Beta Version Notice”
+          </h1>
+          <ul className="list-decimal pl-4 mt-4 xl:mt-8 text-lg xl:text-xl font-light flex flex-col gap-2">
+            <li> “You’re viewing a beta version of our Alchemy features.”</li>
+            <li>“Functionality is still in testing and subject to change.”</li>
+            <li>
+              “If you encounter any bugs or errors, please let us know via
+              Contact Us.”
+            </li>
+          </ul>
+          <div className="flex gap-20 my-4 xl:my-8">
+            <div onClick={() => handleDaoPopupClose()}>
+              <CustomButton2
+                image={ThumbsUpButtonImage}
+                text={"Got it"}
+                link=""
+                imageStyling="w-20 lg:w-24"
+              />
+            </div>
+            <CustomButton2
+              image={RegisterButtonImage}
+              text={"Contact Us"}
+              link="/support/#contact-us"
+              imageStyling="w-20 lg:w-24"
+            />
+          </div>
         </div>
       </PopupComponent>
       <div className="relative flex items-center justify-between h-[150px] px-4 lg:px-[100px] mx-auto">
