@@ -7,7 +7,9 @@ import TradingViewWidgets from "@/components/TradingViewWidgets";
 import OrderBook from "@/components/OrderBook";
 import CustomButton2 from "@/components/CustomButton2";
 
-import ConnectBUttonImage from "@/assets/images/buttons/dex-button.webp";
+import ConnectBUttonImage from "@/assets/images/buttons/connect-button.webp";
+import BuyButtonImage from "@/assets/images/buttons/dollar-button.webp";
+import SellButtonImage from "@/assets/images/buttons/price-tag-button.webp";
 
 import AlchemyGatewayIcon1 from "@/assets/images/alchemy/alchemy-gateway-logo.webp";
 import AlchemyGatewayIcon2 from "@/assets/images/alchemy/alchemy-gateway-logo-primary.webp";
@@ -117,14 +119,14 @@ export default function AlchemyTradePage() {
           <div className="mt-10 lg:mt-10 flex gap-20 md:gap-20 justify-center items-center">
             <CustomButton2
               text="Buy"
-              image={ConnectBUttonImage}
+              image={BuyButtonImage}
               link="https://cex.indexx.ai/update/home"
               imageStyling="w-26"
               _blank={true}
             />
             <CustomButton2
               text="Sell"
-              image={ConnectBUttonImage}
+              image={SellButtonImage}
               link="https://cex.indexx.ai/update/home"
               imageStyling="w-26"
               _blank={true}
