@@ -75,12 +75,15 @@ export default function AirdropRegisterPage() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
+    /////////// To close the registration form ///////////
     setFormSubmitted(true);
-    // setIsPopupOpen(true);
-    // setEmail("");
-    // setUsername("");
-    // setAcceptTerms(false);
-    // setErrors({});
+    setIsPopupOpen(true);
+    setEmail("");
+    setUsername("");
+    setAcceptTerms(false);
+    setErrors({});
+    return;
+    /////////// To close the registration form ///////////
 
     if (validateForm()) {
       try {
@@ -229,9 +232,11 @@ export default function AirdropRegisterPage() {
             <div className="w-80 md:w-100 flex flex-col justify-center items-center text-center p-10">
               <Image src={InfoIcon} alt="Info Icon" className="w-22" />
               <h3 className="text-5xl font-medium mt-6">Oops</h3>
-              <p className="mt-6">
-                {errors.general ||
-                  "An error occurred while processing your request. Please try again."}
+                <p className="mt-6">
+                  
+                Registration for Airdrop has ended
+                {/* {errors.general ||
+                  "An error occurred while processing your request. Please try again."} */}
               </p>
               <div className="flex justify-between w-full mt-10 px-4">
                 <CustomButton2
