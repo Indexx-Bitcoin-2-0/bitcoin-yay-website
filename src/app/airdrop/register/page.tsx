@@ -21,8 +21,8 @@ import SubmitButtomImage from "@/assets/images/buttons/submit-button.webp";
 import PopupArt1 from "@/assets/images/airdrop/popup-art.webp";
 import PopupArt2 from "@/assets/images/airdrop/popup-art-1.webp";
 import PopupArt3 from "@/assets/images/airdrop/popup-art-2.webp";
-// import PopupArt4 from "@/assets/images/airdrop/popup-art-3.svg";
-// import PopupArt5 from "@/assets/images/airdrop/popup-art-4.png";
+import PopupArt4 from "@/assets/images/airdrop/popup-art-3.svg";
+import PopupArt5 from "@/assets/images/airdrop/popup-art-4.png";
 
 import PopupComponent from "@/components/PopupComponent";
 import CustomButton2 from "@/components/CustomButton2";
@@ -46,7 +46,7 @@ export default function AirdropRegisterPage() {
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
   const [isRegistraionSuccessful, setIsRegistrationSuccessful] =
     useState<boolean>(false);
-
+  const [isRegistrationClosed] = useState<boolean>(true);
   const [errors, setErrors] = useState<FormErrors>({});
   const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
 
@@ -75,16 +75,15 @@ export default function AirdropRegisterPage() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-    /////////// To close the registration form ///////////
     setFormSubmitted(true);
-    setIsPopupOpen(true);
-    setEmail("");
-    setUsername("");
-    setAcceptTerms(false);
-    setErrors({});
-    return;
-    /////////// To close the registration form ///////////
-
+    if (isRegistrationClosed) {
+      setIsPopupOpen(true);
+      setEmail("");
+      setUsername("");
+      setAcceptTerms(false);
+      setErrors({});
+      return;
+    }
     if (validateForm()) {
       try {
         const res = await axios.post(AIRDROP_REGISTER_API_ROUTE, {
@@ -111,7 +110,6 @@ export default function AirdropRegisterPage() {
         setErrors({});
         setFormSubmitted(false);
       } catch (error) {
-
         let errorMessage = (error as AxiosError).response?.data;
         errorMessage = (errorMessage as { data?: object })?.data;
         setIsRegistrationSuccessful(false);
@@ -153,7 +151,56 @@ export default function AirdropRegisterPage() {
           isOpen={isPopupOpen}
           onClose={() => setIsPopupOpen(false)}
         >
-          {isRegistraionSuccessful ? (
+          {isRegistrationClosed ? (
+            <div>
+              <div className="flex flex-col items-center justify-center text-center w-90 md:w-164 p-4 md:p-8">
+                <Image
+                  src={PopupArt4}
+                  alt="Popup Art 4"
+                  className="w-64 md:w-80 mt-4"
+                />
+                <div className="relative mt-10">
+                  <Image
+                    src={PopupArt5}
+                    alt="Popup Art 5"
+                    className="w-20 md:w-34 absolute -top-10 md:-top-24 right-0"
+                  />
+                  <h3 className="text-2xl md:text-5xl font-bold">
+                    Airdrop <span className="text-primary"> Ended!</span>
+                  </h3>
+                  <p className="mt-2 text-xl md:text-2xl font-semibold uppercase">
+                    The recent airdrop has ended — thank you for participating
+                    and mining with Turbo Power!
+                  </p>
+                </div>
+                <div className="mt-10 mb-4 relative">
+                  <Image
+                    src={PopupArt5}
+                    alt="Popup Art 5"
+                    className="w-20 md:w-34 absolute -top-10 md:-top-20 left-0"
+                  />
+                  <h3 className="text-2xl md:text-5xl font-bold md:leading-16">
+                    Stay Tuned for
+                    <br />
+                    <span className="text-primary">
+                      Upcoming Airdrop Events
+                    </span>
+                  </h3>
+                  <p className="mt-2 text-xl md:text-2xl font-semibold uppercase">
+                    More power-packed events are on the way.{" "}
+                    <span className="text-primary">Get ready to:</span>
+                  </p>
+                  <p className="mt-2 text-xl md:text-2xl font-semibold uppercase">
+                    Unlock Free Power mining and Earn bonus days through
+                    referrals
+                  </p>
+                  <p className="mt-2 text-xl md:text-2xl font-semibold uppercase text-primary">
+                    Celebrate special occasions with exclusive airdrops
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : isRegistraionSuccessful ? (
             <div className="py-6 w-90 md:w-140 flex flex-col justify-center items-center text-center relative overflow-hidden">
               <div className="absolute inset-0 bg-cover bg-center -z-10">
                 <Image
@@ -232,11 +279,9 @@ export default function AirdropRegisterPage() {
             <div className="w-80 md:w-100 flex flex-col justify-center items-center text-center p-10">
               <Image src={InfoIcon} alt="Info Icon" className="w-22" />
               <h3 className="text-5xl font-medium mt-6">Oops</h3>
-                <p className="mt-6">
-                  
-                Registration for Airdrop has ended
-                {/* {errors.general ||
-                  "An error occurred while processing your request. Please try again."} */}
+              <p className="mt-6">
+                {errors.general ||
+                  "An error occurred while processing your request. Please try again."}
               </p>
               <div className="flex justify-between w-full mt-10 px-4">
                 <CustomButton2
@@ -254,47 +299,6 @@ export default function AirdropRegisterPage() {
               </div>
             </div>
           )}
-
-          {/* <div>
-            <div className="flex flex-col items-center justify-center text-center w-90 md:w-164 p-4 md:p-8">
-              <Image src={PopupArt4} alt="Popup Art 4" className="w-64 md:w-80 mt-4" />
-              <div className="relative mt-10">
-                <Image
-                  src={PopupArt5}
-                  alt="Popup Art 5"
-                  className="w-20 md:w-34 absolute -top-10 md:-top-24 right-0"
-                />
-                <h3 className="text-2xl md:text-5xl font-bold">
-                  Airdrop <span className="text-primary"> Ended!</span>
-                </h3>
-                <p className="mt-2 text-xl md:text-2xl font-semibold uppercase">
-                  The recent airdrop has ended — thank you for participating and
-                  mining with Turbo Power!
-                </p>
-              </div>
-              <div className="mt-10 mb-4 relative">
-                <Image
-                  src={PopupArt5}
-                  alt="Popup Art 5"
-                  className="w-20 md:w-34 absolute -top-10 md:-top-20 left-0"
-                />
-                <h3 className="text-2xl md:text-5xl font-bold md:leading-16">
-                  Stay Tuned for<br />
-                  <span className="text-primary">Upcoming Airdrop Events</span>
-                </h3>
-                <p className="mt-2 text-xl md:text-2xl font-semibold uppercase">
-                  More power-packed events are on the way.{" "}
-                  <span className="text-primary">Get ready to:</span>
-                </p>
-                <p className="mt-2 text-xl md:text-2xl font-semibold uppercase">
-                  Unlock Free Power mining and Earn bonus days through referrals
-                </p>
-                <p className="mt-2 text-xl md:text-2xl font-semibold uppercase text-primary">
-                  Celebrate special occasions with exclusive airdrops
-                </p>
-              </div>
-            </div>
-          </div> */}
         </PopupComponent>
       </div>
 
