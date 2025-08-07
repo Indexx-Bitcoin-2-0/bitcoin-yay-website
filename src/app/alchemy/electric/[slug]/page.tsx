@@ -2,13 +2,13 @@
 
 import { useState, use, useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 
 import BitcoinYayLogo from "@/assets/images/logo.webp";
 import BgArtImage1 from "@/assets/images/alchemy/electric/bg-art-1.webp";
 import PointingHandButtonImage from "@/assets/images/buttons/point-button.webp";
 import CustomButton2 from "@/components/CustomButton2";
+import EmailSection from "@/components/EmailSection";
 
 import { getAuthData } from "@/lib/auth";
 import {
@@ -31,7 +31,7 @@ interface AlchemyDetailPageProps {
 export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
   const resolvedParams = use(params) as { slug: string };
   const planIndex = parseInt(resolvedParams.slug);
-const router = useRouter();
+  // const router = useRouter();
 
   const [configLoading, setConfigLoading] = useState(true);
   const [configError, setConfigError] = useState<string | null>(null);
@@ -63,7 +63,7 @@ const router = useRouter();
         if (!response.success) {
           throw new Error(response.error || "Failed to fetch alchemy config");
         }
-        console.log("i am here")
+        console.log("i am here");
         if (response.session?.electric) {
           if (planIndex >= 0 && planIndex < response.session.electric.length) {
             setCurrentPlan(response.session.electric[planIndex]);
@@ -92,23 +92,22 @@ const router = useRouter();
     }
   }, [planIndex]);
 
-  function isPlanAllowed(plan: string | null, required: string): boolean {
-    const planAccessMap: Record<string, string[]> = {
-      "free mining": ["free"],
-      "electric power": ["electric"],
-      "turbo power": ["electric", "turbo"],
-      "nuclear power": ["electric", "turbo", "nuclear"],
-      "quantum mining": ["quantum"],
-    };
+  // function isPlanAllowed(plan: string | null, required: string): boolean {
+  //   const planAccessMap: Record<string, string[]> = {
+  //     "free mining": ["free"],
+  //     "electric power": ["electric"],
+  //     "turbo power": ["electric", "turbo"],
+  //     "nuclear power": ["electric", "turbo", "nuclear"],
+  //     "quantum mining": ["quantum"],
+  //   };
 
-    if (!plan) return false;
+  //   if (!plan) return false;
 
-    const normalizedPlan = plan.trim().toLowerCase();
-    const normalizedRequired = required.trim().toLowerCase();
+  //   const normalizedPlan = plan.trim().toLowerCase();
+  //   const normalizedRequired = required.trim().toLowerCase();
 
-    return planAccessMap[normalizedPlan]?.includes(normalizedRequired) || false;
-  }
-
+  //   return planAccessMap[normalizedPlan]?.includes(normalizedRequired) || false;
+  // }
 
   const handleStartAlchemy = async () => {
     if (!currentPlan) return;
@@ -140,13 +139,13 @@ const router = useRouter();
         "quantum mining": ["quantum"],
       };
 
-      const redirectMap: Record<string, string> = {
-        free: "/alchemy/free",
-        electric: "/alchemy/electric",
-        turbo: "/alchemy/turbo",
-        nuclear: "/alchemy/nuclear",
-        quantum: "/alchemy/quantum",
-      };
+      // const redirectMap: Record<string, string> = {
+      //   free: "/alchemy/free",
+      //   electric: "/alchemy/electric",
+      //   turbo: "/alchemy/turbo",
+      //   nuclear: "/alchemy/nuclear",
+      //   quantum: "/alchemy/quantum",
+      // };
 
       const normalizedUserType = userType?.trim().toLowerCase() || "";
       const normalizedPlan = subscriptionPlan?.trim().toLowerCase() || "";
@@ -163,9 +162,12 @@ const router = useRouter();
         if (normalizedUserType === "free mining") {
           redirectPath = "/alchemy/free";
         } else if (normalizedUserType === "power mining") {
-          if (normalizedPlan.includes("electric")) redirectPath = "/alchemy/electric";
-          else if (normalizedPlan.includes("turbo")) redirectPath = "/alchemy/turbo";
-          else if (normalizedPlan.includes("nuclear")) redirectPath = "/alchemy/nuclear";
+          if (normalizedPlan.includes("electric"))
+            redirectPath = "/alchemy/electric";
+          else if (normalizedPlan.includes("turbo"))
+            redirectPath = "/alchemy/turbo";
+          else if (normalizedPlan.includes("nuclear"))
+            redirectPath = "/alchemy/nuclear";
         } else if (normalizedUserType === "quantum mining") {
           redirectPath = "/alchemy/quantum";
         }
@@ -176,7 +178,6 @@ const router = useRouter();
         setIsLoading(false);
         return;
       }
-
 
       // Step 1: Create alchemy session
       const createResult = await createAlchemy({
@@ -354,14 +355,14 @@ const router = useRouter();
           ) : (
             <>
               <div
-                onClick={handleStartAlchemy}
-                className={`${isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-                  }`}
+                className={`${
+                  isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                }`}
               >
                 <CustomButton2
                   image={PointingHandButtonImage}
                   text={isLoading ? "Starting..." : "Start Alchemy"}
-                  link="#"
+                  onClick={handleStartAlchemy}
                   imageStyling="w-36 mt-8"
                 />
               </div>
@@ -374,35 +375,10 @@ const router = useRouter();
           )}
         </div>
 
-        <div className="mt-60 mb-20">
-          <div className="bg-[#22B868] rounded-2xl px-6 py-8 md:px-12 md:py-10 lg:px-16 lg:py-12">
-            <div className="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-8">
-              <div className="text-center lg:text-left">
-                <h3 className="text-2xl md:text-3xl font-semibold mb-2">
-                  To Get Exclusive Benefits
-                </h3>
-                <p className="text-secondary font-light text-lg md:text-xl lg:text-2xl opacity-90">
-                  Please drop in your email
-                </p>
-              </div>
-              <div className="flex flex-col sm:flex-row items-center w-full max-w-120">
-                <div className="relative flex w-full">
-                  <input
-                    type="email"
-                    placeholder="Enter Your Email"
-                    className="w-full sm:flex-1 px-4 py-3 md:px-6 md:py-4 pr-24 md:pr-28 rounded-full border border-secondary text-secondary placeholder-secondary focus:outline-none text-base md:text-lg bg-secondary/20"
-                  />
-                  <Link
-                    href="#"
-                    className="absolute right-1 top-1 bottom-1 px-6 py-2 md:px-8 md:py-3 bg-primary hover:bg-[#F97400] font-semibold rounded-full transition-colors duration-200 text-base md:text-lg font-boldwhitespace-nowrap"
-                  >
-                    ACTION
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <EmailSection
+          colorVariant="[#22B868]"
+          buttonImage={PointingHandButtonImage}
+        />
       </div>
     </div>
   );

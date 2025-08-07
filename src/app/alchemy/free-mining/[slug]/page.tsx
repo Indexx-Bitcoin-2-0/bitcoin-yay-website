@@ -2,13 +2,13 @@
 
 import { useState, use, useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 
 import BitcoinYayLogo from "@/assets/images/logo.webp";
 import BgArtImage1 from "@/assets/images/alchemy/free-mining/bg-art-1.webp";
 import PointingHandButtonImage from "@/assets/images/buttons/point-button.webp";
 import CustomButton2 from "@/components/CustomButton2";
+import EmailSection from "@/components/EmailSection";
 
 import { getAuthData } from "@/lib/auth";
 import {
@@ -17,7 +17,7 @@ import {
   getAlchemyConfig,
   AlchemyConfigItem,
   getUserSubscription,
-  isPlanAllowed,
+  // isPlanAllowed,
 } from "@/lib/alchemy";
 
 import CongratulationsPage from "@/app/alchemy/congratulations/page";
@@ -32,7 +32,7 @@ interface AlchemyDetailPageProps {
 export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
   const resolvedParams = use(params) as { slug: string };
   const planIndex = parseInt(resolvedParams.slug);
-const router = useRouter();
+  // const router = useRouter();
 
   const [configLoading, setConfigLoading] = useState(true);
   const [configError, setConfigError] = useState<string | null>(null);
@@ -120,7 +120,7 @@ const router = useRouter();
         throw new Error("Unable to fetch user subscription type");
       }
 
-      const userType = userTypeRaw.trim().toLowerCase();       // "free mining"
+      const userType = userTypeRaw.trim().toLowerCase(); // "free mining"
       const subscriptionPlan = subscriptionResult.data.plan?.toLowerCase(); // e.g., "turbo power"
       const planType = "free"; // current page type
 
@@ -131,9 +131,7 @@ const router = useRouter();
       };
 
       const isUserTypeAllowed = userTypeAccessMap[userType]?.includes(planType);
-      const isPlanMatch = subscriptionPlan?.includes(planType);
-
-      console.log(isUserTypeAllowed)
+      // const isPlanMatch = subscriptionPlan?.includes(planType);
 
       if (!isUserTypeAllowed) {
         let redirectPath = "/alchemy/free";
@@ -157,7 +155,7 @@ const router = useRouter();
         return;
       }
 
-      console.log("isUserTypeAllowed", isUserTypeAllowed)
+      console.log("isUserTypeAllowed", isUserTypeAllowed);
       // Step 1: Create alchemy session
       const createResult = await createAlchemy({
         email: authData.email,
@@ -165,7 +163,7 @@ const router = useRouter();
         userType: "free",
       });
 
-      console.log(createResult)
+      console.log(createResult);
       if (!createResult.success) {
         throw new Error(
           createResult.error || "Failed to start alchemy session"
@@ -177,7 +175,6 @@ const router = useRouter();
         const completeResult = await completeAlchemy({
           sessionId: createResult.session.sessionId,
         });
-
 
         if (!completeResult.success) {
           throw new Error(
@@ -287,7 +284,7 @@ const router = useRouter();
 
   return (
     <div className="mx-auto mt-60 px-4 md:px-20 xl:px-40">
-      <div className="bg-bg2 max-w-7xl mx-auto z-10">
+      <div className="bg-bg2 max-w-7xl mx-auto z-10 rounded-b-2xl">
         <div className="absolute top-105 left-0 w-full h-full -z-20">
           <Image src={BgArtImage1} alt="Bg Art 1" className="w-full" />
         </div>
@@ -336,14 +333,14 @@ const router = useRouter();
           ) : (
             <>
               <div
-                onClick={handleStartAlchemy}
-                className={`${isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-                  }`}
+                className={`${
+                  isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                }`}
               >
                 <CustomButton2
                   image={PointingHandButtonImage}
                   text={isLoading ? "Starting..." : "Start Alchemy"}
-                  link="#"
+                  onClick={handleStartAlchemy}
                   imageStyling="w-36 mt-8"
                 />
               </div>
@@ -356,35 +353,10 @@ const router = useRouter();
           )}
         </div>
 
-        <div className="mt-60 mb-20">
-          <div className="bg-primary rounded-2xl px-6 py-8 md:px-12 md:py-10 lg:px-16 lg:py-12">
-            <div className="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-8">
-              <div className="text-center lg:text-left">
-                <h3 className="text-2xl md:text-3xl font-semibold mb-2">
-                  To Get Exclusive Benefits
-                </h3>
-                <p className="text-secondary font-light text-lg md:text-xl lg:text-2xl opacity-90">
-                  Please drop in your email
-                </p>
-              </div>
-              <div className="flex flex-col sm:flex-row items-center w-full max-w-120">
-                <div className="relative flex w-full">
-                  <input
-                    type="email"
-                    placeholder="Enter Your Email"
-                    className="w-full sm:flex-1 px-4 py-3 md:px-6 md:py-4 pr-24 md:pr-28 rounded-full border border-secondary text-secondary placeholder-secondary focus:outline-none text-base md:text-lg bg-secondary/20"
-                  />
-                  <Link
-                    href="#"
-                    className="absolute right-1 top-1 bottom-1 px-6 py-2 md:px-8 md:py-3 bg-[#6B6B6B] hover:bg-[#5A5A5A] font-semibold rounded-full transition-colors duration-200 text-base md:text-lg font-boldwhitespace-nowrap"
-                  >
-                    ACTION
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <EmailSection
+          colorVariant="primary"
+          buttonImage={PointingHandButtonImage}
+        />
       </div>
     </div>
   );
