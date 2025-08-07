@@ -25,18 +25,12 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-import PopupArt1 from "@/assets/images/popup/airdrop-popup.webp";
+import PopupArt1 from "@/assets/images/popup/attention.webp";
 import RegisterButtonImage from "@/assets/images/buttons/register-button.webp";
+import ThumbsUpButtonImage from "@/assets/images/buttons/thumbs-up-button.webp";
 
 import CustomButton2 from "@/components/CustomButton2";
 import PopupComponent from "@/components/PopupComponent";
-
-// ALchmey Popup
-import AlchemyPopupArt1 from "@/assets/images/alchemy/alchemy-logo.webp";
-import ThumbsUpButtonImage from "@/assets/images/buttons/thumbs-up-button.webp";
-
-// DAO Popup
-import DaoPopupArt1 from "@/assets/images/dao/art-1.svg";
 
 // Types for better type safety
 interface LinkItem {
@@ -64,8 +58,9 @@ interface HeaderItem {
 // Extract backdrop component for readability
 const Backdrop = memo(({ visible }: { visible: boolean }) => (
   <div
-    className={`fixed left-0 w-full top-30 z-[10] backdrop-blur-md transition-opacity duration-300 delay-100 bg-black/50 ${visible ? "opacity-100 h-screen" : "opacity-0 h-0"
-      }`}
+    className={`fixed left-0 w-full top-30 z-[10] backdrop-blur-md transition-opacity duration-300 delay-100 bg-black/50 ${
+      visible ? "opacity-100 h-screen" : "opacity-0 h-0"
+    }`}
   />
 ));
 
@@ -91,8 +86,9 @@ const DropdownLink = memo(
       <a
         href={link.href}
         target={link.openInNewTab ? "_blank" : undefined}
-        className={`${isMainList ? "text-[25px] font-semibold" : "text-xs mt-4"
-          } text-tertiary block relative after:absolute after:left-0 after:-bottom-1 after:w-5 after:h-[3px] after:bg-primary after:opacity-0 hover:after:opacity-100 after:transition-opacity after:duration-300`}
+        className={`${
+          isMainList ? "text-[25px] font-semibold" : "text-xs mt-4"
+        } text-tertiary block relative after:absolute after:left-0 after:-bottom-1 after:w-5 after:h-[3px] after:bg-primary after:opacity-0 hover:after:opacity-100 after:transition-opacity after:duration-300`}
       >
         {link.name}
       </a>
@@ -239,9 +235,6 @@ const Navbar: React.FC = () => {
   }, []);
 
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [isAlchemyPopupOpen, setIsAlchemyPopupOpen] = useState(false);
-  const [isDaoPopupOpen, setIsDaoPopupOpen] = useState(false);
-
   // Check if popup should be shown
   useEffect(() => {
     const checkPopupTiming = () => {
@@ -249,74 +242,20 @@ const Navbar: React.FC = () => {
       const now = new Date().getTime();
 
       if (!lastPopupClosed) {
-        setIsPopupOpen(false);
+        setIsPopupOpen(true);
       } else {
         const lastClosedTime = parseInt(lastPopupClosed);
         const timeDifference = now - lastClosedTime;
         const thirtyMinutesInMs = 30 * 60 * 1000; // 30 minutes in milliseconds
 
         if (timeDifference >= thirtyMinutesInMs) {
-          setIsPopupOpen(false);
+          setIsPopupOpen(true);
         }
       }
     };
 
     checkPopupTiming();
   }, []);
-
-  // Check if alchemy popup should be shown
-  useEffect(() => {
-    const checkAlchemyPopupTiming = () => {
-      if (!currentPath.startsWith("/alchemy")) {
-        setIsAlchemyPopupOpen(false);
-        return;
-      }
-
-      const lastPopupClosed = localStorage.getItem("alchemyPopupLastClosed");
-      const now = new Date().getTime();
-
-      if (!lastPopupClosed) {
-        setIsAlchemyPopupOpen(true);
-      } else {
-        const lastClosedTime = parseInt(lastPopupClosed);
-        const timeDifference = now - lastClosedTime;
-        const thirtyMinutesInMs = 30 * 60 * 1000; // 30 minutes in milliseconds
-
-        if (timeDifference >= thirtyMinutesInMs) {
-          setIsAlchemyPopupOpen(true);
-        }
-      }
-    };
-
-    checkAlchemyPopupTiming();
-  }, [currentPath]);
-
-  // Check if dao popup should be shown
-  useEffect(() => {
-    const checkDaoPopupTiming = () => {
-      if (!currentPath.startsWith("/dao")) {
-        setIsDaoPopupOpen(false);
-        return;
-      }
-
-      const lastPopupClosed = localStorage.getItem("daoPopupLastClosed");
-      const now = new Date().getTime();
-
-      if (!lastPopupClosed) {
-        setIsDaoPopupOpen(true);
-      } else {
-        const lastClosedTime = parseInt(lastPopupClosed);
-        const timeDifference = now - lastClosedTime;
-        const thirtyMinutesInMs = 30 * 60 * 1000; // 30 minutes in milliseconds
-
-        if (timeDifference >= thirtyMinutesInMs) {
-          setIsDaoPopupOpen(true);
-        }
-      }
-    };
-
-    checkDaoPopupTiming();
-  }, [currentPath]);
 
   // Handle popup close
   const handlePopupClose = () => {
@@ -328,23 +267,6 @@ const Navbar: React.FC = () => {
     );
   };
 
-  // Handle alchemy popup close
-  const handleAlchemyPopupClose = () => {
-    setIsAlchemyPopupOpen(false);
-    // Store current time in localStorage
-    localStorage.setItem(
-      "alchemyPopupLastClosed",
-      new Date().getTime().toString()
-    );
-  };
-
-  // Handle dao popup close
-  const handleDaoPopupClose = () => {
-    setIsDaoPopupOpen(false);
-    // Store current time in localStorage
-    localStorage.setItem("daoPopupLastClosed", new Date().getTime().toString());
-  };
-
   return (
     <nav className="w-full bg-bg fixed top-0 left-0 right-0 z-50">
       {/* Referral Handler with Suspense boundary */}
@@ -353,7 +275,7 @@ const Navbar: React.FC = () => {
       </Suspense>
 
       <PopupComponent isOpen={isPopupOpen} onClose={handlePopupClose}>
-        <div className="mt-10 mx-2 md:mx-4 flex flex-col items-center justify-center w-90 md:w-120 xl:w-140 relative">
+        {/* <div className="mt-10 mx-2 md:mx-4 flex flex-col items-center justify-center w-90 md:w-120 xl:w-140 relative">
           <Image src={PopupArt1} alt="Popup Art 1" className="w-full" />
           <Link
             href="/airdrop"
@@ -367,40 +289,24 @@ const Navbar: React.FC = () => {
               imageStyling="w-20 md:w-30"
             />
           </Link>
-        </div>
-      </PopupComponent>
+        </div> */}
 
-      {/* Alchemy Popup */}
-      <PopupComponent
-        isOpen={isAlchemyPopupOpen}
-        onClose={handleAlchemyPopupClose}
-      >
         <div className="mt-10 mx-2 px-10 flex flex-col items-center justify-center w-90 md:w-120 xl:w-140 relative">
-          <Image
-            src={AlchemyPopupArt1}
-            alt="Alchemy Popup Art 1"
-            className="w-30"
-          />
-          <h1 className="mt-4 xl:mt-8 text-3xl xl:text-4xl text-center font-bold text-[#5000AD]">
-            “Beta Version Notice”
+          <Image src={PopupArt1} alt="Popup Art 1" className="w-30 md:w-40" />
+          <h1 className="mt-4 text-3xl xl:text-4xl text-center font-bold text-[#5000AD]">
+            “Notice”
           </h1>
-          <ul className="list-decimal pl-4 mt-4 xl:mt-8 text-lg xl:text-xl font-light flex flex-col gap-2">
-            <li> “You’re viewing a beta version of our Alchemy features.”</li>
-            <li>“Functionality is still in testing and subject to change.”</li>
-            <li>
-              “If you encounter any bugs or errors, please let us know via
-              Contact Us.”
-            </li>
-          </ul>
+          <p className="mt-4 text-lg xl:text-xl font-light text-center">
+            All features are in beta and subject to change. Your feedback helps
+            us improve. Please let us know via our Contact Us page.
+          </p>
           <div className="flex gap-20 my-4 xl:my-8">
-            <div onClick={() => handleAlchemyPopupClose()}>
-              <CustomButton2
-                image={ThumbsUpButtonImage}
-                text={"Got it"}
-                link=""
-                imageStyling="w-20 lg:w-24"
-              />
-            </div>
+            <CustomButton2
+              image={ThumbsUpButtonImage}
+              text={"Got it"}
+              onClick={() => handlePopupClose()}
+              imageStyling="w-20 lg:w-24"
+            />
             <CustomButton2
               image={RegisterButtonImage}
               text={"Contact Us"}
@@ -411,39 +317,6 @@ const Navbar: React.FC = () => {
         </div>
       </PopupComponent>
 
-      {/* DAO Popup */}
-      <PopupComponent isOpen={isDaoPopupOpen} onClose={handleDaoPopupClose}>
-        <div className="mt-4 xl:mt-10 mx-2 px-4 xl:px-10 flex flex-col items-center justify-center w-90 md:w-120 xl:w-150 relative">
-          <Image src={DaoPopupArt1} alt="DAO Popup Art 1" className="w-full" />
-          <h1 className="mt-4 xl:mt-8 text-3xl xl:text-4xl text-center font-bold text-[#5000AD]">
-            “Beta Version Notice”
-          </h1>
-          <ul className="list-decimal pl-4 mt-4 xl:mt-8 text-lg xl:text-xl font-light flex flex-col gap-2">
-            <li> “You’re viewing a beta version of our Alchemy features.”</li>
-            <li>“Functionality is still in testing and subject to change.”</li>
-            <li>
-              “If you encounter any bugs or errors, please let us know via
-              Contact Us.”
-            </li>
-          </ul>
-          <div className="flex gap-20 my-4 xl:my-8">
-            <div onClick={() => handleDaoPopupClose()}>
-              <CustomButton2
-                image={ThumbsUpButtonImage}
-                text={"Got it"}
-                link=""
-                imageStyling="w-20 lg:w-24"
-              />
-            </div>
-            <CustomButton2
-              image={RegisterButtonImage}
-              text={"Contact Us"}
-              link="/support/#contact-us"
-              imageStyling="w-20 lg:w-24"
-            />
-          </div>
-        </div>
-      </PopupComponent>
       <div className="relative flex items-center justify-between h-[150px] px-4 lg:px-[100px] mx-auto">
         {/* {!isMobile && <Backdrop visible={backdropVisibility} />}
         {isMobile && <Backdrop visible={menuOpen} />} */}
@@ -501,8 +374,9 @@ const Navbar: React.FC = () => {
                 <a
                   href={element.href}
                   target={element.openInNewTab ? "_blank" : undefined}
-                  className={`text-sm font-normal transition-all duration-300 hover:text-primary ${element.active ? "text-primary" : "text-tertiary"
-                    } group-hover:text-primary`}
+                  className={`text-sm font-normal transition-all duration-300 hover:text-primary ${
+                    element.active ? "text-primary" : "text-tertiary"
+                  } group-hover:text-primary`}
                   onMouseEnter={() =>
                     updateBackDropVisibility(
                       !element.hasMegaDrop ? "" : "enter"
@@ -525,11 +399,12 @@ const Navbar: React.FC = () => {
                     <div className="flex w-full justify-between h-auto my-10 px-[20px] pl-[210px]">
                       {element.dropDownContent.map((section, elemIdx) => (
                         <div
-                          className={`w-[calc(25%-30px)] leading-[35px] flex flex-col ${section.mainList &&
-                              element.mainTextDesktop !== "Eco"
+                          className={`w-[calc(25%-30px)] leading-[35px] flex flex-col ${
+                            section.mainList &&
+                            element.mainTextDesktop !== "Eco"
                               ? "min-w-100"
                               : "min-w-60"
-                            }`}
+                          }`}
                           key={elemIdx}
                         >
                           <header className="text-xs font-medium my-6">
@@ -594,8 +469,9 @@ const Navbar: React.FC = () => {
 
         {/* Mobile Menu */}
         <div
-          className={`absolute left-0 top-26 w-full p-8 bg-bg shadow-lg transform z-20 ${menuOpen ? "translate-y-0" : "-translate-y-[130%]"
-            }  lg:hidden max-h-[calc(100vh-150px)] overflow-y-auto`}
+          className={`absolute left-0 top-26 w-full p-8 bg-bg shadow-lg transform z-20 ${
+            menuOpen ? "translate-y-0" : "-translate-y-[130%]"
+          }  lg:hidden max-h-[calc(100vh-150px)] overflow-y-auto`}
         >
           {/* Auth Section (Mobile) */}
           <div className="mb-6">
@@ -669,8 +545,9 @@ const Navbar: React.FC = () => {
                             <Link
                               key={linkIdx}
                               href={link.href}
-                              className={`block text-lg my-3 hover:text-primary ${section.mainList ? "font-bold text-xl" : ""
-                                }`}
+                              className={`block text-lg my-3 hover:text-primary ${
+                                section.mainList ? "font-bold text-xl" : ""
+                              }`}
                               onClick={closeMobileMenu}
                             >
                               {link.name}
