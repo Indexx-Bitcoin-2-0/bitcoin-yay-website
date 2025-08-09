@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 
-import ArtImage1 from "@/assets/images/dao/art-1.svg";
+import ArtImage1 from "@/assets/images/dao/art-1.webp";
 
 import RoleImage1 from "@/assets/images/dao/Leader.webp";
 import RoleImage2 from "@/assets/images/dao/Validator.webp";
