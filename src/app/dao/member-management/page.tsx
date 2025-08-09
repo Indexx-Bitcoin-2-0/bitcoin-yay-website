@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { ChevronDown, Check, ArrowUp, ArrowDown, Flag } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import LoginPopup from "@/components/LoginPopup";
 
 import CustomButton2 from "@/components/CustomButton2";
 import CheckMarkButton from "@/assets/images/buttons/check-mark-button.svg";
@@ -64,8 +66,15 @@ export default function MemberManagement() {
   const [selectedActions, setSelectedActions] = useState<{
     [key: number]: string;
   }>({});
+  const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
+  const { user } = useAuth();
 
   const handleActionSelect = (memberId: number, action: string) => {
+    if (!user) {
+      setIsLoginPopupOpen(true);
+      return;
+    }
+
     setSelectedActions((prev) => ({
       ...prev,
       [memberId]: action,
@@ -75,8 +84,21 @@ export default function MemberManagement() {
 
   // Handle save changes
   const handleSaveChanges = () => {
+    if (!user) {
+      setIsLoginPopupOpen(true);
+      return;
+    }
+
     console.log("Saving changes:", selectedActions);
     // Here you would typically send the changes to an API
+  };
+
+  const handleLoginSuccess = () => {
+    setIsLoginPopupOpen(false);
+  };
+
+  const handleCloseLoginPopup = () => {
+    setIsLoginPopupOpen(false);
   };
 
   // Action dropdown component
@@ -187,6 +209,13 @@ export default function MemberManagement() {
           <CustomButton2 image={CheckMarkButton} text="Save changes" link="#" />
         </div>
       </div>
+
+      {/* Login Popup */}
+      <LoginPopup
+        isOpen={isLoginPopupOpen}
+        onClose={handleCloseLoginPopup}
+        onLoginSuccess={handleLoginSuccess}
+      />
     </div>
   );
 }

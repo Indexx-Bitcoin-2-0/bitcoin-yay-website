@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import LoginPopup from "@/components/LoginPopup";
 
 import ArtImage1 from "@/assets/images/dao/art-1.webp";
 
@@ -120,6 +122,8 @@ const daoRolesData = {
 export default function DAO() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
+  const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
+  const { user } = useAuth();
 
   const openPopup = (roleId: string) => {
     setSelectedRole(roleId);
@@ -129,6 +133,22 @@ export default function DAO() {
   const closePopup = () => {
     setIsPopupOpen(false);
     setSelectedRole(null);
+  };
+
+  const handleProtectedAction = (action: () => void) => {
+    if (!user) {
+      setIsLoginPopupOpen(true);
+      return;
+    }
+    action();
+  };
+
+  const handleLoginSuccess = () => {
+    setIsLoginPopupOpen(false);
+  };
+
+  const handleCloseLoginPopup = () => {
+    setIsLoginPopupOpen(false);
   };
 
   const renderPopupContent = () => {
@@ -297,7 +317,7 @@ export default function DAO() {
                     onClick={() => openPopup("thinkers")}
                     imageStyling="w-26"
                   />
-                </button> 
+                </button>
               </div>
               <div className="flex flex-col items-center justify-center w-80">
                 <Image src={RoleImage5} alt="role 1" className="w-50" />
@@ -322,12 +342,20 @@ export default function DAO() {
       </div>
 
       <div className="mt-40 flex items-center justify-center gap-10 md:gap-24 px-4">
-        <CustomButton2
-          image={ArrowRightButtonImage}
-          text="View My Dashboard"
-          link="/dao/dashboard"
-          imageStyling="w-42"
-        />
+        <div
+          onClick={() =>
+            handleProtectedAction(
+              () => (window.location.href = "/dao/dashboard")
+            )
+          }
+        >
+          <CustomButton2
+            image={ArrowRightButtonImage}
+            text="View My Dashboard"
+            link="#"
+            imageStyling="w-42"
+          />
+        </div>
         <CustomButton2
           image={ArrowRightButtonImage}
           text="View Proposals"
@@ -346,6 +374,13 @@ export default function DAO() {
       <PopupComponent isOpen={isPopupOpen} onClose={closePopup}>
         {renderPopupContent()}
       </PopupComponent>
+
+      {/* Login Popup */}
+      <LoginPopup
+        isOpen={isLoginPopupOpen}
+        onClose={handleCloseLoginPopup}
+        onLoginSuccess={handleLoginSuccess}
+      />
     </div>
   );
 }

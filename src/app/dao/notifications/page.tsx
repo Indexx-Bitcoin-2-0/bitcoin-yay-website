@@ -1,3 +1,9 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import LoginPopup from "@/components/LoginPopup";
+
 const notifications = [
   {
     id: 1,
@@ -50,6 +56,53 @@ const notifications = [
 ];
 
 export default function Notifications() {
+  const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
+  const { user, isLoading } = useAuth();
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      setIsLoginPopupOpen(true);
+    }
+  }, [user, isLoading]);
+
+  const handleLoginSuccess = () => {
+    setIsLoginPopupOpen(false);
+  };
+
+  const handleCloseLoginPopup = () => {
+    setIsLoginPopupOpen(false);
+  };
+
+  if (isLoading) {
+    return <div className="mt-40 text-center text-3xl">Loading...</div>;
+  }
+
+  if (!user) {
+    return (
+      <>
+        <div className="mx-auto mt-60 px-4 md:px-20 xl:px-40">
+          <div className="max-w-6xl mx-auto">
+            <div>
+              <h1 className="text-3xl md:text-7xl text-center md:text-left font-semibold">
+                Notifications
+              </h1>
+            </div>
+            <div className="mt-20 text-center">
+              <p className="text-xl text-tertiary">
+                Please log in to access notifications.
+              </p>
+            </div>
+          </div>
+        </div>
+        <LoginPopup
+          isOpen={isLoginPopupOpen}
+          onClose={handleCloseLoginPopup}
+          onLoginSuccess={handleLoginSuccess}
+        />
+      </>
+    );
+  }
+
   return (
     <div className="mx-auto mt-60 px-4 md:px-20 xl:px-40">
       <div className="max-w-6xl mx-auto">

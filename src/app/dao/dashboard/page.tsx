@@ -14,6 +14,8 @@ import CorrectIcon from "@/assets/images/dao/dashboard/correct-icon.svg";
 import CrossIcon from "@/assets/images/dao/dashboard/cross-icon.svg";
 import PendingIcon from "@/assets/images/dao/dashboard/pending-icon.svg";
 import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
+import LoginPopup from "@/components/LoginPopup";
 
 interface Power {
   name: string;
@@ -46,6 +48,8 @@ interface DashboardData {
 export default function Dashboard() {
   const { user, isLoading } = useAuth(); // Get authenticated user
   const [userData, setUserData] = useState<DashboardData | null>(null);
+  const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
+  const router = useRouter();
 
   const roleImages = {
     leader: RoleImage1,
@@ -60,29 +64,74 @@ export default function Dashboard() {
       if (!user?.email) return;
 
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/dao/getDashboard`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email: user.email }), // use email from checkAuth
-        });
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/dao/getDashboard`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email: user.email }), // use email from checkAuth
+          }
+        );
 
-        console.log(response)
+        console.log(response);
         const result = await response.json();
-        console.log("result", result)
+        console.log("result", result);
         setUserData(result.data);
       } catch (err) {
         console.error("Failed to fetch dashboard data:", err);
       }
     };
 
-    fetchDashboardData();
+    // Check authentication status when loading is complete
+    if (!isLoading) {
+      if (!user) {
+        setIsLoginPopupOpen(true);
+        return;
+      }
+      fetchDashboardData();
+    }
+  }, [user, isLoading]);
 
-  }, [user]);
+  const handleLoginSuccess = () => {
+    setIsLoginPopupOpen(false);
+  };
 
-  if (isLoading || !user) {
-    return <div className="mt-40 text-center text-3xl">Loading user data...</div>;
+  const handleCloseLoginPopup = () => {
+    setIsLoginPopupOpen(false);
+  };
+
+  if (isLoading) {
+    return <div className="mt-40 text-center text-3xl">Loading...</div>;
+  }
+
+  // Show login popup if user is not authenticated
+  if (!user) {
+    return (
+      <>
+        <div className="mt-40 container mx-auto px-4">
+          <div className="mx-auto">
+            <div className="mt-20 flex flex-col items-center justify-center text-center px-4">
+              <h2 className="text-lg md:text-2xl mb-4 font-bold ">
+                YingYang DAO
+              </h2>
+              <h1 className="text-3xl md:text-5xl xl:text-[82px] mb-4 font-semibold text-primary">
+                Dashboard
+              </h1>
+              <p className="text-xl md:text-2xl mt-4">
+                Please log in to access your dashboard.
+              </p>
+            </div>
+          </div>
+        </div>
+        <LoginPopup
+          isOpen={isLoginPopupOpen}
+          onClose={handleCloseLoginPopup}
+          onLoginSuccess={handleLoginSuccess}
+        />
+      </>
+    );
   }
 
   if (!userData) {
@@ -95,24 +144,24 @@ export default function Dashboard() {
 
   const getRoleKey = (role: string): keyof typeof roleImages => {
     const normalized = role.toLowerCase().split(" ")[0]; // e.g., "Leader Gopher" → "leader"
-    if (["leader", "validator", "manager", "thinker", "contributor"].includes(normalized)) {
+    if (
+      ["leader", "validator", "manager", "thinker", "contributor"].includes(
+        normalized
+      )
+    ) {
       return normalized as keyof typeof roleImages;
     }
     return "contributor";
   };
 
-
   return (
     <div className="mt-40 container mx-auto px-4">
       <div className="mx-auto">
         <div className="mt-20 flex flex-col items-center justify-center text-center px-4">
-          <h2 className="text-lg md:text-2xl mb-4 font-bold ">
-            YingYang DAO
-          </h2>
+          <h2 className="text-lg md:text-2xl mb-4 font-bold ">YingYang DAO</h2>
 
           <h1 className="text-3xl md:text-5xl xl:text-[82px] mb-4 font-semibold text-primary">
-            {userData.role}{" "}
-            Dashboard
+            {userData.role} Dashboard
           </h1>
 
           <div className="flex justify-center mt-6">
@@ -121,7 +170,6 @@ export default function Dashboard() {
               alt="Role image"
               className="w-90"
             />
-
           </div>
 
           <p className="mt-6 text-tertiary text-lg">
@@ -145,10 +193,7 @@ export default function Dashboard() {
                 className="w-14 mr-4"
               />
 
-              <p className="text-3xl">
-                {userData.role}{" "}
-                Gopher
-              </p>
+              <p className="text-3xl">{userData.role} Gopher</p>
             </div>
           </div>
 
@@ -166,8 +211,9 @@ export default function Dashboard() {
               <div
                 className="bg-primary h-6 rounded-full transition-all duration-300"
                 style={{
-                  width: `${(userData.reputation / userData.maxReputation) * 100
-                    }%`,
+                  width: `${
+                    (userData.reputation / userData.maxReputation) * 100
+                  }%`,
                 }}
               ></div>
             </div>
@@ -218,8 +264,8 @@ export default function Dashboard() {
                         task.status === "completed"
                           ? CorrectIcon
                           : task.status === "failed"
-                            ? CrossIcon
-                            : PendingIcon
+                          ? CrossIcon
+                          : PendingIcon
                       }
                       alt="Status icon"
                       className="w-8 ml-4"

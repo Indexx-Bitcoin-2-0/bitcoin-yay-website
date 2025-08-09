@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, FormEvent, useEffect } from "react";
+import { useState, FormEvent } from "react";
 import { ChevronDown, Check } from "lucide-react";
 
 import CustomButton2 from "@/components/CustomButton2";
 import SubmitButton from "@/assets/images/buttons/arrow-up-button.webp";
 import { useAuth } from "@/contexts/AuthContext";
-import { useRouter } from "next/navigation";
+import LoginPopup from "@/components/LoginPopup";
 
 interface FormData {
   title: string;
@@ -32,40 +32,16 @@ export default function NewProposal() {
   const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] =
     useState<boolean>(false);
+  const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
   const { user } = useAuth();
-  const router = useRouter();
-  const [userRole, setUserRole] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchUserRole = async () => {
-      try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/dao/getDashboard`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email: user?.email }), // use email from checkAuth
-        });
-        const data = await res.json();
-        console.log("role", data?.data.role)
-        if (res.ok && data?.data.role) {
-          setUserRole(data?.data.role.toLowerCase());
-          if (data?.data.role.toLowerCase() !== "leader gopher") {
-            router.push("/dao"); // redirect to proposals if not leader
-          }
-        } else {
-          router.push("/dao"); // fallback redirect
-        }
-      } catch (err) {
-        console.error("Error fetching role", err);
-        router.push("/dao");
-      }
-    };
+  const handleLoginSuccess = () => {
+    setIsLoginPopupOpen(false);
+  };
 
-    if (user?.email) {
-      fetchUserRole();
-    }
-  }, [user]);
+  const handleCloseLoginPopup = () => {
+    setIsLoginPopupOpen(false);
+  };
 
   const categories = [
     "Treasury Management",
@@ -77,10 +53,6 @@ export default function NewProposal() {
     "Governance",
     "Other",
   ];
-
-  if (!userRole) {
-    return <div className="mt-60 text-center text-2xl">Checking access...</div>;
-  }
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -103,17 +75,60 @@ export default function NewProposal() {
     return Object.keys(newErrors).length === 0;
   };
 
-
-  const handleFormSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
+  const handleFormSubmit = async (
+    e: FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     e.preventDefault();
     setFormSubmitted(true);
 
     if (!validateForm()) return;
 
+    // Check if user is authenticated before submitting
+    if (!user) {
+      setIsLoginPopupOpen(true);
+      return;
+    }
+
+    // Check user role
     try {
-      const timestamp = new Date().toISOString().split('T')[0].replace(/-/g, '');
-      const proposalId = `prop_${timestamp}_${formData.category.replace(/\s+/g, '_').toLowerCase()}_001`;
-      const taskId = `task_${timestamp}_${formData.category.replace(/\s+/g, '_').toLowerCase()}_001`;
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/dao/getDashboard`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: user?.email }),
+        }
+      );
+      const data = await res.json();
+
+      if (!res.ok || !data?.data.role) {
+        alert("Unable to verify your role. Please try again.");
+        return;
+      }
+
+      if (data?.data.role.toLowerCase() !== "leader gopher") {
+        alert("Only Leader Gophers can create proposals.");
+        return;
+      }
+    } catch (err) {
+      console.error("Error checking role", err);
+      alert("Unable to verify your role. Please try again.");
+      return;
+    }
+
+    try {
+      const timestamp = new Date()
+        .toISOString()
+        .split("T")[0]
+        .replace(/-/g, "");
+      const proposalId = `prop_${timestamp}_${formData.category
+        .replace(/\s+/g, "_")
+        .toLowerCase()}_001`;
+      const taskId = `task_${timestamp}_${formData.category
+        .replace(/\s+/g, "_")
+        .toLowerCase()}_001`;
 
       // Simulate IPFS upload or placeholder
       const attachmentUrls = formData.attachment
@@ -128,7 +143,7 @@ export default function NewProposal() {
         status: "Voting",
         tags: formData.title
           .toLowerCase()
-          .split(' ')
+          .split(" ")
           .filter((word) => word.length > 2), // basic tag generator
         startDate: new Date().toISOString(),
         endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days later
@@ -152,19 +167,24 @@ export default function NewProposal() {
         summary: formData.summary, // short summary
         createdBy: "support@bitcoinyay.com", // Replace with dynamic user email if available
         category: formData.category,
-        votingDeadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        votingDeadline: new Date(
+          Date.now() + 7 * 24 * 60 * 60 * 1000
+        ).toISOString(),
         roleRequired: "Member",
         votes: [],
         deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
       };
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/dao/createProposal`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/dao/createProposal`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
 
       const data = await response.json();
 
@@ -185,7 +205,6 @@ export default function NewProposal() {
       alert("An unexpected error occurred while submitting the proposal.");
     }
   };
-
 
   const handleInputChange = (field: keyof FormData, value: string) => {
     setFormData((prev) => ({
@@ -326,7 +345,9 @@ export default function NewProposal() {
             {/* Submit Button */}
             <div className="flex justify-center mt-20">
               <div
-                onClick={(e) => handleFormSubmit(e as unknown as FormEvent<HTMLFormElement>)}
+                onClick={(e) =>
+                  handleFormSubmit(e as unknown as FormEvent<HTMLFormElement>)
+                }
               >
                 <CustomButton2
                   image={SubmitButton}
@@ -338,6 +359,13 @@ export default function NewProposal() {
           </form>
         </div>
       </div>
+
+      {/* Login Popup */}
+      <LoginPopup
+        isOpen={isLoginPopupOpen}
+        onClose={handleCloseLoginPopup}
+        onLoginSuccess={handleLoginSuccess}
+      />
     </div>
   );
 }
