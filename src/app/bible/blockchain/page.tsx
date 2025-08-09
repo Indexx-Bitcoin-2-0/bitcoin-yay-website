@@ -172,7 +172,7 @@ const BlockchainPage = () => {
         <div className="flex flex-col items-center justify-center">
           <p className="text-2xl font-bold text-primary">Welcome to</p>
           <h1 className="text-4xl md:text-7xl font-semibold my-6">
-            YingYang Blockchain
+            Bitcoin Yay Blockchain
           </h1>
           <p className="text-lg max-w-150">
             Where ancient philosophy meets next-gen crypto. Powered by AI,
@@ -223,7 +223,7 @@ const BlockchainPage = () => {
       <div className="mt-60 container mx-auto flex flex-col items-center justify-center text-center">
         <p className="text-2xl font-bold text-primary">What is</p>
         <h3 className="text-4xl md:text-5xl font-semibold my-6">
-          YingYang Blockchain
+          Bitcoin Yay Blockchain
         </h3>
         <div className="my-10 flex items-center justify-center">
           <Image
@@ -233,11 +233,11 @@ const BlockchainPage = () => {
           />
         </div>
         <p className="text-base max-w-160 mt-10 text-tertiary">
-          <strong>Balance in Motion.</strong> At its core, YinYang Blockchain
-          channels the dual forces of Yin (passive, efficient) and Yang (active,
-          secure) into a dynamic, AI-optimized ecosystem. It’s a philosophy
-          turned into code — balancing off-chain speed with on-chain security,
-          all seamlessly managed by artificial intelligence.
+          <strong>Balance in Motion.</strong> At its core, Bitcoin Yay
+          Blockchain channels the dual forces of Yin (passive, efficient) and
+          Yang (active, secure) into a dynamic, AI-optimized ecosystem. It’s a
+          philosophy turned into code — balancing off-chain speed with on-chain
+          security, all seamlessly managed by artificial intelligence.
         </p>
       </div>
 

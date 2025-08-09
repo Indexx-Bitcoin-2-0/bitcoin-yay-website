@@ -29,12 +29,12 @@ const header_data = [
             href: "/bible/tokenomics",
           },
           {
-            name: "Ying Yang Blockchain",
-            href: "/blockchain",
+            name: "Bitcoin Yay Blockchain",
+            href: "/bible/blockchain",
           },
           {
-            name: "Ying Yang Wallet",
-            href: "/bible/ying-yang-wallet",
+            name: "Bitcoin Yay Wallet",
+            href: "/bible/bitcoin-yay-wallet",
           },
         ],
       },
@@ -134,7 +134,7 @@ const header_data = [
         mainList: true,
         links: [
           {
-            name: "Ying Yang Blockchain Expo",
+            name: "Bitcoin Yay Blockchain Expo",
             href: "/bible/blockchain/details",
           },
         ],
@@ -158,7 +158,7 @@ const header_data = [
     hasMegaDrop: true,
     dropDownContent: [
       {
-        heading: "Explore YingYang DAO",
+        heading: "Explore Bitcoin Yay DAO",
         mainList: true,
         links: [
           {
@@ -331,10 +331,8 @@ const header_data = [
             name: "Alchemy Trade",
             href: `/coming-soon`,
           },
-          
         ],
       },
-      
       {
         heading: "Support",
         links: [

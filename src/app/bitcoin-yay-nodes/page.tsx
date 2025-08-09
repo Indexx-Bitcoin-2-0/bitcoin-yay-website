@@ -9,22 +9,22 @@ import ArtImage6 from "@/assets/images/ying-yang-nodes/art-6.webp";
 import ArtImage7 from "@/assets/images/ying-yang-nodes/art-7.webp";
 
 export const metadata = {
-  title: "Ying Yang Nodes - Run Bitcoin Yay Blockchain Nodes on Your PC",
+  title: "Bitcoin Yay Nodes - Run Bitcoin Yay Blockchain Nodes on Your PC",
   description:
-    "Learn about Ying Yang Nodes for Bitcoin Yay blockchain. Run lightweight nodes on personal computers, participate in consensus, and help secure the decentralized network. Four participation levels: Seeder, Sentinel, Guardian, Validator.",
+    "Learn about Bitcoin Yay Nodes for Bitcoin Yay blockchain. Run lightweight nodes on personal computers, participate in consensus, and help secure the decentralized network. Four participation levels: Seeder, Sentinel, Guardian, Validator.",
   openGraph: {
-    title: "Ying Yang Nodes - Run Bitcoin Yay Blockchain Nodes on Your PC",
+    title: "Bitcoin Yay Nodes - Run Bitcoin Yay Blockchain Nodes on Your PC",
     description:
-      "Learn about Ying Yang Nodes for Bitcoin Yay blockchain. Run lightweight nodes on personal computers, participate in consensus, and help secure the decentralized network. Four participation levels: Seeder, Sentinel, Guardian, Validator.",
+      "Learn about Bitcoin Yay Nodes for Bitcoin Yay blockchain. Run lightweight nodes on personal computers, participate in consensus, and help secure the decentralized network. Four participation levels: Seeder, Sentinel, Guardian, Validator.",
   },
 };
 
-export default function YingYangNodes() {
+export default function BitcoinYayNodes() {
   return (
     <div className="container mx-auto mt-40">
       <div className="mt-20 flex flex-col items-center justify-center text-center px-4">
         <h1 className="mt-10 text-5xl md:text-7xl mb-4 font-semibold">
-          Ying Yang Nodes
+          Bitcoin Yay Nodes
         </h1>
         <Image
           src={ArtImage1}
@@ -38,15 +38,15 @@ export default function YingYangNodes() {
           Introduction to
         </h2>
         <h1 className="text-3xl md:text-5xl xl:text-8xl mb-4 font-semibold">
-          Ying Yang Nodes
+          Bitcoin Yay Nodes
         </h1>
         <p className="mt-10 text-tertiary text-xl font-light">
-          Ying Yang Nodes represent a foundational part of the Bitcoin Yay
+          Bitcoin Yay Nodes represent a foundational part of the Bitcoin Yay
           ecosystem. Designed to run on personal computers like laptops and
           desktops, these nodes allow everyday users to participate in
           supporting and expanding the Yay blockchain network.
           <br />
-          Much like other decentralized systems, Ying Yang Nodes validate and
+          Much like other decentralized systems, Bitcoin Yay Nodes validate and
           record transactions across a shared ledger. Their primary role is to
           help the network agree on the order and legitimacy of transactions—a
           process known as consensus.
@@ -58,7 +58,7 @@ export default function YingYangNodes() {
           technical skills are required—just install the software on your
           computer and you&apos;re part of the network.
           <br />
-          The Ying Yang Node app is built with simplicity in mind. It&apos;s
+          The Bitcoin Yay Node app is built with simplicity in mind. It&apos;s
           easy to install, intuitive to use, and gives users the ability to:
           <br />
           <ul className="list-disc pl-6">
@@ -69,7 +69,7 @@ export default function YingYangNodes() {
           Turning the node on or off is entirely up to you—providing flexibility
           while still promoting decentralized participation.
           <br />
-          This initial phase of Ying Yang Node deployment is part of Bitcoin
+          This initial phase of Bitcoin Yay Node deployment is part of Bitcoin
           Yay&apos;s broader vision of progressive decentralization. By
           empowering more people to get involved from the beginning, Bitcoin Yay
           is building a stronger, fairer, and more resilient network rooted in
@@ -94,11 +94,11 @@ export default function YingYangNodes() {
             Node Participation
           </h1>
           <p className="mt-10 text-tertiary text-xl font-light">
-            Ying Yang Nodes offer four flexible levels of participation for
+            Bitcoin Yay Nodes offer four flexible levels of participation for
             individuals running the node software on their personal computers.
             Whether you&apos;re just getting started or ready to dive deeper
             into helping secure and grow the network, there&apos;s a role for
-            everyone in the Ying Yang ecosystem.
+            everyone in the Bitcoin Yay ecosystem.
             <br />
             <br />
             Each level is designed to match your technical ability,
@@ -109,12 +109,12 @@ export default function YingYangNodes() {
         <div className="mt-10">
           <h2 className="text-3xl md:text-5xl font-bold">1. Seeder</h2>
           <p className="mt-6 text-base md:text-lg text-tertiary">
-            Seeder is the entry-level role in the Ying Yang Node ecosystem. This
-            tier grants users access to the Ying Yang Desktop App, delivering a
-            seamless desktop experience that reflects the core features of the
-            mobile app—such as viewing your Yay balance, engaging in community
-            chats, streaming media, and exploring Ying Yang-powered
-            applications.
+            Seeder is the entry-level role in the Bitcoin Yay Node ecosystem.
+            This tier grants users access to the Bitcoin Yay Desktop App,
+            delivering a seamless desktop experience that reflects the core
+            features of the mobile app—such as viewing your Yay balance,
+            engaging in community chats, streaming media, and exploring Bitcoin
+            Yay-powered applications.
             <br />
             <br />
             While Seeders do not participate in blockchain validation, they play
@@ -187,8 +187,8 @@ export default function YingYangNodes() {
       <div className="mt-32 px-4 max-w-6xl mx-auto">
         <h2 className="text-3xl md:text-5xl font-bold mb-4">2. Sentinel</h2>
         <p className="mt-6 text-base md:text-lg text-tertiary">
-          Sentinels actively support the Ying Yang blockchain by running a Ying
-          Yang Node. Once activated, these nodes help validate and relay
+          Sentinels actively support the Bitcoin Yay blockchain by running a
+          Bitcoin Yay Node. Once activated, these nodes help validate and relay
           transactions, contribute data to the network, and uphold the integrity
           of the distributed ledger—even if they aren&apos;t responsible for
           final consensus decisions.
@@ -198,7 +198,7 @@ export default function YingYangNodes() {
           network without needing deep technical expertise. The setup is
           user-friendly, and in future phases, Sentinels may also contribute
           shared computing power—such as bandwidth, CPU, or storage—to help
-          expand Ying Yang&apos;s decentralized infrastructure.
+          expand Bitcoin Yay&apos;s decentralized infrastructure.
         </p>
         <div className="mt-8 w-full overflow-x-auto">
           <table className="w-full border-collapse border border-tertiary">
@@ -244,7 +244,7 @@ export default function YingYangNodes() {
         <div className="">
           <h2 className="text-3xl md:text-5xl font-bold mb-4">3. Oracle</h2>
           <p className="mt-6 text-base md:text-lg text-tertiary">
-            Oracles are Ying Yang&apos;s elite high-performance nodes—always
+            Oracles are Bitcoin Yay&apos;s elite high-performance nodes—always
             online and forming the backbone of the network&apos;s consensus
             mechanism. These advanced nodes are responsible for validating
             transactions, finalizing blocks, and keeping the entire network
@@ -252,7 +252,7 @@ export default function YingYangNodes() {
             <br />
             <br />
             Oracles are selected based on consistent uptime, strong hardware
-            performance, and proven reliability. As the Ying Yang ecosystem
+            performance, and proven reliability. As the Bitcoin Yay ecosystem
             expands, additional Oracles will help scale the network—driving fast
             consensus, AI-enhanced validation, and global decentralization.
           </p>
@@ -293,7 +293,7 @@ export default function YingYangNodes() {
         <h2 className="text-3xl md:text-5xl font-bold mb-4">4. Council</h2>
         <p className="mt-6 text-base md:text-lg text-tertiary">
           Councils represent the highest tier of responsibility and influence
-          within the Ying Yang Node ecosystem. Acting as the decentralized
+          within the Bitcoin Yay Node ecosystem. Acting as the decentralized
           network&apos;s governing body, Councils combine deep commitment,
           technical expertise, and strategic leadership to shape the future of
           the protocol.
@@ -305,7 +305,7 @@ export default function YingYangNodes() {
           <ul className="list-disc pl-8 mt-2 mb-2">
             <li>Finalizing consensus decisions alongside Oracles.</li>
             <li>
-              Hosting and managing governance processes such as Ying Yang
+              Hosting and managing governance processes such as Bitcoin Yay
               Improvement Proposals (YYIPs)
             </li>
             <li>
@@ -378,11 +378,12 @@ export default function YingYangNodes() {
             Selection Process for
           </h2>
           <h1 className="text-3xl md:text-5xl xl:text-[90px] font-bold mb-8 text-secondary">
-            Ying Yang Running Nodes
+            Bitcoin Yay Running Nodes
           </h1>
           <p className="text-xl mb-12">
             To support the Bitcoin Yay Testnet, users can apply to operate as
-            either an any of Ying Yang Nodes. Here&apos;s how the process works:
+            either an any of Bitcoin Yay Nodes. Here&apos;s how the process
+            works:
           </p>
 
           <h3 className="text-3xl md:text-5xl font-bold mb-6 text-secondary">
@@ -390,11 +391,11 @@ export default function YingYangNodes() {
           </h3>
           <ul className="list-decimal pl-8 text-xl mb-8 space-y-2">
             <li>
-              Download and install the Ying Yang Node software on your personal
-              computer (laptop or desktop).
+              Download and install the Bitcoin Yay Node software on your
+              personal computer (laptop or desktop).
             </li>
             <li>
-              Complete the node application directly within the Ying Yang Node
+              Complete the node application directly within the Bitcoin Yay Node
               interface.
             </li>
             <li>
@@ -407,24 +408,24 @@ export default function YingYangNodes() {
               normally.
             </li>
             <li>
-              The Ying Yang Core Team will review node applications on a rolling
-              basis and select participants based on performance, reliability,
-              and technical readiness.
+              The Bitcoin Yay Core Team will review node applications on a
+              rolling basis and select participants based on performance,
+              reliability, and technical readiness.
             </li>
           </ul>
 
           <p className="text-xl mb-12">
             Selections will unfold over the course of several months. The total
             number of accepted nodes will depend on how many meet the criteria
-            for secure, consistent, and trustworthy participation in the Ying
-            Yang network.
+            for secure, consistent, and trustworthy participation in the Bitcoin
+            Yay network.
           </p>
 
           <h3 className="text-3xl md:text-5xl font-bold mb-6 text-secondary">
             Selection Criteria
           </h3>
           <p className="text-xl mb-6">
-            Ying Yang Nodes will be selected based on the following technical
+            Bitcoin Yay Nodes will be selected based on the following technical
             and participation-based standards:
           </p>
           <ul className="list-disc pl-8 text-xl mb-8 max-w-4xl space-y-2">
@@ -450,8 +451,8 @@ export default function YingYangNodes() {
             </li>
             <li>
               Community Contributions
-              <br /> Past engagement with the Bitcoin Yay or Ying Yang community
-              may positively impact your application.
+              <br /> Past engagement with the Bitcoin Yay or Bitcoin Yay
+              community may positively impact your application.
             </li>
             <li>Trust & Performance Metrics</li>
           </ul>
@@ -468,13 +469,13 @@ export default function YingYangNodes() {
       <div className="mt-80 max-w-6xl mx-auto px-4">
         <div className="mx-auto mt-16">
           <h2 className="text-xl md:text-[40px] font-bold text-primary mb-2">
-            Ying Yang Nodes
+            Bitcoin Yay Nodes
           </h2>
           <h1 className="text-3xl md:text-5xl xl:text-[90px] font-bold mb-8">
             Testnet Roadmap
           </h1>
           <p className="text-xl mb-16 text-bg3">
-            The rollout of Ying Yang Nodes will follow a carefully structured,
+            The rollout of Bitcoin Yay Nodes will follow a carefully structured,
             community-first development path. The Selection Stage is the
             foundational phase in building a resilient decentralized network.
           </p>
@@ -486,7 +487,7 @@ export default function YingYangNodes() {
           </h3>
           <p className="text-xl mb-6">
             In this early phase, the Bitcoin Yay team will work with applicants
-            who have installed the Ying Yang Node software to evaluate
+            who have installed the Bitcoin Yay Node software to evaluate
             real-world performance across different environments.
           </p>
 
@@ -526,7 +527,7 @@ export default function YingYangNodes() {
           <p className="mt-10 text-xl mb-16">
             The goal of this phase is simple: maximize inclusion while
             protecting network integrity. Your participation helps shape the
-            future of the Bitcoin Yay ecosystem—starting with Ying Yang Nodes.
+            future of the Bitcoin Yay ecosystem—starting with Bitcoin Yay Nodes.
           </p>
         </div>
 
@@ -535,7 +536,7 @@ export default function YingYangNodes() {
             2. Revision Stage
           </h3>
           <p className="text-xl mb-6">
-            This phase is all about putting the Ying Yang Node network through
+            This phase is all about putting the Bitcoin Yay Node network through
             real-world pressure and edge-case scenarios to fine-tune its
             consensus algorithm and system resilience.
           </p>
@@ -592,7 +593,7 @@ export default function YingYangNodes() {
             3. Live Testnet
           </h3>
           <p className=" text-xl mb-6">
-            This is where the Ying Yang Node network begins operating under
+            This is where the Bitcoin Yay Node network begins operating under
             real-world conditions.
           </p>
 
@@ -602,8 +603,8 @@ export default function YingYangNodes() {
 
           <ul className="list-disc pl-8  text-xl mt-4 space-y-2">
             <li>
-              Ying Yang Nodes start processing live test transactions across the
-              Bitcoin Yay blockchain.
+              Bitcoin Yay Nodes start processing live test transactions across
+              the Bitcoin Yay blockchain.
             </li>
 
             <li>
@@ -644,14 +645,14 @@ export default function YingYangNodes() {
         <Image src={ArtImage7} alt="Art Image 7" className="w-150" />
         <div className="mt-16">
           <h2 className="text-3xl md:text-5xl xl:text-8xl font-bold mt-10 text-secondary">
-            Ying Yang Node FAQ
+            Bitcoin Yay Node FAQ
           </h2>
           <h5 className="mt-20 text-xl md:text-2xl xl:text-[40px] font-bold text-secondary">
             What is the relationship between the Bitcoin Yay Node software and
             the mobile application?
           </h5>
           <h5 className="mt-10 text-xl md:text-3xl font-bold text-secondary">
-            The Ying Yang Node and the Bitcoin Yay mobile app work together
+            The Bitcoin Yay Node and the Bitcoin Yay mobile app work together
             using the same account.
           </h5>
           <ul className="mt-6 list-disc pl-8 text-xl space-y-2">
@@ -663,7 +664,7 @@ export default function YingYangNodes() {
             </li>
           </ul>
           <h5 className="mt-20 text-xl md:text-3xl font-bold text-secondary">
-            The Ying Yang Node on your computer lets you:
+            The Bitcoin Yay Node on your computer lets you:
           </h5>
           <ul className="list-disc pl-8 text-xl mt-4 space-y-2">
             <li>Check your Yay balance</li>
@@ -699,8 +700,8 @@ export default function YingYangNodes() {
           <p className="mt-6 text-xl">
             During the test phase, the team is checking how different devices
             perform. <br />
-            You’re always in control—you can turn your Ying Yang Node on or off
-            anytime.
+            You’re always in control—you can turn your Bitcoin Yay Node on or
+            off anytime.
           </p>
           <h5 className="mt-20 text-xl md:text-3xl font-bold text-secondary">
             Will running a Node affect my computer’s performance?
@@ -719,7 +720,7 @@ export default function YingYangNodes() {
           </p>
 
           <h5 className="mt-20 text-xl md:text-3xl font-bold text-secondary">
-            Will I Earn Rewards for Running a Ying Yang Node?
+            Will I Earn Rewards for Running a Bitcoin Yay Node?
           </h5>
           <p className="mt-6 text-xl">
             <span className="font-bold">
@@ -735,11 +736,11 @@ export default function YingYangNodes() {
           </p>
 
           <h5 className="mt-20 text-xl md:text-3xl font-bold text-secondary">
-            Is the Ying Yang Node Software Open Source?
+            Is the Bitcoin Yay Node Software Open Source?
           </h5>
           <p className="mt-6 text-xl">
-            Yes! The blockchain part of the Ying Yang Node software will be open
-            source.
+            Yes! The blockchain part of the Bitcoin Yay Node software will be
+            open source.
             <br />
             We’re getting the GitHub page ready. Once it’s live, you’ll be able
             to:
@@ -756,7 +757,7 @@ export default function YingYangNodes() {
         <div className="mt-80">
           <p className="text-base italic">
             DISCLAIMER <br />
-            This document outlines the early release and vision of Ying Yang
+            This document outlines the early release and vision of Bitcoin Yay
             Nodes, the foundational infrastructure for the Bitcoin Yay network,
             along with a preliminary roadmap for their testnet functionality.
             Please note: The information presented here is subject to change as

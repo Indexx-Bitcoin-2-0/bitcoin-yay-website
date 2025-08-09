@@ -14,7 +14,6 @@ import CorrectIcon from "@/assets/images/dao/dashboard/correct-icon.svg";
 import CrossIcon from "@/assets/images/dao/dashboard/cross-icon.svg";
 import PendingIcon from "@/assets/images/dao/dashboard/pending-icon.svg";
 import { useAuth } from "@/contexts/AuthContext";
-import { useRouter } from "next/navigation";
 import LoginPopup from "@/components/LoginPopup";
 
 interface Power {
@@ -49,7 +48,6 @@ export default function Dashboard() {
   const { user, isLoading } = useAuth(); // Get authenticated user
   const [userData, setUserData] = useState<DashboardData | null>(null);
   const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
-  const router = useRouter();
 
   const roleImages = {
     leader: RoleImage1,
@@ -114,7 +112,7 @@ export default function Dashboard() {
           <div className="mx-auto">
             <div className="mt-20 flex flex-col items-center justify-center text-center px-4">
               <h2 className="text-lg md:text-2xl mb-4 font-bold ">
-                YingYang DAO
+                Bitcoin Yay DAO
               </h2>
               <h1 className="text-3xl md:text-5xl xl:text-[82px] mb-4 font-semibold text-primary">
                 Dashboard
@@ -158,7 +156,9 @@ export default function Dashboard() {
     <div className="mt-40 container mx-auto px-4">
       <div className="mx-auto">
         <div className="mt-20 flex flex-col items-center justify-center text-center px-4">
-          <h2 className="text-lg md:text-2xl mb-4 font-bold ">YingYang DAO</h2>
+          <h2 className="text-lg md:text-2xl mb-4 font-bold ">
+            Bitcoin Yay DAO
+          </h2>
 
           <h1 className="text-3xl md:text-5xl xl:text-[82px] mb-4 font-semibold text-primary">
             {userData.role} Dashboard
