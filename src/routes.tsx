@@ -18,3 +18,4 @@ export const ALCHEMY_CONFIG_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/
 
 export const ALCHEMY_GET_USER_SUBSCRIPTION = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/mining/getUserSubscriptionPlan/BTCY`;
 
+export const EMAIL_TO_ADMIN_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/basic/emailsubscribe`;

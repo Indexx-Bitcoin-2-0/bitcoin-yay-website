@@ -1,8 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import axios from "axios";
 import { StaticImageData } from "next/image";
 import CustomButton2 from "@/components/CustomButton2";
+
+import { EMAIL_TO_ADMIN_API_ROUTE } from "@/routes";
 
 interface EmailSectionProps {
   colorVariant: string;
@@ -14,9 +17,51 @@ export default function EmailSection({
   buttonImage,
 }: EmailSectionProps) {
   const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState<"success" | "error" | "">("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = () => {
-    console.log("Email submitted:", email);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Clear previous messages
+    setMessage("");
+    setMessageType("");
+
+    setIsLoading(true);
+
+    try {
+      await axios.post(EMAIL_TO_ADMIN_API_ROUTE, {
+        email: email.trim(),
+        website: "Bitcoin Yay",
+      });
+
+      setMessage("Thank you! Your email has been successfully subscribed.");
+      setMessageType("success");
+      setEmail("");
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        if (err.response?.data?.data?.message) {
+          setMessage(err.response.data.data.message);
+        } else {
+          setMessage("Something went wrong. Please try again.");
+        }
+      } else {
+        setMessage("An unexpected error occurred. Please try again.");
+      }
+      setMessageType("error");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+    // Clear message on typing
+    if (message) {
+      setMessage("");
+      setMessageType("");
+    }
   };
 
   return (
@@ -33,24 +78,48 @@ export default function EmailSection({
               Please drop in your email
             </p>
           </div>
-          <div className="flex flex-col sm:flex-row gap-10 items-center w-full max-w-140">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter Your Email"
-              className="w-full sm:flex-1 px-4 py-3 md:px-6 md:py-4 pr-24 md:pr-28 rounded-full border border-secondary text-secondary placeholder-secondary focus:outline-none text-base md:text-lg bg-secondary/20"
-            />
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col sm:flex-row gap-6 items-center w-full max-w-140"
+          >
+            <div className="flex flex-col gap-2 w-full sm:flex-1">
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={handleChange}
+                placeholder="Enter Your Email"
+                disabled={isLoading}
+                className="w-full px-4 py-3 md:px-6 md:py-4 pr-24 md:pr-28 rounded-full border border-secondary text-secondary placeholder-secondary focus:outline-none text-base md:text-lg bg-secondary/20"
+              />
+              {message && (
+                <p
+                  className={`text-center text-sm md:text-base ${
+                    messageType === "success"
+                      ? "text-green-500"
+                      : "text-red-500"
+                  }`}
+                >
+                  {message}
+                </p>
+              )}
+            </div>
 
             <div className="flex items-center justify-center">
-              <CustomButton2
-                text=""
-                onClick={handleSubmit}
-                image={buttonImage}
-                imageStyling="w-24 mt-2"
-              />
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="bg-transparent border-none p-0"
+              >
+                <CustomButton2
+                  text=""
+                  onClick={() => {}}
+                  image={buttonImage}
+                  imageStyling="w-30 mt-2"
+                />
+              </button>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>

@@ -8,7 +8,7 @@ import FreeMiningButtonImage from "@/assets/images/alchemy/home/free-art.webp";
 import AlchemyLogo from "@/assets/images/alchemy/alchemy-logo.webp";
 import ArtImage1 from "@/assets/images/alchemy/free-mining/art-1.webp";
 import BitcoinYayLogo from "@/assets/images/logo2.webp";
-import PointingButtonImage from "@/assets/images/buttons/point-button.webp";
+import ActionButtonImage from "@/assets/images/buttons/action-tertiary-button.webp"
 
 import EmailSection from "@/components/EmailSection";
 
@@ -143,7 +143,7 @@ export default function FreeMiningPage() {
       <div className="mx-4 md:mx-10 lg:mx-24">
         <EmailSection
           colorVariant="primary"
-          buttonImage={PointingButtonImage}
+          buttonImage={ActionButtonImage}
         />
       </div>
     </div>

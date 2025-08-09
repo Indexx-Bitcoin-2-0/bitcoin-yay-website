@@ -7,6 +7,8 @@ import Image from "next/image";
 import BitcoinYayLogo from "@/assets/images/logo.webp";
 import BgArtImage1 from "@/assets/images/alchemy/quantum/bg-art-1.webp";
 import PointingHandButtonImage from "@/assets/images/buttons/point-button.webp";
+import ActionButtonImage from "@/assets/images/buttons/action-primary-button.webp"
+
 import CustomButton2 from "@/components/CustomButton2";
 import EmailSection from "@/components/EmailSection";
 
@@ -361,7 +363,7 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
 
         <EmailSection
           colorVariant="[#5A4BCC]"
-          buttonImage={PointingHandButtonImage}
+          buttonImage={ActionButtonImage}
         />
       </div>
     </div>

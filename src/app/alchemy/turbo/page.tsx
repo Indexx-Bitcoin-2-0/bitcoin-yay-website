@@ -8,7 +8,7 @@ import TurboMiningButtonImage from "@/assets/images/alchemy/home/turbo-art.webp"
 import AlchemyLogo from "@/assets/images/alchemy/alchemy-logo.webp";
 import ArtImage1 from "@/assets/images/alchemy/turbo/art-1.webp";
 import BitcoinYayLogo from "@/assets/images/logo.webp";
-import PointingButtonImage from "@/assets/images/buttons/point-button.webp";
+import ActionButtonImage from "@/assets/images/buttons/action-primary-button.webp"
 
 import EmailSection from "@/components/EmailSection";
 
@@ -148,7 +148,7 @@ export default function TurboMiningPage() {
       <div className="mx-4 md:mx-10 lg:mx-24">
         <EmailSection
           colorVariant="[#2056BA]"
-          buttonImage={PointingButtonImage}
+          buttonImage={ActionButtonImage}
         />
       </div>
     </div>
