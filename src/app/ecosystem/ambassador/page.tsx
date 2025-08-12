@@ -43,6 +43,9 @@ export default function Ambassador() {
     shortBio?: string;
   }>({});
 
+  const toNumber = (v: string | number) =>
+    typeof v === "number" ? v : Number(String(v).replace(/[,+]/g, "")) || 0;
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -62,7 +65,7 @@ export default function Ambassador() {
           .filter((channel) => channel.platform && channel.followers)
           .map((channel) => ({
             platform: channel.platform,
-            followers: channel.followers,
+            followers: toNumber(channel.followers), // ,
           }));
 
         const requestData = {
@@ -417,7 +420,7 @@ export default function Ambassador() {
                         <option value="50000-100000" className="bg-bg">
                           50,000 - 100,000
                         </option>
-                        <option value="100000+" className="bg-bg">
+                        <option value="100000" className="bg-bg">
                           100,000+
                         </option>
                       </select>
