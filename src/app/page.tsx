@@ -1,5 +1,6 @@
 "use client";
 import Image, { StaticImageData } from "next/image";
+import Link from "next/link";
 
 import BenefitCard from "@/components/BenefitCard";
 import HeroComponent from "@/components/HeroComponent";
@@ -34,12 +35,20 @@ import GopherImage4 from "@/assets/images/home/gophers/gopher-4.webp";
 import GopherImage5 from "@/assets/images/home/gophers/gopher-5.webp";
 import GopherImage6 from "@/assets/images/home/gophers/gopher-6.webp";
 
-import BirthdayBanner from "@/assets/images/home/airdrop-1-aug-banner-desktop.webp";
-import BirthdayBannerTablet from "@/assets/images/home/airdrop-1-aug-banner-tablet.webp";
-import BirthdayBannerMobile from "@/assets/images/home/airdrop-1-aug-banner-mobile.webp";
-import RegisterButtonImage from "@/assets/images/buttons/register-button.webp";
+// import BirthdayBanner from "@/assets/images/home/airdrop-1-aug-banner-desktop.webp";
+// import BirthdayBannerTablet from "@/assets/images/home/airdrop-1-aug-banner-tablet.webp";
+// import BirthdayBannerMobile from "@/assets/images/home/airdrop-1-aug-banner-mobile.webp";
+// import RegisterButtonImage from "@/assets/images/buttons/register-button.webp";
 // import ApplestoreDownloadButton from "@/assets/images/buttons/get-on-applestore-button.webp";
 // import PlaystoreDownloadButton from "@/assets/images/buttons/get-on-playstore-button.webp";
+
+import FreeMiningButtonImage from "@/assets/images/mining/free-mining-icon.webp";
+import PowerMiningButtonImage from "@/assets/images/mining/power-mining-icon.webp";
+import QuantumMiningButtonImage from "@/assets/images/mining/quantum-mining-icon.webp";
+
+import ElectricMiningButtonImage from "@/assets/images/mining/electric-icon.webp";
+import TurbineMiningButtonImage from "@/assets/images/mining/turbo-icon.webp";
+import NuclearMiningButtonImage from "@/assets/images/mining/nuclear-icon.webp";
 
 import bgArtImage1 from "../assets/images/bitcoin-art-2.png";
 
@@ -102,21 +111,26 @@ export default function Home() {
   const [btcPrice, setBtcPrice] = useState<number | null>(null);
   const [btcyPrice, setBtcyPrice] = useState<number | null>(null);
 
+  const [isPowerMiningActive, setIsPowerMiningActive] = useState(false);
+
   useEffect(() => {
     const fetchPrices = async () => {
       try {
-        const res = await axios.get('https://api.coingecko.com/api/v3/simple/price', {
-          params: {
-            ids: 'bitcoin',
-            vs_currencies: 'usd',
-          },
-        });
+        const res = await axios.get(
+          "https://api.coingecko.com/api/v3/simple/price",
+          {
+            params: {
+              ids: "bitcoin",
+              vs_currencies: "usd",
+            },
+          }
+        );
         const btc = res.data.bitcoin.usd;
         const btcy = btc / 1_000_000;
         setBtcPrice(btc);
         setBtcyPrice(btcy);
       } catch (error) {
-        console.error('Failed to fetch BTC price:', error);
+        console.error("Failed to fetch BTC price:", error);
       }
     };
     fetchPrices();
@@ -132,17 +146,16 @@ export default function Home() {
           And Petty Cash Of Bitcoin
         </div>
 
-
         <div className="px-4 mt-4 text-5xl font-bold text-primary max-w-250 leading-snug">
           {btcPrice !== null && btcyPrice !== null ? (
             <>
-              Bitcoin ${btcPrice.toLocaleString()}, Bitcoin Yay ${btcyPrice.toFixed(4)}
+              Bitcoin ${btcPrice.toLocaleString()}, Bitcoin Yay $
+              {btcyPrice.toFixed(4)}
             </>
           ) : (
-            'Loading prices...'
+            "Loading prices..."
           )}
         </div>
-
 
         <div className="px-4 mt-2 text-xs font-bold text-primary max-w-250">
           1 Bitcoin = 1M Bitcoin Yay
@@ -213,6 +226,111 @@ export default function Home() {
           </Link>
         </div> */}
       </div>
+
+      {/* Mining Navigation button #######################################################################################  */}
+      <div className="flex mt-40 mb-40 gap-30 flex-wrap justify-center items-center max-w-5xl mx-auto">
+        <Link
+          href="/mining/free-mining"
+          className="flex flex-col items-center justify-center group"
+        >
+          <div className="h-32 flex justify-center items-center">
+            <Image
+              src={FreeMiningButtonImage}
+              alt="Free Mining"
+              className="w-54 group-hover:scale-105 transition-all duration-300"
+            />
+          </div>
+          <p className="mt-4 text-lg font-semibold group-hover:text-primary">
+            FREE MINING
+          </p>
+        </Link>
+        <button
+          type="button"
+          onClick={() => setIsPowerMiningActive(!isPowerMiningActive)}
+          className="flex flex-col items-center justify-center group cursor-pointer"
+        >
+          <div className="h-32 flex justify-center items-center">
+            <Image
+              src={PowerMiningButtonImage}
+              alt="Electric Mining"
+              className="w-60 group-hover:scale-105 transition-all duration-300 mb-8"
+            />
+          </div>
+          <p
+            className={`mt-4 text-lg font-semibold group-hover:text-primary ${
+              isPowerMiningActive ? "text-primary" : ""
+            }`}
+          >
+            POWER MINING
+          </p>
+        </button>
+        <Link
+          href="/mining/quantum-mining"
+          className="flex flex-col items-center justify-center group"
+        >
+          <div className="h-32 flex justify-center items-center">
+            <Image
+              src={QuantumMiningButtonImage}
+              alt="Electric Mining"
+              className="w-56 group-hover:scale-105 transition-all duration-300 mb-4"
+            />
+          </div>
+          <p className="mt-2 text-lg font-semibold group-hover:text-primary">
+            QUANTUM MINING
+          </p>
+        </Link>
+        {isPowerMiningActive && (
+          <div className="flex flex-wrap gap-30 items-center justify-center">
+            <Link
+              href="/mining/electric-mining"
+              className="flex flex-col items-center justify-center group"
+            >
+              <div className="h-32 flex justify-center items-center">
+                <Image
+                  src={ElectricMiningButtonImage}
+                  alt="Electric Mining"
+                  className="w-18 group-hover:scale-105 transition-all duration-300"
+                />
+              </div>
+              <p className="mt-2 text-lg font-semibold group-hover:text-primary">
+                ELECTRIC
+              </p>
+            </Link>
+            <Link
+              href="/mining/turbo-mining"
+              className="flex flex-col items-center justify-center group"
+            >
+              <div className="h-32 flex justify-center items-center">
+                <Image
+                  src={TurbineMiningButtonImage}
+                  alt="Electric Mining"
+                  className="w-28 group-hover:scale-105 transition-all duration-300"
+                />
+              </div>
+              <p className="mt-2 text-lg font-semibold group-hover:text-primary">
+                TURBO
+              </p>
+            </Link>
+            <Link
+              href="/mining/nuclear-mining"
+              className="flex flex-col items-center justify-center group"
+            >
+              <div className="h-32 flex justify-center items-center">
+                <Image
+                  src={NuclearMiningButtonImage}
+                  alt="Electric Mining"
+                  className="w-30 group-hover:scale-105 transition-all duration-300"
+                />
+              </div>
+              <p className="mt-2 text-lg font-semibold group-hover:text-primary">
+                NUCLEAR
+              </p>
+            </Link>
+          </div>
+        )}
+      </div>
+
+      {/* Mining Navigation button #######################################################################################  */}
 
       <div className="container mx-auto px-4 py-8 relative">
         {/* Part 02 */}
@@ -528,6 +646,6 @@ export default function Home() {
         {/* Part 10 */}
         <DisclaimerComponent />
       </div>
-    </div >
+    </div>
   );
 }

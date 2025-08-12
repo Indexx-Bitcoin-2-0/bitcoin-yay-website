@@ -4,7 +4,7 @@ import { MouseEventHandler } from "react";
 
 type CustomButton2Props = {
   image: StaticImageData;
-  text: string;
+  text?: string;
   imageStyling?: string;
   _blank?: boolean;
 } & (
@@ -36,9 +36,11 @@ export default function CustomButton2({
         alt="Logo"
         className={`group-hover:scale-110 transition-transform duration-300 ${imageStyling}`}
       />
-      <div className="flex justify-center mt-4 text-center">
-        <p className="text-lg group-hover:text-primary">{text}</p>
-      </div>
+      {text && (
+        <div className="flex justify-center mt-4 text-center">
+          <p className="text-lg group-hover:text-primary">{text}</p>
+        </div>
+      )}
     </>
   );
 
