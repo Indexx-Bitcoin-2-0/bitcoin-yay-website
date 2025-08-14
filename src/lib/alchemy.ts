@@ -5,6 +5,8 @@ import {
   ALCHEMY_GET_USER_SUBSCRIPTION,
 } from "@/routes";
 
+export const ALCHEMY_DISABLED = "true";
+
 export interface CreateAlchemyData {
   email: string;
   inputAmount: number;
@@ -271,18 +273,18 @@ export async function getUserSubscription(email: string): Promise<UserSubscripti
 
 
 export function isPlanAllowed(plan: string | null, required: string): boolean {
-    const planAccessMap: Record<string, string[]> = {
-      "free mining": ["free"],
-      "electric power": ["electric"],
-      "turbo power": ["electric", "turbo"],
-      "nuclear power": ["electric", "turbo", "nuclear"],
-      "quantum mining": ["quantum"],
-    };
+  const planAccessMap: Record<string, string[]> = {
+    "free mining": ["free"],
+    "electric power": ["electric"],
+    "turbo power": ["electric", "turbo"],
+    "nuclear power": ["electric", "turbo", "nuclear"],
+    "quantum mining": ["quantum"],
+  };
 
-    if (!plan) return false;
+  if (!plan) return false;
 
-    const normalizedPlan = plan.trim().toLowerCase();
-    const normalizedRequired = required.trim().toLowerCase();
+  const normalizedPlan = plan.trim().toLowerCase();
+  const normalizedRequired = required.trim().toLowerCase();
 
-    return planAccessMap[normalizedPlan]?.includes(normalizedRequired) || false;
-  }
+  return planAccessMap[normalizedPlan]?.includes(normalizedRequired) || false;
+}

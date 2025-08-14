@@ -19,6 +19,7 @@ import {
   getAlchemyConfig,
   AlchemyConfigItem,
   getUserSubscription,
+  ALCHEMY_DISABLED,
   // isPlanAllowed,
 } from "@/lib/alchemy";
 
@@ -60,6 +61,11 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
   useEffect(() => {
     const fetchAlchemyConfig = async () => {
       try {
+        if (ALCHEMY_DISABLED) {
+          setConfigLoading(false);
+          setConfigError(null); // we’ll render the disabled UI instead of an error
+          return;
+        }
         setConfigLoading(true);
         setConfigError(null);
 
@@ -292,6 +298,24 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
     );
   }
 
+  if (ALCHEMY_DISABLED) {
+    return (
+      <div className="mx-auto mt-60 px-4 md:px-20 xl:px-40">
+        <div className="bg-bg2 max-w-7xl mx-auto z-10">
+          <div className="pt-20 flex justify-center items-center min-h-96">
+            <div className="text-center max-w-xl">
+              <p className="text-3xl font-semibold mb-4">Alchemy is temporarily unavailable</p>
+              <p className="text-lg text-tertiary">
+                We’re making improvements. Please check back soon.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+
   return (
     <div className="mx-auto mt-60 px-4 md:px-20 xl:px-40">
       <div className="bg-bg2 max-w-7xl mx-auto z-10 rounded-b-2xl">
@@ -343,9 +367,8 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
           ) : (
             <>
               <div
-                className={`${
-                  isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-                }`}
+                className={`${isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                  }`}
               >
                 <CustomButton2
                   image={PointingHandButtonImage}
