@@ -42,7 +42,7 @@ const ElectricMiningPage = () => {
         <CustomButton2
           text="Subscribe"
           image={BellButtonImage}
-          link="#"
+          link="/#apple-store-download"
           imageStyling="w-34"
         />
       </div>
