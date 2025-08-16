@@ -158,7 +158,7 @@ export default function Home() {
         </div>
 
         <div className="px-4 mt-2 text-xs font-bold text-primary max-w-250">
-          1 Bitcoin = 1M Bitcoin Yay
+          1 Bitcoin = 1 Million Bitcoin Yay
         </div>
       </div>
 
