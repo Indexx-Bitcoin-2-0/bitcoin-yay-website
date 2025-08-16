@@ -137,7 +137,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="overflow-hidden relative mt-40">
+    <div className="overflow-hidden relative mt-40 max-w-[1920px] mx-auto">
       <div className="mt-6 flex flex-col items-center text-center">
         <div className="px-4 text-2xl font-bold text-primary max-w-250 leading-tight">
           Bitcoin Yay Is The Micro Token
@@ -564,11 +564,11 @@ export default function Home() {
 
         {/* Part 7 */}
         <div className="-mx-4 mt-20 w-screen relative left-1/2 right-1/2 -translate-x-1/2 flex flex-col items-center">
-          <Image src={ArtImage1} alt="art-image" className="w-full" />
+          <Image src={ArtImage1} alt="art-image" className="w-full max-w-[1920px]" />
           <Image
             src={ArtImage2}
             alt="art-image"
-            className="-mt-24 md:-mt-40 lg:-mt-80 w-1/2"
+            className="-mt-24 md:-mt-40 lg:-mt-80 w-1/2 max-w-[1000px]"
           />
         </div>
 

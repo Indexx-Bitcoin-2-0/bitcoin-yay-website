@@ -173,7 +173,7 @@ const CarouselFrame7 = () => {
         <h2 className="mt-4 text-5xl xl:text-7xl 2xl:text-8xl font-bold my-4">
           Bitcoin Satoshi
         </h2>
-        <p className="mt-10 text-xl xl:text-2xl hidden md:block max-w-1/2 leading-10">
+        <p className="mt-10 text-xl xl:text-2xl hidden md:block max-w-2/3 leading-10">
           In the digital shadows, the mysterious Satoshi entrusted a creator to
           craft a meme coin, NFTs, and ordinals that reflected his
           essence—without revealing his identity. Each piece bore a symbolic
@@ -185,14 +185,14 @@ const CarouselFrame7 = () => {
       <Image
         src={Image7}
         alt="Carousel Frame"
-        className="absolute -bottom-60 md:-right-20 md:-bottom-40 lg:bottom-40 xl:-bottom-10 2xl:-bottom-20 w-80 xl:w-140 2xl:w-170"
+        className="absolute -bottom-60 md:-right-40 lg:-right-60 md:-bottom-40 lg:bottom-40 xl:-bottom-10 2xl:-bottom-0 w-80 xl:w-140 2xl:w-170"
       />
     </div>
   );
 };
 
 export default function HeroSection() {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(6);
   const [paused, setPaused] = useState(false);
 
   useEffect(() => {
