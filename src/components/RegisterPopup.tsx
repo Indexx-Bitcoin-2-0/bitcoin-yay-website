@@ -48,16 +48,16 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
     email: "",
     password: "",
     confirmPassword: "",
-    invitationCode: "",
+    referralCode: "",
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
 
-  // Update invitation code when referralCode prop changes
+  // Update referral code when referralCode prop changes
   useEffect(() => {
     if (referralCode) {
-      setFormData((prev) => ({ ...prev, invitationCode: referralCode }));
+      setFormData((prev) => ({ ...prev, referralCode: referralCode }));
     }
   }, [referralCode]);
 
@@ -140,7 +140,7 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
           email: formData.email.trim(),
           password: formData.password,
           confirmPassword: formData.confirmPassword,
-          invitationCode: formData.invitationCode.trim(),
+          referralCode: formData.referralCode.trim(),
         };
 
         const response = await axios.post(REGISTER_API_ROUTE, registrationData);
@@ -176,7 +176,7 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
             email: "",
             password: "",
             confirmPassword: "",
-            invitationCode: "",
+            referralCode: "",
           });
         } else {
           setErrors({ general: "Registration failed. Please try again." });
@@ -493,24 +493,24 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
 
           <div className="mb-4">
             <label
-              htmlFor="invitationCode"
+              htmlFor="referralCode"
               className="block text-bg3 text-base mb-2"
             >
-              Invitation Code (Optional)
+              Referral Code (Optional)
             </label>
             <input
               type="text"
-              id="invitationCode"
+              id="referralCode"
               className="w-full text-base p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
-              value={formData.invitationCode}
+              value={formData.referralCode}
               onChange={(e) =>
-                handleInputChange("invitationCode", e.target.value)
+                handleInputChange("referralCode", e.target.value)
               }
               disabled={isSubmitting}
             />
-            {errors.invitationCode && (
+            {errors.referralCode && (
               <p className="text-red-500 text-xs mt-1">
-                {errors.invitationCode}
+                {errors.referralCode}
               </p>
             )}
           </div>
