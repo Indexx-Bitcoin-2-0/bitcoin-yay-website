@@ -10,6 +10,7 @@ import Image4 from "@/assets/images/home/hero-section/4.webp";
 import Image5 from "@/assets/images/home/hero-section/5.webp";
 import Image6a from "@/assets/images/home/hero-section/6-1.webp";
 import Image6b from "@/assets/images/home/hero-section/6-2.webp";
+import Image7 from "@/assets/images/home/hero-section/7.webp";
 
 const CarouselFrame1 = () => {
   return (
@@ -162,15 +163,43 @@ const CarouselFrame6 = () => {
   );
 };
 
+const CarouselFrame7 = () => {
+  return (
+    <div className="mt-10 h-[300px] md:h-[300px] lg:h-[700px] relative flex flex-col md:flex-row justify-between items-center text-center md:text-left md:mx-20 lg:mx-40">
+      <div className="md:mt-80 lg:mt-10 w-full">
+        <h2 className="text-5xl xl:text-7xl 2xl:text-8xl font-bold my-4">
+          Who Is
+        </h2>
+        <h2 className="mt-4 text-5xl xl:text-7xl 2xl:text-8xl font-bold my-4">
+          Bitcoin Satoshi
+        </h2>
+        <p className="mt-10 text-xl xl:text-2xl hidden md:block max-w-2/3 leading-10">
+          In the digital shadows, the mysterious Satoshi entrusted a creator to
+          craft a meme coin, NFTs, and ordinals that reflected his
+          essence—without revealing his identity. Each piece bore a symbolic
+          mask, the emblem of his anonymity. Entrusted to Indexx.ai, the Who is
+          Bitcoin Satoshi tokens became a legacy of mystery, forever echoing one
+          question: Who is Bitcoin Satoshi?
+        </p>
+      </div>
+      <Image
+        src={Image7}
+        alt="Carousel Frame"
+        className="absolute -bottom-60 md:-right-40 lg:-right-60 md:-bottom-40 lg:bottom-40 xl:-bottom-10 2xl:-bottom-0 w-80 xl:w-140 2xl:w-170"
+      />
+    </div>
+  );
+};
+
 export default function HeroSection() {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(6);
   const [paused, setPaused] = useState(false);
 
   useEffect(() => {
     if (paused) return;
 
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % 6);
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % 7);
     }, 5000);
 
     return () => clearInterval(interval);
@@ -181,7 +210,7 @@ export default function HeroSection() {
 
   return (
     <div
-      className="relative w-full h-[300px] md:h-[600px] lg:h-[700px]"
+      className="mt-20 relative w-full h-[300px] md:h-[600px] lg:h-[700px]"
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
     >
@@ -226,6 +255,13 @@ export default function HeroSection() {
         }`}
       >
         <CarouselFrame6 />
+      </div>
+      <div
+        className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+          currentIndex === 6 ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <CarouselFrame7 />
       </div>
     </div>
   );
