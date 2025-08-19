@@ -71,7 +71,6 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
         if (!response.success) {
           throw new Error(response.error || "Failed to fetch alchemy config");
         }
-        console.log("i am here");
         if (response.session?.electric) {
           if (planIndex >= 0 && planIndex < response.session.electric.length) {
             setCurrentPlan(response.session.electric[planIndex]);

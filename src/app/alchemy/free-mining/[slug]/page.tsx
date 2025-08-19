@@ -162,7 +162,6 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
         return;
       }
 
-      console.log("isUserTypeAllowed", isUserTypeAllowed);
       // Step 1: Create alchemy session
       const createResult = await createAlchemy({
         email: authData.email,
@@ -170,7 +169,6 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
         userType: "free",
       });
 
-      console.log(createResult);
       if (!createResult.success) {
         throw new Error(
           createResult.error || "Failed to start alchemy session"
