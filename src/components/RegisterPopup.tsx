@@ -12,6 +12,7 @@ import GoogleRegisterButtonImage from "@/assets/images/buttons/google-button.web
 import CustomButton2 from "@/components/CustomButton2";
 import { ChevronDown, Check } from "lucide-react";
 import { useGoogleLogin } from "@react-oauth/google";
+import { extractApiMessage, normalizeErrorMessage } from "@/lib/utils";
 
 
 interface RegisterPopupProps {
@@ -178,16 +179,22 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
             confirmPassword: "",
             referralCode: "",
           });
-        } else {
-          setErrors({ general: "Registration failed. Please try again." });
-        }
+          return;
+        }  // Non-2xx but no Axios throw (rare). Try to surface a message.
+        const fallbackMsg =
+          extractApiMessage(response.data) || "Registration failed. Please try again.";
+        setErrors({ general: normalizeErrorMessage(response.status, fallbackMsg) });
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
-          const errorMessage =
-            error.response?.data?.data?.message ||
-            error.response?.data?.message ||
-            "Registration failed. Please try again.";
-          setErrors({ general: errorMessage });
+          // If we have a server response, parse it
+          if (error.response) {
+            const status = error.response.status;
+            const rawMsg = extractApiMessage(error.response.data);
+            setErrors({ general: normalizeErrorMessage(status, rawMsg) });
+          } else {
+            // No response -> likely network error / CORS / timeout
+            setErrors({ general: "Network error. Please check your connection and try again." });
+          }
         } else {
           setErrors({ general: "Registration failed. Please try again." });
         }
@@ -196,6 +203,7 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
 
     setIsSubmitting(false);
   };
+
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
