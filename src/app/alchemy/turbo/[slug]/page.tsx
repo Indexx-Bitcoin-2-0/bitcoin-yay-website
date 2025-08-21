@@ -7,10 +7,12 @@ import Image from "next/image";
 import BitcoinYayLogo from "@/assets/images/logo.webp";
 import BgArtImage1 from "@/assets/images/alchemy/turbo/bg-art-1.webp";
 import PointingHandButtonImage from "@/assets/images/buttons/point-button.webp";
-import ActionButtonImage from "@/assets/images/buttons/action-primary-button.webp"
+import ActionButtonImage from "@/assets/images/buttons/action-primary-button.webp";
 
 import CustomButton2 from "@/components/CustomButton2";
 import EmailSection from "@/components/EmailSection";
+import { useAuth } from "@/contexts/AuthContext";
+import LoginPopup from "@/components/LoginPopup";
 
 import { getAuthData } from "@/lib/auth";
 import {
@@ -38,13 +40,15 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
   const planIndex = parseInt(resolvedParams.slug);
   // const router = useRouter();
 
+  const { user, isLoading } = useAuth(); // Get authenticated user
+  const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
   const [configLoading, setConfigLoading] = useState(true);
   const [configError, setConfigError] = useState<string | null>(null);
   const [currentPlan, setCurrentPlan] = useState<AlchemyConfigItem | null>(
     null
   );
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingAlchemy, setIsLoadingAlchemy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [showResult, setShowResult] = useState<
@@ -88,19 +92,34 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
       }
     };
 
-    // Only fetch if planIndex is a valid number
-    if (!isNaN(planIndex)) {
-      fetchAlchemyConfig();
-    } else {
-      setConfigError("Invalid plan index");
-      setConfigLoading(false);
+    // Check authentication status when loading is complete
+    if (!isLoading) {
+      if (!user) {
+        setIsLoginPopupOpen(true);
+        return;
+      }
+      // Only fetch if planIndex is a valid number
+      if (!isNaN(planIndex)) {
+        fetchAlchemyConfig();
+      } else {
+        setConfigError("Invalid plan index");
+        setConfigLoading(false);
+      }
     }
-  }, [planIndex]);
+  }, [user, isLoading, planIndex]);
+
+  const handleLoginSuccess = () => {
+    setIsLoginPopupOpen(false);
+  };
+
+  const handleCloseLoginPopup = () => {
+    setIsLoginPopupOpen(false);
+  };
 
   const handleStartAlchemy = async () => {
     if (!currentPlan) return;
 
-    setIsLoading(true);
+    setIsLoadingAlchemy(true);
     setError(null);
     setSuccess(false);
 
@@ -163,7 +182,7 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
         setError(
           `❌ Your current user type "${subscriptionResult.data.userType}" with plan "${subscriptionResult.data.plan}" does not allow access to this page.\n\n👉 Please go to: ${redirectPath}`
         );
-        setIsLoading(false);
+        setIsLoadingAlchemy(false);
         return;
       }
 
@@ -220,9 +239,40 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
         err instanceof Error ? err.message : "Failed to start alchemy session"
       );
     } finally {
-      setIsLoading(false);
+      setIsLoadingAlchemy(false);
     }
   };
+
+  if (isLoading) {
+    return <div className="mt-40 text-center text-3xl">Loading...</div>;
+  }
+
+  // Show login popup if user is not authenticated
+  if (!user) {
+    return (
+      <>
+        <div className="mx-auto mt-60 px-4 md:px-20 xl:px-40">
+          <div className="bg-bg2 max-w-7xl mx-auto z-10 rounded-b-2xl">
+            <div className="pt-20 flex justify-center items-center min-h-96">
+              <div className="text-center">
+                <h1 className="text-3xl md:text-4xl font-semibold mb-4">
+                  Turbo Mining Alchemy
+                </h1>
+                <p className="text-xl text-tertiary">
+                  Please log in to access the Turbo Mining Alchemy Gateway.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <LoginPopup
+          isOpen={isLoginPopupOpen}
+          onClose={handleCloseLoginPopup}
+          onLoginSuccess={handleLoginSuccess}
+        />
+      </>
+    );
+  }
 
   // If showing result, render the appropriate component
   if (showResult === "congratulations" && alchemyResult) {
@@ -344,12 +394,14 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
             <>
               <div
                 className={`${
-                  isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                  isLoadingAlchemy
+                    ? "opacity-50 cursor-not-allowed"
+                    : "cursor-pointer"
                 }`}
               >
                 <CustomButton2
                   image={PointingHandButtonImage}
-                  text={isLoading ? "Starting..." : "Start Alchemy"}
+                  text={isLoadingAlchemy ? "Starting..." : "Start Alchemy"}
                   onClick={handleStartAlchemy}
                   imageStyling="w-36 mt-8"
                 />
