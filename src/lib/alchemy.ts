@@ -3,9 +3,10 @@ import {
   ALCHEMY_COMPLETE_API_ROUTE,
   ALCHEMY_CONFIG_API_ROUTE,
   ALCHEMY_GET_USER_SUBSCRIPTION,
+  GET_USER_BTCY_BALANCE_API_ROUTE,
 } from "@/routes";
 
-export const ALCHEMY_DISABLED = "false";
+export const ALCHEMY_DISABLED = false;
 
 export interface CreateAlchemyData {
   email: string;
@@ -196,7 +197,7 @@ export async function completeAlchemy(
 export async function getAlchemyConfig(): Promise<AlchemyConfigResponse> {
   try {
     const accessToken = getAccessToken();
-
+    console.log("log", accessToken)
     if (!accessToken) {
       throw new Error("No access token found. Please login first.");
     }
@@ -210,7 +211,7 @@ export async function getAlchemyConfig(): Promise<AlchemyConfigResponse> {
     });
 
     const result = await response.json();
-
+    console.log("result", result)
     if (!response.ok) {
       throw new Error(result.error || "Failed to fetch alchemy config");
     }
@@ -222,6 +223,7 @@ export async function getAlchemyConfig(): Promise<AlchemyConfigResponse> {
       session: result.session,
     };
   } catch (error) {
+    console.log("Get alchemy config error:", error);
     console.error("Get alchemy config error:", error);
     return {
       success: false,
@@ -271,7 +273,42 @@ export async function getUserSubscription(email: string): Promise<UserSubscripti
   }
 }
 
+export interface UserBTCYBalanceResponse {
+  status: number;
+  data: {
+    email: string;
+    balance: number;
+    totalBTCYBalance: number;
+    userType: string;
+    plan: string;
+  };
+  error?: string;
+}
 
+export async function getUserBTCYBalance(email: string): Promise<UserBTCYBalanceResponse> {
+  try {
+    const response = await fetch(
+      `${GET_USER_BTCY_BALANCE_API_ROUTE}/${email}`,
+      {
+        method: "GET",
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || "Failed to fetch user BTCY balance");
+    }
+
+    return result;
+  } catch (error) {
+    return {
+      status: 500,
+      data: { email, balance: 0, totalBTCYBalance: 0, userType: "", plan: "" },
+      error: error instanceof Error ? error.message : "Failed to fetch user BTCY balance",
+    };
+  }
+}
 export function isPlanAllowed(plan: string | null, required: string): boolean {
   const planAccessMap: Record<string, string[]> = {
     "free mining": ["free"],

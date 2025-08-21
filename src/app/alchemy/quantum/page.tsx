@@ -8,9 +8,11 @@ import QuantumMiningButtonImage from "@/assets/images/alchemy/home/quantum-art.w
 import AlchemyLogo from "@/assets/images/alchemy/alchemy-logo.webp";
 import ArtImage1 from "@/assets/images/alchemy/quantum/art-1.webp";
 import BitcoinYayLogo from "@/assets/images/logo.webp";
-import ActionButtonImage from "@/assets/images/buttons/action-primary-button.webp"
+import ActionButtonImage from "@/assets/images/buttons/action-primary-button.webp";
 
 import EmailSection from "@/components/EmailSection";
+import { useAuth } from "@/contexts/AuthContext";
+import LoginPopup from "@/components/LoginPopup";
 
 import { getAlchemyConfig, AlchemyConfigItem } from "@/lib/alchemy";
 
@@ -44,14 +46,16 @@ const CustomCard = ({
 };
 
 export default function QuantumMiningPage() {
+  const { user, isLoading } = useAuth(); // Get authenticated user
+  const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
   const [quantumPlans, setQuantumPlans] = useState<AlchemyConfigItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingPlans, setIsLoadingPlans] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchQuantumPlans = async () => {
       try {
-        setIsLoading(true);
+        setIsLoadingPlans(true);
         setError(null);
 
         const response = await getAlchemyConfig();
@@ -69,14 +73,61 @@ export default function QuantumMiningPage() {
           err instanceof Error ? err.message : "Failed to fetch quantum plans"
         );
       } finally {
-        setIsLoading(false);
+        setIsLoadingPlans(false);
       }
     };
 
-    fetchQuantumPlans();
-  }, []);
+    // Check authentication status when loading is complete
+    if (!isLoading) {
+      if (!user) {
+        setIsLoginPopupOpen(true);
+        return;
+      }
+      fetchQuantumPlans();
+    }
+  }, [user, isLoading]);
+
+  const handleLoginSuccess = () => {
+    setIsLoginPopupOpen(false);
+  };
+
+  const handleCloseLoginPopup = () => {
+    setIsLoginPopupOpen(false);
+  };
 
   if (isLoading) {
+    return <div className="mt-40 text-center text-3xl">Loading...</div>;
+  }
+
+  // Show login popup if user is not authenticated
+  if (!user) {
+    return (
+      <>
+        <div className="mx-auto mt-40 lg:mt-60 px-4 md:px-20 xl:px-40">
+          <div className="flex justify-center items-center min-h-96">
+            <div className="text-center">
+              <h1 className="text-3xl md:text-[52px] font-semibold mb-4">
+                Alchemy Gateway
+              </h1>
+              <h2 className="text-2xl md:text-4xl font-semibold mb-4">
+                Quantum Mining
+              </h2>
+              <p className="text-xl text-tertiary">
+                Please log in to access the Quantum Mining Alchemy Gateway.
+              </p>
+            </div>
+          </div>
+        </div>
+        <LoginPopup
+          isOpen={isLoginPopupOpen}
+          onClose={handleCloseLoginPopup}
+          onLoginSuccess={handleLoginSuccess}
+        />
+      </>
+    );
+  }
+
+  if (isLoadingPlans) {
     return (
       <div className="mx-auto mt-40 lg:mt-60 px-4 md:px-20 xl:px-40">
         <div className="flex justify-center items-center min-h-96">

@@ -73,9 +73,7 @@ export default function Dashboard() {
           }
         );
 
-        console.log(response);
         const result = await response.json();
-        console.log("result", result);
         setUserData(result.data);
       } catch (err) {
         console.error("Failed to fetch dashboard data:", err);

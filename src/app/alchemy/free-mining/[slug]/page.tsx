@@ -7,9 +7,11 @@ import Image from "next/image";
 import BitcoinYayLogo from "@/assets/images/logo.webp";
 import BgArtImage1 from "@/assets/images/alchemy/free-mining/bg-art-1.webp";
 import PointingHandButtonImage from "@/assets/images/buttons/point-button.webp";
-import ActionButtonImage from "@/assets/images/buttons/action-tertiary-button.webp"
+import ActionButtonImage from "@/assets/images/buttons/action-tertiary-button.webp";
 import CustomButton2 from "@/components/CustomButton2";
 import EmailSection from "@/components/EmailSection";
+import { useAuth } from "@/contexts/AuthContext";
+import LoginPopup from "@/components/LoginPopup";
 
 import { getAuthData } from "@/lib/auth";
 import {
@@ -17,13 +19,16 @@ import {
   completeAlchemy,
   getAlchemyConfig,
   AlchemyConfigItem,
-  getUserSubscription,
   ALCHEMY_DISABLED,
+  // getUserSubscription,
+  getUserBTCYBalance,
   // isPlanAllowed,
 } from "@/lib/alchemy";
 
 import CongratulationsPage from "@/app/alchemy/congratulations/page";
 import RetainedPage from "@/app/alchemy/retained/page";
+
+import { MINIMUM_BTCY_BALANCE_FOR_ALCHEMY } from "@/app/alchemy/constants";
 
 interface AlchemyDetailPageProps {
   params: Promise<{
@@ -36,13 +41,21 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
   const planIndex = parseInt(resolvedParams.slug);
   // const router = useRouter();
 
+  const { user, isLoading } = useAuth(); // Get authenticated user
+  const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
   const [configLoading, setConfigLoading] = useState(true);
   const [configError, setConfigError] = useState<string | null>(null);
   const [currentPlan, setCurrentPlan] = useState<AlchemyConfigItem | null>(
     null
   );
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [userPlanData, setUserPlanData] = useState<{
+    balance: number;
+    userType: string;
+    plan: string;
+  }>({ balance: 0, userType: "", plan: "" });
+
+  const [isLoadingAlchemy, setIsLoadingAlchemy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [showResult, setShowResult] = useState<
@@ -58,22 +71,23 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
   useEffect(() => {
     const fetchAlchemyConfig = async () => {
       try {
-        if (ALCHEMY_DISABLED) {
-          setConfigLoading(false);
-          setConfigError(null); // we’ll render the disabled UI instead of an error
-          return;
-        }
+        console.log("started here")
         setConfigLoading(true);
         setConfigError(null);
+        console.log("started here 0")
 
         const response = await getAlchemyConfig();
+        console.log("res", response)
 
         if (!response.success) {
           throw new Error(response.error || "Failed to fetch alchemy config");
         }
 
         if (response.session?.free) {
+          console.log("seess free", planIndex)
+          console.log("response.session.free[planIndex]", response.session.free[planIndex])
           if (planIndex >= 0 && planIndex < response.session.free.length) {
+            console.log("response.session.free[planIndex] in if", response.session.free[planIndex])
             setCurrentPlan(response.session.free[planIndex]);
           } else {
             throw new Error("Invalid plan index");
@@ -91,19 +105,51 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
       }
     };
 
-    // Only fetch if planIndex is a valid number
-    if (!isNaN(planIndex)) {
-      fetchAlchemyConfig();
-    } else {
-      setConfigError("Invalid plan index");
-      setConfigLoading(false);
+    const fetchBalance = async () => {
+      const balance = await getUserBTCYBalance(user?.email || "");
+      setUserPlanData({
+        balance: balance.data?.totalBTCYBalance,
+        userType: balance.data?.userType,
+        plan: balance.data?.plan,
+      });
+      if (balance.data?.totalBTCYBalance < MINIMUM_BTCY_BALANCE_FOR_ALCHEMY) {
+        setError(
+          `You need at least ${MINIMUM_BTCY_BALANCE_FOR_ALCHEMY} BTCY to start an Alchemy`
+        );
+        setIsLoadingAlchemy(false);
+        return;
+      }
+    };
+
+    // Check authentication status when loading is complete
+    if (!isLoading) {
+      if (!user) {
+        setIsLoginPopupOpen(true);
+        return;
+      }
+      // Only fetch if planIndex is a valid number
+      if (!isNaN(planIndex)) {
+        fetchAlchemyConfig();
+        fetchBalance();
+      } else {
+        setConfigError("Invalid plan index");
+        setConfigLoading(false);
+      }
     }
-  }, [planIndex]);
+  }, [user, isLoading, planIndex]);
+
+  const handleLoginSuccess = () => {
+    setIsLoginPopupOpen(false);
+  };
+
+  const handleCloseLoginPopup = () => {
+    setIsLoginPopupOpen(false);
+  };
 
   const handleStartAlchemy = async () => {
     if (!currentPlan) return;
 
-    setIsLoading(true);
+    setIsLoadingAlchemy(true);
     setError(null);
     setSuccess(false);
 
@@ -115,20 +161,20 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
       }
 
       // ✅ Check user's subscription eligibility
-      const subscriptionResult = await getUserSubscription(authData.email);
-      if (!subscriptionResult.data?.userType) {
-        throw new Error("Unable to fetch user subscription type");
-      }
+      // const subscriptionResult = await getUserSubscription(authData.email);
+      // if (!subscriptionResult.data?.userType) {
+      //   throw new Error("Unable to fetch user subscription type");
+      // }
 
-      const userTypeRaw = subscriptionResult.data?.userType;
-      const subscriptionPlanRaw = subscriptionResult.data?.plan;
+      const userTypeRaw = userPlanData.userType;
+      const subscriptionPlanRaw = userPlanData.plan;
 
       if (!userTypeRaw) {
         throw new Error("Unable to fetch user subscription type");
       }
 
       const userType = userTypeRaw.trim().toLowerCase(); // "free mining"
-      const subscriptionPlan = subscriptionResult.data.plan?.toLowerCase(); // e.g., "turbo power"
+      const subscriptionPlan = subscriptionPlanRaw?.toLowerCase(); // e.g., "turbo power"
       const planType = "free"; // current page type
 
       const userTypeAccessMap: Record<string, string[]> = {
@@ -158,7 +204,7 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
         setError(
           `❌ Your current user type "${userTypeRaw}" with plan "${subscriptionPlanRaw}" does not allow access to this Alchemy page.\n\n👉 Please visit: ${redirectPath}`
         );
-        setIsLoading(false);
+        setIsLoadingAlchemy(false);
         return;
       }
 
@@ -215,9 +261,40 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
         err instanceof Error ? err.message : "Failed to start alchemy session"
       );
     } finally {
-      setIsLoading(false);
+      setIsLoadingAlchemy(false);
     }
   };
+
+  if (isLoading) {
+    return <div className="mt-40 text-center text-3xl">Loading...</div>;
+  }
+
+  // Show login popup if user is not authenticated
+  if (!user) {
+    return (
+      <>
+        <div className="mx-auto mt-60 px-4 md:px-20 xl:px-40">
+          <div className="bg-bg2 max-w-7xl mx-auto z-10 rounded-b-2xl">
+            <div className="pt-20 flex justify-center items-center min-h-96">
+              <div className="text-center">
+                <h1 className="text-3xl md:text-4xl font-semibold mb-4">
+                  Free Mining Alchemy
+                </h1>
+                <p className="text-xl text-tertiary">
+                  Please log in to access the Free Mining Alchemy Gateway.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <LoginPopup
+          isOpen={isLoginPopupOpen}
+          onClose={handleCloseLoginPopup}
+          onLoginSuccess={handleLoginSuccess}
+        />
+      </>
+    );
+  }
 
   // If showing result, render the appropriate component
   if (showResult === "congratulations" && alchemyResult) {
@@ -287,24 +364,6 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
     );
   }
 
-  if (ALCHEMY_DISABLED) {
-    return (
-      <div className="mx-auto mt-60 px-4 md:px-20 xl:px-40">
-        <div className="bg-bg2 max-w-7xl mx-auto z-10">
-          <div className="pt-20 flex justify-center items-center min-h-96">
-            <div className="text-center max-w-xl">
-              <p className="text-3xl font-semibold mb-4">Alchemy is temporarily unavailable</p>
-              <p className="text-lg text-tertiary">
-                We’re making improvements. Please check back soon.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-
   return (
     <div className="mx-auto mt-60 px-4 md:px-20 xl:px-40">
       <div className="bg-bg2 max-w-7xl mx-auto z-10 rounded-b-2xl">
@@ -356,12 +415,15 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
           ) : (
             <>
               <div
-                className={`${isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                className={`${isLoadingAlchemy ||
+                    userPlanData.balance < MINIMUM_BTCY_BALANCE_FOR_ALCHEMY
+                    ? "opacity-50 cursor-not-allowed pointer-events-none"
+                    : "cursor-pointer"
                   }`}
               >
                 <CustomButton2
                   image={PointingHandButtonImage}
-                  text={isLoading ? "Starting..." : "Start Alchemy"}
+                  text={isLoadingAlchemy ? "Starting..." : "Start Alchemy"}
                   onClick={handleStartAlchemy}
                   imageStyling="w-36 mt-8"
                 />
@@ -375,10 +437,7 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
           )}
         </div>
 
-        <EmailSection
-          colorVariant="primary"
-          buttonImage={ActionButtonImage}
-        />
+        <EmailSection colorVariant="primary" buttonImage={ActionButtonImage} />
       </div>
     </div>
   );
