@@ -5,7 +5,7 @@ import {
   ALCHEMY_GET_USER_SUBSCRIPTION,
 } from "@/routes";
 
-export const ALCHEMY_DISABLED = "true";
+export const ALCHEMY_DISABLED = "false";
 
 export interface CreateAlchemyData {
   email: string;
