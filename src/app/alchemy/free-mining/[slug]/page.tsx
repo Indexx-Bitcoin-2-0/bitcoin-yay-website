@@ -19,7 +19,7 @@ import {
   completeAlchemy,
   getAlchemyConfig,
   AlchemyConfigItem,
-  getUserSubscription,
+  // getUserSubscription,
   getUserBTCYBalance,
   // isPlanAllowed,
 } from "@/lib/alchemy";
@@ -48,7 +48,11 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
     null
   );
 
-  const [userBTCYBalance, setUserBTCYBalance] = useState<number>(0);
+  const [userPlanData, setUserPlanData] = useState<{
+    balance: number;
+    userType: string;
+    plan: string;
+  }>({ balance: 0, userType: "", plan: "" });
 
   const [isLoadingAlchemy, setIsLoadingAlchemy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -96,9 +100,15 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
 
     const fetchBalance = async () => {
       const balance = await getUserBTCYBalance(user?.email || "");
-      setUserBTCYBalance(balance.data?.totalBTCYBalance);
+      setUserPlanData({
+        balance: balance.data?.totalBTCYBalance,
+        userType: balance.data?.userType,
+        plan: balance.data?.plan,
+      });
       if (balance.data?.totalBTCYBalance < MINIMUM_BTCY_BALANCE_FOR_ALCHEMY) {
-        setError(`You need at least ${MINIMUM_BTCY_BALANCE_FOR_ALCHEMY} BTCY to start an Alchemy`);
+        setError(
+          `You need at least ${MINIMUM_BTCY_BALANCE_FOR_ALCHEMY} BTCY to start an Alchemy`
+        );
         setIsLoadingAlchemy(false);
         return;
       }
@@ -144,20 +154,20 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
       }
 
       // ✅ Check user's subscription eligibility
-      const subscriptionResult = await getUserSubscription(authData.email);
-      if (!subscriptionResult.data?.userType) {
-        throw new Error("Unable to fetch user subscription type");
-      }
+      // const subscriptionResult = await getUserSubscription(authData.email);
+      // if (!subscriptionResult.data?.userType) {
+      //   throw new Error("Unable to fetch user subscription type");
+      // }
 
-      const userTypeRaw = subscriptionResult.data?.userType;
-      const subscriptionPlanRaw = subscriptionResult.data?.plan;
+      const userTypeRaw = userPlanData.userType;
+      const subscriptionPlanRaw = userPlanData.plan;
 
       if (!userTypeRaw) {
         throw new Error("Unable to fetch user subscription type");
       }
 
       const userType = userTypeRaw.trim().toLowerCase(); // "free mining"
-      const subscriptionPlan = subscriptionResult.data.plan?.toLowerCase(); // e.g., "turbo power"
+      const subscriptionPlan = subscriptionPlanRaw?.toLowerCase(); // e.g., "turbo power"
       const planType = "free"; // current page type
 
       const userTypeAccessMap: Record<string, string[]> = {
@@ -401,7 +411,8 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
             <>
               <div
                 className={`${
-                  isLoadingAlchemy || userBTCYBalance < MINIMUM_BTCY_BALANCE_FOR_ALCHEMY
+                  isLoadingAlchemy ||
+                  userPlanData.balance < MINIMUM_BTCY_BALANCE_FOR_ALCHEMY
                     ? "opacity-50 cursor-not-allowed pointer-events-none"
                     : "cursor-pointer"
                 }`}

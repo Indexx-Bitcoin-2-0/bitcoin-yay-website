@@ -20,7 +20,6 @@ import {
   completeAlchemy,
   getAlchemyConfig,
   AlchemyConfigItem,
-  getUserSubscription,
   getUserBTCYBalance,
 } from "@/lib/alchemy";
 
@@ -48,7 +47,11 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
     null
   );
 
-  const [userBTCYBalance, setUserBTCYBalance] = useState<number>(0);
+  const [userPlanData, setUserPlanData] = useState<{
+    balance: number;
+    userType: string;
+    plan: string;
+  }>({ balance: 0, userType: "", plan: "" });
 
   const [isLoadingAlchemy, setIsLoadingAlchemy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -96,7 +99,11 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
 
     const fetchBalance = async () => {
       const balance = await getUserBTCYBalance(user?.email || "");
-      setUserBTCYBalance(balance.data?.totalBTCYBalance);
+      setUserPlanData({
+        balance: balance.data?.totalBTCYBalance,
+        userType: balance.data?.userType,
+        plan: balance.data?.plan,
+      });
       if (balance.data?.totalBTCYBalance < MINIMUM_BTCY_BALANCE_FOR_ALCHEMY) {
         setError(
           `You need at least ${MINIMUM_BTCY_BALANCE_FOR_ALCHEMY} BTCY to start an Alchemy`
@@ -145,14 +152,16 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
         throw new Error("User not authenticated");
       }
 
-      // ✅ Check user's subscription eligibility
-      const subscriptionResult = await getUserSubscription(authData.email);
-      if (!subscriptionResult.data?.userType) {
+      // ✅ Check user's subscription eligibility using stored data
+      const userTypeRaw = userPlanData.userType;
+      const subscriptionPlanRaw = userPlanData.plan;
+
+      if (!userTypeRaw) {
         throw new Error("Unable to fetch user subscription type");
       }
 
-      const userType = subscriptionResult.data.userType?.toLowerCase(); // "free mining" or "power mining"
-      const subscriptionPlan = subscriptionResult.data.plan?.toLowerCase(); // e.g., "turbo power"
+      const userType = userTypeRaw.trim().toLowerCase(); // "free mining"
+      const subscriptionPlan = subscriptionPlanRaw?.toLowerCase(); // e.g., "turbo power"
       const planType = "quantum"; // current page type
 
       const userTypeAccessMap: Record<string, string[]> = {
@@ -179,23 +188,8 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
       const isPlanMatch = normalizedPlan.includes(normalizedPlanType);
 
       if (!isUserTypeAllowed || !isPlanMatch) {
-        let redirectPath = "/alchemy/free";
-
-        if (normalizedUserType === "free mining") {
-          redirectPath = "/alchemy/free";
-        } else if (normalizedUserType === "power mining") {
-          if (normalizedPlan.includes("electric"))
-            redirectPath = "/alchemy/electric";
-          else if (normalizedPlan.includes("turbo"))
-            redirectPath = "/alchemy/turbo";
-          else if (normalizedPlan.includes("nuclear"))
-            redirectPath = "/alchemy/nuclear";
-        } else if (normalizedUserType === "quantum mining") {
-          redirectPath = "/alchemy/quantum";
-        }
-
         setError(
-          `❌ Your current user type "${subscriptionResult.data.userType}" with plan "${subscriptionResult.data.plan}" does not allow access to this page.\n\n👉 Please go to: ${redirectPath}`
+          `❌ Your current user type "${userTypeRaw}" with plan "${subscriptionPlanRaw}" does not allow access to this Alchemy page.`
         );
         setIsLoadingAlchemy(false);
         return;
@@ -410,7 +404,7 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
               <div
                 className={`${
                   isLoadingAlchemy ||
-                  userBTCYBalance < MINIMUM_BTCY_BALANCE_FOR_ALCHEMY
+                  userPlanData.balance < MINIMUM_BTCY_BALANCE_FOR_ALCHEMY
                     ? "opacity-50 cursor-not-allowed pointer-events-none"
                     : "cursor-pointer"
                 }`}
