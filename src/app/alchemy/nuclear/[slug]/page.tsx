@@ -20,11 +20,14 @@ import {
   getAlchemyConfig,
   AlchemyConfigItem,
   getUserSubscription,
+  getUserBTCYBalance,
   // isPlanAllowed,
 } from "@/lib/alchemy";
 
 import CongratulationsPage from "@/app/alchemy/congratulations/page";
 import RetainedPage from "@/app/alchemy/retained/page";
+
+import { MINIMUM_BTCY_BALANCE_FOR_ALCHEMY } from "@/app/alchemy/constants";
 
 interface AlchemyDetailPageProps {
   params: Promise<{
@@ -44,6 +47,8 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
   const [currentPlan, setCurrentPlan] = useState<AlchemyConfigItem | null>(
     null
   );
+
+  const [userBTCYBalance, setUserBTCYBalance] = useState<number>(0);
 
   const [isLoadingAlchemy, setIsLoadingAlchemy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -89,6 +94,18 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
       }
     };
 
+    const fetchBalance = async () => {
+      const balance = await getUserBTCYBalance(user?.email || "");
+      setUserBTCYBalance(balance.data?.totalBTCYBalance);
+      if (balance.data?.totalBTCYBalance < MINIMUM_BTCY_BALANCE_FOR_ALCHEMY) {
+        setError(
+          `You need at least ${MINIMUM_BTCY_BALANCE_FOR_ALCHEMY} BTCY to start an Alchemy`
+        );
+        setIsLoadingAlchemy(false);
+        return;
+      }
+    };
+
     // Check authentication status when loading is complete
     if (!isLoading) {
       if (!user) {
@@ -98,6 +115,7 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
       // Only fetch if planIndex is a valid number
       if (!isNaN(planIndex)) {
         fetchAlchemyConfig();
+        fetchBalance();
       } else {
         setConfigError("Invalid plan index");
         setConfigLoading(false);
@@ -391,8 +409,9 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
             <>
               <div
                 className={`${
-                  isLoadingAlchemy
-                    ? "opacity-50 cursor-not-allowed"
+                  isLoadingAlchemy ||
+                  userBTCYBalance < MINIMUM_BTCY_BALANCE_FOR_ALCHEMY
+                    ? "opacity-50 cursor-not-allowed pointer-events-none"
                     : "cursor-pointer"
                 }`}
               >

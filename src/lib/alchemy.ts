@@ -3,6 +3,7 @@ import {
   ALCHEMY_COMPLETE_API_ROUTE,
   ALCHEMY_CONFIG_API_ROUTE,
   ALCHEMY_GET_USER_SUBSCRIPTION,
+  GET_USER_BTCY_BALANCE_API_ROUTE,
 } from "@/routes";
 
 export interface CreateAlchemyData {
@@ -269,7 +270,40 @@ export async function getUserSubscription(email: string): Promise<UserSubscripti
   }
 }
 
+export interface UserBTCYBalanceResponse {
+  status: number;
+  data: {
+    email: string;
+    balance: number;
+    totalBTCYBalance: number;
+  };
+  error?: string;
+}
 
+export async function getUserBTCYBalance(email: string): Promise<UserBTCYBalanceResponse> {
+  try {
+    const response = await fetch(
+      `${GET_USER_BTCY_BALANCE_API_ROUTE}/${email}`,
+      {
+        method: "GET",
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || "Failed to fetch user BTCY balance");
+    }
+
+    return result;
+  } catch (error) {
+    return {
+      status: 500,
+      data: { email, balance: 0, totalBTCYBalance: 0 },
+      error: error instanceof Error ? error.message : "Failed to fetch user BTCY balance",
+    };
+  }
+}
 export function isPlanAllowed(plan: string | null, required: string): boolean {
     const planAccessMap: Record<string, string[]> = {
       "free mining": ["free"],
