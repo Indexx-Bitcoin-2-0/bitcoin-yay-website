@@ -301,7 +301,7 @@ export async function getUserBTCYBalance(email: string): Promise<UserBTCYBalance
   } catch (error) {
     return {
       status: 500,
-      data: { email, balance: 0, totalBTCYBalance: 0, userType: "" },
+      data: { email, balance: 0, totalBTCYBalance: 0, userType: "", plan: "" },
       error: error instanceof Error ? error.message : "Failed to fetch user BTCY balance",
     };
   }

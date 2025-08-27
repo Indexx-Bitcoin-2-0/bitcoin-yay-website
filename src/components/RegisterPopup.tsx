@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import axios from "axios";
 import PopupComponent from "@/components/PopupComponent";
+import SetPasswordPopup from "@/components/SetPasswordPopup";
 import { useAuth } from "@/contexts/AuthContext";
 import { GOOGLE_REGISTER_API_ROUTE, REGISTER_API_ROUTE } from "@/routes";
 import MainLogo from "@/assets/images/main-logo.svg";
@@ -12,7 +13,6 @@ import GoogleRegisterButtonImage from "@/assets/images/buttons/google-button.web
 import CustomButton2 from "@/components/CustomButton2";
 import { ChevronDown, Check } from "lucide-react";
 import { useGoogleLogin } from "@react-oauth/google";
-
 
 interface RegisterPopupProps {
   isOpen: boolean;
@@ -53,6 +53,7 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
+  const [showSetPassword, setShowSetPassword] = useState(false);
 
   // Update referral code when referralCode prop changes
   useEffect(() => {
@@ -243,19 +244,24 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
           language: selectedLanguageLabel,
         });
 
-        if (res.status === 200 && res.data?.access_token) {
+        const apiData = res.data.data || res.data;
+
+        if (res.status === 200 && apiData?.access_token) {
           login({
-            email: res.data.email,
-            name: res.data.name,
-            access_token: res.data.access_token,
-            refresh_token: res.data.refresh_token,
-            role: res.data.role || "Standard",
-            userType: res.data.userType || "Indexx Exchange",
-            shortToken: res.data.shortToken || "google-short-token",
+            email: apiData.email,
+            name: apiData.name,
+            access_token: apiData.access_token,
+            refresh_token: apiData.refresh_token,
+            role: apiData.role || "Standard",
+            userType: apiData.userType || "Indexx Exchange",
+            shortToken: apiData.shortToken || "google-short-token",
           });
 
           onRegisterSuccess();
           onClose();
+
+          // Always show SetPasswordPopup after Google registration
+          setShowSetPassword(true);
         } else {
           setErrors({
             general: res?.data?.message || "Google signup failed.",
@@ -279,320 +285,360 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
     },
   });
 
+  const handlePasswordSet = () => {
+    // Password has been set successfully, just close the popup
+    setShowSetPassword(false);
+  };
+
+  const handleCloseSetPassword = () => {
+    setShowSetPassword(false);
+  };
+
+  const handleSkipPassword = () => {
+    // User chose to skip setting password, just close the popup
+    setShowSetPassword(false);
+  };
+
   return (
-    <PopupComponent isOpen={isOpen} onClose={onClose}>
-      <div className="w-90 md:w-120 xl:w-160 bg-bg p-6 md:p-8 flex flex-col items-center max-h-[90vh] overflow-y-auto">
-        {/* Header */}
-        <div className="text-center mb-6">
-          <p className="text-tertiary text-lg mb-4">Welcome To</p>
-          <Image
-            src={MainLogo}
-            alt="Bitcoin Yay"
-            className="w-40 md:w-48 xl:w-80 mx-auto mb-4"
-          />
-          <h2 className="text-primary text-xl md:text-3xl">
-            Bitcoin Yay Is The Micro Token
-          </h2>
-          <p className="text-primary text-xl md:text-3xl">
-            And Petty Cash Of Bitcoin
-          </p>
-        </div>
-
-        {/* Registration Form */}
-        <form onSubmit={handleSubmit} className="w-full">
-          {/* First Name */}
-          <div className="mb-2">
-            <label
-              htmlFor="firstName"
-              className="block text-bg3 text-base mb-2"
-            >
-              First Name
-            </label>
-            <input
-              type="text"
-              id="firstName"
-              className="w-full text-base p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
-              value={formData.firstName}
-              onChange={(e) => handleInputChange("firstName", e.target.value)}
-              disabled={isSubmitting}
+    <>
+      <PopupComponent isOpen={isOpen} onClose={onClose}>
+        <div className="w-90 md:w-120 xl:w-160 bg-bg p-6 md:p-8 flex flex-col items-center max-h-[90vh] overflow-y-auto">
+          {/* Header */}
+          <div className="text-center mb-6">
+            <p className="text-tertiary text-lg mb-4">Welcome To</p>
+            <Image
+              src={MainLogo}
+              alt="Bitcoin Yay"
+              className="w-40 md:w-48 xl:w-80 mx-auto mb-4"
             />
-            {errors.firstName && (
-              <p className="text-red-500 text-xs mt-1">{errors.firstName}</p>
-            )}
-          </div>
-
-          {/* Last Name */}
-          <div className="mb-2">
-            <label htmlFor="lastName" className="block text-bg3 text-base mb-2">
-              Last Name
-            </label>
-            <input
-              type="text"
-              id="lastName"
-              className="w-full text-base p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
-              value={formData.lastName}
-              onChange={(e) => handleInputChange("lastName", e.target.value)}
-              disabled={isSubmitting}
-            />
-            {errors.lastName && (
-              <p className="text-red-500 text-xs mt-1">{errors.lastName}</p>
-            )}
-          </div>
-
-          {/* Username */}
-          <div className="mb-2">
-            <label htmlFor="username" className="block text-bg3 text-base mb-2">
-              Username
-            </label>
-            <p className="text-tertiary text-xs my-1">
-              This will also be your code for referring others
+            <h2 className="text-primary text-xl md:text-3xl">
+              Bitcoin Yay Is The Micro Token
+            </h2>
+            <p className="text-primary text-xl md:text-3xl">
+              And Petty Cash Of Bitcoin
             </p>
-            <input
-              type="text"
-              id="username"
-              className="w-full text-base p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
-              value={formData.username}
-              onChange={(e) => handleInputChange("username", e.target.value)}
-              disabled={isSubmitting}
-            />
-            {errors.username && (
-              <p className="text-red-500 text-xs mt-1">{errors.username}</p>
-            )}
-            {!errors.username && (
-              <p className="text-tertiary text-xs mt-1">
-                Username must be 8 to 20 characters, only number and letters
-              </p>
-            )}
           </div>
 
-          {/* Country */}
-          <div className="mb-2">
-            <label htmlFor="country" className="block text-bg3 text-base mb-2">
-              Country
-            </label>
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setShowCountryDropdown(!showCountryDropdown)}
-                className="flex items-center gap-3 p-3 hover:border-primary rounded-md cursor-pointer text-tertiary border border-bg3 w-full focus:border-primary focus:outline-none"
-                disabled={isSubmitting}
+          {/* Registration Form */}
+          <form onSubmit={handleSubmit} className="w-full">
+            {/* First Name */}
+            <div className="mb-2">
+              <label
+                htmlFor="firstName"
+                className="block text-bg3 text-base mb-2"
               >
-                <span className="text-base flex-1 text-left">
-                  {getSelectedCountryDisplay()}
-                </span>
-                <ChevronDown className="w-5 h-5" strokeWidth={2.5} />
-              </button>
-
-              {showCountryDropdown && (
-                <div className="absolute left-0 top-full mt-1 w-full bg-bg2 rounded-md shadow-lg z-10 border border-bg3">
-                  <div className="py-1">
-                    {countryOptions.map((option, index) => (
-                      <button
-                        key={index}
-                        type="button"
-                        onClick={() => handleCountrySelect(option)}
-                        className="w-full px-4 py-3 text-left text-tertiary hover:bg-primary hover:text-bg transition-colors text-base cursor-pointer flex items-center gap-3"
-                      >
-                        <span className="flex-1">{option.display}</span>
-                        {formData.country === option.name &&
-                          formData.countryCode === option.code && (
-                            <Check
-                              className="w-5 h-5 ml-auto"
-                              strokeWidth={2.5}
-                            />
-                          )}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                First Name
+              </label>
+              <input
+                type="text"
+                id="firstName"
+                className="w-full text-base p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
+                value={formData.firstName}
+                onChange={(e) => handleInputChange("firstName", e.target.value)}
+                disabled={isSubmitting}
+              />
+              {errors.firstName && (
+                <p className="text-red-500 text-xs mt-1">{errors.firstName}</p>
               )}
             </div>
-          </div>
 
-          {/* Phone Number */}
-          <div className="mb-2">
-            <label
-              htmlFor="phoneNumber"
-              className="block text-bg3 text-base mb-2"
-            >
-              Phone Number
-            </label>
-            <input
-              type="tel"
-              id="phoneNumber"
-              className="w-full text-base p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
-              value={formData.phoneNumber}
-              onChange={(e) => handleInputChange("phoneNumber", e.target.value)}
-              disabled={isSubmitting}
-            />
-            {errors.phoneNumber && (
-              <p className="text-red-500 text-xs mt-1">{errors.phoneNumber}</p>
-            )}
-          </div>
-
-          {/* Email */}
-          <div className="mb-2">
-            <label htmlFor="email" className="block text-bg3 text-base mb-2">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              className="w-full text-base p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
-              value={formData.email}
-              onChange={(e) => handleInputChange("email", e.target.value)}
-              disabled={isSubmitting}
-            />
-            {errors.email && (
-              <p className="text-red-500 text-xs mt-1">{errors.email}</p>
-            )}
-          </div>
-
-          {/* Password */}
-          <div className="mb-2">
-            <label htmlFor="password" className="block text-bg3 text-base mb-2">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              className="w-full text-base p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
-              value={formData.password}
-              onChange={(e) => handleInputChange("password", e.target.value)}
-              disabled={isSubmitting}
-            />
-            {errors.password && (
-              <p className="text-red-500 text-xs mt-1">{errors.password}</p>
-            )}
-          </div>
-
-          {/* Confirm Password */}
-          <div className="mb-4">
-            <label
-              htmlFor="confirmPassword"
-              className="block text-bg3 text-base mb-2"
-            >
-              Confirm Password
-            </label>
-            <input
-              type="password"
-              id="confirmPassword"
-              className="w-full text-base p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
-              value={formData.confirmPassword}
-              onChange={(e) =>
-                handleInputChange("confirmPassword", e.target.value)
-              }
-              disabled={isSubmitting}
-            />
-            {errors.confirmPassword && (
-              <p className="text-red-500 text-xs mt-1">
-                {errors.confirmPassword}
-              </p>
-            )}
-          </div>
-
-          <div className="mb-4">
-            <label
-              htmlFor="referralCode"
-              className="block text-bg3 text-base mb-2"
-            >
-              Referral Code (Optional)
-            </label>
-            <input
-              type="text"
-              id="referralCode"
-              className="w-full text-base p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
-              value={formData.referralCode}
-              onChange={(e) =>
-                handleInputChange("referralCode", e.target.value)
-              }
-              disabled={isSubmitting}
-            />
-            {errors.referralCode && (
-              <p className="text-red-500 text-xs mt-1">
-                {errors.referralCode}
-              </p>
-            )}
-          </div>
-
-          {/* General Error */}
-          {errors.general && (
-            <div className="mb-6 text-red-500 text-sm text-center">
-              {errors.general}
-            </div>
-          )}
-
-          {/* Register Button */}
-          <div className="flex justify-center mb-4 mt-10">
-            <div
-              onClick={(e) => {
-                e.preventDefault();
-                if (!isSubmitting) {
-                  submitForm();
-                }
-              }}
-              className={
-                isSubmitting
-                  ? "opacity-50 cursor-not-allowed"
-                  : "cursor-pointer"
-              }
-            >
-              <CustomButton2
-                image={RegisterButtonImage}
-                text={""}
-                link="#"
-                imageStyling="w-30"
+            {/* Last Name */}
+            <div className="mb-2">
+              <label
+                htmlFor="lastName"
+                className="block text-bg3 text-base mb-2"
+              >
+                Last Name
+              </label>
+              <input
+                type="text"
+                id="lastName"
+                className="w-full text-base p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
+                value={formData.lastName}
+                onChange={(e) => handleInputChange("lastName", e.target.value)}
+                disabled={isSubmitting}
               />
+              {errors.lastName && (
+                <p className="text-red-500 text-xs mt-1">{errors.lastName}</p>
+              )}
             </div>
-          </div>
 
-          {/* Divider */}
-          <div className="flex items-center mb-4">
-            <div className="flex-1 border-t border-bg3"></div>
-            <span className="px-4 text-bg3 text-sm">Or Register With</span>
-            <div className="flex-1 border-t border-bg3"></div>
-          </div>
-
-          {/* Google Register */}
-          <div className="flex justify-center mb-4 mt-10">
-            <div
-              onClick={(e) => {
-                e.preventDefault();
-                if (!isSubmitting) {
-                  handleGoogleRegister();
-                }
-              }}
-              className={
-                isSubmitting
-                  ? "opacity-50 cursor-not-allowed"
-                  : "cursor-pointer"
-              }
-            >
-              <CustomButton2
-                image={GoogleRegisterButtonImage}
-                text="Google"
-                link="#"
-                imageStyling="w-30"
+            {/* Username */}
+            <div className="mb-2">
+              <label
+                htmlFor="username"
+                className="block text-bg3 text-base mb-2"
+              >
+                Username
+              </label>
+              <p className="text-tertiary text-xs my-1">
+                This will also be your code for referring others
+              </p>
+              <input
+                type="text"
+                id="username"
+                className="w-full text-base p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
+                value={formData.username}
+                onChange={(e) => handleInputChange("username", e.target.value)}
+                disabled={isSubmitting}
               />
+              {errors.username && (
+                <p className="text-red-500 text-xs mt-1">{errors.username}</p>
+              )}
+              {!errors.username && (
+                <p className="text-tertiary text-xs mt-1">
+                  Username must be 8 to 20 characters, only number and letters
+                </p>
+              )}
             </div>
-          </div>
 
-          {/* Login Link */}
-          <div className="text-center">
-            <span className="text-tertiary text-sm">
-              Don&apos;t have an account?{" "}
-            </span>
-            <button
-              type="button"
-              onClick={onClose}
-              className="text-primary text-sm hover:underline"
-            >
-              Login
-            </button>
-          </div>
-        </form>
-      </div>
-    </PopupComponent>
+            {/* Country */}
+            <div className="mb-2">
+              <label
+                htmlFor="country"
+                className="block text-bg3 text-base mb-2"
+              >
+                Country
+              </label>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowCountryDropdown(!showCountryDropdown)}
+                  className="flex items-center gap-3 p-3 hover:border-primary rounded-md cursor-pointer text-tertiary border border-bg3 w-full focus:border-primary focus:outline-none"
+                  disabled={isSubmitting}
+                >
+                  <span className="text-base flex-1 text-left">
+                    {getSelectedCountryDisplay()}
+                  </span>
+                  <ChevronDown className="w-5 h-5" strokeWidth={2.5} />
+                </button>
+
+                {showCountryDropdown && (
+                  <div className="absolute left-0 top-full mt-1 w-full bg-bg2 rounded-md shadow-lg z-10 border border-bg3">
+                    <div className="py-1">
+                      {countryOptions.map((option, index) => (
+                        <button
+                          key={index}
+                          type="button"
+                          onClick={() => handleCountrySelect(option)}
+                          className="w-full px-4 py-3 text-left text-tertiary hover:bg-primary hover:text-bg transition-colors text-base cursor-pointer flex items-center gap-3"
+                        >
+                          <span className="flex-1">{option.display}</span>
+                          {formData.country === option.name &&
+                            formData.countryCode === option.code && (
+                              <Check
+                                className="w-5 h-5 ml-auto"
+                                strokeWidth={2.5}
+                              />
+                            )}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Phone Number */}
+            <div className="mb-2">
+              <label
+                htmlFor="phoneNumber"
+                className="block text-bg3 text-base mb-2"
+              >
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                id="phoneNumber"
+                className="w-full text-base p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
+                value={formData.phoneNumber}
+                onChange={(e) =>
+                  handleInputChange("phoneNumber", e.target.value)
+                }
+                disabled={isSubmitting}
+              />
+              {errors.phoneNumber && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.phoneNumber}
+                </p>
+              )}
+            </div>
+
+            {/* Email */}
+            <div className="mb-2">
+              <label htmlFor="email" className="block text-bg3 text-base mb-2">
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                className="w-full text-base p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
+                value={formData.email}
+                onChange={(e) => handleInputChange("email", e.target.value)}
+                disabled={isSubmitting}
+              />
+              {errors.email && (
+                <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+              )}
+            </div>
+
+            {/* Password */}
+            <div className="mb-2">
+              <label
+                htmlFor="password"
+                className="block text-bg3 text-base mb-2"
+              >
+                Password
+              </label>
+              <input
+                type="password"
+                id="password"
+                className="w-full text-base p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
+                value={formData.password}
+                onChange={(e) => handleInputChange("password", e.target.value)}
+                disabled={isSubmitting}
+              />
+              {errors.password && (
+                <p className="text-red-500 text-xs mt-1">{errors.password}</p>
+              )}
+            </div>
+
+            {/* Confirm Password */}
+            <div className="mb-4">
+              <label
+                htmlFor="confirmPassword"
+                className="block text-bg3 text-base mb-2"
+              >
+                Confirm Password
+              </label>
+              <input
+                type="password"
+                id="confirmPassword"
+                className="w-full text-base p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
+                value={formData.confirmPassword}
+                onChange={(e) =>
+                  handleInputChange("confirmPassword", e.target.value)
+                }
+                disabled={isSubmitting}
+              />
+              {errors.confirmPassword && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.confirmPassword}
+                </p>
+              )}
+            </div>
+
+            <div className="mb-4">
+              <label
+                htmlFor="referralCode"
+                className="block text-bg3 text-base mb-2"
+              >
+                Referral Code (Optional)
+              </label>
+              <input
+                type="text"
+                id="referralCode"
+                className="w-full text-base p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
+                value={formData.referralCode}
+                onChange={(e) =>
+                  handleInputChange("referralCode", e.target.value)
+                }
+                disabled={isSubmitting}
+              />
+              {errors.referralCode && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.referralCode}
+                </p>
+              )}
+            </div>
+
+            {/* General Error */}
+            {errors.general && (
+              <div className="mb-6 text-red-500 text-sm text-center">
+                {errors.general}
+              </div>
+            )}
+
+            {/* Register Button */}
+            <div className="flex justify-center mb-4 mt-10">
+              <div
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (!isSubmitting) {
+                    submitForm();
+                  }
+                }}
+                className={
+                  isSubmitting
+                    ? "opacity-50 cursor-not-allowed"
+                    : "cursor-pointer"
+                }
+              >
+                <CustomButton2
+                  image={RegisterButtonImage}
+                  text={""}
+                  link="#"
+                  imageStyling="w-30"
+                />
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div className="flex items-center mb-4">
+              <div className="flex-1 border-t border-bg3"></div>
+              <span className="px-4 text-bg3 text-sm">Or Register With</span>
+              <div className="flex-1 border-t border-bg3"></div>
+            </div>
+
+            {/* Google Register */}
+            <div className="flex justify-center mb-4 mt-10">
+              <div
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (!isSubmitting) {
+                    handleGoogleRegister();
+                  }
+                }}
+                className={
+                  isSubmitting
+                    ? "opacity-50 cursor-not-allowed"
+                    : "cursor-pointer"
+                }
+              >
+                <CustomButton2
+                  image={GoogleRegisterButtonImage}
+                  text="Google"
+                  link="#"
+                  imageStyling="w-30"
+                />
+              </div>
+            </div>
+
+            {/* Login Link */}
+            <div className="text-center">
+              <span className="text-tertiary text-sm">
+                Don&apos;t have an account?{" "}
+              </span>
+              <button
+                type="button"
+                onClick={onClose}
+                className="text-primary text-sm hover:underline"
+              >
+                Login
+              </button>
+            </div>
+          </form>
+        </div>
+      </PopupComponent>
+
+      {/* SetPasswordPopup - shown after Google registration */}
+      <SetPasswordPopup
+        isOpen={showSetPassword}
+        onClose={handleCloseSetPassword}
+        onPasswordSet={handlePasswordSet}
+        onSkip={handleSkipPassword}
+      />
+    </>
   );
 };
 
