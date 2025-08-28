@@ -464,6 +464,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
         isOpen={showResetPassword}
         onClose={handleCloseResetPassword}
         onPasswordReset={handlePasswordReset}
+        email={resetEmail}
       />
 
       <RegisterPopup

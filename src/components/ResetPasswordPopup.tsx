@@ -1,20 +1,24 @@
 "use client";
 
 import React, { useState } from "react";
+import axios from "axios";
 import PopupComponent from "@/components/PopupComponent";
 import ResetPasswordButtonImage from "@/assets/images/buttons/reset-password-button.webp";
 import CustomButton2 from "@/components/CustomButton2";
+import { FORGOT_PASSWORD_RESET_API_ROUTE } from "@/routes";
 
 interface ResetPasswordPopupProps {
   isOpen: boolean;
   onClose: () => void;
   onPasswordReset: () => void;
+  email: string;
 }
 
 const ResetPasswordPopup: React.FC<ResetPasswordPopupProps> = ({
   isOpen,
   onClose,
   onPasswordReset,
+  email,
 }) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -54,14 +58,34 @@ const ResetPasswordPopup: React.FC<ResetPasswordPopupProps> = ({
 
     if (validateForm()) {
       try {
-        // Simulate API call for resetting password
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        const response = await axios.post(FORGOT_PASSWORD_RESET_API_ROUTE, {
+          email: email.trim(),
+          password: password,
+        });
 
-        onPasswordReset();
-        setPassword("");
-        setConfirmPassword("");
-      } catch {
-        setErrors({ password: "Failed to reset password. Please try again." });
+        if (response.status === 200) {
+          onPasswordReset();
+          setPassword("");
+          setConfirmPassword("");
+        } else {
+          setErrors({
+            password: "Failed to reset password. Please try again.",
+          });
+        }
+      } catch (error: unknown) {
+        console.error("Reset password error:", error);
+
+        if (axios.isAxiosError(error)) {
+          const errorMessage =
+            error.response?.data?.data?.message ||
+            error.response?.data?.message ||
+            "Failed to reset password. Please try again.";
+          setErrors({ password: errorMessage });
+        } else {
+          setErrors({
+            password: "Failed to reset password. Please try again.",
+          });
+        }
       }
     }
 
@@ -103,7 +127,9 @@ const ResetPasswordPopup: React.FC<ResetPasswordPopupProps> = ({
               disabled={isSubmitting}
             />
             {errors.password && (
-              <p className="text-red-500 text-sm mt-2">{errors.password}</p>
+              <p className="text-red-500 text-sm mt-2 text-center">
+                {errors.password}
+              </p>
             )}
           </div>
 
@@ -124,7 +150,7 @@ const ResetPasswordPopup: React.FC<ResetPasswordPopupProps> = ({
               disabled={isSubmitting}
             />
             {errors.confirmPassword && (
-              <p className="text-red-500 text-sm mt-2">
+              <p className="text-red-500 text-sm mt-2 text-center">
                 {errors.confirmPassword}
               </p>
             )}

@@ -131,9 +131,6 @@ const SetPasswordPopup: React.FC<SetPasswordPopupProps> = ({
           <p className="text-tertiary text-base">
             Set a password for your account to enhance security.
           </p>
-          <p className="text-tertiary text-sm mt-2">
-            You can skip this step and set it later from your profile.
-          </p>
         </div>
 
         {/* Form */}

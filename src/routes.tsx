@@ -23,3 +23,11 @@ export const EMAIL_TO_ADMIN_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/
 export const GET_USER_BTCY_BALANCE_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/mining/getUserBalance/BTCY`;
 
 export const SET_PASSWORD_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/setPassword`;
+
+// Forgot Password Routes
+
+export const FORGOT_PASSWORD_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/sendForgotOtp`;
+
+export const FORGOT_PASSWORD_VERIFY_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/validateForgotOtp`;
+
+export const FORGOT_PASSWORD_RESET_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/resetPassword`;
