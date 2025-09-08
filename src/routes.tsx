@@ -1,7 +1,10 @@
+// Basic Routes
 export const CONTACT_US_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/basic/emailToAdmin`;
 
+// Airdrop Routes
 export const AIRDROP_REGISTER_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/basic/registerbtcyairdrop`;
 
+// Auth Routes
 export const LOGIN_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/login`;
 
 export const REGISTER_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/registerwithapp`;
@@ -10,6 +13,7 @@ export const GOOGLE_LOGIN_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1
 
 export const GOOGLE_REGISTER_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/register/google`;
 
+// Alchemy Routes
 export const ALCHEMY_CREATE_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/alchemy/create`;
 
 export const ALCHEMY_COMPLETE_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/alchemy/complete`;
@@ -31,3 +35,6 @@ export const FORGOT_PASSWORD_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api
 export const FORGOT_PASSWORD_VERIFY_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/validateForgotOtp`;
 
 export const FORGOT_PASSWORD_RESET_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/resetPassword`;
+
+// Ambassador Routes
+export const AMBASSADOR_REGISTER_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/ambassadors`;

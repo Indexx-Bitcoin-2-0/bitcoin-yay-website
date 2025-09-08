@@ -5,6 +5,7 @@ import {
   ALCHEMY_GET_USER_SUBSCRIPTION,
   GET_USER_BTCY_BALANCE_API_ROUTE,
 } from "@/routes";
+import { getAccessToken } from "./auth";
 
 export interface CreateAlchemyData {
   email: string;
@@ -86,15 +87,6 @@ export interface AlchemyConfigResponse {
     quantum: AlchemyConfigItem[];
   };
   error?: string;
-}
-
-/**
- * Gets the access token from localStorage
- */
-function getAccessToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return JSON.parse(localStorage.getItem("bitcoinYayAuth") || "{}")
-    .access_token;
 }
 
 /**

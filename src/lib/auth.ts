@@ -15,6 +15,12 @@ export const saveAuthData = (user: User): void => {
   localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user));
 };
 
+export function getAccessToken(): string | null {
+  if (typeof window === "undefined") return null;
+  return JSON.parse(localStorage.getItem(AUTH_STORAGE_KEY) || "{}")
+    .access_token;
+}
+
 export const getAuthData = (): User | null => {
   if (typeof window === "undefined") return null;
 
