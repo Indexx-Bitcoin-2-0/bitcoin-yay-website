@@ -42,7 +42,7 @@ export default function AmbassadorFaq() {
               Is there a minimum audience size?
             </AccordionTrigger>
             <AccordionContent className="text-base md:text-lg text-tertiary my-4">
-              temp
+              No—quality and fit matter more than raw numbers.
             </AccordionContent>
           </AccordionItem>
 
@@ -54,7 +54,8 @@ export default function AmbassadorFaq() {
               How do milestones work?
             </AccordionTrigger>
             <AccordionContent className="text-base md:text-lg text-tertiary my-4">
-              temp
+              You’ll get a unique referral/tracking link. As your community
+              engages, milestones unlock bonuses and perks.
             </AccordionContent>
           </AccordionItem>
 
@@ -63,10 +64,11 @@ export default function AmbassadorFaq() {
             className="border border-bg3 last:border-b-1 rounded-lg px-6 bg-transparent"
           >
             <AccordionTrigger className="text-left text-xl md:text-2xl font-bold text-tertiary hover:no-underline flex items-center justify-between">
-            Can we co-create campaigns?
+              Can we co-create campaigns?
             </AccordionTrigger>
             <AccordionContent className="text-base md:text-lg text-tertiary my-4">
-              temp
+              Yes. We love building formats that fit your voice (tutorials,
+              AMAs, challenges, live streams).
             </AccordionContent>
           </AccordionItem>
         </Accordion>
