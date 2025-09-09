@@ -48,7 +48,7 @@ const PowerMiningPage = () => {
           <p>via bank wires, stable coins, and global OTC solutions.</p>
         </div>
         <CustomButton2
-          link="/#apple-store-download"
+          link="/quantum-mining"
           image={BuyNowButtonImage}
         />
       </div>

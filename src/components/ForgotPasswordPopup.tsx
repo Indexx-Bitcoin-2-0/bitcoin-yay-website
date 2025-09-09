@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
+import axios from "axios";
 import PopupComponent from "@/components/PopupComponent";
 import SubmitButtonImage from "@/assets/images/buttons/submit-button.webp";
 import CustomButton2 from "@/components/CustomButton2";
+import { FORGOT_PASSWORD_API_ROUTE } from "@/routes";
 
 interface ForgotPasswordPopupProps {
   isOpen: boolean;
@@ -42,13 +44,28 @@ const ForgotPasswordPopup: React.FC<ForgotPasswordPopupProps> = ({
     }
 
     try {
-      // Simulate API call for sending reset email
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await axios.post(FORGOT_PASSWORD_API_ROUTE, {
+        email: email.trim(),
+      });
 
-      onEmailSent(email);
-      setEmail("");
-    } catch {
-      setError("Failed to send reset email. Please try again.");
+      if (response.status === 200) {
+        onEmailSent(email);
+        setEmail("");
+      } else {
+        setError("Failed to send reset email. Please try again.");
+      }
+    } catch (error: unknown) {
+      console.error("Forgot password error:", error);
+
+      if (axios.isAxiosError(error)) {
+        const errorMessage =
+          error.response?.data?.data?.message ||
+          error.response?.data?.message ||
+          "Failed to send reset email. Please try again.";
+        setError(errorMessage);
+      } else {
+        setError("Failed to send reset email. Please try again.");
+      }
     }
 
     setIsSubmitting(false);
@@ -62,7 +79,6 @@ const ForgotPasswordPopup: React.FC<ForgotPasswordPopupProps> = ({
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
             Forgot Password
           </h2>
-          
         </div>
 
         {/* Form */}
@@ -73,7 +89,7 @@ const ForgotPasswordPopup: React.FC<ForgotPasswordPopupProps> = ({
               htmlFor="reset-email"
               className="block text-bg3 text-lg mb-2"
             >
-              Email/Phone Number 
+              Email
             </label>
             <input
               type="email"
@@ -83,7 +99,9 @@ const ForgotPasswordPopup: React.FC<ForgotPasswordPopupProps> = ({
               onChange={(e) => setEmail(e.target.value)}
               disabled={isSubmitting}
             />
-            {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+            {error && (
+              <p className="text-red-500 text-sm mt-2 text-center">{error}</p>
+            )}
           </div>
 
           {/* Send Button */}

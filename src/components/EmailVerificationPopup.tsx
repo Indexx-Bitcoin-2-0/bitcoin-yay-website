@@ -1,10 +1,15 @@
 "use client";
 
 import React, { useState } from "react";
+import axios from "axios";
 import PopupComponent from "@/components/PopupComponent";
 import { InputOTP } from "@/components/ui/input-otp";
 import SendButtonImage from "@/assets/images/buttons/send-button.webp";
 import CustomButton2 from "@/components/CustomButton2";
+import {
+  FORGOT_PASSWORD_API_ROUTE,
+  FORGOT_PASSWORD_VERIFY_API_ROUTE,
+} from "@/routes";
 
 interface EmailVerificationPopupProps {
   isOpen: boolean;
@@ -42,18 +47,29 @@ const EmailVerificationPopup: React.FC<EmailVerificationPopupProps> = ({
     }
 
     try {
-      // Simulate API call for verifying code
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await axios.post(FORGOT_PASSWORD_VERIFY_API_ROUTE, {
+        email: email.trim(),
+        code: verificationCode,
+      });
 
-      // For demo purposes, accept any 6-digit code
-      if (verificationCode.length === 6) {
+      if (response.status === 200) {
         onVerified();
         setVerificationCode("");
       } else {
         setError("Invalid verification code. Please try again.");
       }
-    } catch {
-      setError("Verification failed. Please try again.");
+    } catch (error: unknown) {
+      console.error("OTP verification error:", error);
+
+      if (axios.isAxiosError(error)) {
+        const errorMessage =
+          error.response?.data?.data?.message ||
+          error.response?.data?.message ||
+          "Invalid verification code. Please try again.";
+        setError(errorMessage);
+      } else {
+        setError("Verification failed. Please try again.");
+      }
     }
 
     setIsSubmitting(false);
@@ -64,10 +80,27 @@ const EmailVerificationPopup: React.FC<EmailVerificationPopupProps> = ({
     setError("");
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      onResendCode();
-    } catch {
-      setError("Failed to resend code. Please try again.");
+      const response = await axios.post(FORGOT_PASSWORD_API_ROUTE, {
+        email: email.trim(),
+      });
+
+      if (response.status === 200) {
+        onResendCode();
+      } else {
+        setError("Failed to resend code. Please try again.");
+      }
+    } catch (error: unknown) {
+      console.error("Resend OTP error:", error);
+
+      if (axios.isAxiosError(error)) {
+        const errorMessage =
+          error.response?.data?.data?.message ||
+          error.response?.data?.message ||
+          "Failed to resend code. Please try again.";
+        setError(errorMessage);
+      } else {
+        setError("Failed to resend code. Please try again.");
+      }
     }
 
     setIsResending(false);
@@ -93,18 +126,22 @@ const EmailVerificationPopup: React.FC<EmailVerificationPopupProps> = ({
           className="w-full flex flex-col items-center"
         >
           {/* OTP Input */}
-          <div className="mb-6">
+          <div className="mb-4">
             <InputOTP
               length={6}
               value={verificationCode}
               onChange={setVerificationCode}
               disabled={isSubmitting}
-              className="mb-4 gap-4 w-14"
+              className="gap-4 w-14"
             />
-            {error && (
-              <p className="text-red-500 text-sm text-center mt-2">{error}</p>
-            )}
           </div>
+
+          {/* Error Message - Centered */}
+          {error && (
+            <div className="mb-4 w-full">
+              <p className="text-red-500 text-sm text-center">{error}</p>
+            </div>
+          )}
 
           {/* Send Button */}
           <div className="flex justify-center mb-6">

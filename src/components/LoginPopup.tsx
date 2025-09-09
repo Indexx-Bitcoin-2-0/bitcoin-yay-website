@@ -8,6 +8,7 @@ import ForgotPasswordPopup from "@/components/ForgotPasswordPopup";
 import EmailVerificationPopup from "@/components/EmailVerificationPopup";
 import ResetPasswordPopup from "@/components/ResetPasswordPopup";
 import RegisterPopup from "@/components/RegisterPopup";
+import SetPasswordPopup from "@/components/SetPasswordPopup";
 import { useAuth } from "@/contexts/AuthContext";
 import { GOOGLE_LOGIN_API_ROUTE, LOGIN_API_ROUTE } from "@/routes";
 
@@ -24,8 +25,7 @@ interface GoogleTokenResponse {
 interface LoginPopupProps {
   isOpen: boolean;
   onClose: () => void;
-  onLoginSuccess: () => 
-    void;
+  onLoginSuccess: () => void;
 }
 const LoginPopup: React.FC<LoginPopupProps> = ({
   isOpen,
@@ -47,6 +47,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
   const [showEmailVerification, setShowEmailVerification] = useState(false);
   const [showResetPassword, setShowResetPassword] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
+  const [showSetPassword, setShowSetPassword] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
 
   const validateForm = (): boolean => {
@@ -166,6 +167,11 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
 
           onLoginSuccess();
           onClose();
+
+          // Check if password needs to be set and show popup
+          if (res.data?.data?.isPasswordSet === false) {
+            setShowSetPassword(true);
+          }
         } else {
           // Any other backend response
           const errorMessage =
@@ -199,6 +205,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
     setShowEmailVerification(false);
     setShowResetPassword(false);
     setShowRegister(false);
+    setShowSetPassword(false);
   };
 
   // Forgot password flow handlers
@@ -261,12 +268,27 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
     // Main login popup will automatically show when sub-popup is closed
   };
 
+  const handlePasswordSet = () => {
+    // Password has been set successfully, just close the popup
+    closeAllPopups();
+  };
+
+  const handleCloseSetPassword = () => {
+    closeAllPopups();
+  };
+
+  const handleSkipPassword = () => {
+    // User chose to skip setting password, just close the popup
+    closeAllPopups();
+  };
+
   // Check if any sub-popup is active
   const isSubPopupActive =
     showForgotPassword ||
     showEmailVerification ||
     showResetPassword ||
-    showRegister;
+    showRegister ||
+    showSetPassword;
 
   return (
     <>
@@ -442,12 +464,20 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
         isOpen={showResetPassword}
         onClose={handleCloseResetPassword}
         onPasswordReset={handlePasswordReset}
+        email={resetEmail}
       />
 
       <RegisterPopup
         isOpen={showRegister}
         onClose={handleCloseRegister}
         onRegisterSuccess={handleRegisterSuccess}
+      />
+
+      <SetPasswordPopup
+        isOpen={showSetPassword}
+        onClose={handleCloseSetPassword}
+        onPasswordSet={handlePasswordSet}
+        onSkip={handleSkipPassword}
       />
     </>
   );

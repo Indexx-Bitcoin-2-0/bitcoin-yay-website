@@ -1,15 +1,19 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ChevronDown, Check, Clock } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-
+import { io, Socket } from "socket.io-client";
 import CustomButton2 from "@/components/CustomButton2";
+import PaymentPopup from "./PaymentPopup";
+import LoginPopup from "@/components/LoginPopup";
+import { useAuth } from "@/contexts/AuthContext";
 
 import ArtImage1 from "@/assets/images/quantum-mining/quantum-mining-icon.webp";
 import ArtImage2 from "@/assets/images/quantum-mining/bitcoin-art-3.svg";
@@ -26,33 +30,344 @@ import BTCYIcon from "@/assets/images/quantum-mining/btcy-icon.webp";
 import FlagIcon from "@/assets/images/quantum-mining/american-flag.webp";
 import GlobeIcon from "@/assets/images/quantum-mining/globe-icon.webp";
 
-import RegisterButtonImage from "@/assets/images/buttons/register-button.webp";
+import NoteButtonImage from "@/assets/images/buttons/note-button.webp";
 import BuyNowButtonImage from "@/assets/images/buttons/buy-now-button.webp";
 import ButtonBorder from "@/assets/images/button-border.webp";
 import ButtonBorderActive from "@/assets/images/button-border-active.webp";
+import axios from "axios";
+import SuccessPopup from "./SuccessPopup";
+import UnsuccessPopup from "./UnsuccessPopup";
+import { QUANTUM_USER_ORDER_API_ROUTE } from "@/routes";
+
+interface Errors {
+  payAmount?: string;
+  selectedNetwork?: string;
+}
+
+const QUANTUM_BUY_ORDER_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/order/createOrderForQuantum`;
+
+/** PAY ORDER TYPES */
+type CryptoOrderData = {
+  orderId: string;
+  paymentMethod: "usdt" | "usdc";
+  amount: number; // crypto amount to transfer
+  receiverAddress: string;
+  expiresAt: string; // ISO date
+  message?: string;
+  blockchain: "Ethereum" | "Solana";
+};
+
+type PaypalOrderData = {
+  _id: string;
+  paypalId: string;
+  orderId: string;
+  status: "CREATED" | string;
+  links: { href: string; rel: string; method: string; _id: string }[];
+  orderAmount: string;
+  orderCurrency: string;
+  created: string;
+  modified: string;
+};
+
+type CreateOrderResponse =
+  | { status: 200; data: CryptoOrderData }
+  | { status: 200; data: PaypalOrderData };
+
+const ComingSoonBadge = ({ label = "Coming soon" }: { label?: string }) => (
+  <span
+    className="ml-3 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs md:text-sm animate-pulse"
+    style={{
+      borderColor: "#FD923A",
+      color: "#FD923A",
+      backgroundColor: "rgba(253,146,58,0.12)",
+    }}
+  >
+    {label}
+  </span>
+);
+
+const paymentOptions = ["USDT", "USDC", "PayPal", "USD"] as const;
+type PaymentOption = (typeof paymentOptions)[number];
+
+function optionToCurrencyIn(opt: PaymentOption) {
+  // API expects "PayPal" (capital L) & "USD"/"USDT"/"USDC"
+  return opt;
+}
+
+function isCrypto(opt: PaymentOption) {
+  return opt === "USDT" || opt === "USDC";
+}
 
 const QuantumMiningPage = () => {
+  const { user } = useAuth();
+
   const [payAmount, setPayAmount] = useState("");
   const [getAmount, setGetAmount] = useState("");
-  const [selectedPaymentOption, setSelectedPaymentOption] = useState(0);
+  const [selectedPaymentOption, setSelectedPaymentOption] =
+    useState<PaymentOption>("USDT");
+  const [selectedNetwork, setSelectedNetwork] = useState<"Ethereum" | "Solana">(
+    "Ethereum"
+  );
+  const [isNetworkDropdownOpen, setIsNetworkDropdownOpen] = useState(false);
+  const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
+  const [errors, setErrors] = useState<Errors>({});
+  const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
+  const [btcPrice, setBtcPrice] = useState(0);
+  const [btcyPrice, setBtcyPrice] = useState(0);
+  // Active order (crypto only)
+  const [activeOrder, setActiveOrder] = useState<CryptoOrderData | null>(null);
 
-  const handlePaymentOptionClick = (index: number) => {
-    setSelectedPaymentOption(index);
-  };
+  // Popups
+  const [successOpen, setSuccessOpen] = useState(false);
+  const [failOpen, setFailOpen] = useState(false);
+
+  // Socket
+  const socketRef = useRef<Socket | null>(null);
+
+  const handledReturnRef = useRef(false);
+  const [processingReturn, setProcessingReturn] = useState(false);
+
+
+  useEffect(() => {
+    if (handledReturnRef.current) return;
+    handledReturnRef.current = true;
+
+    if (typeof window === "undefined") return;
+
+    const url = new URL(window.location.href);
+    const status = url.searchParams.get("status");
+    const token = url.searchParams.get("token"); // PayPal order id
+
+    if (!status) return;
+
+    // Clean URL immediately (no query params lingering)
+    window.history.replaceState({}, "", url.origin + url.pathname);
+
+    // Close any crypto modal just in case
+    setIsPaymentPopupOpen(false);
+
+    // Fast-fail on cancel
+    if (status === "cancel") {
+      setFailOpen(true);
+      // optional: clear stash
+      sessionStorage.removeItem("qm_paypal_order");
+      return;
+    }
+
+    // Success path -> fetch order details from backend (capture is already done server-side)
+    if (status === "success") {
+      // Get email + fallback orderId from stash if needed
+      const stash = (() => {
+        try { return JSON.parse(sessionStorage.getItem("qm_paypal_order") || "{}"); }
+        catch { return {}; }
+      })();
+
+      const emailForLookup = user?.email || stash?.email || "";
+      const orderIdForLookup = token || stash?.orderId || "";
+
+      if (!emailForLookup || !orderIdForLookup) {
+        setFailOpen(true);
+        sessionStorage.removeItem("qm_paypal_order");
+        return;
+      }
+
+      (async () => {
+        try {
+          setProcessingReturn(true);
+          const res = await axios.get(
+            `${QUANTUM_USER_ORDER_API_ROUTE}/${encodeURIComponent(emailForLookup)}/${encodeURIComponent(orderIdForLookup)}`
+          );
+
+          const body: any = res.data || {};
+          // Be flexible about shape
+          const statusUpper =
+            body?.status?.toUpperCase?.() ||
+            body?.data?.status?.toUpperCase?.() ||
+            body?.order?.status?.toUpperCase?.() ||
+            body?.purchase_units?.[0]?.payments?.captures?.[0]?.status?.toUpperCase?.();
+
+          if (statusUpper === "COMPLETED" || statusUpper === "APPROVED" || statusUpper === "CAPTURED") {
+            setSuccessOpen(true);
+          } else {
+            setFailOpen(true);
+          }
+        } catch (e) {
+          console.error("getUserOrder failed:", e);
+          setFailOpen(true);
+        } finally {
+          setProcessingReturn(false);
+          sessionStorage.removeItem("qm_paypal_order");
+        }
+      })();
+    }
+  }, [user?.email]);
 
   const handlePayAmountChange = (value: string) => {
     setPayAmount(value);
     if (value && !isNaN(Number(value))) {
       const usdValue = Number(value);
-      const btcyAmount = usdValue / 0.1;
+      const btcyAmount = usdValue / btcyPrice;
       setGetAmount(btcyAmount.toFixed(2));
     } else {
       setGetAmount("");
     }
   };
 
-  const handleBuyNow = () => {
-    console.log("Buy Now clicked!");
+  useEffect(() => {
+    const fetchPrices = async () => {
+      try {
+        const res = await axios.get(
+          "https://api.coingecko.com/api/v3/simple/price",
+          {
+            params: {
+              ids: "bitcoin",
+              vs_currencies: "usd",
+            },
+          }
+        );
+        const btc = res.data.bitcoin.usd;
+        const btcy = btc / 1_000_000;
+        setBtcPrice(btc);
+        setBtcyPrice(btcy);
+      } catch (error) {
+        console.error("Failed to fetch BTC price:", error);
+      }
+    };
+    fetchPrices();
+  }, []);
+
+  useEffect(() => {
+    if (!user?.email) return;
+
+    const s = io(process.env.NEXT_PUBLIC_API_URL as string, {
+      path: "/socket.io/",
+      transports: ["websocket"],
+      auth: { email: user.email },
+    });
+
+    socketRef.current = s;
+
+    s.on("connect", () => console.log("ws connected", s.id));
+    s.on("disconnect", () => console.log("ws disconnected"));
+
+    s.on("order:created", (p: any) => {
+      // server emits right after order creation (crypto)
+      console.log("order:created", p);
+    });
+
+    s.on("payment:watching", (p: any) => {
+      console.log("payment:watching", p);
+    });
+
+    s.on("payment:pending", (p: any) => {
+      // p.confirmations / p.requiredConfirmations
+      console.log("payment:pending", p);
+    });
+
+    s.on("order:confirmed", (p: any) => {
+      console.log("order:confirmed", p);
+      setIsPaymentPopupOpen(false);
+      setSuccessOpen(true);
+      setActiveOrder(null);
+    });
+
+    s.on("order:expired", (p: any) => {
+      console.log("order:expired", p);
+      setIsPaymentPopupOpen(false);
+      setFailOpen(true);
+      setActiveOrder(null);
+    });
+
+    // optional combined stream
+    s.on("orders:update", (p: any) => {
+      console.log("orders:update", p);
+    });
+
+    return () => {
+      s.disconnect();
+      socketRef.current = null;
+    };
+  }, [user?.email]);
+
+  const canSubmit = useMemo(() => {
+    if (!payAmount || isNaN(Number(payAmount))) return false;
+    if (isCrypto(selectedPaymentOption) && !selectedNetwork) return false;
+    return true;
+  }, [payAmount, selectedPaymentOption, selectedNetwork]);
+
+  // MAIN BUY HANDLER: calls API first, then either redirect (paypal/usd) or open popup (crypto)
+  const handleBuyNow = async () => {
+    if (!canSubmit) {
+      setErrors({ payAmount: "Please enter a valid amount" });
+      return;
+    }
+    if (!user?.email) {
+      setIsLoginPopupOpen(true);
+      setIsPaymentPopupOpen(false);
+      return;
+    }
+
+    try {
+      // Build payload “based on the above data”
+      const payload: any = {
+        email: user.email,
+        currencyIn: optionToCurrencyIn(selectedPaymentOption), // "USDT"|"USDC"|"PayPal"|"USD"
+        currencyOut: "BTCY",
+        amount: Number(payAmount), // user-entered USD
+        outAmount: Number(getAmount) || 0, // BTCY amount (UI computed)
+      };
+
+      if (isCrypto(selectedPaymentOption)) payload.blockchain = selectedNetwork;
+
+      const res = await axios.post<CreateOrderResponse>(
+        QUANTUM_BUY_ORDER_API_ROUTE,
+        payload
+      );
+
+      const data: any = res.data?.data;
+
+      // If USD or PayPal => redirect to external link
+      if (selectedPaymentOption === "USD" || selectedPaymentOption === "PayPal") {
+        const approve = data?.links?.find((l: any) => l?.rel === "approve")?.href || "";
+        if (!approve) throw new Error("Missing PayPal approval link.");
+
+        // Persist for return page
+        const tokenFromLink = (() => {
+          try {
+            const u = new URL(approve);
+            return u.searchParams.get("token") || undefined;
+          } catch { return undefined; }
+        })();
+
+        const stash = {
+          email: user.email,
+          // PayPal order id can be one of: token, data.id, data.paypalId
+          orderId: tokenFromLink || data?.id || data?.paypalId || data?.orderId || "",
+        };
+        sessionStorage.setItem("qm_paypal_order", JSON.stringify(stash));
+
+        window.location.href = approve;
+        return;
+      }
+
+      // Else crypto: open popup with address + qr
+      const order: CryptoOrderData = {
+        orderId: data.orderId,
+        paymentMethod: data.paymentMethod,
+        amount: data.amount,
+        receiverAddress: data.receiverAddress,
+        expiresAt: data.expiresAt,
+        message: data.message,
+        blockchain: data.blockchain,
+      };
+
+      setActiveOrder(order);
+      setErrors({});
+      setIsPaymentPopupOpen(true);
+    } catch (err: any) {
+      console.error("Order create failed", err);
+      setFailOpen(true);
+    }
   };
 
   return (
@@ -72,9 +387,9 @@ const QuantumMiningPage = () => {
 
           <div className="font-bold mt-10 flex flex-col justify-center items-center md:items-start">
             <CustomButton2
-              image={RegisterButtonImage}
+              image={NoteButtonImage}
               text="Register"
-              link="#"
+              link="#buy-btcy"
               imageStyling="w-30"
             />
           </div>
@@ -103,10 +418,18 @@ const QuantumMiningPage = () => {
               <h4 className="text-3xl md:text-4xl font-bold">For US Users</h4>
             </div>
             <ul className="list-disc text-2xl md:text-3xl mt-10 text-tertiary pl-6">
-              <li>USDT / USDC</li>
-              <li>USD bank wire</li>
-              <li>Paypal</li>
-              <li>USD credit/debit card (via Stripe, Circle)</li>
+              <li className="flex items-center">
+                USDT / USDC
+              </li>
+              <li className="flex items-center">
+                Paypal
+              </li>
+              <li className="flex items-center">
+                USD credit/debit card
+              </li>
+              <li className="flex items-center">
+                USD bank wire <ComingSoonBadge />
+              </li>
             </ul>
           </div>
           <div className="w-full lg:w-1/2">
@@ -117,17 +440,30 @@ const QuantumMiningPage = () => {
               </h4>
             </div>
             <ul className="list-disc text-2xl md:text-3xl mt-10 text-tertiary pl-6">
-              <li>USDT / USDC</li>
-              <li>Local currencies: EUR, GBP, JPY, AED, INR</li>
-              <li>Bank wires (SWIFT/SEPA)</li>
-              <li>Paypal</li>
-              <li>Local methods: Alipay, UPI, M-Pesa</li>
+              <li className="flex items-center">
+                USDT / USDC
+              </li>
+              <li className="flex items-center">
+                Paypal
+              </li>
+              <li className="flex items-center whitespace-nowrap">
+                Local currencies: EUR, GBP, JPY, AED, INR <ComingSoonBadge />
+              </li>
+              <li className="flex items-center">
+                Bank wires (SWIFT/SEPA) <ComingSoonBadge />
+              </li>
+              <li className="flex items-center">
+                Local methods: Alipay, UPI, M-Pesa <ComingSoonBadge />
+              </li>
             </ul>
           </div>
         </div>
       </div>
 
-      <div className="mt-40 border-2 border-bg3 rounded-2xl p-8 md:p-12 max-w-5xl mx-auto">
+      <div
+        id="buy-btcy"
+        className="mt-40 border-2 border-bg3 rounded-2xl p-8 md:p-12 max-w-5xl mx-auto"
+      >
         <h2 className="text-3xl md:text-4xl xl:text-8xl font-bold text-center mb-8">
           Buy BTCY
         </h2>
@@ -153,55 +489,86 @@ const QuantumMiningPage = () => {
 
         {/* Exchange Rate */}
         <div className="mb-8">
-          <p className="text-xl md:text-[40px] font-semibold">1 BTCY = $0.1</p>
+          <p className="text-xl md:text-[40px] font-semibold">1 BTCY = ${btcyPrice.toFixed(4)}</p>
         </div>
 
         {/* Payment Options */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-2 mb-8 justify-items-center">
           {[
-            { name: "USDT", icon: USDTIcon, color: "green" },
-            { name: "USDC", icon: USDCIcon, color: "blue" },
-            { name: "Paypal", icon: PaypalIcon, color: "blue" },
-            { name: "USD", icon: USDIcon, color: "yellow" },
-          ].map((option, index) => (
-            <div
-              key={option.name}
-              className="relative cursor-pointer transition-all duration-200"
-              onClick={() => handlePaymentOptionClick(index)}
-            >
-              {index === selectedPaymentOption ? (
+            { name: "USDT", icon: USDTIcon },
+            { name: "USDC", icon: USDCIcon },
+            { name: "PayPal", icon: PaypalIcon },
+            { name: "USD", icon: USDIcon },
+          ].map((option, index) => {
+            const name = option.name as PaymentOption;
+            const isSelected = name === selectedPaymentOption;
+            return (
+              <div
+                key={name}
+                className="relative cursor-pointer transition-all duration-200"
+                onClick={() => setSelectedPaymentOption(name)}
+              >
                 <Image
-                  src={ButtonBorderActive}
-                  alt="Button Border Active"
+                  src={isSelected ? ButtonBorderActive : ButtonBorder}
+                  alt={isSelected ? "Button Border Active" : "Button Border"}
                   className="w-32 md:w-38 lg:w-44"
                 />
-              ) : (
-                <Image
-                  src={ButtonBorder}
-                  alt="Button Border"
-                  className="w-32 md:w-38 lg:w-44"
-                />
-              )}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
-                <span className="mb-2">
-                  <Image
-                    src={option.icon}
-                    alt={option.name}
-                    className="w-10 h-10"
-                  />
-                </span>
-                <span className="text-lg">{option.name}</span>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+                  <span className="mb-2">
+                    <Image src={option.icon} alt={name} className="w-10 h-10" />
+                  </span>
+                  <span className="text-lg">{name}</span>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
+
+        {/* Network for crypto */}
+        {isCrypto(selectedPaymentOption) && (
+          <div className="mb-8">
+            <label className="block text-xl mb-2">Network</label>
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setIsNetworkDropdownOpen(!isNetworkDropdownOpen)}
+                className="flex items-center gap-3 p-3 hover:bg-bg2 rounded-md cursor-pointer text-tertiary border border-bg3 w-full text-lg focus:border-primary hover:border-primary"
+              >
+                <span className="flex-1 text-left">{selectedNetwork}</span>
+                <ChevronDown className="w-5 h-5" strokeWidth={2.5} />
+              </button>
+
+              {isNetworkDropdownOpen && (
+                <div className="absolute left-0 top-full mt-1 w-full bg-bg2 rounded-md shadow-lg z-10 border border-bg">
+                  <div className="py-1">
+                    {["Ethereum", "Solana"].map((network) => (
+                      <button
+                        key={network}
+                        type="button"
+                        onClick={() => {
+                          setSelectedNetwork(network as any);
+                          setIsNetworkDropdownOpen(false);
+                        }}
+                        className="w-full px-4 py-3 text-left text-tertiary hover:bg-primary hover:text-bg transition-colors text-lg cursor-pointer flex items-center gap-3"
+                      >
+                        <span className="flex-1">{network}</span>
+                        {selectedNetwork === network && (
+                          <Check className="w-5 h-5 ml-auto" strokeWidth={2.5} />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Input Fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <div>
             <label className="block text-xl mb-2">
-              Pay with{" "}
-              {["USDT", "USDC", "Paypal", "USD"][selectedPaymentOption]}
+              Pay with {selectedPaymentOption}
             </label>
             <div className="relative">
               <input
@@ -213,22 +580,21 @@ const QuantumMiningPage = () => {
               />
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                 <span>
-                  {selectedPaymentOption === 0 ? (
+                  {selectedPaymentOption === "USDT" ? (
                     <Image src={USDTIcon} alt="USDT" className="w-10 h-10" />
-                  ) : selectedPaymentOption === 1 ? (
+                  ) : selectedPaymentOption === "USDC" ? (
                     <Image src={USDCIcon} alt="USDC" className="w-10 h-10" />
-                  ) : selectedPaymentOption === 2 ? (
-                    <Image
-                      src={PaypalIcon}
-                      alt="Paypal"
-                      className="w-10 h-10"
-                    />
+                  ) : selectedPaymentOption === "PayPal" ? (
+                    <Image src={PaypalIcon} alt="PayPal" className="w-10 h-10" />
                   ) : (
                     <Image src={USDIcon} alt="USD" className="w-14 h-10" />
                   )}
                 </span>
               </div>
             </div>
+            {errors.payAmount && (
+              <p className="text-red-500 text-sm mt-2">{errors.payAmount}</p>
+            )}
           </div>
 
           <div>
@@ -409,6 +775,24 @@ const QuantumMiningPage = () => {
           </Accordion>
         </div>
       </div>
+
+      <PaymentPopup
+        isOpen={isPaymentPopupOpen}
+        onClose={() => setIsPaymentPopupOpen(false)}
+        cryptoType={selectedPaymentOption}
+        order={activeOrder}
+        closeOnOutsideClick={false}
+        closeOnEsc={false}
+      />
+
+      <LoginPopup
+        isOpen={isLoginPopupOpen}
+        onClose={() => setIsLoginPopupOpen(false)}
+        onLoginSuccess={() => setIsLoginPopupOpen(false)}
+      />
+
+      <SuccessPopup isOpen={successOpen} onClose={() => setSuccessOpen(false)} />
+      <UnsuccessPopup isOpen={failOpen} onClose={() => setFailOpen(false)} />
     </div>
   );
 };

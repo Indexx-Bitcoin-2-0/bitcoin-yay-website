@@ -3,38 +3,42 @@
 import React, { useState } from "react";
 import axios from "axios";
 import PopupComponent from "@/components/PopupComponent";
-import ResetPasswordButtonImage from "@/assets/images/buttons/reset-password-button.webp";
+import SetPasswordButtonImage from "@/assets/images/buttons/submit-button.webp";
 import CustomButton2 from "@/components/CustomButton2";
-import { FORGOT_PASSWORD_RESET_API_ROUTE } from "@/routes";
+import { SET_PASSWORD_API_ROUTE } from "@/routes";
 
-interface ResetPasswordPopupProps {
+interface SetPasswordPopupProps {
   isOpen: boolean;
   onClose: () => void;
-  onPasswordReset: () => void;
-  email: string;
+  onPasswordSet: () => void;
+  onSkip: () => void;
 }
 
-const ResetPasswordPopup: React.FC<ResetPasswordPopupProps> = ({
+const SetPasswordPopup: React.FC<SetPasswordPopupProps> = ({
   isOpen,
   onClose,
-  onPasswordReset,
-  email,
+  onPasswordSet,
+  onSkip,
 }) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState<{
     password?: string;
     confirmPassword?: string;
+    general?: string;
   }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const validateForm = (): boolean => {
-    const newErrors: { password?: string; confirmPassword?: string } = {};
+    const newErrors: {
+      password?: string;
+      confirmPassword?: string;
+    } = {};
 
     if (!password.trim()) {
       newErrors.password = "Password is required.";
-    } else if (password.length < 8) {
-      newErrors.password = "Password must be at least 8 characters long.";
+    } else if (password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters long.";
     }
 
     if (!confirmPassword.trim()) {
@@ -58,32 +62,56 @@ const ResetPasswordPopup: React.FC<ResetPasswordPopupProps> = ({
 
     if (validateForm()) {
       try {
-        const response = await axios.post(FORGOT_PASSWORD_RESET_API_ROUTE, {
-          email: email.trim(),
-          password: password,
-        });
+        // Get user data from localStorage
+        const userData = JSON.parse(localStorage.getItem("bitcoinYayAuth") || "{}");
+        const email = userData.email;
+        const accessToken = userData.access_token;
+
+        if (!email || !accessToken) {
+          setErrors({
+            general: "Unable to get user information. Please login again.",
+          });
+          setIsSubmitting(false);
+          return;
+        }
+
+        // Call the set password API
+        const response = await axios.post(
+          SET_PASSWORD_API_ROUTE,
+          {
+            email: email,
+            password: password,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+
+        console.log("Set password response", response);
 
         if (response.status === 200) {
-          onPasswordReset();
+          onPasswordSet();
           setPassword("");
           setConfirmPassword("");
         } else {
           setErrors({
-            password: "Failed to reset password. Please try again.",
+            general: "Failed to set password. Please try again.",
           });
         }
       } catch (error: unknown) {
-        console.error("Reset password error:", error);
+        console.error("Set password error:", error);
 
         if (axios.isAxiosError(error)) {
           const errorMessage =
             error.response?.data?.data?.message ||
             error.response?.data?.message ||
-            "Failed to reset password. Please try again.";
-          setErrors({ password: errorMessage });
+            "Failed to set password. Please try again.";
+          setErrors({ general: errorMessage });
         } else {
           setErrors({
-            password: "Failed to reset password. Please try again.",
+            general: "An unexpected error occurred. Please try again.",
           });
         }
       }
@@ -98,13 +126,10 @@ const ResetPasswordPopup: React.FC<ResetPasswordPopupProps> = ({
         {/* Header */}
         <div className="text-center mb-8">
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
-            Reset Password
+            Set Your Password
           </h2>
           <p className="text-tertiary text-base">
-            Please enter strong password mixer of words,
-          </p>
-          <p className="text-tertiary text-base">
-            digits and symbols must contain 8 characters
+            Set a password for your account to enhance security.
           </p>
         </div>
 
@@ -113,50 +138,55 @@ const ResetPasswordPopup: React.FC<ResetPasswordPopupProps> = ({
           {/* Password Field */}
           <div className="mb-2">
             <label
-              htmlFor="new-password"
+              htmlFor="set-password"
               className="block text-bg3 text-lg mb-2"
             >
               Password
             </label>
             <input
               type="password"
-              id="new-password"
+              id="set-password"
               className="w-full text-lg p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={isSubmitting}
             />
             {errors.password && (
-              <p className="text-red-500 text-sm mt-2 text-center">
-                {errors.password}
-              </p>
+              <p className="text-red-500 text-sm mt-2">{errors.password}</p>
             )}
           </div>
 
           {/* Confirm Password Field */}
           <div className="mb-2">
             <label
-              htmlFor="confirm-password"
+              htmlFor="confirm-set-password"
               className="block text-bg3 text-lg mb-2"
             >
               Confirm Password
             </label>
             <input
               type="password"
-              id="confirm-password"
+              id="confirm-set-password"
               className="w-full text-lg p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               disabled={isSubmitting}
             />
             {errors.confirmPassword && (
-              <p className="text-red-500 text-sm mt-2 text-center">
+              <p className="text-red-500 text-sm mt-2">
                 {errors.confirmPassword}
               </p>
             )}
           </div>
 
-          {/* Reset Password Button */}
+          {/* General Error */}
+          {errors.general && (
+            <div className="mb-6 text-red-500 text-sm text-center">
+              {errors.general}
+            </div>
+          )}
+
+          {/* Set Password Button */}
           <div className="flex justify-center mt-6">
             <div
               onClick={(e) => {
@@ -172,17 +202,29 @@ const ResetPasswordPopup: React.FC<ResetPasswordPopupProps> = ({
               }
             >
               <CustomButton2
-                image={ResetPasswordButtonImage}
-                text={"Reset Password"}
+                image={SetPasswordButtonImage}
+                text={""}
                 link="#"
                 imageStyling="w-30"
               />
             </div>
           </div>
         </form>
+
+        {/* Skip Option */}
+        <div className="text-center mt-4">
+          <button
+            type="button"
+            onClick={onSkip}
+            className="text-tertiary text-sm hover:text-primary cursor-pointer hover:underline"
+            disabled={isSubmitting}
+          >
+            Skip for now
+          </button>
+        </div>
       </div>
     </PopupComponent>
   );
 };
 
-export default ResetPasswordPopup;
+export default SetPasswordPopup;
