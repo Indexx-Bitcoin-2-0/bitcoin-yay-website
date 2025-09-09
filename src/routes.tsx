@@ -31,3 +31,7 @@ export const FORGOT_PASSWORD_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api
 export const FORGOT_PASSWORD_VERIFY_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/validateForgotOtp`;
 
 export const FORGOT_PASSWORD_RESET_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/resetPassword`;
+
+export const QUANTUM_BUY_ORDER_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/order/createOrderForQuantum`;
+
+export const QUANTUM_USER_ORDER_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/getUserOrder`;

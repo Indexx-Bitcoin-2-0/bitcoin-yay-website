@@ -5,7 +5,7 @@ import CustomButton2 from "@/components/CustomButton2";
 
 import RetryButtonImage from "@/assets/images/buttons/retry-button.webp";
 
-export default function UnsuccessPupup({
+export default function UnsuccessPopup({
   isOpen,
   onClose,
 }: {
@@ -29,7 +29,7 @@ export default function UnsuccessPupup({
             <CustomButton2
               image={RetryButtonImage}
               text="Try again"
-              onClick={() => {}}
+              onClick={() => onClose()}
               imageStyling="w-30"
             />
           </div>

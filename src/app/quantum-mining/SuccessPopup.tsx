@@ -5,7 +5,7 @@ import CustomButton2 from "@/components/CustomButton2";
 
 import EyeButtonImage from "@/assets/images/buttons/eye-button.webp";
 
-export default function SuccessPupup({
+export default function SuccessPopup({
   isOpen,
   onClose,
 }: {

@@ -1,80 +1,152 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
+import QRCode from "qrcode";
 
 import PopupComponent from "@/components/PopupComponent";
 import USDTIcon from "@/assets/images/quantum-mining/tether.webp";
 import USDCIcon from "@/assets/images/quantum-mining/usdc.webp";
+import { Copy } from "lucide-react";
+
+type CryptoOrderData = {
+  orderId: string;
+  paymentMethod: "usdt" | "usdc";
+  amount: number;
+  receiverAddress: string;
+  expiresAt: string; // ISO
+  message?: string;
+  blockchain: "Ethereum" | "Solana";
+};
 
 export default function PaymentPopup({
   isOpen,
   onClose,
   cryptoType,
-  amount,
+  order,
+  closeOnOutsideClick = true,
+  closeOnEsc = true,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  cryptoType: string;
-  amount: number;
+  cryptoType: "USDT" | "USDC" | string;
+  order: CryptoOrderData | null;
+  closeOnOutsideClick?: boolean;
+  closeOnEsc?: boolean;
 }) {
-  const [timeLeft, setTimeLeft] = useState(600);
+  const [now, setNow] = useState<Date>(new Date());
+  const [qrSrc, setQrSrc] = useState<string>("");
 
+  const icon = cryptoType === "USDT" ? USDTIcon : USDCIcon;
+
+  // countdown based on server expiresAt (10 mins)
+  const timeLeft = useMemo(() => {
+    if (!order?.expiresAt) return 0;
+    const end = new Date(order.expiresAt).getTime();
+    const diffSec = Math.ceil((end - now.getTime()) / 1000); // ceil avoids instant 9:59
+    return Math.max(0, diffSec);
+  }, [order?.expiresAt, now]);
+  
+  const formatTime = (s: number) => {
+    const m = Math.floor(s / 60);
+    const r = s % 60;
+    return `${m}:${r.toString().padStart(2, "0")}`;
+  };
+
+  // tick every second when open
   useEffect(() => {
     if (!isOpen) return;
-
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime <= 1) {
-          clearInterval(timer);
-          return 0;
-        }
-        return prevTime - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
   }, [isOpen]);
 
-  const formatTime = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
-  };
+  useEffect(() => {
+    if (isOpen && order?.expiresAt) {
+      setNow(new Date());
+    }
+  }, [isOpen, order?.orderId, order?.expiresAt]);
+
+
+  // generate QR of the address (simple + widely supported)
+  useEffect(() => {
+    const run = async () => {
+      if (!isOpen || !order?.receiverAddress) return;
+      try {
+        const data = order.receiverAddress.trim();
+        const url = await QRCode.toDataURL(data, { width: 512, margin: 1 });
+        setQrSrc(url);
+      } catch (e) {
+        console.error("QR gen failed", e);
+      }
+    };
+    run();
+  }, [isOpen, order?.receiverAddress]);
+
+  if (!order) return null;
+  if (!isOpen) return null;
+
   return (
-    <div>
-      <PopupComponent isOpen={isOpen} onClose={onClose}>
-        <div className="w-90 md:w-120 lg:w-160 p-4 md:p-6 xl:p-10 text-center">
-          <div>
-            <h1 className="text-xl md:text-3xl font-bold"> Pay with QR Code</h1>
-            <p className="md:text-xl text-tertiary mt-2">
-              You can pay for your BTCY purchase through this QR code. Just scan
-              using your crypto wallet or compatible payment app to complete the
-              transaction.
-              <br />
-              You have 10 minutes to complete this payment. After that, the
-              session will expire, and you’ll need to try again.
-            </p>
-          </div>
-          <div className="mt-6 flex items-center justify-center gap-2">
-            <Image
-              src={cryptoType == "USDT" ? USDTIcon : USDCIcon}
-              alt="icon"
-              className="w-8 md:w-10"
-            />
-            <p className="text-2xl md:text-3xl">{cryptoType}</p>
-          </div>
-          <p className="mt-3 text-xl md:text-2xl">
-            You pay <span className="font-bold">${amount}</span>
+    <PopupComponent isOpen={isOpen} onClose={onClose} closeOnOutsideClick={closeOnOutsideClick}
+      closeOnEsc={closeOnEsc}>
+      <div className="w-90 md:w-120 lg:w-160 p-4 md:p-6 xl:p-10 text-center">
+        <div>
+          <h1 className="text-xl md:text-3xl font-bold">Pay with QR Code</h1>
+          <p className="md:text-xl text-tertiary mt-2">
+            Scan the QR with your wallet and send the exact amount.
+            <br />
+            This session expires in 10 minutes.
           </p>
-          <div className="text-3xl font-semibold mt-6">
-            {formatTime(timeLeft)}
+        </div>
+
+        <div className="mt-6 flex items-center justify-center gap-2">
+          <Image src={icon} alt="icon" className="w-8 md:w-10" />
+          <p className="text-2xl md:text-3xl">{cryptoType} • {order.blockchain}</p>
+        </div>
+
+        {/* amount to send */}
+        <p className="mt-4 text-xl md:text-2xl">
+          Send <span className="font-bold">{order.amount}</span> {cryptoType}
+        </p>
+
+        {/* countdown */}
+        <div className="text-3xl font-semibold mt-4">{formatTime(timeLeft)}</div>
+
+        {/* QR */}
+        <div className="mt-6 flex items-center justify-center">
+          {qrSrc ? (
+            <img
+              src={qrSrc}
+              alt="Payment QR"
+              className="w-64 h-64 md:w-80 md:h-80 rounded-md border border-bg3"
+            />
+          ) : (
+            <div className="w-64 h-64 md:w-80 md:h-80 rounded-md border border-bg3 animate-pulse" />
+          )}
+        </div>
+
+        {/* address + copy */}
+        <div className="mt-6 text-left">
+          <p className="text-sm md:text-base text-tertiary">Receiver address</p>
+          <div className="mt-2 flex items-center gap-2 bg-bg2 border border-bg3 rounded-md p-3 overflow-hidden">
+            <code className="text-xs md:text-sm break-all">{order.receiverAddress}</code>
+            <button
+              className="ml-auto p-2 rounded hover:bg-bg"
+              onClick={() => navigator.clipboard.writeText(order.receiverAddress)}
+              title="Copy"
+            >
+              <Copy className="w-4 h-4" />
+            </button>
           </div>
 
-          {/* qr code */}
-          <div className="mt-4 h-60 md:h-80"></div>
+          {/* Optional instructions */}
+          {order.message && (
+            <p className="mt-3 text-sm text-tertiary">{order.message}</p>
+          )}
         </div>
-      </PopupComponent>
-    </div>
+
+        {/* Order id footer */}
+        <div className="mt-4 text-xs text-tertiary">Order: {order.orderId}</div>
+      </div>
+    </PopupComponent>
   );
 }
