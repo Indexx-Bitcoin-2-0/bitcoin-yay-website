@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { ChevronDown, Check } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -10,6 +11,9 @@ import {
 } from "@/components/ui/accordion";
 
 import CustomButton2 from "@/components/CustomButton2";
+import PaymentPopup from "./PaymentPopup";
+import LoginPopup from "@/components/LoginPopup";
+import { useAuth } from "@/contexts/AuthContext";
 
 import ArtImage1 from "@/assets/images/quantum-mining/quantum-mining-icon.webp";
 import ArtImage2 from "@/assets/images/quantum-mining/bitcoin-art-3.svg";
@@ -26,15 +30,28 @@ import BTCYIcon from "@/assets/images/quantum-mining/btcy-icon.webp";
 import FlagIcon from "@/assets/images/quantum-mining/american-flag.webp";
 import GlobeIcon from "@/assets/images/quantum-mining/globe-icon.webp";
 
-import RegisterButtonImage from "@/assets/images/buttons/register-button.webp";
+import NoteButtonImage from "@/assets/images/buttons/note-button.webp";
 import BuyNowButtonImage from "@/assets/images/buttons/buy-now-button.webp";
 import ButtonBorder from "@/assets/images/button-border.webp";
 import ButtonBorderActive from "@/assets/images/button-border-active.webp";
 
+interface Errors {
+  payAmount?: string;
+  selectedNetwork?: string;
+}
+
 const QuantumMiningPage = () => {
+  const { user } = useAuth();
+
   const [payAmount, setPayAmount] = useState("");
   const [getAmount, setGetAmount] = useState("");
   const [selectedPaymentOption, setSelectedPaymentOption] = useState(0);
+  const [selectedNetwork, setSelectedNetwork] = useState("Ethereum");
+  const [isNetworkDropdownOpen, setIsNetworkDropdownOpen] = useState(false);
+  const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
+  const [errors, setErrors] = useState<Errors>({});
+  const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
+  const paymentOptions = ["USDT", "USDC", "Paypal", "USD"];
 
   const handlePaymentOptionClick = (index: number) => {
     setSelectedPaymentOption(index);
@@ -52,7 +69,27 @@ const QuantumMiningPage = () => {
   };
 
   const handleBuyNow = () => {
-    console.log("Buy Now clicked!");
+    if (payAmount === "" || getAmount === "") {
+      setErrors({
+        payAmount: "Please enter a valid amount",
+      });
+      return;
+    }
+    if (!user) {
+      setIsLoginPopupOpen(true);
+      setIsPaymentPopupOpen(false);
+      return;
+    }
+
+    const data = {
+      paymentOption: selectedPaymentOption,
+      network: selectedNetwork,
+      payAmount: payAmount,
+      getAmount: getAmount,
+    };
+    console.log(data);
+    setErrors({});
+    setIsPaymentPopupOpen(true);
   };
 
   return (
@@ -72,9 +109,9 @@ const QuantumMiningPage = () => {
 
           <div className="font-bold mt-10 flex flex-col justify-center items-center md:items-start">
             <CustomButton2
-              image={RegisterButtonImage}
+              image={NoteButtonImage}
               text="Register"
-              link="#"
+              link="#buy-btcy"
               imageStyling="w-30"
             />
           </div>
@@ -127,7 +164,10 @@ const QuantumMiningPage = () => {
         </div>
       </div>
 
-      <div className="mt-40 border-2 border-bg3 rounded-2xl p-8 md:p-12 max-w-5xl mx-auto">
+      <div
+        id="buy-btcy"
+        className="mt-40 border-2 border-bg3 rounded-2xl p-8 md:p-12 max-w-5xl mx-auto"
+      >
         <h2 className="text-3xl md:text-4xl xl:text-8xl font-bold text-center mb-8">
           Buy BTCY
         </h2>
@@ -196,12 +236,57 @@ const QuantumMiningPage = () => {
           ))}
         </div>
 
+        {/* Network Selection - Only for USDT and USDC */}
+        {(selectedPaymentOption === 0 || selectedPaymentOption === 1) && (
+          <div className="mb-8">
+            <label className="block text-xl mb-2">Network</label>
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setIsNetworkDropdownOpen(!isNetworkDropdownOpen)}
+                className="flex items-center gap-3 p-3 hover:bg-bg2 rounded-md cursor-pointer text-tertiary border border-bg3 w-full text-lg focus:border-primary hover:border-primary"
+              >
+                <span className="flex-1 text-left">{selectedNetwork}</span>
+                <ChevronDown className="w-5 h-5" strokeWidth={2.5} />
+              </button>
+              {errors.selectedNetwork && (
+                <p className="text-red-500 text-sm">{errors.selectedNetwork}</p>
+              )}
+
+              {isNetworkDropdownOpen && (
+                <div className="absolute left-0 top-full mt-1 w-full bg-bg2 rounded-md shadow-lg z-10 border border-bg">
+                  <div className="py-1">
+                    {["Ethereum", "Solana"].map((network) => (
+                      <button
+                        key={network}
+                        type="button"
+                        onClick={() => {
+                          setSelectedNetwork(network);
+                          setIsNetworkDropdownOpen(false);
+                        }}
+                        className="w-full px-4 py-3 text-left text-tertiary hover:bg-primary hover:text-bg transition-colors text-lg cursor-pointer flex items-center gap-3"
+                      >
+                        <span className="flex-1">{network}</span>
+                        {selectedNetwork === network && (
+                          <Check
+                            className="w-5 h-5 ml-auto"
+                            strokeWidth={2.5}
+                          />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Input Fields */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <div>
             <label className="block text-xl mb-2">
-              Pay with{" "}
-              {["USDT", "USDC", "Paypal", "USD"][selectedPaymentOption]}
+              Pay with {paymentOptions[selectedPaymentOption]}
             </label>
             <div className="relative">
               <input
@@ -229,6 +314,9 @@ const QuantumMiningPage = () => {
                 </span>
               </div>
             </div>
+            {errors.payAmount && (
+              <p className="text-red-500 text-sm mt-2">{errors.payAmount}</p>
+            )}
           </div>
 
           <div>
@@ -409,6 +497,19 @@ const QuantumMiningPage = () => {
           </Accordion>
         </div>
       </div>
+
+      <PaymentPopup
+        isOpen={isPaymentPopupOpen}
+        onClose={() => setIsPaymentPopupOpen(false)}
+        cryptoType={paymentOptions[selectedPaymentOption]}
+        amount={Number(payAmount)}
+      />
+
+      <LoginPopup
+        isOpen={isLoginPopupOpen}
+        onClose={() => setIsLoginPopupOpen(false)}
+        onLoginSuccess={() => setIsLoginPopupOpen(false)}
+      />
     </div>
   );
 };
