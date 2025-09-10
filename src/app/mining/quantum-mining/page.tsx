@@ -44,7 +44,7 @@ const PowerMiningPage = () => {
       <div className="mt-30 flex flex-col items-center justify-center gap-4">
         <div className="text-3xl text-center flex flex-col gap-2">
           <p>Secure large-scale BTCY purchases</p>
-          <p className="font-bold">($5K – $100K+)</p>
+          <p className="font-bold">($1 – $100K+)</p>
           <p>via bank wires, stable coins, and global OTC solutions.</p>
         </div>
         <CustomButton2

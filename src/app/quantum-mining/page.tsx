@@ -343,7 +343,7 @@ const QuantumMiningPage = () => {
 
           <p className="mt-10 text-2xl md:text-3xl max-w-3xl">
             Secure large-scale BTCY purchases{" "}
-            <span className="font-bold">($5K – $100K+)</span> via bank wires,
+            <span className="font-bold">($1 – $100K+)</span> via bank wires,
             stable coins, and global OTC solutions.
           </p>
 
