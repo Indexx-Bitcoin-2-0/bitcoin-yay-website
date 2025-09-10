@@ -1,86 +1,59 @@
-// components/PopupComponent.tsx
-"use client";
+// components/Popup.tsx
 
 import React, { ReactNode, useEffect, useRef } from "react";
 import Image from "next/image";
+
 import CrossImage from "@/assets/images/icons/cross-white.png";
 
 interface PopupProps {
   isOpen: boolean;
   onClose: () => void;
   children: ReactNode;
-  closeOnOutsideClick?: boolean;
-  closeOnEsc?: boolean;
 }
 
 const PopupComponent: React.FC<PopupProps> = ({
   isOpen,
   onClose,
   children,
-  closeOnOutsideClick = true,
-  closeOnEsc = true,
 }) => {
-  const boxRef = useRef<HTMLDivElement>(null);
+  const popupRef = useRef<HTMLDivElement>(null);
 
-  // Respect Esc flag
+  // Handle click outside popup
   useEffect(() => {
-    if (!isOpen || !closeOnEsc) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [isOpen, closeOnEsc, onClose]);
-
-  // Lock background scroll while open
-  useEffect(() => {
-    if (!isOpen) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = prev;
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        popupRef.current &&
+        !popupRef.current.contains(event.target as Node)
+      ) {
+        onClose();
+      }
     };
-  }, [isOpen]);
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 md:p-6"
-      onClick={closeOnOutsideClick ? onClose : undefined}
-    >
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/60" />
-
-      {/* Modal box */}
-      <div
-        ref={boxRef}
-        className="relative z-10 w-full rounded-2xl border border-bg3 bg-bg shadow-xl"
-        // Keep clicks inside from closing
-        onClick={(e) => e.stopPropagation()}
-        // Viewport-fit: width & height behave at any zoom
-        style={{
-          maxWidth: "min(96vw, 720px)",
-          maxHeight: "min(92dvh, 92vh)", // dvh for mobile; vh fallback
-          overflowY: "auto",
-          WebkitOverflowScrolling: "touch",
-          paddingBottom: "env(safe-area-inset-bottom)",
-        }}
-      >
-        {/* Keep the close button INSIDE the box */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#68676763]">
+      <div ref={popupRef} className="relative shadow-lg bg-bg z-100">
         <button
           onClick={onClose}
-          className="absolute top-3 right-3"
-          aria-label="Close"
+          className="absolute -top-10 right-0 md:top-1 md:-right-14 flex items-center justify-center z-100"
         >
           <Image
             src={CrossImage}
             alt="Close"
-            className="w-8 h-8 hover:scale-110 transition"
+            className="w-10 h-8 hover:scale-110 cursor-pointer"
           />
         </button>
-
-        {children}
+        <div>{children}</div>
       </div>
     </div>
   );

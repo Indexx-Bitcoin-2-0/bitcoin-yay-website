@@ -14,7 +14,7 @@ type CryptoOrderData = {
   paymentMethod: "usdt" | "usdc";
   amount: number;
   receiverAddress: string;
-  expiresAt: string; // ISO
+  expiresAt: string;
   message?: string;
   blockchain: "Ethereum" | "Solana";
 };
@@ -24,8 +24,6 @@ export default function PaymentPopup({
   onClose,
   cryptoType,
   order,
-  closeOnOutsideClick = true,
-  closeOnEsc = true,
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -86,38 +84,39 @@ export default function PaymentPopup({
   if (!isOpen) return null;
 
   return (
-    <PopupComponent isOpen={isOpen} onClose={onClose} closeOnOutsideClick={closeOnOutsideClick}
-      closeOnEsc={closeOnEsc}>
+    <PopupComponent isOpen={isOpen} onClose={onClose}>
       <div className="w-90 md:w-120 lg:w-160 p-4 md:p-6 xl:p-10 text-center">
         <div>
-          <h1 className="text-xl md:text-3xl font-bold">Pay with QR Code</h1>
-          <p className="md:text-xl text-tertiary mt-2">
+          <h1 className="text-xl md:text-2xl lg:3xl font-bold">Pay with QR Code</h1>
+          <p className="lg:text-xl text-tertiary mt-2">
             Scan the QR with your wallet and send the exact amount.
             <br />
             This session expires in 10 minutes.
           </p>
         </div>
 
-        <div className="mt-6 flex items-center justify-center gap-2">
-          <Image src={icon} alt="icon" className="w-8 md:w-10" />
-          <p className="text-2xl md:text-3xl">{cryptoType} • {order.blockchain}</p>
+        <div className="mt-4 flex items-center justify-center gap-2">
+          <Image src={icon} alt="icon" className="w-8 lg:w-10" />
+          <p className="text-2xl lg:text-3xl">{cryptoType} • {order.blockchain}</p>
         </div>
 
         {/* amount to send */}
-        <p className="mt-4 text-xl md:text-2xl">
+        {/* <p className="mt-4 text-xl md:text-2xl">
           Send <span className="font-bold">{order.amount}</span> {cryptoType}
-        </p>
+        </p> */}
 
         {/* countdown */}
-        <div className="text-3xl font-semibold mt-4">{formatTime(timeLeft)}</div>
+        <div className="text-3xl font-semibold mt-2">{formatTime(timeLeft)}</div>
 
         {/* QR */}
-        <div className="mt-6 flex items-center justify-center">
+        <div className="mt-4 flex items-center justify-center">
           {qrSrc ? (
-            <img
+            <Image
               src={qrSrc}
               alt="Payment QR"
-              className="w-64 h-64 md:w-80 md:h-80 rounded-md border border-bg3"
+              width={300}
+              height={300}
+              className="w-64 h-64 lg:w-80 lg:h-80 rounded-md border border-bg3"
             />
           ) : (
             <div className="w-64 h-64 md:w-80 md:h-80 rounded-md border border-bg3 animate-pulse" />
@@ -125,7 +124,7 @@ export default function PaymentPopup({
         </div>
 
         {/* address + copy */}
-        <div className="mt-6 text-left">
+        <div className="mt-4 text-left">
           <p className="text-sm md:text-base text-tertiary">Receiver address</p>
           <div className="mt-2 flex items-center gap-2 bg-bg2 border border-bg3 rounded-md p-3 overflow-hidden">
             <code className="text-xs md:text-sm break-all">{order.receiverAddress}</code>
@@ -139,9 +138,9 @@ export default function PaymentPopup({
           </div>
 
           {/* Optional instructions */}
-          {order.message && (
+          {/* {order.message && (
             <p className="mt-3 text-sm text-tertiary">{order.message}</p>
-          )}
+          )} */}
         </div>
 
         {/* Order id footer */}

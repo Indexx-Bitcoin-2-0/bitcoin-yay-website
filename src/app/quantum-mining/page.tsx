@@ -1,15 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { ChevronDown, Check, Clock } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ChevronDown, Check } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { io, Socket } from "socket.io-client";
 import CustomButton2 from "@/components/CustomButton2";
 import PaymentPopup from "./PaymentPopup";
 import LoginPopup from "@/components/LoginPopup";
@@ -34,69 +33,45 @@ import NoteButtonImage from "@/assets/images/buttons/note-button.webp";
 import BuyNowButtonImage from "@/assets/images/buttons/buy-now-button.webp";
 import ButtonBorder from "@/assets/images/button-border.webp";
 import ButtonBorderActive from "@/assets/images/button-border-active.webp";
-import axios from "axios";
 import SuccessPopup from "./SuccessPopup";
 import UnsuccessPopup from "./UnsuccessPopup";
-import { QUANTUM_USER_ORDER_API_ROUTE } from "@/routes";
+import {
+  PaymentOption,
+  CryptoOrderData,
+  createQuantumOrder,
+  getUserOrder,
+  fetchPrices,
+  createQuantumSocket,
+  processPayPalReturn,
+  storePayPalOrderData,
+  clearPayPalOrderData,
+  isCryptoPayment,
+  optionToCurrencyIn,
+  calculateBTCYAmount,
+  validateOrderData,
+  SocketEventHandlers,
+} from "@/lib/quantum-mining";
 
 interface Errors {
   payAmount?: string;
   selectedNetwork?: string;
 }
 
-const QUANTUM_BUY_ORDER_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/order/createOrderForQuantum`;
-
-/** PAY ORDER TYPES */
-type CryptoOrderData = {
-  orderId: string;
-  paymentMethod: "usdt" | "usdc";
-  amount: number; // crypto amount to transfer
-  receiverAddress: string;
-  expiresAt: string; // ISO date
-  message?: string;
-  blockchain: "Ethereum" | "Solana";
-};
-
-type PaypalOrderData = {
-  _id: string;
-  paypalId: string;
-  orderId: string;
-  status: "CREATED" | string;
-  links: { href: string; rel: string; method: string; _id: string }[];
-  orderAmount: string;
-  orderCurrency: string;
-  created: string;
-  modified: string;
-};
-
-type CreateOrderResponse =
-  | { status: 200; data: CryptoOrderData }
-  | { status: 200; data: PaypalOrderData };
-
 const ComingSoonBadge = ({ label = "Coming soon" }: { label?: string }) => (
   <span
-    className="ml-3 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs md:text-sm animate-pulse"
+    className="ml-2 inline-block rounded-full border px-2 py-0.5 text-xs md:text-sm animate-pulse"
     style={{
       borderColor: "#FD923A",
       color: "#FD923A",
       backgroundColor: "rgba(253,146,58,0.12)",
+      lineHeight: "1",
+      verticalAlign: "middle",
+      transform: "translateY(-1px)",
     }}
   >
     {label}
   </span>
 );
-
-const paymentOptions = ["USDT", "USDC", "PayPal", "USD"] as const;
-type PaymentOption = (typeof paymentOptions)[number];
-
-function optionToCurrencyIn(opt: PaymentOption) {
-  // API expects "PayPal" (capital L) & "USD"/"USDT"/"USDC"
-  return opt;
-}
-
-function isCrypto(opt: PaymentOption) {
-  return opt === "USDT" || opt === "USDC";
-}
 
 const QuantumMiningPage = () => {
   const { user } = useAuth();
@@ -112,7 +87,6 @@ const QuantumMiningPage = () => {
   const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
   const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
-  const [btcPrice, setBtcPrice] = useState(0);
   const [btcyPrice, setBtcyPrice] = useState(0);
   // Active order (crypto only)
   const [activeOrder, setActiveOrder] = useState<CryptoOrderData | null>(null);
@@ -122,11 +96,9 @@ const QuantumMiningPage = () => {
   const [failOpen, setFailOpen] = useState(false);
 
   // Socket
-  const socketRef = useRef<Socket | null>(null);
+  const socketRef = useRef<unknown>(null);
 
   const handledReturnRef = useRef(false);
-  const [processingReturn, setProcessingReturn] = useState(false);
-
 
   useEffect(() => {
     if (handledReturnRef.current) return;
@@ -135,10 +107,9 @@ const QuantumMiningPage = () => {
     if (typeof window === "undefined") return;
 
     const url = new URL(window.location.href);
-    const status = url.searchParams.get("status");
-    const token = url.searchParams.get("token"); // PayPal order id
+    const result = processPayPalReturn(url, user?.email);
 
-    if (!status) return;
+    if (result.status === "none") return;
 
     // Clean URL immediately (no query params lingering)
     window.history.replaceState({}, "", url.origin + url.pathname);
@@ -147,46 +118,60 @@ const QuantumMiningPage = () => {
     setIsPaymentPopupOpen(false);
 
     // Fast-fail on cancel
-    if (status === "cancel") {
+    if (result.status === "cancel") {
       setFailOpen(true);
       // optional: clear stash
-      sessionStorage.removeItem("qm_paypal_order");
+      clearPayPalOrderData();
       return;
     }
 
     // Success path -> fetch order details from backend (capture is already done server-side)
-    if (status === "success") {
-      // Get email + fallback orderId from stash if needed
-      const stash = (() => {
-        try { return JSON.parse(sessionStorage.getItem("qm_paypal_order") || "{}"); }
-        catch { return {}; }
-      })();
-
-      const emailForLookup = user?.email || stash?.email || "";
-      const orderIdForLookup = token || stash?.orderId || "";
-
-      if (!emailForLookup || !orderIdForLookup) {
+    if (result.status === "success") {
+      if (!result.email || !result.orderId) {
         setFailOpen(true);
-        sessionStorage.removeItem("qm_paypal_order");
+        clearPayPalOrderData();
         return;
       }
 
       (async () => {
         try {
-          setProcessingReturn(true);
-          const res = await axios.get(
-            `${QUANTUM_USER_ORDER_API_ROUTE}/${encodeURIComponent(emailForLookup)}/${encodeURIComponent(orderIdForLookup)}`
-          );
+          const res = await getUserOrder({
+            email: result.email!,
+            orderId: result.orderId!,
+          });
 
-          const body: any = res.data || {};
+          const body = (res.data as Record<string, unknown>) || {};
           // Be flexible about shape
-          const statusUpper =
-            body?.status?.toUpperCase?.() ||
-            body?.data?.status?.toUpperCase?.() ||
-            body?.order?.status?.toUpperCase?.() ||
-            body?.purchase_units?.[0]?.payments?.captures?.[0]?.status?.toUpperCase?.();
+          const statusUpper = (() => {
+            const status = body?.status as string;
+            if (status) return status.toUpperCase();
 
-          if (statusUpper === "COMPLETED" || statusUpper === "APPROVED" || statusUpper === "CAPTURED") {
+            const data = body?.data as Record<string, unknown>;
+            if (data?.status) return (data.status as string).toUpperCase();
+
+            const order = body?.order as Record<string, unknown>;
+            if (order?.status) return (order.status as string).toUpperCase();
+
+            const purchaseUnits = body?.purchase_units as unknown[];
+            if (purchaseUnits?.[0]) {
+              const firstUnit = purchaseUnits[0] as Record<string, unknown>;
+              const payments = firstUnit?.payments as Record<string, unknown>;
+              const captures = payments?.captures as unknown[];
+              if (captures?.[0]) {
+                const firstCapture = captures[0] as Record<string, unknown>;
+                if (firstCapture?.status)
+                  return (firstCapture.status as string).toUpperCase();
+              }
+            }
+
+            return "";
+          })();
+
+          if (
+            statusUpper === "COMPLETED" ||
+            statusUpper === "APPROVED" ||
+            statusUpper === "CAPTURED"
+          ) {
             setSuccessOpen(true);
           } else {
             setFailOpen(true);
@@ -195,8 +180,7 @@ const QuantumMiningPage = () => {
           console.error("getUserOrder failed:", e);
           setFailOpen(true);
         } finally {
-          setProcessingReturn(false);
-          sessionStorage.removeItem("qm_paypal_order");
+          clearPayPalOrderData();
         }
       })();
     }
@@ -206,7 +190,7 @@ const QuantumMiningPage = () => {
     setPayAmount(value);
     if (value && !isNaN(Number(value))) {
       const usdValue = Number(value);
-      const btcyAmount = usdValue / btcyPrice;
+      const btcyAmount = calculateBTCYAmount(usdValue, btcyPrice);
       setGetAmount(btcyAmount.toFixed(2));
     } else {
       setGetAmount("");
@@ -214,91 +198,59 @@ const QuantumMiningPage = () => {
   };
 
   useEffect(() => {
-    const fetchPrices = async () => {
+    const fetchPricesData = async () => {
       try {
-        const res = await axios.get(
-          "https://api.coingecko.com/api/v3/simple/price",
-          {
-            params: {
-              ids: "bitcoin",
-              vs_currencies: "usd",
-            },
-          }
-        );
-        const btc = res.data.bitcoin.usd;
-        const btcy = btc / 1_000_000;
-        setBtcPrice(btc);
-        setBtcyPrice(btcy);
+        const { btcyPrice } = await fetchPrices();
+        setBtcyPrice(btcyPrice);
       } catch (error) {
         console.error("Failed to fetch BTC price:", error);
       }
     };
-    fetchPrices();
+    fetchPricesData();
   }, []);
 
   useEffect(() => {
     if (!user?.email) return;
 
-    const s = io(process.env.NEXT_PUBLIC_API_URL as string, {
-      path: "/socket.io/",
-      transports: ["websocket"],
-      auth: { email: user.email },
-    });
+    const socketHandlers: SocketEventHandlers = {
+      onConnect: (socketId) => console.log("ws connected", socketId),
+      onDisconnect: () => console.log("ws disconnected"),
+      onOrderCreated: (data) => console.log("order:created", data),
+      onPaymentWatching: (data) => console.log("payment:watching", data),
+      onPaymentPending: (data) => console.log("payment:pending", data),
+      onOrderConfirmed: (data) => {
+        console.log("order:confirmed", data);
+        setIsPaymentPopupOpen(false);
+        setSuccessOpen(true);
+        setActiveOrder(null);
+      },
+      onOrderExpired: (data) => {
+        console.log("order:expired", data);
+        setIsPaymentPopupOpen(false);
+        setFailOpen(true);
+        setActiveOrder(null);
+      },
+      onOrdersUpdate: (data) => console.log("orders:update", data),
+    };
 
-    socketRef.current = s;
-
-    s.on("connect", () => console.log("ws connected", s.id));
-    s.on("disconnect", () => console.log("ws disconnected"));
-
-    s.on("order:created", (p: any) => {
-      // server emits right after order creation (crypto)
-      console.log("order:created", p);
-    });
-
-    s.on("payment:watching", (p: any) => {
-      console.log("payment:watching", p);
-    });
-
-    s.on("payment:pending", (p: any) => {
-      // p.confirmations / p.requiredConfirmations
-      console.log("payment:pending", p);
-    });
-
-    s.on("order:confirmed", (p: any) => {
-      console.log("order:confirmed", p);
-      setIsPaymentPopupOpen(false);
-      setSuccessOpen(true);
-      setActiveOrder(null);
-    });
-
-    s.on("order:expired", (p: any) => {
-      console.log("order:expired", p);
-      setIsPaymentPopupOpen(false);
-      setFailOpen(true);
-      setActiveOrder(null);
-    });
-
-    // optional combined stream
-    s.on("orders:update", (p: any) => {
-      console.log("orders:update", p);
-    });
+    const socket = createQuantumSocket(user.email, socketHandlers);
+    socketRef.current = socket;
 
     return () => {
-      s.disconnect();
+      socket.disconnect();
       socketRef.current = null;
     };
   }, [user?.email]);
 
-  const canSubmit = useMemo(() => {
-    if (!payAmount || isNaN(Number(payAmount))) return false;
-    if (isCrypto(selectedPaymentOption) && !selectedNetwork) return false;
-    return true;
-  }, [payAmount, selectedPaymentOption, selectedNetwork]);
-
   // MAIN BUY HANDLER: calls API first, then either redirect (paypal/usd) or open popup (crypto)
   const handleBuyNow = async () => {
-    if (!canSubmit) {
-      setErrors({ payAmount: "Please enter a valid amount" });
+    const validation = validateOrderData(
+      payAmount,
+      selectedPaymentOption,
+      selectedNetwork
+    );
+    if (!validation.isValid) {
+      setErrors(validation.errors);
       return;
     }
     if (!user?.email) {
@@ -308,27 +260,30 @@ const QuantumMiningPage = () => {
     }
 
     try {
-      // Build payload “based on the above data”
-      const payload: any = {
+      // Build payload "based on the above data"
+      const payload = {
         email: user.email,
         currencyIn: optionToCurrencyIn(selectedPaymentOption), // "USDT"|"USDC"|"PayPal"|"USD"
-        currencyOut: "BTCY",
+        currencyOut: "BTCY" as const,
         amount: Number(payAmount), // user-entered USD
         outAmount: Number(getAmount) || 0, // BTCY amount (UI computed)
+        ...(isCryptoPayment(selectedPaymentOption) && {
+          blockchain: selectedNetwork,
+        }),
       };
 
-      if (isCrypto(selectedPaymentOption)) payload.blockchain = selectedNetwork;
-
-      const res = await axios.post<CreateOrderResponse>(
-        QUANTUM_BUY_ORDER_API_ROUTE,
-        payload
-      );
-
-      const data: any = res.data?.data;
+      const res = await createQuantumOrder(payload);
+      const data = res.data as Record<string, unknown>;
 
       // If USD or PayPal => redirect to external link
-      if (selectedPaymentOption === "USD" || selectedPaymentOption === "PayPal") {
-        const approve = data?.links?.find((l: any) => l?.rel === "approve")?.href || "";
+      if (
+        selectedPaymentOption === "USD" ||
+        selectedPaymentOption === "PayPal"
+      ) {
+        const approve =
+          (data?.links as Array<{ rel: string; href: string }>)?.find(
+            (l) => l?.rel === "approve"
+          )?.href || "";
         if (!approve) throw new Error("Missing PayPal approval link.");
 
         // Persist for return page
@@ -336,15 +291,22 @@ const QuantumMiningPage = () => {
           try {
             const u = new URL(approve);
             return u.searchParams.get("token") || undefined;
-          } catch { return undefined; }
+          } catch {
+            return undefined;
+          }
         })();
 
         const stash = {
           email: user.email,
           // PayPal order id can be one of: token, data.id, data.paypalId
-          orderId: tokenFromLink || data?.id || data?.paypalId || data?.orderId || "",
+          orderId:
+            tokenFromLink ||
+            (data?.id as string) ||
+            (data?.paypalId as string) ||
+            (data?.orderId as string) ||
+            "",
         };
-        sessionStorage.setItem("qm_paypal_order", JSON.stringify(stash));
+        storePayPalOrderData(stash);
 
         window.location.href = approve;
         return;
@@ -352,19 +314,19 @@ const QuantumMiningPage = () => {
 
       // Else crypto: open popup with address + qr
       const order: CryptoOrderData = {
-        orderId: data.orderId,
-        paymentMethod: data.paymentMethod,
-        amount: data.amount,
-        receiverAddress: data.receiverAddress,
-        expiresAt: data.expiresAt,
-        message: data.message,
-        blockchain: data.blockchain,
+        orderId: data.orderId as string,
+        paymentMethod: data.paymentMethod as "usdt" | "usdc",
+        amount: data.amount as number,
+        receiverAddress: data.receiverAddress as string,
+        expiresAt: data.expiresAt as string,
+        message: data.message as string,
+        blockchain: data.blockchain as "Ethereum" | "Solana",
       };
 
       setActiveOrder(order);
       setErrors({});
       setIsPaymentPopupOpen(true);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Order create failed", err);
       setFailOpen(true);
     }
@@ -412,22 +374,16 @@ const QuantumMiningPage = () => {
           Register and Purchase BTCY
         </h1>
         <div className="flex flex-col lg:flex-row justify-center mt-20 gap-30 p-4 md:p-10 xl:p-20">
-          <div>
+          <div className="w-full lg:w-1/2">
             <div className="flex items-center gap-4">
               <Image src={FlagIcon} alt="Flag" className="w-10" />
               <h4 className="text-3xl md:text-4xl font-bold">For US Users</h4>
             </div>
             <ul className="list-disc text-2xl md:text-3xl mt-10 text-tertiary pl-6">
-              <li className="flex items-center">
-                USDT / USDC
-              </li>
-              <li className="flex items-center">
-                Paypal
-              </li>
-              <li className="flex items-center">
-                USD credit/debit card
-              </li>
-              <li className="flex items-center">
+              <li>USDT / USDC</li>
+              <li>Paypal</li>
+              <li>USD credit/debit card</li>
+              <li>
                 USD bank wire <ComingSoonBadge />
               </li>
             </ul>
@@ -440,19 +396,15 @@ const QuantumMiningPage = () => {
               </h4>
             </div>
             <ul className="list-disc text-2xl md:text-3xl mt-10 text-tertiary pl-6">
-              <li className="flex items-center">
-                USDT / USDC
-              </li>
-              <li className="flex items-center">
-                Paypal
-              </li>
-              <li className="flex items-center whitespace-nowrap">
+              <li>USDT / USDC</li>
+              <li>Paypal</li>
+              <li>
                 Local currencies: EUR, GBP, JPY, AED, INR <ComingSoonBadge />
               </li>
-              <li className="flex items-center">
+              <li>
                 Bank wires (SWIFT/SEPA) <ComingSoonBadge />
               </li>
-              <li className="flex items-center">
+              <li>
                 Local methods: Alipay, UPI, M-Pesa <ComingSoonBadge />
               </li>
             </ul>
@@ -489,7 +441,9 @@ const QuantumMiningPage = () => {
 
         {/* Exchange Rate */}
         <div className="mb-8">
-          <p className="text-xl md:text-[40px] font-semibold">1 BTCY = ${btcyPrice.toFixed(4)}</p>
+          <p className="text-xl md:text-[40px] font-semibold">
+            1 BTCY = ${btcyPrice.toFixed(4)}
+          </p>
         </div>
 
         {/* Payment Options */}
@@ -499,7 +453,7 @@ const QuantumMiningPage = () => {
             { name: "USDC", icon: USDCIcon },
             { name: "PayPal", icon: PaypalIcon },
             { name: "USD", icon: USDIcon },
-          ].map((option, index) => {
+          ].map((option) => {
             const name = option.name as PaymentOption;
             const isSelected = name === selectedPaymentOption;
             return (
@@ -525,7 +479,7 @@ const QuantumMiningPage = () => {
         </div>
 
         {/* Network for crypto */}
-        {isCrypto(selectedPaymentOption) && (
+        {isCryptoPayment(selectedPaymentOption) && (
           <div className="mb-8">
             <label className="block text-xl mb-2">Network</label>
             <div className="relative">
@@ -546,14 +500,17 @@ const QuantumMiningPage = () => {
                         key={network}
                         type="button"
                         onClick={() => {
-                          setSelectedNetwork(network as any);
+                          setSelectedNetwork(network as "Ethereum" | "Solana");
                           setIsNetworkDropdownOpen(false);
                         }}
                         className="w-full px-4 py-3 text-left text-tertiary hover:bg-primary hover:text-bg transition-colors text-lg cursor-pointer flex items-center gap-3"
                       >
                         <span className="flex-1">{network}</span>
                         {selectedNetwork === network && (
-                          <Check className="w-5 h-5 ml-auto" strokeWidth={2.5} />
+                          <Check
+                            className="w-5 h-5 ml-auto"
+                            strokeWidth={2.5}
+                          />
                         )}
                       </button>
                     ))}
@@ -585,7 +542,11 @@ const QuantumMiningPage = () => {
                   ) : selectedPaymentOption === "USDC" ? (
                     <Image src={USDCIcon} alt="USDC" className="w-10 h-10" />
                   ) : selectedPaymentOption === "PayPal" ? (
-                    <Image src={PaypalIcon} alt="PayPal" className="w-10 h-10" />
+                    <Image
+                      src={PaypalIcon}
+                      alt="PayPal"
+                      className="w-10 h-10"
+                    />
                   ) : (
                     <Image src={USDIcon} alt="USD" className="w-14 h-10" />
                   )}
@@ -791,7 +752,10 @@ const QuantumMiningPage = () => {
         onLoginSuccess={() => setIsLoginPopupOpen(false)}
       />
 
-      <SuccessPopup isOpen={successOpen} onClose={() => setSuccessOpen(false)} />
+      <SuccessPopup
+        isOpen={successOpen}
+        onClose={() => setSuccessOpen(false)}
+      />
       <UnsuccessPopup isOpen={failOpen} onClose={() => setFailOpen(false)} />
     </div>
   );
