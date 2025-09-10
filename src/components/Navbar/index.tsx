@@ -52,7 +52,7 @@ interface HeaderItem {
   href: string;
   openInNewTab?: boolean;
   hasMegaDrop: boolean;
-  dropDownContent: DropdownSection[];
+  dropDownContent?: DropdownSection[];
 }
 
 // Extract backdrop component for readability
@@ -128,7 +128,7 @@ const Navbar: React.FC = () => {
     const updatedHeaderData = headerData.map((item) => {
       const currentActivePath: string[] = [];
       currentActivePath.push(item.href);
-      item.dropDownContent.forEach((section) => {
+      item.dropDownContent?.forEach((section) => {
         currentActivePath.push(...section.links.map((link) => link.href));
       });
 
@@ -317,7 +317,7 @@ const Navbar: React.FC = () => {
         </div>
       </PopupComponent>
 
-      <div className="relative flex items-center justify-between h-[150px] px-4 lg:px-[100px] mx-auto">
+      <div className="relative flex items-center justify-between h-[150px] px-4 lg:px-[60px] mx-auto">
         {/* {!isMobile && <Backdrop visible={backdropVisibility} />}
         {isMobile && <Backdrop visible={menuOpen} />} */}
 
@@ -397,7 +397,7 @@ const Navbar: React.FC = () => {
                     aria-orientation="vertical"
                   >
                     <div className="flex w-full justify-between h-auto my-10 px-[20px] pl-[210px]">
-                      {element.dropDownContent.map((section, elemIdx) => (
+                      {element.dropDownContent?.map((section, elemIdx) => (
                         <div
                           className={`w-[calc(25%-30px)] leading-[35px] flex flex-col ${
                             section.mainList &&
@@ -535,7 +535,7 @@ const Navbar: React.FC = () => {
                     {element.mainTextMob}
                   </AccordionTrigger>
                   <AccordionContent className="p-2">
-                    {element.dropDownContent.map((section, sectionIdx) => (
+                    {element.dropDownContent?.map((section, sectionIdx) => (
                       <div key={sectionIdx} className="mb-6">
                         <header className="text-sm font-medium text-muted-foreground mb-3 pb-2">
                           {section.heading}

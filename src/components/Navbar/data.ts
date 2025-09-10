@@ -123,6 +123,13 @@ const header_data = [
     ],
   },
   {
+    mainTextDesktop: "Buy BTCY",
+    mainTextMob: "Buy BTCY",
+    active: false,
+    href: "/quantum-mining",
+    hasMegaDrop: false,
+  },
+  {
     mainTextDesktop: "Chain",
     mainTextMob: "Chain",
     active: false,

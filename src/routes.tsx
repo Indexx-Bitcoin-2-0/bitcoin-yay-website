@@ -32,6 +32,11 @@ export const FORGOT_PASSWORD_VERIFY_API_ROUTE = `${process.env.NEXT_PUBLIC_API_U
 
 export const FORGOT_PASSWORD_RESET_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/resetPassword`;
 
+// Quantum Mining Routes
 export const QUANTUM_BUY_ORDER_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/order/createOrderForQuantum`;
 
 export const QUANTUM_USER_ORDER_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/getUserOrder`;
+
+// External API Routes
+export const COINGECKO_PRICE_API_ROUTE =
+  "https://api.coingecko.com/api/v3/simple/price";
