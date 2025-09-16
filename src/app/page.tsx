@@ -137,7 +137,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="overflow-hidden relative mt-40 max-w-[1920px] mx-auto">
+    <div className="overflow-hidden relative mt-40 mx-auto">
       <div className="mt-6 flex flex-col items-center text-center">
         <div className="px-4 text-2xl font-bold text-primary max-w-250 leading-tight">
           Bitcoin Yay Is The Micro Token
