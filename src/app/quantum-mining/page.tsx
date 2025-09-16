@@ -30,7 +30,7 @@ import FlagIcon from "@/assets/images/quantum-mining/american-flag.webp";
 import GlobeIcon from "@/assets/images/quantum-mining/globe-icon.webp";
 
 import NoteButtonImage from "@/assets/images/buttons/note-button.webp";
-import BuyNowButtonImage from "@/assets/images/buttons/buy-now-button.webp";
+import CartButtonImage from "@/assets/images/buttons/cart-button.webp";
 import ButtonBorder from "@/assets/images/button-border.webp";
 import ButtonBorderActive from "@/assets/images/button-border-active.webp";
 import SuccessPopup from "./SuccessPopup";
@@ -580,10 +580,10 @@ const QuantumMiningPage = () => {
         {/* Buy Now Button */}
         <div className="flex justify-center mt-20">
           <CustomButton2
-            image={BuyNowButtonImage}
+            image={CartButtonImage}
             text="With Quantum Power"
             onClick={() => handleBuyNow()}
-            imageStyling="w-30"
+            imageStyling="w-40"
           />
         </div>
       </div>

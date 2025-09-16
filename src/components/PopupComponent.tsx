@@ -1,6 +1,6 @@
 // components/Popup.tsx
 
-import React, { ReactNode, useEffect, useRef } from "react";
+import React, { ReactNode, useRef } from "react";
 import Image from "next/image";
 
 import CrossImage from "@/assets/images/icons/cross-white.png";
