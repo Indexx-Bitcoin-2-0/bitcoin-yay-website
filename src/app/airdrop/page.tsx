@@ -1,23 +1,27 @@
 import Image from "next/image";
-
+import Link from "next/link";
 // import CountdownTimer from "@/components/CounterComponent";
 import CustomButton2 from "@/components/CustomButton2";
 
-import ArtImage1 from "@/assets/images/lotto-airdrop/art-1.webp";
-import LottoLogo from "@/assets/images/lotto-airdrop/lotto-logo.webp";
-import ArtImage2 from "@/assets/images/lotto-airdrop/art-2.webp";
-import ArtImage3 from "@/assets/images/lotto-airdrop/art-3.webp";
-import ArtImage4 from "@/assets/images/lotto-airdrop/art-4.webp";
+import ArtImage1 from "@/assets/images/wibs-airdrop/art-1.webp";
+// import LottoLogo from "@/assets/images/lotto-airdrop/lotto-logo.webp";
+import ArtImage2 from "@/assets/images/wibs-airdrop/art-2.webp";
+// import ArtImage3 from "@/assets/images/lotto-airdrop/art-3.webp";
+import ArtImage4 from "@/assets/images/wibs-airdrop/art-4.webp";
 // import ArtImage5 from "@/assets/images/airdrop/art-5.webp";
 // import ArtImage6 from "@/assets/images/airdrop/art-6.webp";
 
-import WhatYouGetImage1 from "@/assets/images/lotto-airdrop/what-you-get-1.webp";
-import WhatYouGetImage2 from "@/assets/images/lotto-airdrop/what-you-get-2.webp";
-import WhatYouGetImage3 from "@/assets/images/lotto-airdrop/what-you-get-3.webp";
-import WhatYouGetImage4 from "@/assets/images/lotto-airdrop/what-you-get-4.webp";
+import CalendarArt from "@/assets/images/wibs-airdrop/calander-art.webp";
+
+import WhatYouGetImage1 from "@/assets/images/wibs-airdrop/what-you-get-1.webp";
+import WhatYouGetImage2 from "@/assets/images/wibs-airdrop/wibs-logo.webp";
+import WhatYouGetImage3 from "@/assets/images/wibs-airdrop/what-you-get-3.webp";
+import WhatYouGetImage4 from "@/assets/images/wibs-airdrop/what-you-get-4.webp";
 // import WorldMapImage from "@/assets/images/airdrop/political-map-world.webp";
 
 import RegisterButtonImage from "@/assets/images/buttons/register-button.webp";
+import CartButtonImage from "@/assets/images/buttons/cart-button.webp";
+import DownloadButtonImage from "@/assets/images/buttons/download-button.webp";
 // import PowerButtonImage from "@/assets/images/buttons/power-button.webp";
 // import PointFingerButtonImage from "@/assets/images/buttons/point-button.webp";
 
@@ -37,41 +41,62 @@ export const metadata = {
 export default function Airdrop() {
   return (
     <div className="mx-auto mt-40 max-w-[1800px]">
-      <div className="relative">
+      <div className="relative flex flex-col lg:flex-row">
         <div className="mt-10 w-full lg:w-[90%] flex flex-col justify-items-center px-4 md:px-20 xl:pl-30">
           <h2 className="text-[40px] md:text-7xl xl:text-[100px] font-bold">
-            Join the Bitcoin Yay
+            Join the WIBS Airdrop!
             <br />
-            <span className="text-primary">Lotto Airdrop</span>!
+            {/* <span className="text-primary">Lotto Airdrop</span>! */}
           </h2>
 
-          <p className="mt-10 text-xl lg:text-2xl max-w-220 text-bg3">
+          {/* <p className="mt-10 text-xl lg:text-2xl max-w-220 text-bg3">
             Get your free ticket + bonus entries for referrals
-          </p>
+          </p> */}
           <p className="mt-10 text-2xl md:text-3xl font-semibold">
-            Registration opens{" "}
-            <span className="text-primary">
-              {" "}
-              21 July – Rewards drop 1 August.
-            </span>
-            <br /> Good luck, miners!
+            Claim your share of{" "}
+            <span className="text-primary">10,000,000 WIBS</span> Equally
+            distributed to verified participants.
+          </p>
+          <p className="mt-4 text-xl md:text-2xl font-medium">
+            WIBS is also live on{" "}
+            <Link
+              href="https://pump.fun/coin/EM6R4tQ15598xsA7GwefGwCq2Z4MbV6H3FYHfh8ENBTY"
+              target="_blank"
+              className="text-primary hover:underline hover:underline-offset-4 cursor-pointer"
+            >
+              Pump.fun!
+            </Link>{" "}
+            You can buy right as well.
           </p>
 
-          <div className="font-bold mt-10 flex flex-col justify-center items-center md:items-start">
+          <div className="font-bold mt-10 flex justify-center md:justify-start items-center md:items-start gap-10 md:gap-20">
             <CustomButton2
               image={RegisterButtonImage}
-              text="Register Now!"
+              text="Join Airdrop Now"
+              link="/airdrop/register"
+              imageStyling="w-30"
+            />
+            <CustomButton2
+              image={CartButtonImage}
+              text="Buy Now"
               link="/airdrop/register"
               imageStyling="w-30"
             />
           </div>
         </div>
+        <div className="relative">
+          <Image
+            src={ArtImage1}
+            alt="Airdrop Art 1"
+            className="w-90 md:w-140 lg:w-160 xl:w-200 mt-10"
+          />
+        </div>
 
-        <Image
+        {/* <Image
           src={ArtImage1}
           alt="Airdrop Art 1"
           className="w-90 md:w-140 xl:w-120 2xl:w-172 absolute top-0 left-1/2 xl:left-auto xl:right-0 transform xl:transform-none -translate-x-1/2 xl:translate-x-0 -z-10 mt-160 md:mt-180 xl:mt-26"
-        />
+        /> */}
       </div>
       {/* <div className="mt-120 md:mt-160 xl:mt-100 flex items-center justify-center flex-col text-center px-4 md:px-20 xl:px-40">
         <p className="text-5xl font-bold mb-20">
@@ -90,7 +115,7 @@ export default function Airdrop() {
 
       {/* Part 2 */}
 
-      <div className="flex flex-col-reverse lg:flex-row items-center gap-10 mt-140 md:mt-180">
+      {/* <div className="flex flex-col-reverse lg:flex-row items-center gap-10 mt-140 md:mt-180">
         <div className="mt-10 flex-1 flex items-center justify-center">
           <Image
             src={LottoLogo}
@@ -125,7 +150,7 @@ export default function Airdrop() {
             />
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div className="mt-80 px-4 md:px-20 xl:px-20">
         <h2 className="text-6xl lg:text-8xl font-semibold">How It Works</h2>
@@ -138,11 +163,12 @@ export default function Airdrop() {
                 className="w-60"
               />
             </div>
-            <h4 className="mt-6 text-4xl font-semibold h-24 flex items-center justify-center">
-              Registration
+            <h4 className="mt-6 text-3xl font-semibold h-24 flex items-center justify-center">
+              Download & Register
             </h4>
             <p className="text-xl font-light">
-              Open to all Bitcoin Yay users. Sign up starting July 21.
+              Download the Bitcoin Yay App and register with your email. Your
+              app email must match your BitcoinYay.com account to qualify.
             </p>
           </div>
           <div className="max-w-100 text-center mx-auto">
@@ -153,11 +179,12 @@ export default function Airdrop() {
                 className="w-64"
               />
             </div>
-            <h4 className="mt-6 text-4xl font-semibold h-24 flex items-center justify-center">
-              Free Ticket
+            <h4 className="mt-6 text-3xl font-semibold h-24 flex items-center justify-center">
+              Ticket
             </h4>
             <p className="text-xl font-light">
-              Every registrant receives 1 free lotto ticket on August 1
+              Everyone who signs up during the window is included. 10,000,000
+              WIBS will be equally split among all verified participants.
             </p>
           </div>
 
@@ -169,11 +196,12 @@ export default function Airdrop() {
                 className="w-64"
               />
             </div>
-            <h4 className="mt-6 text-4xl font-semibold h-24 flex items-center justify-center">
-              Bonus Tickets
+            <h4 className="mt-6 text-3xl font-semibold h-24 flex items-center justify-center">
+              Wallet
             </h4>
             <p className="text-xl font-light">
-              Earn 4 extra tickets if you have 10 referrals or more by August 1
+              WIBS will be airdropped directly to your Indexx Wallet on
+              distribution day.
             </p>
           </div>
           <div className="max-w-100 text-center mx-auto">
@@ -184,11 +212,11 @@ export default function Airdrop() {
                 className="w-64"
               />
             </div>
-            <h4 className="mt-6 text-4xl font-semibold h-24 flex items-center justify-center">
-              Draw Date
+            <h4 className="mt-6 text-3xl font-semibold h-24 flex items-center justify-center">
+              Already Mining?
             </h4>
             <p className="text-xl font-light">
-              Winners announced after the draw on August 1
+              Great! Stack WIBS alongside your BTCY mining progress.
             </p>
           </div>
         </div>
@@ -197,7 +225,7 @@ export default function Airdrop() {
       <div className="mt-40 flex justify-center">
         <CustomButton2
           image={RegisterButtonImage}
-          text="Register for the FREE Airdrop Now!"
+          text="Join Airdrop Now"
           link="/airdrop/register"
         />
       </div>
@@ -208,29 +236,28 @@ export default function Airdrop() {
         <Image src={WorldMapImage} alt="World Map" className="w-full" />
       </div> */}
 
-      <div className="mt-60 ">
-        <h2 className="text-[40px] md:text-7xl xl:text-[100px] text-center font-bold">
+      <div className="mt-80 ">
+        <Image src={CalendarArt} alt="Calendar Art" className="mx-auto w-30" />
+        <h2 className="mt-10 text-[40px] md:text-7xl xl:text-[100px] text-center font-bold">
           Key Dates
         </h2>
-        <div className="flex flex-wrap w-full justify-center items-start gap-20 mt-10 md:mt-20 px-4 md:px-10 xl:px-20">
-          <div className="w-110 flex flex-col ">
-            <h3 className="text-[40px] md:text-6xl font-bold">July 21</h3>
+        <div className="flex flex-wrap w-full justify-center items-start gap-20 mt-10 md:mt-30 px-4 md:px-10 xl:px-20">
+          <div className="w-90 flex flex-col ">
+            <h3 className="text-[40px] md:text-5xl font-bold">Now</h3>
             <p className="mt-2 md:mt-10 text-xl md:text-3xl">
-              Registration opens
+              Campaign live — start registering
             </p>
           </div>
-          <div className="w-110 flex flex-col ">
-            <h3 className="text-[40px] md:text-6xl font-bold">
-              July 21 – Aug 1
-            </h3>
+          <div className="w-90 flex flex-col ">
+            <h3 className="text-[40px] md:text-5xl font-bold">Until Sept 28</h3>
             <p className="mt-2 md:mt-10 text-xl md:text-3xl">
-              Referral period (10-referral target)
+              Sign-up window closes
             </p>
           </div>{" "}
-          <div className="w-110 flex flex-col ">
-            <h3 className="text-[40px] md:text-6xl font-bold">August 1</h3>
+          <div className="w-90 flex flex-col ">
+            <h3 className="text-[40px] md:text-5xl font-bold">Sept 29, 2025</h3>
             <p className="mt-2 md:mt-10 text-xl md:text-3xl">
-              Tickets distributed & draw takes place
+              WIBS distribution to Indexx Wallets
             </p>
           </div>
         </div>
@@ -242,11 +269,31 @@ export default function Airdrop() {
             Eligibility & Rules
           </h2>
           <ul className="mt-10 list-disc pl-6 text-xl md:text-3xl flex flex-col gap-6 md:gap-10">
-            <li>Must have a valid Bitcoin Yay account.</li>
-            <li>One sign-up per user.</li>
-            <li>Bonus tickets capped at 4 (for 10+ referrals).</li>
-            <li>Open worldwide.</li>
+            <li>Have a valid Bitcoin Yay account and Indexx Wallet.</li>
+            <li>App email must match your BitcoinYay.com account email.</li>
+            <li>
+              One sign-up per person; duplicate or fraudulent entries will be
+              removed.
+            </li>
+            <li>
+              10,000,000 WIBS are equally divided among verified participants.
+            </li>
+            <li>Program terms and dates are subject to change.</li>
           </ul>
+          <div className="mx-auto md:mx-0 mt-10 flex justify-center md:justify-start items-center md:items-start gap-10 md:gap-20">
+            <CustomButton2
+              image={RegisterButtonImage}
+              text="Join Airdrop Now"
+              link="/airdrop/register"
+              imageStyling="w-30"
+            />
+            <CustomButton2
+              image={DownloadButtonImage}
+              text="Download App"
+              link="/#apple-store-download"
+              imageStyling="w-30"
+            />
+          </div>
         </div>
         <div className="mt-10 flex-1 flex items-center justify-center">
           <Image
@@ -257,7 +304,7 @@ export default function Airdrop() {
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row items-center lg:items-start gap-10 mt-60 px-4 md:px-10 xl:px-20">
+      {/* <div className="flex flex-col lg:flex-row items-center lg:items-start gap-10 mt-60 px-4 md:px-10 xl:px-20">
         <div className="mt-10 flex-1 flex items-center justify-center">
           <Image
             src={ArtImage3}
@@ -283,7 +330,7 @@ export default function Airdrop() {
             />
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div className="container mx-auto px-4 py-8 relative">
         <div className="mt-80 flex flex-col items-center justify-center text-center">
@@ -457,36 +504,29 @@ export default function Airdrop() {
         <div className="text-tertiary mt-20 max-w-5xl">
           <h5 className="mt-6 text-3xl font-bold">Q: How do I register?</h5>
           <p className="mt-4 text-lg">
-            A: Tap the Register Now button at the top of this page, log in or
-            sign up for a Bitcoin Yay account, and you’re in!
+            A: Tap Join Airdrop Now, log in or create your Bitcoin Yay account,
+            and ensure your app email matches your website email.
           </p>
 
           <h5 className="mt-6 text-3xl font-bold">
-            Q: When will I receive my tickets?
+            Q: When will I receive WIBS?
           </h5>
           <p className="mt-4 text-lg">
-            A: All participants receive their tickets on{" "}
-            <span className="font-bold">August 1, 2025</span>. Your free ticket
-            and any earned bonus tickets will appear automatically in your app.
+            A: Distribution happens on Sept 29, 2025. WIBS will appear in your
+            Indexx Wallet automatically.
           </p>
 
-          <h5 className="mt-6 text-3xl font-bold">
-            Q: How are referrals tracked?
-          </h5>
+          <h5 className="mt-6 text-3xl font-bold">Q: Can I buy WIBS?</h5>
           <p className="mt-4 text-lg">
-            A: Each user has a unique referral link in their dashboard. When a
-            friend registers using that link and completes sign-up, our system
-            credits it to your count—no extra steps needed.
-          </p>
-
-          <h5 className="mt-6 text-3xl font-bold">
-            Q: Can I earn more than 4 bonus tickets?
-          </h5>
-          <p className="mt-4 text-lg">
-            A: Bonus tickets are capped at <span className="font-bold">4</span>.
-            Once you hit <span className="font-bold">10 referrals</span>, you’ll
-            receive the full set of 4 bonus tickets; additional referrals do not
-            increase this bonus.
+            A: Yes — tap Buy WIBS on{" "}
+            <Link
+              href="https://pump.fun/coin/EM6R4tQ15598xsA7GwefGwCq2Z4MbV6H3FYHfh8ENBTY"
+              target="_blank"
+              className="text-primary hover:underline hover:underline-offset-4 cursor-pointer"
+            >
+              Pump.fun
+            </Link>{" "}
+            to purchase directly.
           </p>
         </div>
       </div>
