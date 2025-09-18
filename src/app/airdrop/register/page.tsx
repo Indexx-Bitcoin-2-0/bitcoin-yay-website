@@ -17,7 +17,7 @@ import InfoIcon from "@/assets/images/icons/info-icon.webp";
 import DownloadButton from "@/assets/images/buttons/download-button.webp";
 import BackButton from "@/assets/images/buttons/back-button.webp";
 import IndexxButton from "@/assets/images/buttons/indexx-button.webp";
-import SubmitButtomImage from "@/assets/images/buttons/submit-button.webp";
+import PointFingerButtonImage from "@/assets/images/buttons/point-button.webp";
 import PopupArt1 from "@/assets/images/airdrop/popup-art.webp";
 import PopupArt2 from "@/assets/images/airdrop/popup-art-1.webp";
 import PopupArt3 from "@/assets/images/airdrop/popup-art-2.webp";
@@ -46,7 +46,7 @@ export default function AirdropRegisterPage() {
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
   const [isRegistraionSuccessful, setIsRegistrationSuccessful] =
     useState<boolean>(false);
-  const [isRegistrationClosed] = useState<boolean>(true);
+  const [isRegistrationClosed] = useState<boolean>(false);
   const [errors, setErrors] = useState<FormErrors>({});
   const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
 
@@ -75,53 +75,62 @@ export default function AirdropRegisterPage() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-    setFormSubmitted(true);
+    console.log("handleSubmit");
+
+    // Check if registration is closed first
     if (isRegistrationClosed) {
       setIsPopupOpen(true);
-      setEmail("");
-      setUsername("");
-      setAcceptTerms(false);
-      setErrors({});
       return;
     }
-    if (validateForm()) {
-      try {
-        const res = await axios.post(AIRDROP_REGISTER_API_ROUTE, {
-          email: email,
-          referralCode: referralLink,
-          userType: "Indexx Exchange",
-          walletAddress: "",
-          walletProvider: "",
-          airdropAmount: 0,
-          tokenName: "BTCY",
-          eventType: "Bitcoin Yay Lotto airdrop",
-        });
 
-        if (res.status === 200 || res.status === 201) {
-          setIsRegistrationSuccessful(true);
-        } else {
-          setIsRegistrationSuccessful(false);
-        }
+    // Validate form before submission
+    if (!validateForm()) {
+      setFormSubmitted(true);
+      return;
+    }
+
+    // Clear any previous errors and set form as submitted
+    setErrors({});
+    setFormSubmitted(true);
+
+    try {
+      const res = await axios.post(AIRDROP_REGISTER_API_ROUTE, {
+        email: email,
+        referralCode: referralLink,
+        userType: "Indexx Exchange",
+        walletAddress: "",
+        walletProvider: "",
+        airdropAmount: 0,
+        tokenName: "WIBS",
+        eventType: "Bitcoin Yay WIBS Airdrop",
+      });
+
+      if (res.status === 200 || res.status === 201) {
+        setIsRegistrationSuccessful(true);
         setUserReferralLink(userReferralLink + res.data?.data?.referralCode);
-        setIsPopupOpen(true);
+        // Reset form only on successful submission
         setEmail("");
         setUsername("");
         setAcceptTerms(false);
-        setErrors({});
-        setFormSubmitted(false);
-      } catch (error) {
-        let errorMessage = (error as AxiosError).response?.data;
-        errorMessage = (errorMessage as { data?: object })?.data;
+        setReferralLink("");
+      } else {
         setIsRegistrationSuccessful(false);
-        setErrors({
-          general:
-            error instanceof Error && "response" in error
-              ? (errorMessage as { message?: string })?.message ||
-                "An error occurred"
-              : "Network error or server unavailable. Please try again.",
-        });
-        setIsPopupOpen(true);
       }
+      setIsPopupOpen(true);
+      setFormSubmitted(false);
+    } catch (error) {
+      let errorMessage = (error as AxiosError).response?.data;
+      errorMessage = (errorMessage as { data?: object })?.data;
+      setIsRegistrationSuccessful(false);
+      setErrors({
+        general:
+          error instanceof Error && "response" in error
+            ? (errorMessage as { message?: string })?.message ||
+              "An error occurred"
+            : "Network error or server unavailable. Please try again.",
+      });
+      setIsPopupOpen(true);
+      setFormSubmitted(false);
     }
   };
 
@@ -222,7 +231,7 @@ export default function AirdropRegisterPage() {
                 You have successfully registered for the Lotto Airdrop.
               </p>
 
-              <div className="mb-6 mt-2 lg:mt-8 w-full px-4 md:px-8 text-start">
+              {/* <div className="mb-6 mt-2 lg:mt-8 w-full px-4 md:px-8 text-start">
                 <label
                   htmlFor="referralLink"
                   className="block text-bg3 text-xl mb-2"
@@ -266,7 +275,7 @@ export default function AirdropRegisterPage() {
                 onClick={copyReferralLink}
               >
                 Copy your referral link
-              </button>
+              </button> */}
 
               <CustomButton2
                 image={DownloadButton}
@@ -324,7 +333,7 @@ export default function AirdropRegisterPage() {
         <h2 className="mt-6 text-5xl md:text-7xl font-bold">
           Bitcoin Yay
           <br />
-          <span className="text-primary">Lotto Airdrop!</span>
+          <span className="text-primary">WIBS Airdrop!</span>
         </h2>
         <p className="mt-16 text-xl font-medium">
           To claim airdrop you need to be a Miner. Download the app and join now
@@ -401,7 +410,7 @@ export default function AirdropRegisterPage() {
             )}
           </div>
 
-          <div className="mb-6 mt-20">
+          {/* <div className="mb-6 mt-20">
             <label
               htmlFor="referralLink"
               className="block text-bg3 text-xl mb-2"
@@ -424,15 +433,33 @@ export default function AirdropRegisterPage() {
             Note: This link is from the user who shared the free Turbo Mining
             Gopher Airdrop with you. After you sign up, you’ll get your own
             referral link to share.
-          </p>
+          </p> */}
           <div className="flex justify-center mt-20">
-            <button type="submit">
+            {/* <button type="submit">
               <Image
-                src={SubmitButtomImage}
+                src={PointFingerButtonImage}
                 alt="Submit Button"
                 className="w-36 hover:scale-105 cursor-pointer"
               />
-            </button>
+            </button> */}
+            <CustomButton2
+              image={PointFingerButtonImage}
+              text="Submit"
+              onClick={(e) => {
+                e.preventDefault();
+                // Create a synthetic form event to pass to handleSubmit
+                const formEvent = {
+                  ...e,
+                  preventDefault: () => e.preventDefault(),
+                  currentTarget: e.currentTarget.closest(
+                    "form"
+                  ) as HTMLFormElement,
+                  target: e.currentTarget.closest("form") as HTMLFormElement,
+                } as FormEvent<HTMLFormElement>;
+                handleSubmit(formEvent);
+              }}
+              imageStyling="w-36"
+            />
           </div>
         </form>
       </div>
