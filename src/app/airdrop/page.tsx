@@ -42,7 +42,7 @@ export default function Airdrop() {
   return (
     <div className="mx-auto mt-40 max-w-[1800px]">
       <div className="relative flex flex-col lg:flex-row">
-        <div className="mt-10 w-full lg:w-[90%] flex flex-col justify-items-center px-4 md:px-20 xl:pl-30">
+        <div className="mt-10 w-full lg:w-[90%] flex flex-col justify-items-center px-4 md:pl-20 xl:pl-30">
           <h2 className="text-[40px] md:text-7xl xl:text-[100px] font-bold">
             Join the WIBS Airdrop!
             <br />
@@ -84,11 +84,11 @@ export default function Airdrop() {
             />
           </div>
         </div>
-        <div className="relative">
+        <div className="relative mx-auto lg:mx-0">
           <Image
             src={ArtImage1}
             alt="Airdrop Art 1"
-            className="w-90 md:w-140 lg:w-160 xl:w-200 mt-10"
+            className="w-90 md:w-140 lg:w-180 xl:w-240 mt-10"
           />
         </div>
 

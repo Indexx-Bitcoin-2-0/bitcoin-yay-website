@@ -101,8 +101,8 @@ export default function AirdropRegisterPage() {
         walletAddress: "",
         walletProvider: "",
         airdropAmount: 0,
-        tokenName: "BTCY",
-        eventType: "Bitcoin Yay WIBS airdrop",
+        tokenName: "WIBS",
+        eventType: "Bitcoin Yay WIBS Airdrop",
       });
 
       if (res.status === 200 || res.status === 201) {
