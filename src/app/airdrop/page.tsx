@@ -79,7 +79,8 @@ export default function Airdrop() {
             <CustomButton2
               image={CartButtonImage}
               text="Buy Now"
-              link="/airdrop/register"
+              link="https://pump.fun/coin/EM6R4tQ15598xsA7GwefGwCq2Z4MbV6H3FYHfh8ENBTY"
+              _blank={true}
               imageStyling="w-30"
             />
           </div>
