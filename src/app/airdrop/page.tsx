@@ -65,8 +65,8 @@ export default function Airdrop() {
               className="text-primary hover:underline hover:underline-offset-4 cursor-pointer"
             >
               Pump.fun!
-            </Link>{" "}
-            You can buy right as well.
+            </Link>
+            You can buy right now!.
           </p>
 
           <div className="font-bold mt-10 flex justify-center md:justify-start items-center md:items-start gap-10 md:gap-20">
@@ -201,8 +201,16 @@ export default function Airdrop() {
               Wallet
             </h4>
             <p className="text-xl font-light">
-              WIBS will be airdropped directly to your Indexx Wallet on
-              distribution day.
+              Sign up on{" "}
+              <Link
+                href="https://pump.fun"
+                target="_blank"
+                className="text-primary hover:underline hover:underline-offset-4 cursor-pointer"
+              >
+                pump.fun
+              </Link>{" "}
+              and share us your wallet address for pump.fun and WIBS will
+              airdropped directly to that wallet on distribution day
             </p>
           </div>
           <div className="max-w-100 text-center mx-auto">
@@ -279,7 +287,17 @@ export default function Airdrop() {
             <li>
               10,000,000 WIBS are equally divided among verified participants.
             </li>
-            <li>Program terms and dates are subject to change.</li>
+            <li>
+              Must have a valid{" "}
+              <Link
+                href="https://pump.fun"
+                target="_blank"
+                className="text-primary hover:underline hover:underline-offset-4 cursor-pointer"
+              >
+                pump.fun
+              </Link>{" "}
+              wallet address{" "}
+            </li>
           </ul>
           <div className="mx-auto md:mx-0 mt-10 flex justify-center md:justify-start items-center md:items-start gap-10 md:gap-20">
             <CustomButton2

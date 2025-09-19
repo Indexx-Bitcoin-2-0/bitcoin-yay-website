@@ -31,12 +31,14 @@ interface FormErrors {
   email?: string;
   username?: string;
   acceptTerms?: string;
+  walletAddress?: string;
   general?: string; // For general form errors, e.g., from API
 }
 
 export default function AirdropRegisterPage() {
   const [email, setEmail] = useState<string>("");
   const [username, setUsername] = useState<string>("");
+  const [walletAddress, setWalletAddress] = useState<string>("");
   const [referralLink, setReferralLink] = useState<string>("");
   const [userReferralLink, setUserReferralLink] = useState<string>(
     "bitcoinyay.com/referral="
@@ -63,6 +65,10 @@ export default function AirdropRegisterPage() {
       newErrors.username = "Name is required.";
     } else if (username.length < 3) {
       newErrors.username = "Name must be at least 3 characters long.";
+    }
+
+    if (!walletAddress.trim()) {
+      newErrors.walletAddress = "Wallet address is required.";
     }
 
     if (!acceptTerms) {
@@ -98,7 +104,7 @@ export default function AirdropRegisterPage() {
         email: email,
         referralCode: referralLink,
         userType: "Indexx Exchange",
-        walletAddress: "",
+        walletAddress: walletAddress,
         walletProvider: "",
         airdropAmount: 0,
         tokenName: "WIBS",
@@ -111,6 +117,7 @@ export default function AirdropRegisterPage() {
         // Reset form only on successful submission
         setEmail("");
         setUsername("");
+        setWalletAddress("");
         setAcceptTerms(false);
         setReferralLink("");
       } else {
@@ -389,6 +396,41 @@ export default function AirdropRegisterPage() {
               <p className="text-red-700 text-base mt-2">{errors.email}</p>
             )}
           </div>
+
+          <div className="mb-6">
+            <label
+              htmlFor="walletAddress"
+              className="block text-bg3 text-xl mb-2"
+            >
+              Wallet Address
+            </label>
+            <input
+              type="text"
+              id="walletAddress"
+              className={
+                "w-full text-lg p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none  hover:border-primary"
+              }
+              placeholder="Enter your pump.fun wallet address"
+              value={walletAddress}
+              onChange={(e) => setWalletAddress(e.target.value)}
+            />
+            {formSubmitted && errors.walletAddress && (
+              <p className="text-red-700 text-base mt-2">
+                {errors.walletAddress}
+              </p>
+            )}
+          </div>
+          <p className="text-primary text-base italic mb-6">
+            <span className="font-bold">Note:</span> If you don&apos;t have a
+            pump.fun wallet address, please sign up on{" "}
+            <Link
+              href="https://pump.fun"
+              target="_blank"
+              className="text-primary hover:underline hover:underline-offset-4 cursor-pointer"
+            >
+              pump.fun
+            </Link>
+          </p>
 
           <div className="mb-6 items-center">
             <div className="flex items-center">
