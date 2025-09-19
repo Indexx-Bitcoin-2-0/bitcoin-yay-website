@@ -2,6 +2,38 @@ const baseURL = "/";
 
 const header_data = [
   {
+    mainTextDesktop: "Alchemy",
+    mainTextMob: "Alchemy",
+    active: false,
+    href: "/alchemy",
+    hasMegaDrop: true,
+    dropDownContent: [
+      {
+        heading: "Explore Alchemy",
+        mainList: true,
+        links: [
+          {
+            name: "Alchemy Gateway",
+            href: `/alchemy`,
+          },
+          {
+            name: "Alchemy Trade",
+            href: `/coming-soon`,
+          },
+        ],
+      },
+      {
+        heading: "Support",
+        links: [
+          {
+            name: "Contact Us",
+            href: "/support/#contact-us",
+          },
+        ],
+      },
+    ],
+  },
+  {
     mainTextDesktop: "Bible",
     mainTextMob: "Bible",
     active: false,
@@ -319,38 +351,7 @@ const header_data = [
       },
     ],
   },
-  {
-    mainTextDesktop: "Alchemy",
-    mainTextMob: "Alchemy",
-    active: false,
-    href: "/alchemy",
-    hasMegaDrop: true,
-    dropDownContent: [
-      {
-        heading: "Explore Alchemy",
-        mainList: true,
-        links: [
-          {
-            name: "Alchemy Gateway",
-            href: `/alchemy`,
-          },
-          {
-            name: "Alchemy Trade",
-            href: `/coming-soon`,
-          },
-        ],
-      },
-      {
-        heading: "Support",
-        links: [
-          {
-            name: "Contact Us",
-            href: "/support/#contact-us",
-          },
-        ],
-      },
-    ],
-  },
+  
   {
     mainTextDesktop: "WIBS",
     mainTextMob: "WIBS",
