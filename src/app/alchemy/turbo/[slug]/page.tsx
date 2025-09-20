@@ -116,7 +116,7 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
       });
       if (balance.data?.totalBTCYBalance < MINIMUM_BTCY_BALANCE_FOR_ALCHEMY) {
         setError(
-          `You need at least ${MINIMUM_BTCY_BALANCE_FOR_ALCHEMY} BTCY to start an Alchemy`
+          `You need at least ${MINIMUM_BTCY_BALANCE_FOR_ALCHEMY.toLocaleString('en-US')} BTCY to start an Alchemy`
         );
         setIsLoadingAlchemy(false);
         return;
@@ -419,12 +419,11 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
           ) : (
             <>
               <div
-                className={`${
-                  isLoadingAlchemy ||
-                  userPlanData.balance < MINIMUM_BTCY_BALANCE_FOR_ALCHEMY
+                className={`${isLoadingAlchemy ||
+                    userPlanData.balance < MINIMUM_BTCY_BALANCE_FOR_ALCHEMY
                     ? "opacity-50 cursor-not-allowed pointer-events-none"
                     : "cursor-pointer"
-                }`}
+                  }`}
               >
                 <CustomButton2
                   image={PointingHandButtonImage}
