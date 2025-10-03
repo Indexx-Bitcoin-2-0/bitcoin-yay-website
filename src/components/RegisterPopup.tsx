@@ -8,16 +8,17 @@ import SetPasswordPopup from "@/components/SetPasswordPopup";
 import { useAuth } from "@/contexts/AuthContext";
 import { GOOGLE_REGISTER_API_ROUTE, REGISTER_API_ROUTE } from "@/routes";
 import MainLogo from "@/assets/images/main-logo.svg";
-import RegisterButtonImage from "@/assets/images/buttons/register-text-button.webp";
+import RegisterButtonImage from "@/assets/images/buttons/register-button.webp";
 import GoogleRegisterButtonImage from "@/assets/images/buttons/google-button.webp";
 import CustomButton2 from "@/components/CustomButton2";
-import { ChevronDown, Check } from "lucide-react";
+import { ChevronDown, Check, Eye, EyeOff } from "lucide-react";
 import { useGoogleLogin } from "@react-oauth/google";
 
 interface RegisterPopupProps {
   isOpen: boolean;
   onClose: () => void;
   onRegisterSuccess: () => void;
+  onLoginClick: () => void;
   referralCode?: string;
 }
 
@@ -35,6 +36,7 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
   isOpen,
   onClose,
   onRegisterSuccess,
+  onLoginClick,
   referralCode,
 }) => {
   const { login } = useAuth();
@@ -54,6 +56,8 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
   const [showSetPassword, setShowSetPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Update referral code when referralCode prop changes
   useEffect(() => {
@@ -490,14 +494,30 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
               >
                 Password
               </label>
-              <input
-                type="password"
-                id="password"
-                className="w-full text-base p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
-                value={formData.password}
-                onChange={(e) => handleInputChange("password", e.target.value)}
-                disabled={isSubmitting}
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  className="w-full text-base p-3 pr-12 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
+                  value={formData.password}
+                  onChange={(e) =>
+                    handleInputChange("password", e.target.value)
+                  }
+                  disabled={isSubmitting}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-bg3 hover:text-primary cursor-pointer"
+                  disabled={isSubmitting}
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" strokeWidth={2} />
+                  ) : (
+                    <Eye className="w-5 h-5" strokeWidth={2} />
+                  )}
+                </button>
+              </div>
               {errors.password && (
                 <p className="text-red-500 text-xs mt-1">{errors.password}</p>
               )}
@@ -511,16 +531,30 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
               >
                 Confirm Password
               </label>
-              <input
-                type="password"
-                id="confirmPassword"
-                className="w-full text-base p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
-                value={formData.confirmPassword}
-                onChange={(e) =>
-                  handleInputChange("confirmPassword", e.target.value)
-                }
-                disabled={isSubmitting}
-              />
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  id="confirmPassword"
+                  className="w-full text-base p-3 pr-12 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
+                  value={formData.confirmPassword}
+                  onChange={(e) =>
+                    handleInputChange("confirmPassword", e.target.value)
+                  }
+                  disabled={isSubmitting}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-bg3 hover:text-primary cursor-pointer"
+                  disabled={isSubmitting}
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="w-5 h-5" strokeWidth={2} />
+                  ) : (
+                    <Eye className="w-5 h-5" strokeWidth={2} />
+                  )}
+                </button>
+              </div>
               {errors.confirmPassword && (
                 <p className="text-red-500 text-xs mt-1">
                   {errors.confirmPassword}
@@ -570,8 +604,8 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
                 }}
                 className={
                   isSubmitting
-                    ? "opacity-50 cursor-not-allowed"
-                    : "cursor-pointer"
+                    ? "opacity-50 cursor-not-allowed mb-6"
+                    : "cursor-pointer mb-6"
                 }
               >
                 <CustomButton2
@@ -621,8 +655,8 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
               </span>
               <button
                 type="button"
-                onClick={onClose}
-                className="text-primary text-sm hover:underline"
+                onClick={onLoginClick}
+                className="text-primary text-sm hover:underline cursor-pointer"
               >
                 Login
               </button>

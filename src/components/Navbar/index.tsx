@@ -582,6 +582,14 @@ const Navbar: React.FC = () => {
       <LoginPopup
         isOpen={isLoginPopupOpen}
         onClose={() => setIsLoginPopupOpen(false)}
+        onRegisterClick={() => {
+          setIsLoginPopupOpen(false);
+          setIsRegisterPopupOpen(true);
+        }}
+        onLoginClick={() => {
+          setIsLoginPopupOpen(true);
+          setIsRegisterPopupOpen(false);
+        }}
         onLoginSuccess={handleLoginSuccess}
       />
 
@@ -590,6 +598,10 @@ const Navbar: React.FC = () => {
         isOpen={isRegisterPopupOpen}
         onClose={() => setIsRegisterPopupOpen(false)}
         onRegisterSuccess={handleRegisterSuccess}
+        onLoginClick={() => {
+          setIsRegisterPopupOpen(false);
+          setIsLoginPopupOpen(true);
+        }}
         referralCode={referralCode}
       />
     </nav>
