@@ -144,7 +144,7 @@ const Navbar: React.FC = () => {
   // Optimized resize handler with debounce
   useEffect(() => {
     const handleResize = () => {
-      const mobileView = window.innerWidth <= 1024;
+      const mobileView = window.innerWidth < 1536; // Changed from 1024 to 1536 (2xl breakpoint)
       setIsMobile(mobileView);
       if (!mobileView && menuOpen) {
         setMenuOpen(false);
@@ -321,12 +321,12 @@ const Navbar: React.FC = () => {
         {/* {!isMobile && <Backdrop visible={backdropVisibility} />}
         {isMobile && <Backdrop visible={menuOpen} />} */}
 
-        <div className="flex items-center justify-between w-full lg:justify-start lg:w-auto">
+        <div className="flex items-center justify-between w-full 2xl:justify-start 2xl:w-auto">
           <Logo />
 
           {/* Mobile menu toggle button */}
           <button
-            className="flex lg:hidden text-secondry"
+            className="flex 2xl:hidden text-secondry"
             onClick={toggleMobileMenu}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
           >
@@ -358,7 +358,7 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Desktop Navigation */}
-        <div className="hidden lg:flex items-center">
+        <div className="hidden 2xl:flex items-center">
           <ul className="inline-flex my-0 flex-1">
             {headerData.map((element, idx) => (
               <li
@@ -435,7 +435,7 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Auth Section (Desktop) */}
-        <div className="hidden lg:block">
+        <div className="hidden 2xl:block">
           {isAuthenticated && user ? (
             <div className="text-sm font-normal transition-all duration-300 flex gap-10">
               <button
@@ -471,7 +471,7 @@ const Navbar: React.FC = () => {
         <div
           className={`absolute left-0 top-26 w-full p-8 bg-bg shadow-lg transform z-20 ${
             menuOpen ? "translate-y-0" : "-translate-y-[130%]"
-          }  lg:hidden max-h-[calc(100vh-150px)] overflow-y-auto`}
+          }  2xl:hidden max-h-[calc(100vh-150px)] overflow-y-auto`}
         >
           {/* Auth Section (Mobile) */}
           <div className="mb-6">
