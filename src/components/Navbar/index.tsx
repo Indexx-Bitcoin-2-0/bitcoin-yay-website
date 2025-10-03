@@ -496,7 +496,7 @@ const Navbar: React.FC = () => {
                 </button>
               </div>
             ) : (
-              <div className="text-xl lg:text-sm font-normal transition-all duration-300 flex items-center justify-center w-full gap-10">
+              <div className="text-xl 2xl:text-sm font-normal transition-all duration-300 flex items-center justify-center w-full gap-10">
                 <button
                   onClick={() => {
                     setIsLoginPopupOpen(true);
