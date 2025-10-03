@@ -3,7 +3,6 @@ import {
   InfoSection,
   CustomListItem,
   CustomP,
-  CustomPWithTitle,
 } from "@/components/CustomTypography";
 import Image from "next/image";
 
@@ -16,8 +15,8 @@ import Whitepaper06 from "@/assets/images/whitepaper/whitepaper-06.svg";
 import Whitepaper07 from "@/assets/images/whitepaper/whitepaper-066.svg";
 import Whitepaper08 from "@/assets/images/whitepaper/whitepaper-07.svg";
 import Whitepaper09 from "@/assets/images/whitepaper/whitepaper-08.svg";
-import Whitepaper10 from "@/assets/images/whitepaper/whitepaper-09.svg";
-import Whitepaper11 from "@/assets/images/whitepaper/whitepaper-10.svg";
+// import Whitepaper10 from "@/assets/images/whitepaper/whitepaper-09.svg";
+// import Whitepaper11 from "@/assets/images/whitepaper/whitepaper-10.svg";
 
 export const metadata = {
   title: "Bitcoin Yay Whitepaper - Technical Documentation & Tokenomics",
