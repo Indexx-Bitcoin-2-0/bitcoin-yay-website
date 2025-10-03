@@ -1,4 +1,8 @@
+"use client";
+
 import Image from "next/image";
+
+import DisclaimerComponent from "@/components/DisclaimerComponent";
 
 import ArtImage1 from "@/assets/images/bible/story/art-1.webp";
 import ArtImage2 from "@/assets/images/bible/story/art-2.webp";
@@ -7,16 +11,16 @@ import ArtImage4 from "@/assets/images/bible/story/art-4.webp";
 import ArtImage5 from "@/assets/images/bible/story/art-5.webp";
 import ArtImage6 from "@/assets/images/bible/story/art-6.webp";
 
-export const metadata = {
-  title: "Bitcoin Yay Story - The Hidden Genesis & Nakamoto Legacy",
-  description:
-    "Discover the origin story of Bitcoin Yay (BTCY) and its connection to Satoshi Nakamoto's vision. Learn how the forgotten code patterns led to the creation of a sustainable, AI-powered cryptocurrency alternative.",
-  openGraph: {
-    title: "Bitcoin Yay Story - The Hidden Genesis & Nakamoto Legacy",
-    description:
-      "Discover the origin story of Bitcoin Yay (BTCY) and its connection to Satoshi Nakamoto's vision. Learn how the forgotten code patterns led to the creation of a sustainable, AI-powered cryptocurrency alternative.",
-  },
-};
+// export const metadata = {
+//   title: "Bitcoin Yay Story - The Hidden Genesis & Nakamoto Legacy",
+//   description:
+//     "Discover the origin story of Bitcoin Yay (BTCY) and its connection to Satoshi Nakamoto's vision. Learn how the forgotten code patterns led to the creation of a sustainable, AI-powered cryptocurrency alternative.",
+//   openGraph: {
+//     title: "Bitcoin Yay Story - The Hidden Genesis & Nakamoto Legacy",
+//     description:
+//       "Discover the origin story of Bitcoin Yay (BTCY) and its connection to Satoshi Nakamoto's vision. Learn how the forgotten code patterns led to the creation of a sustainable, AI-powered cryptocurrency alternative.",
+//   },
+// };
 
 export default function BibleStory() {
   return (
@@ -179,6 +183,9 @@ export default function BibleStory() {
         <h2 className="text-4xl mt-10 lg:text-6xl xl:text-7xl font-bold">
           &quot;The Chains Must Evolve. Let Yay Lead the Way.&quot;
         </h2>
+      </div>
+      <div className="mt-20 px-2 md:px-20 xl:px-40">
+        <DisclaimerComponent />
       </div>
     </div>
   );
