@@ -748,6 +748,7 @@ const QuantumMiningPage = () => {
 
       <LoginPopup
         isOpen={isLoginPopupOpen}
+        onRegisterClick={() => setIsLoginPopupOpen(false)}
         onClose={() => setIsLoginPopupOpen(false)}
         onLoginSuccess={() => setIsLoginPopupOpen(false)}
       />

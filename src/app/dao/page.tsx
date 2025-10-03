@@ -367,6 +367,7 @@ export default function DAO() {
       {/* Login Popup */}
       <LoginPopup
         isOpen={isLoginPopupOpen}
+        onRegisterClick={() => setIsLoginPopupOpen(false)}
         onClose={handleCloseLoginPopup}
         onLoginSuccess={handleLoginSuccess}
       />

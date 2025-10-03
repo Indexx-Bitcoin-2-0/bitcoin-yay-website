@@ -149,7 +149,6 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
         };
 
         const response = await axios.post(REGISTER_API_ROUTE, registrationData);
-
         if (response.status === 200 || response.status === 201) {
           // Extract user data from API response
           const apiData = response.data.data || response.data; // Handle both response structures
@@ -184,11 +183,15 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
             referralCode: "",
           });
         } else {
-          setErrors({ general: "Registration failed. Please try again." });
+          setErrors({
+            general: response?.data || "Registration failed. Please try again.",
+          });
         }
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
+          console.log(error.response?.data?.data);
           const errorMessage =
+            error.response?.data?.data ||
             error.response?.data?.data?.message ||
             error.response?.data?.message ||
             "Registration failed. Please try again.";

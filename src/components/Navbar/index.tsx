@@ -586,10 +586,6 @@ const Navbar: React.FC = () => {
           setIsLoginPopupOpen(false);
           setIsRegisterPopupOpen(true);
         }}
-        onLoginClick={() => {
-          setIsLoginPopupOpen(true);
-          setIsRegisterPopupOpen(false);
-        }}
         onLoginSuccess={handleLoginSuccess}
       />
 

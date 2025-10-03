@@ -179,6 +179,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
         } else {
           // Any other backend response
           const errorMessage =
+            res?.data?.data ||
             res?.data?.data?.message ||
             res?.data?.message ||
             "Google login failed. Please try again.";
@@ -187,6 +188,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
           const errorMessage =
+            error.response?.data?.data ||
             error.response?.data?.data?.message ||
             error.response?.data?.message ||
             "Google login failed. Please try again.";
@@ -449,7 +451,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
               <button
                 type="button"
                 onClick={onRegisterClick}
-                className="text-primary text-sm hover:underline"
+                className="text-primary text-sm hover:underline cursor-pointer"
               >
                 Register
               </button>
