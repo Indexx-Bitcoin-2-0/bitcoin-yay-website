@@ -16,6 +16,7 @@ import MainLogo from "@/assets/images/main-logo.svg";
 import LoginButtonImage from "@/assets/images/buttons/login-button.webp";
 import GoogleLoginButtonImage from "@/assets/images/buttons/google-button.webp";
 import CustomButton2 from "@/components/CustomButton2";
+import { Eye, EyeOff } from "lucide-react";
 import { useGoogleLogin } from "@react-oauth/google";
 
 interface GoogleTokenResponse {
@@ -26,11 +27,13 @@ interface LoginPopupProps {
   isOpen: boolean;
   onClose: () => void;
   onLoginSuccess: () => void;
+  onRegisterClick: () => void;
 }
 const LoginPopup: React.FC<LoginPopupProps> = ({
   isOpen,
   onClose,
   onLoginSuccess,
+  onRegisterClick,
 }) => {
   const { login } = useAuth();
   const [email, setEmail] = useState("");
@@ -41,6 +44,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
     general?: string;
   }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   // Forgot password flow states
   const [showForgotPassword, setShowForgotPassword] = useState(false);
@@ -175,6 +179,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
         } else {
           // Any other backend response
           const errorMessage =
+            res?.data?.data ||
             res?.data?.data?.message ||
             res?.data?.message ||
             "Google login failed. Please try again.";
@@ -183,6 +188,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
           const errorMessage =
+            error.response?.data?.data ||
             error.response?.data?.data?.message ||
             error.response?.data?.message ||
             "Google login failed. Please try again.";
@@ -250,11 +256,6 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
     closeAllPopups();
     setResetEmail("");
     // Main login popup will automatically show when sub-popup is closed
-  };
-
-  const handleRegisterClick = () => {
-    closeAllPopups();
-    setShowRegister(true);
   };
 
   const handleRegisterSuccess = () => {
@@ -342,14 +343,28 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
               >
                 Password
               </label>
-              <input
-                type="password"
-                id="login-password"
-                className="w-full text-lg p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={isSubmitting}
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="login-password"
+                  className="w-full text-lg p-3 pr-12 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  disabled={isSubmitting}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-bg3 hover:text-primary cursor-pointer"
+                  disabled={isSubmitting}
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" strokeWidth={2} />
+                  ) : (
+                    <Eye className="w-5 h-5" strokeWidth={2} />
+                  )}
+                </button>
+              </div>
               {errors.password && (
                 <p className="text-red-500 text-sm mt-2">{errors.password}</p>
               )}
@@ -435,8 +450,8 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
               </span>
               <button
                 type="button"
-                onClick={handleRegisterClick}
-                className="text-primary text-sm hover:underline"
+                onClick={onRegisterClick}
+                className="text-primary text-sm hover:underline cursor-pointer"
               >
                 Register
               </button>
@@ -470,6 +485,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
       <RegisterPopup
         isOpen={showRegister}
         onClose={handleCloseRegister}
+        onLoginClick={onRegisterClick}
         onRegisterSuccess={handleRegisterSuccess}
       />
 

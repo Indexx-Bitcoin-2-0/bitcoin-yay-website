@@ -322,6 +322,7 @@ export default function ProposalDetailPage() {
       {/* Login Popup */}
       <LoginPopup
         isOpen={isLoginPopupOpen}
+        onRegisterClick={() => setIsLoginPopupOpen(false)}
         onClose={handleCloseLoginPopup}
         onLoginSuccess={handleLoginSuccess}
       />

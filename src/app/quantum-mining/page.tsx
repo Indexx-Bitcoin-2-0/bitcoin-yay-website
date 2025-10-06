@@ -346,16 +346,8 @@ const QuantumMiningPage = () => {
             <span className="font-bold">($1 – $100K+)</span> via bank wires,
             stable coins, and global OTC solutions.
           </p>
-
-          <div className="font-bold mt-10 flex flex-col justify-center items-center md:items-start">
-            <CustomButton2
-              image={NoteButtonImage}
-              text="Register"
-              link="#buy-btcy"
-              imageStyling="w-30"
-            />
-          </div>
         </div>
+
         <div className="xl:mt-26 flex justify-center items-center relative">
           <Image
             src={ArtImage1}
@@ -368,6 +360,14 @@ const QuantumMiningPage = () => {
             className="w-90 md:w-140 xl:w-140 2xl:w-200 absolute top-0 left-1/2 xl:left-auto xl:right-0 transform xl:transform-none -translate-x-1/2 xl:translate-x-0 "
           />
         </div>
+      </div>
+      <div className="font-bold mt-16 flex flex-col justify-center items-center">
+        <CustomButton2
+          image={NoteButtonImage}
+          text="Register"
+          link="#buy-btcy"
+          imageStyling="w-30"
+        />
       </div>
       <div className="mt-40">
         <h1 className="text-4xl md:text-6xl xl:text-8xl font-bold text-center">
@@ -421,7 +421,7 @@ const QuantumMiningPage = () => {
         </h2>
 
         {/* Funding Progress */}
-        <div className="mb-8 mt-10">
+        {/* <div className="mb-8 mt-10">
           <div className="flex justify-between items-center mb-2">
             <span className="text-lg md:text-2xl xl:text-3xl">USD Raised</span>
             <span className="text-lg md:text-2xl xl:text-3xl">
@@ -437,11 +437,11 @@ const QuantumMiningPage = () => {
               79.3%
             </span>
           </div>
-        </div>
+        </div> */}
 
         {/* Exchange Rate */}
         <div className="mb-8">
-          <p className="text-xl md:text-[40px] font-semibold">
+          <p className="text-xl md:text-[40px] font-semibold text-center my-10">
             1 BTCY = ${btcyPrice.toFixed(4)}
           </p>
         </div>
@@ -646,23 +646,35 @@ const QuantumMiningPage = () => {
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row items-center justify-start gap-20 mt-80">
+      <div className="flex flex-col lg:flex-row items-center justify-center gap-20 mt-80">
         <Image
           src={ArtImage4}
           alt="Art Image 3"
           className="w-80 md:w-120 lg:w-120 xl:w-140 -ml-20"
         />
         <div className="w-full flex flex-col justify-center max-w-[800px] px-4">
-          <h3 className="text-3xl md:text-5xl xl:text-7xl font-bold">
+          <h3 className="text-3xl md:text-5xl xl:text-7xl 2xl:text-8xl font-bold">
             Onboarding Flow Steps
           </h3>
           <ul className="list-disc mt-16 text-2xl md:text-3xl font-medium pl-4 md:pl-10 flex flex-col gap-16">
-            <li>Register as Institutional Buyer</li>
-            <li>Submit KYC Documents</li>
-            <li>Get Verified</li>
-            <li>Submit Buy Request (e.g., 50,000 USDT)</li>
+            <li>Register as Buyer (Individual or Institutional)</li>
+
+            <li>Minimum Purchase: 1 USD</li>
+
+            <li>KYC Requirements:</li>
+
+            <li>Not Required for purchases up to $1,000 USD</li>
+
+            <li>
+              Required for purchases above $1,000 USD or for large/institutional
+              investors
+            </li>
+
+            <li>Submit Buy Request (e.g., $1 – $50,000 USDT or more)</li>
+
             <li>Receive Invoice & Pay</li>
-            <li>BTCY Tokens Delivered</li>
+
+            <li>BTCY Tokens Delivered</li>
           </ul>
         </div>
       </div>
@@ -748,6 +760,7 @@ const QuantumMiningPage = () => {
 
       <LoginPopup
         isOpen={isLoginPopupOpen}
+        onRegisterClick={() => setIsLoginPopupOpen(false)}
         onClose={() => setIsLoginPopupOpen(false)}
         onLoginSuccess={() => setIsLoginPopupOpen(false)}
       />

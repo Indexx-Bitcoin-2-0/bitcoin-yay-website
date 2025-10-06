@@ -213,6 +213,7 @@ export default function MemberManagement() {
       {/* Login Popup */}
       <LoginPopup
         isOpen={isLoginPopupOpen}
+        onRegisterClick={() => setIsLoginPopupOpen(false)}
         onClose={handleCloseLoginPopup}
         onLoginSuccess={handleLoginSuccess}
       />

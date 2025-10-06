@@ -65,7 +65,7 @@ export default function AlchemyPage() {
         </div>
       </div>
 
-      <div id="alchemy-options" className="mt-160 flex gap-40 justify-center items-center">
+      <div id="alchemy-options" className="mt-40 md:mt-160 flex gap-20 md:gap-40 px-10 justify-center items-center">
         <Link
           href="/alchemy#alchemy-gateway"
           className="flex flex-col items-center justify-center group"

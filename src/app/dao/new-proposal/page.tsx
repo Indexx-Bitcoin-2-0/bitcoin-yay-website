@@ -363,6 +363,7 @@ export default function NewProposal() {
       {/* Login Popup */}
       <LoginPopup
         isOpen={isLoginPopupOpen}
+        onRegisterClick={() => setIsLoginPopupOpen(false)}
         onClose={handleCloseLoginPopup}
         onLoginSuccess={handleLoginSuccess}
       />
