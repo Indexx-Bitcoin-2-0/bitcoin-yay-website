@@ -1,7 +1,7 @@
 import Image, { StaticImageData } from "next/image";
 
 import bgArtImage2 from "../../assets/images/bitcoin-art-3.svg";
-import ArtImage1 from "@/assets/images/about/art-1.svg";
+import ArtImage1 from "@/assets/images/about/art-1.webp";
 import ArtImage2 from "@/assets/images/about/art-2.svg";
 
 import FounderImage1 from "../../assets/images/about/founder-1.svg";
