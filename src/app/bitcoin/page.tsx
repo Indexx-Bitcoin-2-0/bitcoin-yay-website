@@ -89,7 +89,7 @@ export default function Bitcoin() {
           MINING BY ENGAGEMENT
         </h2>
         <h1 className="text-5xl md:text-7xl font-semibold">Not Electricity</h1>
-        <Image src={ArtImage3} alt="Art Image 3" className="mt-20" />
+        <Image src={ArtImage3} alt="Art Image 3" className="mt-20 max-w-4xl" />
         <p className="text-lg font-light my-10 max-w-160">
           Bitcoin mining was designed for those who could afford hardware,
           space, and energy. But in 2025, the world has changed.
