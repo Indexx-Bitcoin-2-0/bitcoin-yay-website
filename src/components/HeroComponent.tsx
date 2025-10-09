@@ -193,7 +193,7 @@ const CarouselFrame7 = () => {
 
 export default function HeroSection() {
   const [currentIndex, setCurrentIndex] = useState(6);
-  const [paused, setPaused] = useState(true);
+  const [paused, setPaused] = useState(false);
 
   useEffect(() => {
     if (paused) return;
