@@ -17,6 +17,7 @@ interface EmailVerificationPopupProps {
   email: string;
   onVerified: () => void;
   onResendCode: () => void;
+  verificationApiRoute?: string;
 }
 
 const EmailVerificationPopup: React.FC<EmailVerificationPopupProps> = ({
@@ -25,6 +26,7 @@ const EmailVerificationPopup: React.FC<EmailVerificationPopupProps> = ({
   email,
   onVerified,
   onResendCode,
+  verificationApiRoute = FORGOT_PASSWORD_VERIFY_API_ROUTE,
 }) => {
   const [verificationCode, setVerificationCode] = useState("");
   const [error, setError] = useState("");
@@ -47,7 +49,7 @@ const EmailVerificationPopup: React.FC<EmailVerificationPopupProps> = ({
     }
 
     try {
-      const response = await axios.post(FORGOT_PASSWORD_VERIFY_API_ROUTE, {
+      const response = await axios.post(verificationApiRoute, {
         email: email.trim(),
         code: verificationCode,
       });
