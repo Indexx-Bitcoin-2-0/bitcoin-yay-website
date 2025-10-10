@@ -584,9 +584,6 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
               >
                 Username
               </label>
-              <p className="text-tertiary text-xs my-1">
-                This will also be your code for referring others
-              </p>
               <input
                 type="text"
                 id="username"
