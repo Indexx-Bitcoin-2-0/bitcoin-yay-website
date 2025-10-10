@@ -24,6 +24,9 @@ export const GET_USER_BTCY_BALANCE_API_ROUTE = `${process.env.NEXT_PUBLIC_API_UR
 
 export const SET_PASSWORD_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/setPassword`;
 
+export const CHECK_EMAIL_FOR_REGISTRATION_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/checkemail`;
+
+export const CHECK_USERNAME_FOR_REGISTRATION_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/checkusername`;
 
 export const SEND_OTP_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/sendOtp`;
 

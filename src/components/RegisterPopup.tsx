@@ -12,6 +12,8 @@ import {
   REGISTER_API_ROUTE,
   SEND_OTP_API_ROUTE,
   VERIFY_OTP_API_ROUTE,
+  CHECK_EMAIL_FOR_REGISTRATION_API_ROUTE,
+  CHECK_USERNAME_FOR_REGISTRATION_API_ROUTE,
 } from "@/routes";
 import MainLogo from "@/assets/images/main-logo.svg";
 import RegisterButtonImage from "@/assets/images/buttons/register-button.webp";
@@ -68,6 +70,12 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
   const [showEmailVerification, setShowEmailVerification] = useState(false);
   const [registrationEmail, setRegistrationEmail] = useState("");
   const [registrationData, setRegistrationData] = useState<any>(null);
+  const [isCheckingEmail, setIsCheckingEmail] = useState(false);
+  const [isCheckingUsername, setIsCheckingUsername] = useState(false);
+  const [emailAvailable, setEmailAvailable] = useState<boolean | null>(null);
+  const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(
+    null
+  );
 
   // Update referral code when referralCode prop changes
   useEffect(() => {
@@ -75,6 +83,89 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
       setFormData((prev) => ({ ...prev, referralCode: referralCode }));
     }
   }, [referralCode]);
+
+  // Debounced email availability check
+  useEffect(() => {
+    if (!formData.email.trim()) {
+      setEmailAvailable(null);
+      return;
+    }
+
+    if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      setEmailAvailable(null);
+      return;
+    }
+
+    const timeoutId = setTimeout(async () => {
+      setIsCheckingEmail(true);
+      try {
+        const response = await axios.post(
+          CHECK_EMAIL_FOR_REGISTRATION_API_ROUTE,
+          {
+            email: formData.email.trim(),
+          }
+        );
+
+        if (response.data && response.data.success === true) {
+          setEmailAvailable(true);
+        } else {
+          setEmailAvailable(false);
+        }
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          setEmailAvailable(false);
+        }
+      } finally {
+        setIsCheckingEmail(false);
+      }
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [formData.email]);
+
+  // Debounced username availability check
+  useEffect(() => {
+    if (!formData.username.trim()) {
+      setUsernameAvailable(null);
+      return;
+    }
+
+    if (formData.username.length < 8 || formData.username.length > 20) {
+      setUsernameAvailable(null);
+      return;
+    }
+
+    if (!/^[a-zA-Z0-9]+$/.test(formData.username)) {
+      setUsernameAvailable(null);
+      return;
+    }
+
+    const timeoutId = setTimeout(async () => {
+      setIsCheckingUsername(true);
+      try {
+        const response = await axios.post(
+          CHECK_USERNAME_FOR_REGISTRATION_API_ROUTE,
+          {
+            username: formData.username.trim(),
+          }
+        );
+
+        if (response.data && response.data.success === true) {
+          setUsernameAvailable(true);
+        } else {
+          setUsernameAvailable(false);
+        }
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          setUsernameAvailable(false);
+        }
+      } finally {
+        setIsCheckingUsername(false);
+      }
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [formData.username]);
 
   const countryOptions: CountryOption[] = [
     { name: "United States", code: "+1", display: "United States (+1)" },
@@ -106,6 +197,8 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
     } else if (!/^[a-zA-Z0-9]+$/.test(formData.username)) {
       newErrors.username =
         "Username must be 8 to 20 characters, only number and letters";
+    } else if (usernameAvailable !== true) {
+      newErrors.username = "Username is already taken or not validated.";
     }
 
     if (!formData.phoneNumber.trim()) {
@@ -116,6 +209,8 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
       newErrors.email = "Email is required.";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Email address is invalid.";
+    } else if (emailAvailable !== true) {
+      newErrors.email = "Email is already registered or not validated.";
     }
 
     if (!formData.password.trim()) {
@@ -206,6 +301,13 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
     // Clear error when user starts typing
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: "" }));
+    }
+    // Reset availability status when user changes email or username
+    if (field === "email") {
+      setEmailAvailable(null);
+    }
+    if (field === "username") {
+      setUsernameAvailable(null);
     }
   };
 
@@ -496,11 +598,32 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
               {errors.username && (
                 <p className="text-red-500 text-xs mt-1">{errors.username}</p>
               )}
-              {!errors.username && (
+              {!errors.username && isCheckingUsername && (
                 <p className="text-tertiary text-xs mt-1">
-                  Username must be 8 to 20 characters, only number and letters
+                  Checking username availability...
                 </p>
               )}
+              {!errors.username &&
+                !isCheckingUsername &&
+                usernameAvailable === true && (
+                  <p className="text-green-500 text-xs mt-1">
+                    Username is available
+                  </p>
+                )}
+              {!errors.username &&
+                !isCheckingUsername &&
+                usernameAvailable === false && (
+                  <p className="text-red-500 text-xs mt-1">
+                    Username is already taken
+                  </p>
+                )}
+              {!errors.username &&
+                !isCheckingUsername &&
+                usernameAvailable === null && (
+                  <p className="text-tertiary text-xs mt-1">
+                    Username must be 8 to 20 characters, only number and letters
+                  </p>
+                )}
             </div>
 
             {/* Country */}
@@ -591,6 +714,23 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
               {errors.email && (
                 <p className="text-red-500 text-xs mt-1">{errors.email}</p>
               )}
+              {!errors.email && isCheckingEmail && (
+                <p className="text-tertiary text-xs mt-1">
+                  Checking email availability...
+                </p>
+              )}
+              {!errors.email && !isCheckingEmail && emailAvailable === true && (
+                <p className="text-green-500 text-xs mt-1">
+                  Email is available
+                </p>
+              )}
+              {!errors.email &&
+                !isCheckingEmail &&
+                emailAvailable === false && (
+                  <p className="text-red-500 text-xs mt-1">
+                    Email is already registered
+                  </p>
+                )}
             </div>
 
             {/* Password */}
