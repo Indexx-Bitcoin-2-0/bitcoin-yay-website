@@ -7,6 +7,7 @@ import React, {
   useCallback,
   memo,
   Suspense,
+  useMemo,
 } from "react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
@@ -102,7 +103,6 @@ DropdownLink.displayName = "DropdownLink";
 const Navbar: React.FC = () => {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const elementRef = useRef<HTMLDivElement | null>(null);
-  const [headerData, setHeaderData] = useState<HeaderItem[]>(Data);
   const [backdropVisibility, setBackdropVisibility] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -119,26 +119,33 @@ const Navbar: React.FC = () => {
     setIsRegisterPopupOpen(true);
   }, []);
 
-  // Update the active item
-  useEffect(() => {
-    if (currentPath == "/coming-soon") {
-      setHeaderData(Data);
-      return;
+  // Compute active state dynamically based on current path
+  const headerData = useMemo<HeaderItem[]>(() => {
+    if (currentPath === "/coming-soon") {
+      return Data;
     }
-    const updatedHeaderData = headerData.map((item) => {
-      const currentActivePath: string[] = [];
-      currentActivePath.push(item.href);
-      item.dropDownContent?.forEach((section) => {
-        currentActivePath.push(...section.links.map((link) => link.href));
-      });
+
+    const isPathActive = (path: string): boolean => {
+      if (path === "/") {
+        return currentPath === "/";
+      }
+      return currentPath.startsWith(path);
+    };
+
+    return Data.map((item) => {
+      let active = isPathActive(item.href);
+
+      if (!active && item.dropDownContent) {
+        active = item.dropDownContent.some((section) =>
+          section.links.some((link) => isPathActive(link.href))
+        );
+      }
 
       return {
         ...item,
-        active: currentActivePath.includes(currentPath),
+        active,
       };
     });
-
-    setHeaderData(updatedHeaderData);
   }, [currentPath]);
 
   // Optimized resize handler with debounce
