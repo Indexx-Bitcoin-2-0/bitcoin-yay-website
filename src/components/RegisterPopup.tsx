@@ -6,6 +6,7 @@ import axios from "axios";
 import PopupComponent from "@/components/PopupComponent";
 import SetPasswordPopup from "@/components/SetPasswordPopup";
 import EmailVerificationPopup from "@/components/EmailVerificationPopup";
+import SuccessRegistrationPopup from "@/components/SuccessRegistrationPopup";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   GOOGLE_REGISTER_API_ROUTE,
@@ -68,6 +69,7 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showEmailVerification, setShowEmailVerification] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [registrationEmail, setRegistrationEmail] = useState("");
   const [registrationData, setRegistrationData] = useState<any>(null);
   const [isCheckingEmail, setIsCheckingEmail] = useState(false);
@@ -363,8 +365,8 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
             shortToken: apiData.shortToken || "google-short-token",
           });
 
-          onRegisterSuccess();
           onClose();
+          setShowSuccessPopup(true);
 
           // Always show SetPasswordPopup after Google registration
           setShowSetPassword(true);
@@ -427,8 +429,8 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
         };
 
         login(userData);
-        onRegisterSuccess();
         onClose();
+        setShowSuccessPopup(true);
 
         // Reset form
         setFormData({
@@ -510,6 +512,11 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
     setShowEmailVerification(false);
     setRegistrationEmail("");
     setRegistrationData(null);
+  };
+
+  const handleCloseSuccessPopup = () => {
+    setShowSuccessPopup(false);
+    onRegisterSuccess();
   };
 
   return (
@@ -925,6 +932,12 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
         onVerified={handleEmailVerified}
         onResendCode={handleResendRegistrationCode}
         verificationApiRoute={VERIFY_OTP_API_ROUTE}
+      />
+
+      {/* SuccessRegistrationPopup - shown after successful registration */}
+      <SuccessRegistrationPopup
+        isOpen={showSuccessPopup}
+        onClose={handleCloseSuccessPopup}
       />
     </>
   );

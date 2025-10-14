@@ -97,7 +97,7 @@ export default function support() {
             id="search-navbar"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="block w-full h-15 p-5 text-lg text-tertiary border border-bg2 rounded-lg outline-none hover:border-primary focus:border-primary"
+            className="block w-full h-15 p-5 text-lg text-tertiary border border-bg2 bg-bg2 rounded-lg outline-none hover:border-primary focus:border-primary"
             placeholder="Search"
           />
           <button type="submit" className="absolute right-2 top-2 ">
