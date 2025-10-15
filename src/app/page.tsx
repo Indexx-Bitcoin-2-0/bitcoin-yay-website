@@ -549,7 +549,7 @@ export default function Home() {
             />
             <CustomButton2
               image={InfoButtonImage}
-              text="Learn More"
+              text="Discover Indexx.ai"
               link="https://indexx.ai/"
               imageStyling="w-30"
               ariaLabel="Learn more about Indexx AI platform and services"
