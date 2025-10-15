@@ -54,9 +54,9 @@ export default function Bitcoin() {
           <h2 className="text-lg md:text-2xl font-bold mb-2">
             The Conversion:
           </h2>
-          <h1 className="text-5xl md:text-7xl font-semibold mb-2 leading-14 md:leading-20">
+          <h2 className="text-5xl md:text-7xl font-semibold mb-2 leading-14 md:leading-20">
             Scarcity Meets Scalability
-          </h1>
+          </h2>
           <p className="text-lg font-light mb-4">
             We created a direct lineage from Bitcoin to Bitcoin Yay:
           </p>
@@ -88,7 +88,7 @@ export default function Bitcoin() {
         <h2 className="text-lg md:text-2xl mb-2 font-bold text-primary">
           MINING BY ENGAGEMENT
         </h2>
-        <h1 className="text-5xl md:text-7xl font-semibold">Not Electricity</h1>
+        <h2 className="text-5xl md:text-7xl font-semibold">Not Electricity</h2>
         <Image src={ArtImage3} alt="Art Image 3" className="mt-20 max-w-4xl" />
         <p className="text-lg font-light my-10 max-w-160">
           Bitcoin mining was designed for those who could afford hardware,
@@ -105,9 +105,9 @@ export default function Bitcoin() {
           <h2 className="text-lg md:text-2xl font-bold text-primary mb-2">
             BTCY introduces a new form of participation:
           </h2>
-          <h1 className="text-5xl md:text-7xl font-semibold mb-2 leading-14 md:leading-20">
+          <h2 className="text-5xl md:text-7xl font-semibold mb-2 leading-14 md:leading-20">
             Mobile-based, AI-verified Proof of Engagement
-          </h1>
+          </h2>
           <p className="text-lg font-light mt-20">
             Here, mining means tapping a button, inviting a friend, completing a
             task, or staking to secure the network. You mine not because you

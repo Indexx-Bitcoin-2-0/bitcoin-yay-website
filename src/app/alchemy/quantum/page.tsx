@@ -95,6 +95,10 @@ export default function QuantumMiningPage() {
     setIsLoginPopupOpen(false);
   };
 
+  const handleRegisterClick = () => {
+    setIsLoginPopupOpen(false);
+  };
+
   if (isLoading) {
     return <div className="mt-40 text-center text-3xl">Loading...</div>;
   }
@@ -122,6 +126,7 @@ export default function QuantumMiningPage() {
           isOpen={isLoginPopupOpen}
           onClose={handleCloseLoginPopup}
           onLoginSuccess={handleLoginSuccess}
+          onRegisterClick={handleRegisterClick}
         />
       </>
     );
@@ -144,9 +149,9 @@ export default function QuantumMiningPage() {
       <div className="mx-auto mt-40 lg:mt-60 px-4 md:px-20 xl:px-40">
         <div className="flex justify-center items-center min-h-96">
           <div className="text-center">
-            <p className="text-2xl font-semibold text-red-500 mb-4">
+            <h1 className="text-2xl font-semibold text-red-500 mb-4">
               Failed to Load Quantum Plans
-            </p>
+            </h1>
             <p className="text-lg text-tertiary">{error}</p>
           </div>
         </div>

@@ -36,9 +36,9 @@ export default function BitcoinYayWalletPage() {
         <h2 className="text-lg md:text-2xl mb-4 font-bold text-primary">
           Bitcoin Yay Wallet
         </h2>
-        <h1 className="mt-2 text-5xl md:text-7xl mb-4 font-semibold">
+        <h3 className="mt-2 text-5xl md:text-7xl mb-4 font-semibold">
           The next-generation digital wallet
-        </h1>
+        </h3>
         <p className="mt-10 text-lg">
           that empowers users to manage their BTCY (Bitcoin Yay) tokens and
           other crypto assets built on the Bitcoin Yay blockchain. Designed for
@@ -58,9 +58,9 @@ export default function BitcoinYayWalletPage() {
       </div>
 
       <div className="mt-80 px-4 md:px-20 xl:px-40">
-        <h1 className="mt-2 text-5xl md:text-7xl mb-4 font-semibold">
+        <h2 className="mt-2 text-5xl md:text-7xl mb-4 font-semibold">
           Key Benefits of Bitcoin Yay Wallet
-        </h1>
+        </h2>
 
         <h3 className="mt-10 text-[40px] font-bold">1. Secure and Private</h3>
         <p className="mt-4 text-lg">

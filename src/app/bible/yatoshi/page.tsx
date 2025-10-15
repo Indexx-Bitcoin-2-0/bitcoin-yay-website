@@ -98,9 +98,9 @@ export default function YatoshiPage() {
         <h2 className="text-lg md:text-2xl mb-4 font-bold text-primary">
           Who is
         </h2>
-        <h1 className="text-5xl md:text-7xl mb-4 font-semibold">
+        <h2 className="text-5xl md:text-7xl mb-4 font-semibold">
           Yatoshi Nakamoto
-        </h1>
+        </h2>
         <Image src={ArtImage2} alt="Art Image 1" className="mt-20 w-60" />
 
         <div className="my-40 mx-auto">

@@ -142,9 +142,9 @@ const CarouselFrame6 = () => {
         className="absolute left-0 top-40 md:-top-10 lg:-top-20 w-60 md:w-100 lg:w-120"
       />
       <div className="text-center flex flex-col items-center">
-        <h1 className="text-8xl lg:text-[200px] xl:text-[250px] 2xl:text-[350px] font-bold xl:leading-60 2xl:leading-100">
+        <h2 className="text-8xl lg:text-[200px] xl:text-[250px] 2xl:text-[350px] font-bold xl:leading-60 2xl:leading-100">
           21
-        </h1>
+        </h2>
         <h2 className="text-7xl lg:text-6xl xl:text-8xl font-bold">Trillion</h2>
         <h3 className="text-3xl lg:text-4xl xl:text-5xl">
           BTCY for everyone to mine

@@ -5,6 +5,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { GoogleOAuthProvider } from "@react-oauth/google"; // ✅ Import this
 
 export const metadata = {
+  metadataBase: new URL("https://bitcoinyay.com"),
   title: {
     default: "Bitcoin Yay - Mobile Mining App for Bitcoin Micro Tokens",
     template: "%s | Bitcoin Yay",
@@ -24,9 +25,13 @@ export const metadata = {
     type: "website",
     locale: "en_US",
     siteName: "Bitcoin Yay",
+    url: "https://bitcoinyay.com",
   },
   twitter: {
     card: "summary_large_image",
+  },
+  alternates: {
+    canonical: "./",
   },
   icons: {
     icon: [
@@ -49,7 +54,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
+        <GoogleOAuthProvider
+          clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}
+        >
           <AuthProvider>
             <Navbar />
             <main>{children}</main>

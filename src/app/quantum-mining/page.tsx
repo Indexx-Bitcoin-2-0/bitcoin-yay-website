@@ -336,10 +336,10 @@ const QuantumMiningPage = () => {
     <div className="mx-auto mt-40 max-w-[1800px] px-4 md:px-10 xl:px-20">
       <div className="flex flex-col-reverse lg:flex-row">
         <div className="mt-10 md:mt-20 w-full lg:w-[90%] flex flex-col justify-items-center">
-          <h2 className="text-[40px] md:text-7xl xl:text-[100px] font-bold  lg:leading-28">
+          <h1 className="text-[40px] md:text-7xl xl:text-[100px] font-bold  lg:leading-28">
             Quantum Mining: <br /> Larger Scale Grade <br />
             BTCY Access
-          </h2>
+          </h1>
 
           <p className="mt-10 text-2xl md:text-3xl max-w-3xl">
             Secure large-scale BTCY purchases{" "}
@@ -370,9 +370,9 @@ const QuantumMiningPage = () => {
         />
       </div>
       <div className="mt-40">
-        <h1 className="text-4xl md:text-6xl xl:text-8xl font-bold text-center">
+        <h2 className="text-4xl md:text-6xl xl:text-8xl font-bold text-center">
           Register and Purchase BTCY
-        </h1>
+        </h2>
         <div className="flex flex-col lg:flex-row justify-center mt-20 gap-30 p-4 md:p-10 xl:p-20">
           <div className="w-full lg:w-1/2">
             <div className="flex items-center gap-4">
@@ -590,9 +590,9 @@ const QuantumMiningPage = () => {
 
       <div className="mt-40 flex flex-col justify-center items-center">
         <Image src={ArtImage3} alt="Art 1" className="w-80 md:w-100" />
-        <h1 className="mt-10 text-4xl md:text-6xl xl:text-8xl font-bold">
+        <h2 className="mt-10 text-4xl md:text-6xl xl:text-8xl font-bold">
           Compliance
-        </h1>
+        </h2>
 
         <div className="mt-10 w-full max-w-6xl mx-auto overflow-x-auto">
           <table className="w-full border-collapse border-b border-tertiary rounded-lg text-tertiary">

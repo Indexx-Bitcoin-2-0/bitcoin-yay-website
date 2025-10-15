@@ -7,13 +7,14 @@ type CustomButton2Props = {
   text?: string;
   imageStyling?: string;
   _blank?: boolean;
+  ariaLabel?: string;
 } & (
   | {
       link: string;
-      onClick?: never; 
+      onClick?: never;
     }
   | {
-      link?: never; 
+      link?: never;
       onClick: MouseEventHandler<HTMLDivElement>;
     }
 );
@@ -25,6 +26,7 @@ export default function CustomButton2({
   onClick,
   imageStyling = "w-36 mt-8",
   _blank = false,
+  ariaLabel,
 }: CustomButton2Props) {
   const commonClasses =
     "cursor-pointer text-tertiary group flex flex-col items-center justify-center w-fit";
@@ -50,6 +52,7 @@ export default function CustomButton2({
         href={link}
         target={_blank ? "_blank" : undefined}
         className={commonClasses}
+        aria-label={ariaLabel}
       >
         {content}
       </Link>

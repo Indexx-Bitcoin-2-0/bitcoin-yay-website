@@ -545,12 +545,14 @@ export default function Home() {
               text="Buy Token"
               link="https://cex.indexx.ai/"
               imageStyling="w-30"
+              ariaLabel="Buy Bitcoin Yay tokens on Indexx exchange"
             />
             <CustomButton2
               image={InfoButtonImage}
               text="Learn More"
               link="https://indexx.ai/"
               imageStyling="w-30"
+              ariaLabel="Learn more about Indexx AI platform and services"
             />
           </div>
         </div>
@@ -564,7 +566,11 @@ export default function Home() {
 
         {/* Part 7 */}
         <div className="-mx-4 mt-20 w-screen relative left-1/2 right-1/2 -translate-x-1/2 flex flex-col items-center">
-          <Image src={ArtImage1} alt="art-image" className="w-full max-w-[1920px]" />
+          <Image
+            src={ArtImage1}
+            alt="art-image"
+            className="w-full max-w-[1920px]"
+          />
           <Image
             src={ArtImage2}
             alt="art-image"

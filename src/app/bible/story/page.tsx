@@ -41,9 +41,9 @@ export default function BibleStory() {
         <h2 className="text-lg md:text-2xl mb-4 font-bold text-primary text-center">
           The Hidden Genesis of Bitcoin-Yay:
         </h2>
-        <h1 className="text-5xl md:text-7xl mb-4 font-semibold text-center">
+        <h2 className="text-5xl md:text-7xl mb-4 font-semibold text-center">
           The Nakamoto Legacy
-        </h1>
+        </h2>
         <div className="flex flex-col lg:flex-row items-center justify-center gap-10 mt-30">
           <Image
             src={ArtImage2}
@@ -150,9 +150,9 @@ export default function BibleStory() {
         <h2 className="text-lg md:text-2xl mb-4 font-bold text-center">
           Epilogue:
         </h2>
-        <h1 className="text-5xl md:text-7xl mb-4 font-semibold text-center">
+        <h2 className="text-5xl md:text-7xl mb-4 font-semibold text-center">
           A Vision Continued
-        </h1>
+        </h2>
         <Image
           src={ArtImage5}
           alt="Art Image 5"

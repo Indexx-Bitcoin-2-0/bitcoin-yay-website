@@ -16,9 +16,9 @@ export const metadata = {
 export default function ComingSoon() {
   return (
     <div className="container mx-auto my-40">
-      <h2 className="text-5xl md:text-6xl font-bold text-center mt-20">
+      <h1 className="text-5xl md:text-6xl font-bold text-center mt-20">
         Coming Soon
-      </h2>
+      </h1>
       <Image
         src={ArtImage1}
         alt="Coming Soon"
