@@ -493,7 +493,16 @@ export default function Home() {
               />
             </div>
             <p className="text-tertiary mt-10 text-lg max-w-86 text-center">
-              Scan or Click on the QR to Download from the Apple Store
+              Scan or click the QR to download from the{" "}
+              <a
+                href="https://apps.apple.com/ph/app/bitcoin-yay/id6744868017"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary underline"
+              >
+                Apple App Store
+              </a>
+              .
             </p>
           </div>
           <div
@@ -521,7 +530,16 @@ export default function Home() {
               />
             </div>
             <p className="text-tertiary mt-10 text-lg max-w-86 text-center">
-              Scan or Click on the QR to Download from the Google Play
+              Scan or click the QR to download from{" "}
+              <a
+                href="https://play.google.com/store/apps/details?id=com.bitcoin2&hl=en"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary underline"
+              >
+                Google Play
+              </a>
+              .
             </p>
           </div>
         </div>

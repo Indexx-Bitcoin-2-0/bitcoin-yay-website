@@ -48,7 +48,7 @@ export default function AirdropRegisterPage() {
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
   const [isRegistraionSuccessful, setIsRegistrationSuccessful] =
     useState<boolean>(false);
-  const [isRegistrationClosed] = useState<boolean>(false);
+  const isRegistrationClosed = true; // Registration is currently closed
   const [errors, setErrors] = useState<FormErrors>({});
   const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
 
@@ -85,6 +85,9 @@ export default function AirdropRegisterPage() {
 
     // Check if registration is closed first
     if (isRegistrationClosed) {
+      setIsRegistrationSuccessful(false);
+      setErrors({});
+      setFormSubmitted(false);
       setIsPopupOpen(true);
       return;
     }
@@ -133,7 +136,7 @@ export default function AirdropRegisterPage() {
         general:
           error instanceof Error && "response" in error
             ? (errorMessage as { message?: string })?.message ||
-              "An error occurred"
+            "An error occurred"
             : "Network error or server unavailable. Please try again.",
       });
       setIsPopupOpen(true);
@@ -175,6 +178,8 @@ export default function AirdropRegisterPage() {
                   alt="Popup Art 4"
                   className="w-64 md:w-80 mt-4"
                 />
+                <br />
+                <br />
                 <div className="relative mt-10">
                   <Image
                     src={PopupArt5}
@@ -185,8 +190,7 @@ export default function AirdropRegisterPage() {
                     Airdrop <span className="text-primary"> Ended!</span>
                   </h3>
                   <p className="mt-2 text-xl md:text-2xl font-semibold uppercase">
-                    The recent airdrop has ended — thank you for participating
-                    and mining with Turbo Power!
+                    This airdrop is closed!
                   </p>
                 </div>
                 <div className="mt-10 mb-4 relative">
