@@ -48,6 +48,7 @@ import {
   isCryptoPayment,
   optionToCurrencyIn,
   calculateBTCYAmount,
+  MIN_PURCHASE_AMOUNT_USD,
   validateOrderData,
   SocketEventHandlers,
 } from "@/lib/quantum-mining";
@@ -188,9 +189,28 @@ const QuantumMiningPage = () => {
 
   const handlePayAmountChange = (value: string) => {
     setPayAmount(value);
-    if (value && !isNaN(Number(value))) {
-      const usdValue = Number(value);
-      const btcyAmount = calculateBTCYAmount(usdValue, btcyPrice);
+
+    const trimmed = value.trim();
+    const numericValue = Number(value);
+
+    setErrors((prev) => {
+      const next: Errors = { ...prev };
+
+      if (!trimmed) {
+        delete next.payAmount;
+      } else if (Number.isNaN(numericValue)) {
+        next.payAmount = "Please enter a valid amount";
+      } else if (numericValue < MIN_PURCHASE_AMOUNT_USD) {
+        next.payAmount = `Minimum purchase is $${MIN_PURCHASE_AMOUNT_USD}`;
+      } else {
+        delete next.payAmount;
+      }
+
+      return next;
+    });
+
+    if (trimmed && !Number.isNaN(numericValue)) {
+      const btcyAmount = calculateBTCYAmount(numericValue, btcyPrice);
       setGetAmount(btcyAmount.toFixed(2));
     } else {
       setGetAmount("");
@@ -241,6 +261,15 @@ const QuantumMiningPage = () => {
       socketRef.current = null;
     };
   }, [user?.email]);
+
+  const trimmedPayAmount = payAmount.trim();
+  const numericPayAmount = Number(trimmedPayAmount);
+  const hasNumericPayAmount =
+    trimmedPayAmount.length > 0 && !Number.isNaN(numericPayAmount);
+  const isBelowMinimumAmount =
+    hasNumericPayAmount && numericPayAmount < MIN_PURCHASE_AMOUNT_USD;
+  const isBuyDisabled =
+    !hasNumericPayAmount || isBelowMinimumAmount || !!errors.payAmount;
 
   // MAIN BUY HANDLER: calls API first, then either redirect (paypal/usd) or open popup (crypto)
   const handleBuyNow = async () => {
@@ -343,7 +372,7 @@ const QuantumMiningPage = () => {
 
           <p className="mt-10 text-2xl md:text-3xl max-w-3xl">
             Secure large-scale BTCY purchases{" "}
-            <span className="font-bold">($1 – $100K+)</span> via bank wires,
+            <span className="font-bold">($10 – $100K+)</span> via bank wires,
             stable coins, and global OTC solutions.
           </p>
         </div>
@@ -578,11 +607,19 @@ const QuantumMiningPage = () => {
         </div>
 
         {/* Buy Now Button */}
-        <div className="flex justify-center mt-20">
+        <div
+          className={`flex justify-center mt-20 ${
+            isBuyDisabled ? "pointer-events-none opacity-60" : ""
+          }`}
+          aria-disabled={isBuyDisabled}
+        >
           <CustomButton2
             image={CartButtonImage}
             text="With Quantum Power"
-            onClick={() => handleBuyNow()}
+            onClick={() => {
+              if (isBuyDisabled) return;
+              handleBuyNow();
+            }}
             imageStyling="w-40"
           />
         </div>
@@ -659,7 +696,7 @@ const QuantumMiningPage = () => {
           <ul className="list-disc mt-16 text-2xl md:text-3xl font-medium pl-4 md:pl-10 flex flex-col gap-16">
             <li>Register as Buyer (Individual or Institutional)</li>
 
-            <li>Minimum Purchase: 1 USD</li>
+            <li>Minimum Purchase: 10 USD</li>
 
             <li>KYC Requirements:</li>
 
@@ -670,7 +707,7 @@ const QuantumMiningPage = () => {
               investors
             </li>
 
-            <li>Submit Buy Request (e.g., $1 – $50,000 USDT or more)</li>
+            <li>Submit Buy Request (e.g., $10 – $50,000 USDT or more)</li>
 
             <li>Receive Invoice & Pay</li>
 

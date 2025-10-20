@@ -286,9 +286,17 @@ export function optionToCurrencyIn(opt: PaymentOption): PaymentOption {
 }
 
 /**
+ * Minimum USD amount allowed for a purchase
+ */
+export const MIN_PURCHASE_AMOUNT_USD = 10;
+
+/**
  * Calculates BTCY amount from USD amount
  */
-export function calculateBTCYAmount(usdAmount: number, btcyPrice: number): number {
+export function calculateBTCYAmount(
+  usdAmount: number,
+  btcyPrice: number
+): number {
   return usdAmount / btcyPrice;
 }
 
@@ -301,9 +309,12 @@ export function validateOrderData(
   selectedNetwork?: "Ethereum" | "Solana"
 ): { isValid: boolean; errors: Record<string, string> } {
   const errors: Record<string, string> = {};
+  const numericAmount = Number(payAmount);
 
-  if (!payAmount || isNaN(Number(payAmount))) {
+  if (!payAmount || Number.isNaN(numericAmount)) {
     errors.payAmount = "Please enter a valid amount";
+  } else if (numericAmount < MIN_PURCHASE_AMOUNT_USD) {
+    errors.payAmount = `Minimum purchase is $${MIN_PURCHASE_AMOUNT_USD}`;
   }
 
   if (isCryptoPayment(selectedPaymentOption) && !selectedNetwork) {
