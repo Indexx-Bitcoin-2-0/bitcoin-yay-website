@@ -1,8 +1,38 @@
 import "./globals.css";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { GoogleOAuthProvider } from "@react-oauth/google"; // ✅ Import this
 
 export const metadata = {
+  metadataBase: new URL("https://bitcoinyay.com"),
+  title: {
+    default: "Bitcoin Yay - Mobile Mining App for Bitcoin Micro Tokens",
+    template: "%s | Bitcoin Yay",
+  },
+  description:
+    "Bitcoin Yay (BTCY) is the micro token and petty cash of Bitcoin. Download our mobile mining app to earn Bitcoin Yay tokens through AI-powered mining on your phone. Free to start, easy to use.",
+  keywords:
+    "Bitcoin Yay, BTCY, mobile mining, Bitcoin micro tokens, cryptocurrency app, free crypto mining, Bitcoin alternative, AI mining",
+  authors: [{ name: "Bitcoin Yay Team" }],
+  creator: "Bitcoin Yay",
+  publisher: "Bitcoin Yay",
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    siteName: "Bitcoin Yay",
+    url: "https://bitcoinyay.com",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
+  alternates: {
+    canonical: "./",
+  },
   icons: {
     icon: [
       { url: "/favicon.ico" },
@@ -14,7 +44,6 @@ export const metadata = {
     ],
     shortcut: ["/favicon.ico"],
   },
-  title: "Bitcoin Yay",
 };
 
 export default function RootLayout({
@@ -25,9 +54,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
+        <GoogleOAuthProvider
+          clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}
+        >
+          <AuthProvider>
+            <Navbar />
+            <main>{children}</main>
+            <Footer />
+          </AuthProvider>
+        </GoogleOAuthProvider>
       </body>
     </html>
   );

@@ -157,7 +157,7 @@ export default function Navbar() {
                   className="block text-lg my-2 hover:text-primary"
                   onClick={closeMobileMenu}
                 >
-                  YingYang Blockchain
+                  Bitcoin Yay Blockchain
                 </Link>
                 <Link
                   href="/coming-soon"
@@ -271,7 +271,7 @@ export default function Navbar() {
                       href="/blockchain"
                       className="block hover:text-primary focus:text-primary focus:bg-transparent text-xl"
                     >
-                      YingYang Blockchain
+                      Bitcoin Yay Blockchain
                     </Link>
                     <Link
                       href="/coming-soon"

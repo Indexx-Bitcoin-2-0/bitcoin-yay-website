@@ -1,13 +1,24 @@
 "use client";
 
-import React, { useEffect, useRef, useState, useCallback, memo } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  memo,
+  Suspense,
+  useMemo,
+} from "react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import logo from "@/assets/images/main-logo.svg";
-import SearchIcon1 from "@/assets/images/search-icon-1.svg";
-import SearchIcon2 from "@/assets/images/search-icon-2.svg";
+import ProfileIcon from "@/assets/images/profile-icon.webp";
 import Data from "./data";
+import { useAuth } from "@/contexts/AuthContext";
+import LoginPopup from "@/components/LoginPopup";
+import RegisterPopup from "@/components/RegisterPopup";
+import ReferralHandler from "@/components/ReferralHandler";
 import {
   Accordion,
   AccordionContent,
@@ -15,7 +26,11 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-import PopupArt1 from "@/assets/images/popup/airdrop-popup-1.webp";
+import PopupArt1 from "@/assets/images/popup/attention.webp";
+import RegisterButtonImage from "@/assets/images/buttons/register-button.webp";
+import ThumbsUpButtonImage from "@/assets/images/buttons/thumbs-up-button.webp";
+
+import CustomButton2 from "@/components/CustomButton2";
 import PopupComponent from "@/components/PopupComponent";
 
 // Types for better type safety
@@ -38,7 +53,7 @@ interface HeaderItem {
   href: string;
   openInNewTab?: boolean;
   hasMegaDrop: boolean;
-  dropDownContent: DropdownSection[];
+  dropDownContent?: DropdownSection[];
 }
 
 // Extract backdrop component for readability
@@ -88,39 +103,55 @@ DropdownLink.displayName = "DropdownLink";
 const Navbar: React.FC = () => {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const elementRef = useRef<HTMLDivElement | null>(null);
-  const [headerData, setHeaderData] = useState<HeaderItem[]>(Data);
   const [backdropVisibility, setBackdropVisibility] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
   const currentPath = usePathname();
 
-  // Update the active item
-  useEffect(() => {
-    if (currentPath == "/coming-soon") {
-      setHeaderData(Data);
-      return;
+  // Auth related states
+  const { user, isAuthenticated, logout } = useAuth();
+  const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
+  const [isRegisterPopupOpen, setIsRegisterPopupOpen] = useState(false);
+  const [referralCode, setReferralCode] = useState("");
+
+  const handleReferralDetected = useCallback((code: string) => {
+    setReferralCode(code);
+    setIsRegisterPopupOpen(true);
+  }, []);
+
+  // Compute active state dynamically based on current path
+  const headerData = useMemo<HeaderItem[]>(() => {
+    if (currentPath === "/coming-soon") {
+      return Data;
     }
-    const updatedHeaderData = headerData.map((item) => {
-      const currentActivePath: string[] = [];
-      currentActivePath.push(item.href);
-      item.dropDownContent.forEach((section) => {
-        currentActivePath.push(...section.links.map((link) => link.href));
-      });
+
+    const isPathActive = (path: string): boolean => {
+      if (path === "/") {
+        return currentPath === "/";
+      }
+      return currentPath.startsWith(path);
+    };
+
+    return Data.map((item) => {
+      let active = isPathActive(item.href);
+
+      if (!active && item.dropDownContent) {
+        active = item.dropDownContent.some((section) =>
+          section.links.some((link) => isPathActive(link.href))
+        );
+      }
 
       return {
         ...item,
-        active: currentActivePath.includes(currentPath),
+        active,
       };
     });
-
-    setHeaderData(updatedHeaderData);
   }, [currentPath]);
 
   // Optimized resize handler with debounce
   useEffect(() => {
     const handleResize = () => {
-      const mobileView = window.innerWidth <= 1024;
+      const mobileView = window.innerWidth < 1536; // Changed from 1024 to 1536 (2xl breakpoint)
       setIsMobile(mobileView);
       if (!mobileView && menuOpen) {
         setMenuOpen(false);
@@ -177,9 +208,19 @@ const Navbar: React.FC = () => {
     setMenuOpen(false);
   };
 
-  const handleSearch = (event: React.FormEvent) => {
-    event.preventDefault();
-    console.log("Searching for:", searchQuery);
+  // Auth handlers
+  const handleLoginSuccess = () => {
+    setIsLoginPopupOpen(false);
+    setIsRegisterPopupOpen(false);
+  };
+
+  const handleRegisterSuccess = () => {
+    setIsLoginPopupOpen(false);
+    setIsRegisterPopupOpen(false);
+  };
+
+  const handleLogout = () => {
+    logout();
   };
 
   // Initial check for dropdown visibility
@@ -199,8 +240,8 @@ const Navbar: React.FC = () => {
     observer.observe(element);
     return () => observer.disconnect();
   }, []);
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
   // Check if popup should be shown
   useEffect(() => {
     const checkPopupTiming = () => {
@@ -224,7 +265,6 @@ const Navbar: React.FC = () => {
   }, []);
 
   // Handle popup close
-
   const handlePopupClose = () => {
     setIsPopupOpen(false);
     // Store current time in localStorage
@@ -236,32 +276,64 @@ const Navbar: React.FC = () => {
 
   return (
     <nav className="w-full bg-bg fixed top-0 left-0 right-0 z-50">
+      {/* Referral Handler with Suspense boundary */}
+      <Suspense fallback={null}>
+        <ReferralHandler onReferralDetected={handleReferralDetected} />
+      </Suspense>
+
       <PopupComponent isOpen={isPopupOpen} onClose={handlePopupClose}>
-        <div className="mt-10 mx-2 md:mx-4 flex flex-col items-center justify-center w-90 md:w-142 relative">
+        {/* <div className="mt-10 mx-2 md:mx-4 flex flex-col items-center justify-center w-90 md:w-120 xl:w-140 relative">
           <Image src={PopupArt1} alt="Popup Art 1" className="w-full" />
           <Link
             href="/airdrop"
             onClick={handlePopupClose}
             className="mb-10 mt-4"
           >
-            <button className="border-2 border-primary text-primary px-4 py-2 md:py-4 rounded-md flex items-center justify-center cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
-              <p className="text-primary text-2xl md:text-3xl font-semibold">
-                COUNT ME IN
-              </p>
-            </button>
+            <CustomButton2
+              image={RegisterButtonImage}
+              text={"REGISTER NOW!"}
+              link="/airdrop"
+              imageStyling="w-20 md:w-30"
+            />
           </Link>
+        </div> */}
+
+        <div className="mt-10 mx-2 px-10 flex flex-col items-center justify-center w-90 md:w-120 xl:w-140 relative">
+          <Image src={PopupArt1} alt="Popup Art 1" className="w-30 md:w-40" />
+          <h1 className="mt-4 text-3xl xl:text-4xl text-center font-bold text-[#5000AD]">
+            “Notice”
+          </h1>
+          <p className="mt-4 text-lg xl:text-xl font-light text-center">
+            All features are in beta and subject to change. Your feedback helps
+            us improve. Please let us know via our Contact Us page.
+          </p>
+          <div className="flex gap-20 my-4 xl:my-8">
+            <CustomButton2
+              image={ThumbsUpButtonImage}
+              text={"Got it"}
+              onClick={() => handlePopupClose()}
+              imageStyling="w-20 lg:w-24"
+            />
+            <CustomButton2
+              image={RegisterButtonImage}
+              text={"Contact Us"}
+              link="/support/#contact-us"
+              imageStyling="w-20 lg:w-24"
+            />
+          </div>
         </div>
       </PopupComponent>
-      <div className="relative flex items-center justify-between h-[150px] px-4 lg:px-[100px] mx-auto">
+
+      <div className="relative flex items-center justify-between h-[150px] px-4 lg:px-[60px] mx-auto">
         {/* {!isMobile && <Backdrop visible={backdropVisibility} />}
         {isMobile && <Backdrop visible={menuOpen} />} */}
 
-        <div className="flex items-center justify-between w-full lg:justify-start lg:w-auto">
+        <div className="flex items-center justify-between w-full 2xl:justify-start 2xl:w-auto">
           <Logo />
 
           {/* Mobile menu toggle button */}
           <button
-            className="flex lg:hidden text-secondry"
+            className="flex 2xl:hidden text-secondry"
             onClick={toggleMobileMenu}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
           >
@@ -293,7 +365,7 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Desktop Navigation */}
-        <div className="hidden lg:flex items-center">
+        <div className="hidden 2xl:flex items-center">
           <ul className="inline-flex my-0 flex-1">
             {headerData.map((element, idx) => (
               <li
@@ -332,9 +404,14 @@ const Navbar: React.FC = () => {
                     aria-orientation="vertical"
                   >
                     <div className="flex w-full justify-between h-auto my-10 px-[20px] pl-[210px]">
-                      {element.dropDownContent.map((section, elemIdx) => (
+                      {element.dropDownContent?.map((section, elemIdx) => (
                         <div
-                          className="w-[calc(25%-30px)] leading-[35px] flex flex-col"
+                          className={`w-[calc(25%-30px)] leading-[35px] flex flex-col ${
+                            section.mainList &&
+                            element.mainTextDesktop !== "Eco"
+                              ? "min-w-100"
+                              : "min-w-60"
+                          }`}
                           key={elemIdx}
                         >
                           <header className="text-xs font-medium my-6">
@@ -364,73 +441,89 @@ const Navbar: React.FC = () => {
           </ul>
         </div>
 
-        {/* Search Input (Desktop) */}
-        <div className="hidden xl:block">
-          <form onSubmit={handleSearch} className="relative group">
-            <input
-              type="text"
-              id="search-navbar"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="block w-80 h-15 p-2 text-lg text-tertiary border border-bg2 rounded-lg outline-none hover:border-primary focus:border-primary"
-              placeholder="Search"
-            />
-            <button type="submit" className="absolute right-2 top-2 ">
-              <Image
-                src={SearchIcon1}
-                alt="Search Icon"
-                className="group-hover:hidden group-focus-within:hidden"
-                width={44}
-                height={44}
-              />
-              <Image
-                src={SearchIcon2}
-                alt="Search Icon"
-                className="hidden group-hover:block group-focus-within:block mt-2 mr-2"
-                width={30}
-                height={30}
-              />
-            </button>
-          </form>
+        {/* Auth Section (Desktop) */}
+        <div className="hidden 2xl:block">
+          {isAuthenticated && user ? (
+            <div className="text-sm font-normal transition-all duration-300 flex gap-10">
+              <button
+                onClick={handleLogout}
+                className="hover:text-primary text-tertiary cursor-pointer"
+              >
+                Logout
+              </button>
+              <div className="flex items-center gap-2">
+                <Image src={ProfileIcon} alt="Profile Icon" className="w-14" />
+                <span className="text-tertiary">{user.email}</span>
+              </div>
+            </div>
+          ) : (
+            <div className="text-sm font-normal transition-all duration-300 flex gap-10">
+              <button
+                onClick={() => setIsLoginPopupOpen(true)}
+                className="hover:text-primary text-tertiary cursor-pointer"
+              >
+                Login
+              </button>
+              <button
+                onClick={() => setIsRegisterPopupOpen(true)}
+                className="hover:text-primary text-tertiary cursor-pointer"
+              >
+                Register
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Mobile Menu */}
         <div
-          className={`absolute left-0 top-30 w-full p-8 bg-bg shadow-lg transform z-20 ${
+          className={`absolute left-0 top-26 w-full p-8 bg-bg shadow-lg transform z-20 ${
             menuOpen ? "translate-y-0" : "-translate-y-[130%]"
-          }  lg:hidden max-h-[calc(100vh-150px)] overflow-y-auto`}
+          }  2xl:hidden max-h-[calc(100vh-150px)] overflow-y-auto`}
         >
-          {/* Search Input (Mobile) */}
+          {/* Auth Section (Mobile) */}
           <div className="mb-6">
-            <form
-              onSubmit={handleSearch}
-              className="relative border-primary group focus-within:border-0"
-            >
-              <input
-                type="text"
-                id="search-navbar-mobile"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="block h-15 w-full p-3 text-lg text-tertiary bg-transparent border border-[#2F2F2F] rounded-lg focus:border-primary hover:border-primary outline-none"
-                placeholder="Search"
-              />
-              <button type="submit" className="absolute right-2 top-2 ">
-                <Image
-                  src={SearchIcon1}
-                  alt="Search Icon"
-                  className="group-hover:hidden group-focus-within:hidden"
-                  width={44}
-                  height={44}
-                />
-                <Image
-                  src={SearchIcon2}
-                  alt="Search Icon"
-                  className="hidden group-hover:block group-focus-within:block mt-2 mr-2"
-                  width={30}
-                  height={30}
-                />
-              </button>
-            </form>
+            {isAuthenticated && user ? (
+              <div className="text-xl lg:text-sm font-normal transition-all duration-300 flex flex-col items-center justify-center w-full gap-4">
+                <div className="flex items-center gap-2">
+                  <Image
+                    src={ProfileIcon}
+                    alt="Profile Icon"
+                    className="w-14"
+                  />
+                  <span className="text-tertiary">{user.email}</span>
+                </div>
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    closeMobileMenu();
+                  }}
+                  className="hover:text-primary text-tertiary cursor-pointer"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <div className="text-xl 2xl:text-sm font-normal transition-all duration-300 flex items-center justify-center w-full gap-10">
+                <button
+                  onClick={() => {
+                    setIsLoginPopupOpen(true);
+                    closeMobileMenu();
+                  }}
+                  className="hover:text-primary text-tertiary cursor-pointer"
+                >
+                  Login
+                </button>
+                <button
+                  onClick={() => {
+                    setIsRegisterPopupOpen(true);
+                    closeMobileMenu();
+                  }}
+                  className="hover:text-primary text-tertiary cursor-pointer"
+                >
+                  Register
+                </button>
+              </div>
+            )}
           </div>
 
           <Accordion
@@ -449,7 +542,7 @@ const Navbar: React.FC = () => {
                     {element.mainTextMob}
                   </AccordionTrigger>
                   <AccordionContent className="p-2">
-                    {element.dropDownContent.map((section, sectionIdx) => (
+                    {element.dropDownContent?.map((section, sectionIdx) => (
                       <div key={sectionIdx} className="mb-6">
                         <header className="text-sm font-medium text-muted-foreground mb-3 pb-2">
                           {section.heading}
@@ -491,6 +584,29 @@ const Navbar: React.FC = () => {
           </Accordion>
         </div>
       </div>
+
+      {/* Login Popup */}
+      <LoginPopup
+        isOpen={isLoginPopupOpen}
+        onClose={() => setIsLoginPopupOpen(false)}
+        onRegisterClick={() => {
+          setIsLoginPopupOpen(false);
+          setIsRegisterPopupOpen(true);
+        }}
+        onLoginSuccess={handleLoginSuccess}
+      />
+
+      {/* Register Popup */}
+      <RegisterPopup
+        isOpen={isRegisterPopupOpen}
+        onClose={() => setIsRegisterPopupOpen(false)}
+        onRegisterSuccess={handleRegisterSuccess}
+        onLoginClick={() => {
+          setIsRegisterPopupOpen(false);
+          setIsLoginPopupOpen(true);
+        }}
+        referralCode={referralCode}
+      />
     </nav>
   );
 };

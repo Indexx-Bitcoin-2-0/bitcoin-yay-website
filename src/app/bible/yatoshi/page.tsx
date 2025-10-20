@@ -5,6 +5,17 @@ import ArtImage2 from "@/assets/images/bible/yatoshi/art-2.webp";
 import ArtImage3 from "@/assets/images/bible/yatoshi/art-3.webp";
 import ArtImage4 from "@/assets/images/bible/yatoshi/art-4.webp";
 
+export const metadata = {
+  title: "Yatoshi Nakamoto - Meet Satoshi's Sibling & Bitcoin Yay Creator",
+  description:
+    "Learn about Yatoshi Nakamoto, the mysterious sibling of Bitcoin creator Satoshi Nakamoto. Discover how Yatoshi created Bitcoin Yay (BTCY) as a smarter, mobile-first evolution of Bitcoin through partnership with Indexx.ai.",
+  openGraph: {
+    title: "Yatoshi Nakamoto - Meet Satoshi's Sibling & Bitcoin Yay Creator",
+    description:
+      "Learn about Yatoshi Nakamoto, the mysterious sibling of Bitcoin creator Satoshi Nakamoto. Discover how Yatoshi created Bitcoin Yay (BTCY) as a smarter, mobile-first evolution of Bitcoin through partnership with Indexx.ai.",
+  },
+};
+
 export default function YatoshiPage() {
   return (
     <div className="container mx-auto mt-40 px-4">
@@ -87,9 +98,9 @@ export default function YatoshiPage() {
         <h2 className="text-lg md:text-2xl mb-4 font-bold text-primary">
           Who is
         </h2>
-        <h1 className="text-5xl md:text-7xl mb-4 font-semibold">
+        <h2 className="text-5xl md:text-7xl mb-4 font-semibold">
           Yatoshi Nakamoto
-        </h1>
+        </h2>
         <Image src={ArtImage2} alt="Art Image 1" className="mt-20 w-60" />
 
         <div className="my-40 mx-auto">

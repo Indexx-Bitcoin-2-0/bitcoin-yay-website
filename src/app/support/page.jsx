@@ -19,6 +19,17 @@ import ArtImage1 from "@/assets/images/support/art-1.svg";
 
 import faqData from "./data.json";
 
+// export const metadata = {
+//   title: "Bitcoin Yay Support - Customer Help & Contact Information",
+//   description:
+//     "Get help with Bitcoin Yay. Find answers to common questions, contact our support team, and access resources for using our mobile mining app and BTCY cryptocurrency platform.",
+//   openGraph: {
+//     title: "Bitcoin Yay Support - Customer Help & Contact Information",
+//     description:
+//       "Get help with Bitcoin Yay. Find answers to common questions, contact our support team, and access resources for using our mobile mining app and BTCY cryptocurrency platform.",
+//   },
+// };
+
 const CustomAccordionItem = ({ value, title, content }) => {
   return (
     <AccordionItem value={value} className="border-b-1 rounded-lg">
@@ -86,7 +97,7 @@ export default function support() {
             id="search-navbar"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="block w-full h-15 p-5 text-lg text-tertiary border border-bg2 rounded-lg outline-none hover:border-primary focus:border-primary"
+            className="block w-full h-15 p-5 text-lg text-tertiary border border-bg2 bg-bg2 rounded-lg outline-none hover:border-primary focus:border-primary"
             placeholder="Search"
           />
           <button type="submit" className="absolute right-2 top-2 ">
@@ -145,7 +156,7 @@ export default function support() {
       <div id="contact-us">
         <div className="border border-bg2 rounded-lg p-5 lg:p-15 w-full mt-6 lg:mt-10 mx-auto flex flex-col lg:flex-row">
           <div className="flex-1">
-            <h1 className="text-2xl md:text-5xl font-bold mt-6">Contact Us</h1>
+            <h2 className="text-2xl md:text-5xl font-bold mt-6">Contact Us</h2>
             <p className="text-lg font-medium mt-6">
               Have a question or need help?
             </p>

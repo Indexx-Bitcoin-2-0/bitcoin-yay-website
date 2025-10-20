@@ -13,34 +13,41 @@ import RoleImage5 from "@/assets/images/dao/Contributors.webp";
 import CorrectIcon from "@/assets/images/dao/dashboard/correct-icon.svg";
 import CrossIcon from "@/assets/images/dao/dashboard/cross-icon.svg";
 import PendingIcon from "@/assets/images/dao/dashboard/pending-icon.svg";
+import { useAuth } from "@/contexts/AuthContext";
+import LoginPopup from "@/components/LoginPopup";
 
-// Dummy API data - in real app this would come from API
-const getDashboardData = () => {
-  // Simulate API call - this would normally come from your backend
-  return {
-    role: "leader", // This would be determined by the API based on user
-    reputation: 800,
-    maxReputation: 1000,
-    profileCompletion: 40,
-    powers: [
-      { name: "Call vote", status: "completed" },
-      { name: "Assign Wallets tasks", status: "completed" },
-      { name: "Create proposals", status: "completed" },
-    ],
-    assignedTasks: [
-      { id: 1, name: "Task 1 - Review proposal XYZ", status: "completed" },
-      { id: 2, name: "Task 2 - Moderate community", status: "pending" },
-    ],
-    recentActivity: [
-      { id: 1, name: "Voted on 'Changing Staking Rules'", status: "completed" },
-      { id: 2, name: "Task: Design update review", status: "failed" },
-      { id: 3, name: "Submitted a new proposal", status: "completed" },
-    ],
-  };
-};
+interface Power {
+  name: string;
+  status: "completed" | "pending" | "failed";
+}
+
+interface Task {
+  id: number;
+  name: string;
+  status: "completed" | "pending" | "failed";
+}
+
+interface Activity {
+  id: number;
+  _id: string;
+  name: string;
+  status: "completed" | "failed";
+}
+
+interface DashboardData {
+  role: string;
+  reputation: number;
+  maxReputation: number;
+  profileCompletion: number;
+  powers: Power[];
+  assignedTasks: Task[];
+  recentActivity: Activity[];
+}
 
 export default function Dashboard() {
-  const [userData, setUserData] = useState(getDashboardData());
+  const { user, isLoading } = useAuth(); // Get authenticated user
+  const [userData, setUserData] = useState<DashboardData | null>(null);
+  const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
 
   const roleImages = {
     leader: RoleImage1,
@@ -50,35 +57,114 @@ export default function Dashboard() {
     contributor: RoleImage5,
   };
 
-  // Simulate API call on component mount
   useEffect(() => {
-    // In real app, this would be an actual API call
-    const fetchUserData = async () => {
-      // const response = await fetch('/api/dashboard');
-      // const data = await response.json();
-      const data = getDashboardData();
-      setUserData(data);
+    const fetchDashboardData = async () => {
+      if (!user?.email) return;
+
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/dao/getDashboard`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email: user.email }), // use email from checkAuth
+          }
+        );
+
+        const result = await response.json();
+        setUserData(result.data);
+      } catch (err) {
+        console.error("Failed to fetch dashboard data:", err);
+      }
     };
 
-    fetchUserData();
-  }, []);
+    // Check authentication status when loading is complete
+    if (!isLoading) {
+      if (!user) {
+        setIsLoginPopupOpen(true);
+        return;
+      }
+      fetchDashboardData();
+    }
+  }, [user, isLoading]);
+
+  const handleLoginSuccess = () => {
+    setIsLoginPopupOpen(false);
+  };
+
+  const handleCloseLoginPopup = () => {
+    setIsLoginPopupOpen(false);
+  };
+
+  if (isLoading) {
+    return <div className="mt-40 text-center text-3xl">Loading...</div>;
+  }
+
+  // Show login popup if user is not authenticated
+  if (!user) {
+    return (
+      <>
+        <div className="mt-40 container mx-auto px-4">
+          <div className="mx-auto">
+            <div className="mt-20 flex flex-col items-center justify-center text-center px-4">
+              <h2 className="text-lg md:text-2xl mb-4 font-bold ">
+                Bitcoin Yay DAO
+              </h2>
+              <h1 className="text-3xl md:text-5xl xl:text-[82px] mb-4 font-semibold text-primary">
+                Dashboard
+              </h1>
+              <p className="text-xl md:text-2xl mt-4">
+                Please log in to access your dashboard.
+              </p>
+            </div>
+          </div>
+        </div>
+        <LoginPopup
+          isOpen={isLoginPopupOpen}
+          onClose={handleCloseLoginPopup}
+          onLoginSuccess={handleLoginSuccess}
+        />
+      </>
+    );
+  }
+
+  if (!userData) {
+    return (
+      <div className="mt-40 text-center text-3xl">
+        Loading dashboard data...
+      </div>
+    );
+  }
+
+  const getRoleKey = (role: string): keyof typeof roleImages => {
+    const normalized = role.toLowerCase().split(" ")[0]; // e.g., "Leader Gopher" → "leader"
+    if (
+      ["leader", "validator", "manager", "thinker", "contributor"].includes(
+        normalized
+      )
+    ) {
+      return normalized as keyof typeof roleImages;
+    }
+    return "contributor";
+  };
 
   return (
     <div className="mt-40 container mx-auto px-4">
       <div className="mx-auto">
         <div className="mt-20 flex flex-col items-center justify-center text-center px-4">
-          <h2 className="text-lg md:text-2xl mb-4 font-bold text-primary">
-            YingYang DAO
+          <h2 className="text-lg md:text-2xl mb-4 font-bold ">
+            Bitcoin Yay DAO
           </h2>
 
-          <h1 className="text-4xl md:text-7xl mb-4 font-semibold">
-            {userData.role.charAt(0).toUpperCase() + userData.role.slice(1)}{" "}
-            Gopher Dashboard
+          <h1 className="text-3xl md:text-5xl xl:text-[82px] mb-4 font-semibold text-primary">
+            {userData.role} Dashboard
           </h1>
 
           <div className="flex justify-center mt-6">
             <Image
-              src={roleImages[userData.role as keyof typeof roleImages]}
+              src={roleImages[getRoleKey(userData.role)]}
               alt="Role image"
               className="w-90"
             />
@@ -100,14 +186,12 @@ export default function Dashboard() {
 
             <div className="mt-6 flex items-center">
               <Image
-                src={roleImages[userData.role as keyof typeof roleImages]}
+                src={roleImages[getRoleKey(userData.role)]}
                 alt="Role image"
                 className="w-14 mr-4"
               />
-              <p className="text-3xl">
-                {userData.role.charAt(0).toUpperCase() + userData.role.slice(1)}{" "}
-                Gopher
-              </p>
+
+              <p className="text-3xl">{userData.role} Gopher</p>
             </div>
           </div>
 
@@ -139,7 +223,7 @@ export default function Dashboard() {
               Role-specific Powers
             </h3>
             <div className="space-y-4 mt-6">
-              {userData.powers.map(
+              {(userData.powers || []).map(
                 (power: { name: string; status: string }, index: number) => (
                   <div key={index} className="flex items-center">
                     <Image
@@ -160,7 +244,7 @@ export default function Dashboard() {
         {/* Activity & Tasks */}
         <div className="mt-40 mb-40">
           <h2 className="text-5xl md:text-6xl xl:text-8xl font-bold mb-8">
-            (Activity & Tasks - 60%)
+            (Activity & Tasks)
           </h2>
 
           {/* Assigned Tasks */}
@@ -169,7 +253,7 @@ export default function Dashboard() {
               Assigned Tasks
             </h3>
             <ul className="mt-6 list-disc pl-6 space-y-4">
-              {userData.assignedTasks.map((task) => (
+              {userData?.assignedTasks.map((task) => (
                 <li key={task.id} className="text-3xl">
                   <div className="flex items-center">
                     <span className="text-3xl">{task.name}</span>
@@ -197,7 +281,7 @@ export default function Dashboard() {
             </h3>
             <div className="space-y-4 mt-6">
               {userData.recentActivity.map((activity) => (
-                <div key={activity.id} className="flex items-center">
+                <div key={activity?._id} className="flex items-center">
                   <Image
                     src={
                       activity.status === "completed" ? CorrectIcon : CrossIcon

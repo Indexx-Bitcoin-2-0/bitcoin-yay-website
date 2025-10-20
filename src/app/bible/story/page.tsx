@@ -1,4 +1,8 @@
+"use client";
+
 import Image from "next/image";
+
+import DisclaimerComponent from "@/components/DisclaimerComponent";
 
 import ArtImage1 from "@/assets/images/bible/story/art-1.webp";
 import ArtImage2 from "@/assets/images/bible/story/art-2.webp";
@@ -6,6 +10,17 @@ import ArtImage3 from "@/assets/images/bible/story/art-3.webp";
 import ArtImage4 from "@/assets/images/bible/story/art-4.webp";
 import ArtImage5 from "@/assets/images/bible/story/art-5.webp";
 import ArtImage6 from "@/assets/images/bible/story/art-6.webp";
+
+// export const metadata = {
+//   title: "Bitcoin Yay Story - The Hidden Genesis & Nakamoto Legacy",
+//   description:
+//     "Discover the origin story of Bitcoin Yay (BTCY) and its connection to Satoshi Nakamoto's vision. Learn how the forgotten code patterns led to the creation of a sustainable, AI-powered cryptocurrency alternative.",
+//   openGraph: {
+//     title: "Bitcoin Yay Story - The Hidden Genesis & Nakamoto Legacy",
+//     description:
+//       "Discover the origin story of Bitcoin Yay (BTCY) and its connection to Satoshi Nakamoto's vision. Learn how the forgotten code patterns led to the creation of a sustainable, AI-powered cryptocurrency alternative.",
+//   },
+// };
 
 export default function BibleStory() {
   return (
@@ -15,16 +30,20 @@ export default function BibleStory() {
           Bitcoin-YAY
         </h2>
         <h1 className="text-5xl md:text-7xl mb-4 font-semibold">Story</h1>
-        <Image src={ArtImage1} alt="Art Image 1" className="w-100 md:w-150 lg:w-320" />
+        <Image
+          src={ArtImage1}
+          alt="Art Image 1"
+          className="w-100 md:w-150 lg:w-320"
+        />
       </div>
 
       <div className="mt-20 flex flex-col items-center justify-center px-4">
         <h2 className="text-lg md:text-2xl mb-4 font-bold text-primary text-center">
           The Hidden Genesis of Bitcoin-Yay:
         </h2>
-        <h1 className="text-5xl md:text-7xl mb-4 font-semibold text-center">
+        <h2 className="text-5xl md:text-7xl mb-4 font-semibold text-center">
           The Nakamoto Legacy
-        </h1>
+        </h2>
         <div className="flex flex-col lg:flex-row items-center justify-center gap-10 mt-30">
           <Image
             src={ArtImage2}
@@ -131,9 +150,9 @@ export default function BibleStory() {
         <h2 className="text-lg md:text-2xl mb-4 font-bold text-center">
           Epilogue:
         </h2>
-        <h1 className="text-5xl md:text-7xl mb-4 font-semibold text-center">
+        <h2 className="text-5xl md:text-7xl mb-4 font-semibold text-center">
           A Vision Continued
-        </h1>
+        </h2>
         <Image
           src={ArtImage5}
           alt="Art Image 5"
@@ -156,10 +175,17 @@ export default function BibleStory() {
       {/* Part 06 */}
 
       <div className="my-80 flex flex-col lg:flex-row items-center justify-center gap-10 px-4 md:px-20 lg:px-40">
-        <Image src={ArtImage6} alt="Art Image 6" className="w-80 lg:w-80 xl:w-120"/>
+        <Image
+          src={ArtImage6}
+          alt="Art Image 6"
+          className="w-80 lg:w-80 xl:w-120"
+        />
         <h2 className="text-4xl mt-10 lg:text-6xl xl:text-7xl font-bold">
           &quot;The Chains Must Evolve. Let Yay Lead the Way.&quot;
         </h2>
+      </div>
+      <div className="mt-20 px-2 md:px-20 xl:px-40">
+        <DisclaimerComponent />
       </div>
     </div>
   );

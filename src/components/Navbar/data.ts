@@ -2,6 +2,38 @@ const baseURL = "/";
 
 const header_data = [
   {
+    mainTextDesktop: "Alchemy",
+    mainTextMob: "Alchemy",
+    active: false,
+    href: "/alchemy",
+    hasMegaDrop: true,
+    dropDownContent: [
+      {
+        heading: "Explore Alchemy",
+        mainList: true,
+        links: [
+          {
+            name: "Alchemy Gateway",
+            href: `/alchemy`,
+          },
+          {
+            name: "Alchemy Trade",
+            href: `/coming-soon`,
+          },
+        ],
+      },
+      {
+        heading: "Support",
+        links: [
+          {
+            name: "Contact Us",
+            href: "/support/#contact-us",
+          },
+        ],
+      },
+    ],
+  },
+  {
     mainTextDesktop: "Bible",
     mainTextMob: "Bible",
     active: false,
@@ -29,12 +61,12 @@ const header_data = [
             href: "/bible/tokenomics",
           },
           {
-            name: "Ying Yang Blockchain",
-            href: "/blockchain",
+            name: "Bitcoin Yay Blockchain",
+            href: "/bible/blockchain",
           },
           {
-            name: "Ying Yang Wallet",
-            href: "/bible/ying-yang-wallet",
+            name: "Bitcoin Yay Wallet",
+            href: "/bible/bitcoin-yay-wallet",
           },
         ],
       },
@@ -123,10 +155,17 @@ const header_data = [
     ],
   },
   {
+    mainTextDesktop: "Buy BTCY",
+    mainTextMob: "Buy BTCY",
+    active: false,
+    href: "/quantum-mining",
+    hasMegaDrop: false,
+  },
+  {
     mainTextDesktop: "Chain",
     mainTextMob: "Chain",
     active: false,
-    href: "/coming-soon",
+    href: "/blockchain",
     hasMegaDrop: true,
     dropDownContent: [
       {
@@ -134,8 +173,8 @@ const header_data = [
         mainList: true,
         links: [
           {
-            name: "Ying Yang Blockchain Expo",
-            href: "/coming-soon",
+            name: "Bitcoin Yay Blockchain Expo",
+            href: "/bible/blockchain/details",
           },
         ],
       },
@@ -154,24 +193,16 @@ const header_data = [
     mainTextDesktop: "DAO",
     mainTextMob: "DAO",
     active: false,
-    href: "/coming-soon",
+    href: "/dao",
     hasMegaDrop: true,
     dropDownContent: [
       {
-        heading: "Explore YingYang DAO",
+        heading: "Explore Bitcoin Yay DAO",
         mainList: true,
         links: [
           {
             name: "Proposal Studio",
-            href: "/coming-soon",
-          },
-          {
-            name: "Role-Based Governance",
-            href: "/coming-soon",
-          },
-          {
-            name: "Yin Yang Grant Rounds",
-            href: "/coming-soon",
+            href: "/dao",
           },
         ],
       },
@@ -180,7 +211,7 @@ const header_data = [
         links: [
           {
             name: "Contact Us",
-            href: "/coming-soon",
+            href: "/support",
           },
         ],
       },
@@ -320,6 +351,7 @@ const header_data = [
       },
     ],
   },
+  
   {
     mainTextDesktop: "WIBS",
     mainTextMob: "WIBS",

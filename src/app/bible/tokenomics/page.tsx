@@ -15,6 +15,19 @@ import {
 } from "@/components/CustomTypography";
 import { SectionDiv } from "@/components/utils";
 
+export const metadata = {
+  title:
+    "Bitcoin Yay Tokenomics - BTCY Supply, Distribution & Mining Economics",
+  description:
+    "Comprehensive Bitcoin Yay (BTCY) tokenomics guide. Learn about the 21 trillion token supply, distribution model, semi-annual halving mechanism, mining tiers, and economic design that mirrors Bitcoin's scarcity model.",
+  openGraph: {
+    title:
+      "Bitcoin Yay Tokenomics - BTCY Supply, Distribution & Mining Economics",
+    description:
+      "Comprehensive Bitcoin Yay (BTCY) tokenomics guide. Learn about the 21 trillion token supply, distribution model, semi-annual halving mechanism, mining tiers, and economic design that mirrors Bitcoin's scarcity model.",
+  },
+};
+
 export default function Tokenomics() {
   return (
     <div className="mx-auto overflow-hidden mt-40">

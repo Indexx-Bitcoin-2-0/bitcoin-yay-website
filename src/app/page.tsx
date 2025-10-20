@@ -35,10 +35,20 @@ import GopherImage4 from "@/assets/images/home/gophers/gopher-4.webp";
 import GopherImage5 from "@/assets/images/home/gophers/gopher-5.webp";
 import GopherImage6 from "@/assets/images/home/gophers/gopher-6.webp";
 
-import BirthdayBanner from "@/assets/images/home/airdrop-4-july-banner.webp";
-import BirthdayBannerMobile from "@/assets/images/home/airdrop-4-july-banner-mobile.webp";
+// import BirthdayBanner from "@/assets/images/home/airdrop-1-aug-banner-desktop.webp";
+// import BirthdayBannerTablet from "@/assets/images/home/airdrop-1-aug-banner-tablet.webp";
+// import BirthdayBannerMobile from "@/assets/images/home/airdrop-1-aug-banner-mobile.webp";
+// import RegisterButtonImage from "@/assets/images/buttons/register-button.webp";
 // import ApplestoreDownloadButton from "@/assets/images/buttons/get-on-applestore-button.webp";
 // import PlaystoreDownloadButton from "@/assets/images/buttons/get-on-playstore-button.webp";
+
+import FreeMiningButtonImage from "@/assets/images/mining/free-mining-icon.webp";
+import PowerMiningButtonImage from "@/assets/images/mining/power-mining-icon.webp";
+import QuantumMiningButtonImage from "@/assets/images/mining/quantum-mining-icon.webp";
+
+import ElectricMiningButtonImage from "@/assets/images/mining/electric-icon.webp";
+import TurbineMiningButtonImage from "@/assets/images/mining/turbo-icon.webp";
+import NuclearMiningButtonImage from "@/assets/images/mining/nuclear-icon.webp";
 
 import bgArtImage1 from "../assets/images/bitcoin-art-2.png";
 
@@ -46,9 +56,14 @@ import ArtImage1 from "@/assets/images/home/art-1.svg";
 import ArtImage2 from "@/assets/images/home/art-2.svg";
 import ArtImage3 from "@/assets/images/home/art-3.svg";
 
+import DollarButtonImage from "@/assets/images/buttons/dollar-button.webp";
+import InfoButtonImage from "@/assets/images/buttons/info-button.webp";
+
 import UserReviewCards from "@/components/UserReviewCards";
 import DisclaimerComponent from "@/components/DisclaimerComponent";
 import CustomButton2 from "@/components/CustomButton2";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const CustomCard = ({
   image,
@@ -93,34 +108,101 @@ const GopherCard = ({
 };
 
 export default function Home() {
+  const [btcPrice, setBtcPrice] = useState<number | null>(null);
+  const [btcyPrice, setBtcyPrice] = useState<number | null>(null);
+
+  const [isPowerMiningActive, setIsPowerMiningActive] = useState(false);
+
+  useEffect(() => {
+    const fetchPrices = async () => {
+      try {
+        const res = await axios.get(
+          "https://api.coingecko.com/api/v3/simple/price",
+          {
+            params: {
+              ids: "bitcoin",
+              vs_currencies: "usd",
+            },
+          }
+        );
+        const btc = res.data.bitcoin.usd;
+        const btcy = btc / 1_000_000;
+        setBtcPrice(btc);
+        setBtcyPrice(btcy);
+      } catch (error) {
+        console.error("Failed to fetch BTC price:", error);
+      }
+    };
+    fetchPrices();
+  }, []);
+
   return (
-    <div className="overflow-hidden relative mt-40">
-      <div className="mt-6 flex justify-center text-center">
-        <h1 className="px-4 text-4xl md:text-5xl xl:text-6xl font-bold text-primary max-w-250 leading-10 md:leading-18">
-          Bitcoin Yay Is The Micro Token And Petty Cash Of Bitcoin{" "}
-        </h1>
+    <div className="overflow-hidden relative mt-40 mx-auto">
+      <div className="mt-6 flex flex-col items-center text-center">
+        <div className="px-4 text-2xl font-bold text-primary max-w-250 leading-tight">
+          Bitcoin Yay Is The Micro Token
+        </div>
+        <div className="px-4 text-2xl font-bold text-primary max-w-250 leading-tight">
+          And Petty Cash Of Bitcoin
+        </div>
+
+        <div className="px-4 mt-4 text-5xl font-bold text-primary max-w-250 leading-snug">
+          {btcPrice !== null && btcyPrice !== null ? (
+            <>
+              Bitcoin ${btcPrice.toLocaleString()}, Bitcoin Yay $
+              {btcyPrice.toFixed(4)}
+            </>
+          ) : (
+            "Loading prices..."
+          )}
+        </div>
+
+        <div className="px-4 mt-2 text-xs font-bold text-primary max-w-250">
+          1 Bitcoin = 1 Million Bitcoin Yay
+        </div>
       </div>
+
       {/* Part 01 */}
       <HeroComponent />
 
-      <div id="download-app" className="mt-120 md:mt-40 lg:mt-120 relative flex flex-col items-center justify-center">
-        <Image
+      <div
+        id="download-app"
+        className="mt-120 md:mt-40 lg:mt-120 relative flex flex-col items-center justify-center"
+      >
+        {/* <Image
           src={BirthdayBanner}
           alt="Birthday Banner"
-          className="w-full hidden md:block"
+          className="w-full hidden lg:block"
         />
+         <Image
+          src={BirthdayBannerTablet}
+          alt="Birthday Banner"
+          className="w-full hidden md:block lg:hidden"
+        />
+        
         <Image
           src={BirthdayBannerMobile}
           alt="Birthday Banner"
           className="w-full md:hidden"
         />
-        <Link href="/airdrop" className="mb-10 mt-4 absolute bottom-40 md:-bottom-20 xl:-bottom-10 ">
+        <div className="flex justify-center items-center mt-10 md:mt-20 lg:-mt-50 xl:-mt-64 2xl:-mt-80 lg:ml-10">
+          <CustomButton2
+            image={RegisterButtonImage}
+            text="REGISTER NOW!"
+            link="/airdrop"
+            imageStyling="w-30 md:w-30 xl:w-40"
+          />
+        </div> */}
+        {/* <Link
+          href="/airdrop"
+          className="mb-10 mt-4 absolute bottom-40 md:-bottom-20 xl:-bottom-10 "
+        >
           <button className="border-2 border-primary text-primary px-4 py-2 md:py-4 rounded-md flex items-center justify-center cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
             <p className="text-primary text-2xl md:text-3xl xl:text-4xl font-semibold">
               COUNT ME IN
             </p>
           </button>
-        </Link>
+        </Link> */}
         {/* <div className="mt-10 flex flex-col md:flex-row gap-10 md:gap-20 justify-center items-center">
           <Link
             href="https://apps.apple.com/ph/app/bitcoin-yay/id6744868017"
@@ -144,6 +226,111 @@ export default function Home() {
           </Link>
         </div> */}
       </div>
+
+      {/* Mining Navigation button #######################################################################################  */}
+      <div className="flex mt-40 mb-40 gap-30 flex-wrap justify-center items-center max-w-5xl mx-auto">
+        <Link
+          href="/mining/free-mining"
+          className="flex flex-col items-center justify-center group"
+        >
+          <div className="h-32 flex justify-center items-center">
+            <Image
+              src={FreeMiningButtonImage}
+              alt="Free Mining"
+              className="w-54 group-hover:scale-105 transition-all duration-300"
+            />
+          </div>
+          <p className="mt-4 text-lg font-semibold group-hover:text-primary">
+            FREE MINING
+          </p>
+        </Link>
+        <button
+          type="button"
+          onClick={() => setIsPowerMiningActive(!isPowerMiningActive)}
+          className="flex flex-col items-center justify-center group cursor-pointer"
+        >
+          <div className="h-32 flex justify-center items-center">
+            <Image
+              src={PowerMiningButtonImage}
+              alt="Electric Mining"
+              className="w-60 group-hover:scale-105 transition-all duration-300 mb-8"
+            />
+          </div>
+          <p
+            className={`mt-4 text-lg font-semibold group-hover:text-primary ${
+              isPowerMiningActive ? "text-primary" : ""
+            }`}
+          >
+            POWER MINING
+          </p>
+        </button>
+        <Link
+          href="/mining/quantum-mining"
+          className="flex flex-col items-center justify-center group"
+        >
+          <div className="h-32 flex justify-center items-center">
+            <Image
+              src={QuantumMiningButtonImage}
+              alt="Electric Mining"
+              className="w-56 group-hover:scale-105 transition-all duration-300 mb-4"
+            />
+          </div>
+          <p className="mt-2 text-lg font-semibold group-hover:text-primary">
+            QUANTUM MINING
+          </p>
+        </Link>
+        {isPowerMiningActive && (
+          <div className="flex flex-wrap gap-30 items-center justify-center">
+            <Link
+              href="/mining/electric-mining"
+              className="flex flex-col items-center justify-center group"
+            >
+              <div className="h-32 flex justify-center items-center">
+                <Image
+                  src={ElectricMiningButtonImage}
+                  alt="Electric Mining"
+                  className="w-18 group-hover:scale-105 transition-all duration-300"
+                />
+              </div>
+              <p className="mt-2 text-lg font-semibold group-hover:text-primary">
+                ELECTRIC
+              </p>
+            </Link>
+            <Link
+              href="/mining/turbo-mining"
+              className="flex flex-col items-center justify-center group"
+            >
+              <div className="h-32 flex justify-center items-center">
+                <Image
+                  src={TurbineMiningButtonImage}
+                  alt="Electric Mining"
+                  className="w-28 group-hover:scale-105 transition-all duration-300"
+                />
+              </div>
+              <p className="mt-2 text-lg font-semibold group-hover:text-primary">
+                TURBO
+              </p>
+            </Link>
+            <Link
+              href="/mining/nuclear-mining"
+              className="flex flex-col items-center justify-center group"
+            >
+              <div className="h-32 flex justify-center items-center">
+                <Image
+                  src={NuclearMiningButtonImage}
+                  alt="Electric Mining"
+                  className="w-30 group-hover:scale-105 transition-all duration-300"
+                />
+              </div>
+              <p className="mt-2 text-lg font-semibold group-hover:text-primary">
+                NUCLEAR
+              </p>
+            </Link>
+          </div>
+        )}
+      </div>
+
+      {/* Mining Navigation button #######################################################################################  */}
 
       <div className="container mx-auto px-4 py-8 relative">
         {/* Part 02 */}
@@ -305,8 +492,8 @@ export default function Home() {
                 className="absolute bottom-0"
               />
             </div>
-            <p className="text-tertiary mt-10 text-lg">
-              Download on the Apple Store
+            <p className="text-tertiary mt-10 text-lg max-w-86 text-center">
+              Scan or Click on the QR to Download from the Apple Store
             </p>
           </div>
           <div
@@ -333,8 +520,8 @@ export default function Home() {
                 className="absolute bottom-0"
               />
             </div>
-            <p className="text-tertiary mt-10 text-lg">
-              Download on the Google Play
+            <p className="text-tertiary mt-10 text-lg max-w-86 text-center">
+              Scan or Click on the QR to Download from the Google Play
             </p>
           </div>
         </div>
@@ -352,19 +539,21 @@ export default function Home() {
           <h2 className="text-4xl md:text-6xl font-medium my-4">
             Crypto Paradise
           </h2>
-          <div className="flex items-center justify-center gap-10 mt-10">
-            <Link
-              href="https://indexx.ai/"
-              className="text-lg hover:text-primary"
-            >
-              Learn more
-            </Link>
-            <Link
-              href="https://cex.indexx.ai/"
-              className="text-lg text-primary hover:text-[#f96e0d]"
-            >
-              Buy Token
-            </Link>
+          <div className="flex items-center justify-center gap-30 mt-10 mx-10">
+            <CustomButton2
+              image={DollarButtonImage}
+              text="Buy Token"
+              link="https://cex.indexx.ai/"
+              imageStyling="w-30"
+              ariaLabel="Buy Bitcoin Yay tokens on Indexx exchange"
+            />
+            <CustomButton2
+              image={InfoButtonImage}
+              text="Discover Indexx.ai"
+              link="https://indexx.ai/"
+              imageStyling="w-30"
+              ariaLabel="Learn more about Indexx AI platform and services"
+            />
           </div>
         </div>
         <div className="mt-20 md:mt-40 w-screen relative left-1/2 right-1/2 -translate-x-1/2 flex flex-col items-center justify-center">
@@ -377,11 +566,15 @@ export default function Home() {
 
         {/* Part 7 */}
         <div className="-mx-4 mt-20 w-screen relative left-1/2 right-1/2 -translate-x-1/2 flex flex-col items-center">
-          <Image src={ArtImage1} alt="art-image" className="w-full" />
+          <Image
+            src={ArtImage1}
+            alt="art-image"
+            className="w-full max-w-[1920px]"
+          />
           <Image
             src={ArtImage2}
             alt="art-image"
-            className="-mt-24 md:-mt-40 lg:-mt-80 w-1/2"
+            className="-mt-24 md:-mt-40 lg:-mt-80 w-1/2 max-w-[1000px]"
           />
         </div>
 

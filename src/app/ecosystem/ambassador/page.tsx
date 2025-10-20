@@ -43,6 +43,9 @@ export default function Ambassador() {
     shortBio?: string;
   }>({});
 
+  const toNumber = (v: string | number) =>
+    typeof v === "number" ? v : Number(String(v).replace(/[,+]/g, "")) || 0;
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -62,7 +65,7 @@ export default function Ambassador() {
           .filter((channel) => channel.platform && channel.followers)
           .map((channel) => ({
             platform: channel.platform,
-            followers: channel.followers,
+            followers: toNumber(channel.followers), // ,
           }));
 
         const requestData = {
@@ -74,7 +77,7 @@ export default function Ambassador() {
 
         // Make API call
         const response = await axios.post(
-          "https://api.v1.indexx.ai/api/v1/inex/user/ambassadors",
+          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/ambassadors`,
           requestData,
           {
             headers: {
@@ -417,7 +420,7 @@ export default function Ambassador() {
                         <option value="50000-100000" className="bg-bg">
                           50,000 - 100,000
                         </option>
-                        <option value="100000+" className="bg-bg">
+                        <option value="100000" className="bg-bg">
                           100,000+
                         </option>
                       </select>

@@ -17,12 +17,12 @@ import InfoIcon from "@/assets/images/icons/info-icon.webp";
 import DownloadButton from "@/assets/images/buttons/download-button.webp";
 import BackButton from "@/assets/images/buttons/back-button.webp";
 import IndexxButton from "@/assets/images/buttons/indexx-button.webp";
-import SubmitButtomImage from "@/assets/images/buttons/submit-button.webp";
+import PointFingerButtonImage from "@/assets/images/buttons/point-button.webp";
 import PopupArt1 from "@/assets/images/airdrop/popup-art.webp";
 import PopupArt2 from "@/assets/images/airdrop/popup-art-1.webp";
 import PopupArt3 from "@/assets/images/airdrop/popup-art-2.webp";
-// import PopupArt4 from "@/assets/images/airdrop/popup-art-3.svg";
-// import PopupArt5 from "@/assets/images/airdrop/popup-art-4.png";
+import PopupArt4 from "@/assets/images/airdrop/popup-art-3.svg";
+import PopupArt5 from "@/assets/images/airdrop/popup-art-4.png";
 
 import PopupComponent from "@/components/PopupComponent";
 import CustomButton2 from "@/components/CustomButton2";
@@ -31,12 +31,14 @@ interface FormErrors {
   email?: string;
   username?: string;
   acceptTerms?: string;
+  walletAddress?: string;
   general?: string; // For general form errors, e.g., from API
 }
 
 export default function AirdropRegisterPage() {
   const [email, setEmail] = useState<string>("");
   const [username, setUsername] = useState<string>("");
+  const [walletAddress, setWalletAddress] = useState<string>("");
   const [referralLink, setReferralLink] = useState<string>("");
   const [userReferralLink, setUserReferralLink] = useState<string>(
     "bitcoinyay.com/referral="
@@ -46,7 +48,7 @@ export default function AirdropRegisterPage() {
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
   const [isRegistraionSuccessful, setIsRegistrationSuccessful] =
     useState<boolean>(false);
-
+  const [isRegistrationClosed] = useState<boolean>(false);
   const [errors, setErrors] = useState<FormErrors>({});
   const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
 
@@ -65,6 +67,10 @@ export default function AirdropRegisterPage() {
       newErrors.username = "Name must be at least 3 characters long.";
     }
 
+    if (!walletAddress.trim()) {
+      newErrors.walletAddress = "Wallet address is required.";
+    }
+
     if (!acceptTerms) {
       newErrors.acceptTerms = "You must accept the Terms and conditions.";
     }
@@ -75,54 +81,63 @@ export default function AirdropRegisterPage() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
+    console.log("handleSubmit");
+
+    // Check if registration is closed first
+    if (isRegistrationClosed) {
+      setIsPopupOpen(true);
+      return;
+    }
+
+    // Validate form before submission
+    if (!validateForm()) {
+      setFormSubmitted(true);
+      return;
+    }
+
+    // Clear any previous errors and set form as submitted
+    setErrors({});
     setFormSubmitted(true);
-    // setIsPopupOpen(true);
-    // setEmail("");
-    // setUsername("");
-    // setAcceptTerms(false);
-    // setErrors({});
 
-    if (validateForm()) {
-      try {
-        const res = await axios.post(AIRDROP_REGISTER_API_ROUTE, {
-          email: email,
-          referralCode: referralLink,
-          userType: "Indexx Exchange",
-          walletAddress: "",
-          walletProvider: "",
-          airdropAmount: 0,
-          tokenName: "BTCY",
-          eventType: "Bitcoin Yay Birthday airdrop",
-        });
+    try {
+      const res = await axios.post(AIRDROP_REGISTER_API_ROUTE, {
+        email: email,
+        referralCode: referralLink,
+        userType: "Indexx Exchange",
+        walletAddress: walletAddress,
+        walletProvider: "",
+        airdropAmount: 0,
+        tokenName: "WIBS",
+        eventType: "Bitcoin Yay WIBS Airdrop",
+      });
 
-        if (res.status === 200 || res.status === 201) {
-          setIsRegistrationSuccessful(true);
-        } else {
-          setIsRegistrationSuccessful(false);
-        }
-        console.log("Form data submitted:", { email, username, acceptTerms });
+      if (res.status === 200 || res.status === 201) {
+        setIsRegistrationSuccessful(true);
         setUserReferralLink(userReferralLink + res.data?.data?.referralCode);
-        setIsPopupOpen(true);
+        // Reset form only on successful submission
         setEmail("");
         setUsername("");
+        setWalletAddress("");
         setAcceptTerms(false);
-        setErrors({});
-        setFormSubmitted(false);
-      } catch (error) {
-        console.error("Submission error:", error);
-
-        let errorMessage = (error as AxiosError).response?.data;
-        errorMessage = (errorMessage as { data?: object })?.data;
-
-        setErrors({
-          general:
-            error instanceof Error && "response" in error
-              ? (errorMessage as { message?: string })?.message ||
-                "An error occurred"
-              : "Network error or server unavailable. Please try again.",
-        });
-        setIsPopupOpen(true);
+        setReferralLink("");
+      } else {
+        setIsRegistrationSuccessful(false);
       }
+      setIsPopupOpen(true);
+      setFormSubmitted(false);
+    } catch (error) {
+      let errorMessage = (error as AxiosError).response?.data;
+      errorMessage = (errorMessage as { data?: object })?.data;
+      setIsRegistrationSuccessful(false);
+      setErrors({
+        general:
+          error instanceof Error && "response" in error
+            ? (errorMessage as { message?: string })?.message ||
+              "An error occurred"
+            : "Network error or server unavailable. Please try again.",
+      });
+      setIsPopupOpen(true);
+      setFormSubmitted(false);
     }
   };
 
@@ -152,7 +167,56 @@ export default function AirdropRegisterPage() {
           isOpen={isPopupOpen}
           onClose={() => setIsPopupOpen(false)}
         >
-          {isRegistraionSuccessful ? (
+          {isRegistrationClosed ? (
+            <div>
+              <div className="flex flex-col items-center justify-center text-center w-90 md:w-164 p-4 md:p-8">
+                <Image
+                  src={PopupArt4}
+                  alt="Popup Art 4"
+                  className="w-64 md:w-80 mt-4"
+                />
+                <div className="relative mt-10">
+                  <Image
+                    src={PopupArt5}
+                    alt="Popup Art 5"
+                    className="w-20 md:w-34 absolute -top-10 md:-top-24 right-0"
+                  />
+                  <h3 className="text-2xl md:text-5xl font-bold">
+                    Airdrop <span className="text-primary"> Ended!</span>
+                  </h3>
+                  <p className="mt-2 text-xl md:text-2xl font-semibold uppercase">
+                    The recent airdrop has ended — thank you for participating
+                    and mining with Turbo Power!
+                  </p>
+                </div>
+                <div className="mt-10 mb-4 relative">
+                  <Image
+                    src={PopupArt5}
+                    alt="Popup Art 5"
+                    className="w-20 md:w-34 absolute -top-10 md:-top-20 left-0"
+                  />
+                  <h3 className="text-2xl md:text-5xl font-bold md:leading-16">
+                    Stay Tuned for
+                    <br />
+                    <span className="text-primary">
+                      Upcoming Airdrop Events
+                    </span>
+                  </h3>
+                  <p className="mt-2 text-xl md:text-2xl font-semibold uppercase">
+                    More power-packed events are on the way.{" "}
+                    <span className="text-primary">Get ready to:</span>
+                  </p>
+                  <p className="mt-2 text-xl md:text-2xl font-semibold uppercase">
+                    Unlock Free Power mining and Earn bonus days through
+                    referrals
+                  </p>
+                  <p className="mt-2 text-xl md:text-2xl font-semibold uppercase text-primary">
+                    Celebrate special occasions with exclusive airdrops
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : isRegistraionSuccessful ? (
             <div className="py-6 w-90 md:w-140 flex flex-col justify-center items-center text-center relative overflow-hidden">
               <div className="absolute inset-0 bg-cover bg-center -z-10">
                 <Image
@@ -171,11 +235,10 @@ export default function AirdropRegisterPage() {
                 Congratulations!
               </h2>
               <p className="mt-6 max-w-100 lg:text-xl">
-                You have successfully registered for the FREE Turbo Mining
-                Gopher airdrop.
+                You have successfully registered for the Lotto Airdrop.
               </p>
 
-              <div className="mb-6 mt-2 lg:mt-8 w-full px-4 md:px-8 text-start">
+              {/* <div className="mb-6 mt-2 lg:mt-8 w-full px-4 md:px-8 text-start">
                 <label
                   htmlFor="referralLink"
                   className="block text-bg3 text-xl mb-2"
@@ -219,7 +282,7 @@ export default function AirdropRegisterPage() {
                 onClick={copyReferralLink}
               >
                 Copy your referral link
-              </button>
+              </button> */}
 
               <CustomButton2
                 image={DownloadButton}
@@ -252,47 +315,6 @@ export default function AirdropRegisterPage() {
               </div>
             </div>
           )}
-
-          {/* <div>
-            <div className="flex flex-col items-center justify-center text-center w-90 md:w-164 p-4 md:p-8">
-              <Image src={PopupArt4} alt="Popup Art 4" className="w-64 md:w-80 mt-4" />
-              <div className="relative mt-10">
-                <Image
-                  src={PopupArt5}
-                  alt="Popup Art 5"
-                  className="w-20 md:w-34 absolute -top-10 md:-top-24 right-0"
-                />
-                <h3 className="text-2xl md:text-5xl font-bold">
-                  Airdrop <span className="text-primary"> Ended!</span>
-                </h3>
-                <p className="mt-2 text-xl md:text-2xl font-semibold uppercase">
-                  The recent airdrop has ended — thank you for participating and
-                  mining with Turbo Power!
-                </p>
-              </div>
-              <div className="mt-10 mb-4 relative">
-                <Image
-                  src={PopupArt5}
-                  alt="Popup Art 5"
-                  className="w-20 md:w-34 absolute -top-10 md:-top-20 left-0"
-                />
-                <h3 className="text-2xl md:text-5xl font-bold md:leading-16">
-                  Stay Tuned for<br />
-                  <span className="text-primary">Upcoming Airdrop Events</span>
-                </h3>
-                <p className="mt-2 text-xl md:text-2xl font-semibold uppercase">
-                  More power-packed events are on the way.{" "}
-                  <span className="text-primary">Get ready to:</span>
-                </p>
-                <p className="mt-2 text-xl md:text-2xl font-semibold uppercase">
-                  Unlock Free Power mining and Earn bonus days through referrals
-                </p>
-                <p className="mt-2 text-xl md:text-2xl font-semibold uppercase text-primary">
-                  Celebrate special occasions with exclusive airdrops
-                </p>
-              </div>
-            </div>
-          </div> */}
         </PopupComponent>
       </div>
 
@@ -316,9 +338,9 @@ export default function AirdropRegisterPage() {
       <div className="text-center flex flex-col items-center justify-center">
         <h4 className="text-3xl font-semibold text-primary">Sign Up for the</h4>
         <h2 className="mt-6 text-5xl md:text-7xl font-bold">
-          Turbo Mining Gopher
+          Bitcoin Yay
           <br />
-          Free Airdrop
+          <span className="text-primary">WIBS Airdrop!</span>
         </h2>
         <p className="mt-16 text-xl font-medium">
           To claim airdrop you need to be a Miner. Download the app and join now
@@ -333,7 +355,7 @@ export default function AirdropRegisterPage() {
           </Link>
         </p>
       </div>
-      <div className="w-full flex justify-center mt-10">
+      <div className="w-full flex justify-center mt-10 mb-40">
         <form
           onSubmit={handleSubmit}
           className="w-full p-8 flex flex-col justify-center max-w-3xl"
@@ -375,6 +397,41 @@ export default function AirdropRegisterPage() {
             )}
           </div>
 
+          <div className="mb-6">
+            <label
+              htmlFor="walletAddress"
+              className="block text-bg3 text-xl mb-2"
+            >
+              Wallet Address
+            </label>
+            <input
+              type="text"
+              id="walletAddress"
+              className={
+                "w-full text-lg p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none  hover:border-primary"
+              }
+              placeholder="Enter your pump.fun wallet address"
+              value={walletAddress}
+              onChange={(e) => setWalletAddress(e.target.value)}
+            />
+            {formSubmitted && errors.walletAddress && (
+              <p className="text-red-700 text-base mt-2">
+                {errors.walletAddress}
+              </p>
+            )}
+          </div>
+          <p className="text-primary text-base italic mb-6">
+            <span className="font-bold">Note:</span> If you don&apos;t have a
+            pump.fun wallet address, please sign up on{" "}
+            <Link
+              href="https://pump.fun"
+              target="_blank"
+              className="text-primary hover:underline hover:underline-offset-4 cursor-pointer"
+            >
+              pump.fun
+            </Link>
+          </p>
+
           <div className="mb-6 items-center">
             <div className="flex items-center">
               <input
@@ -395,7 +452,7 @@ export default function AirdropRegisterPage() {
             )}
           </div>
 
-          <div className="mb-6 mt-20">
+          {/* <div className="mb-6 mt-20">
             <label
               htmlFor="referralLink"
               className="block text-bg3 text-xl mb-2"
@@ -418,15 +475,33 @@ export default function AirdropRegisterPage() {
             Note: This link is from the user who shared the free Turbo Mining
             Gopher Airdrop with you. After you sign up, you’ll get your own
             referral link to share.
-          </p>
+          </p> */}
           <div className="flex justify-center mt-20">
-            <button type="submit">
+            {/* <button type="submit">
               <Image
-                src={SubmitButtomImage}
+                src={PointFingerButtonImage}
                 alt="Submit Button"
                 className="w-36 hover:scale-105 cursor-pointer"
               />
-            </button>
+            </button> */}
+            <CustomButton2
+              image={PointFingerButtonImage}
+              text="Submit"
+              onClick={(e) => {
+                e.preventDefault();
+                // Create a synthetic form event to pass to handleSubmit
+                const formEvent = {
+                  ...e,
+                  preventDefault: () => e.preventDefault(),
+                  currentTarget: e.currentTarget.closest(
+                    "form"
+                  ) as HTMLFormElement,
+                  target: e.currentTarget.closest("form") as HTMLFormElement,
+                } as FormEvent<HTMLFormElement>;
+                handleSubmit(formEvent);
+              }}
+              imageStyling="w-36"
+            />
           </div>
         </form>
       </div>

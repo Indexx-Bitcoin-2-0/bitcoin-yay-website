@@ -1,9 +1,8 @@
 import Image, { StaticImageData } from "next/image";
 
 import bgArtImage2 from "../../assets/images/bitcoin-art-3.svg";
-import ArtImage1 from "@/assets/images/about/art-1.svg";
+import ArtImage1 from "@/assets/images/about/art-1.webp";
 import ArtImage2 from "@/assets/images/about/art-2.svg";
-
 
 import FounderImage1 from "../../assets/images/about/founder-1.svg";
 import FounderImage2 from "../../assets/images/about/founder-2.svg";
@@ -57,6 +56,17 @@ const CustomStatsCard = ({
       <p className=" text-sm font-normal text-tertiary leading-6">{desc}</p>
     </div>
   );
+};
+
+export const metadata = {
+  title: "About Bitcoin Yay - Shaping the Future of Social Cryptocurrency",
+  description:
+    "Learn about Bitcoin Yay's mission to revolutionize digital finance. Join 60+ million crypto enthusiasts, 35+ core team members, and experience revolutionary tech powering the future of cryptocurrency.",
+  openGraph: {
+    title: "About Bitcoin Yay - Shaping the Future of Social Cryptocurrency",
+    description:
+      "Learn about Bitcoin Yay's mission to revolutionize digital finance. Join 60+ million crypto enthusiasts, 35+ core team members, and experience revolutionary tech powering the future of cryptocurrency.",
+  },
 };
 
 export default function About() {
