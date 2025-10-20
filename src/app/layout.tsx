@@ -1,8 +1,9 @@
 import "./globals.css";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import ChatWidget from "@/components/ChatWidget";
 import { AuthProvider } from "@/contexts/AuthContext";
-import { GoogleOAuthProvider } from "@react-oauth/google"; // ✅ Import this
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 export const metadata = {
   metadataBase: new URL("https://bitcoinyay.com"),
@@ -61,6 +62,7 @@ export default function RootLayout({
             <Navbar />
             <main>{children}</main>
             <Footer />
+            <ChatWidget />
           </AuthProvider>
         </GoogleOAuthProvider>
       </body>

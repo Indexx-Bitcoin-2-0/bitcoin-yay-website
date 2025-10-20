@@ -1,36 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Bitcoin Yay AI Support Assistant
 
-## Getting Started
+This project now ships with a floating AI help desk powered by the OpenAI **Agent Kit**. The chat widget hands every user message to a hosted Agent that you configure on the OpenAI platform—no custom RAG plumbing required.
 
-First, run the development server:
+### 1. Create and configure your Agent
+1. Visit [platform.openai.com/agents](https://platform.openai.com/agents) and create an Agent for Bitcoin Yay.
+2. Upload `data/faq.md` (or any updated FAQ content) to the Agent as a Knowledge Base so answers stay grounded.
+3. Give the Agent clear instructions about tone, formatting, and the `FORWARD_SUPPORT:` fallback prefix (see `src/app/api/agent/route.ts` for the logic we expect).
+4. Copy the Agent ID and place it in `.env.local` as `OPENAI_AGENT_ID`.
+
+### 2. Set environment variables
+Create `.env.local` with the following keys:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+OPENAI_API_KEY=sk-...
+OPENAI_AGENT_ID=agent_...
+SUPPORT_EMAIL=support@indexx.ai
+SUPPORT_FORWARD_FROM=support-bot@bitcoinyay.com
+APP_DOWNLOAD_IOS_URL=https://apps.apple.com/ph/app/bitcoin-yay/id6744868017
+APP_DOWNLOAD_ANDROID_URL=https://play.google.com/store/apps/details?id=com.bitcoin2&hl=en
+NEXT_PUBLIC_API_URL=<https://api.your-backend.com> # used by CONTACT_US_ROUTE
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3. How the fallback works
+- If the Agent cannot answer a question it must reply with `FORWARD_SUPPORT: <short summary>`.
+- Our `/api/agent` route detects that prefix, submits the question to the existing `emailToAdmin` endpoint (`CONTACT_US_ROUTE`), and returns a safety-focused confirmation to the user.
+- If the support API is unreachable we ask the user to email `SUPPORT_EMAIL` directly, reminding them to ignore phishing attempts.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 4. Run it locally
+```bash
+npm install
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Launch the site at [http://localhost:3000](http://localhost:3000/) and interact with the “Chat with Bitcoin Yay” widget in the lower right corner. The widget keeps the Agent session alive between turns so follow-up questions stay in context.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 5. Notes
+- The old FAQ embedding script has been removed—knowledge is managed entirely inside the OpenAI Agent.
+- The chat widget theme matches the primary Bitcoin Yay palette and auto-suggests the next FAQ question after every response.
+- Suspicious email reports are routed to support automatically, and every answer wraps URLs so links are clickable.
