@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import BitcoinYayaIcon from "../assets/images/main-logo.svg";
 import Image from "next/image";
@@ -11,27 +14,28 @@ import TelegramIcon from "../assets/images/socials/telegram.svg";
 import XIcon from "../assets/images/socials/x.svg";
 import YoutubeIcon from "../assets/images/socials/youtube.svg";
 
-const Footer = ({}) => {
+const Footer = ({ }) => {
+  const pathname = usePathname();
   const menuItems = [
-      {
-        title: "Quick Links",
-        links: [
-          { text: "Bitcoin Yay Blockchain", url: "#" },
-          { text: "Community", url: "#" },
-          { text: "Developers", url: "#" },
-          { text: "About us", url: "/about" },
-          { text: "Support", url: "/support" },
-        ],
-      },
-      {
-        title: "Resources",
-        links: [
-          { text: "Privacy Policy", url: "/privacy-policy" },
-          { text: "Terms of Use", url: "#" },
-          { text: "Terms of Services", url: "/term-of-service" },
-        ],
-      },
-    ],
+    {
+      title: "Quick Links",
+      links: [
+        { text: "Bitcoin Yay Blockchain", url: "#" },
+        { text: "Community", url: "#" },
+        { text: "Developers", url: "#" },
+        { text: "About us", url: "/about" },
+        { text: "Support", url: "/support" },
+      ],
+    },
+    {
+      title: "Resources",
+      links: [
+        { text: "Privacy Policy", url: "/privacy-policy" },
+        { text: "Terms of Use", url: "#" },
+        { text: "Terms of Services", url: "/term-of-service" },
+      ],
+    },
+  ],
     bottomLinks = [
       {
         image: FbIcon,
@@ -59,14 +63,22 @@ const Footer = ({}) => {
             <div key={sectionIdx}>
               <h3 className="mb-6 text-tertiary font-bold">{section.title}</h3>
               <ul className="space-y-4 text-secondry font-normal">
-                {section.links.map((link, linkIdx) => (
-                  <li
-                    key={linkIdx}
-                    className="font-medium hover:text-primary leading-8"
-                  >
-                    <Link href={link.url}>{link.text}</Link>
-                  </li>
-                ))}
+                {section.links.map((link, linkIdx) => {
+                  const isActive = pathname === link.url;
+                  return (
+                    <li
+                      key={linkIdx}
+                      className="font-medium hover:text-primary leading-8 "
+                    >
+                      <Link
+                        href={link.url}
+                        className={isActive ? "text-primary" : ""}
+                      >
+                        {link.text}
+                      </Link>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ))}

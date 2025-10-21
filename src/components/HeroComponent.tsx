@@ -123,7 +123,7 @@ const CarouselFrame5 = () => {
         <h2 className="text-5xl lg:text-8xl font-bold mt-2 md:max-w-200">
           for Peer-to-peer
         </h2>
-        <h3 className="text-3xl lg:text-5xl my-4">payement transaction</h3>
+        <h3 className="text-3xl lg:text-5xl my-4">payment transaction</h3>
         <p className="text-2xl mt-4 hidden md:block lg:max-w-1/2">
           From gaming to gifting – BTCY is a real micro-currency for the new
           digital world.
@@ -215,51 +215,44 @@ export default function HeroSection() {
       onMouseUp={handleMouseUp}
     >
       <div
-        className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-          currentIndex === 0 ? "opacity-100" : "opacity-0"
-        }`}
+        className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${currentIndex === 0 ? "opacity-100" : "opacity-0"
+          }`}
       >
         <CarouselFrame1 />
       </div>
       <div
-        className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-          currentIndex === 1 ? "opacity-100" : "opacity-0"
-        }`}
+        className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${currentIndex === 1 ? "opacity-100" : "opacity-0"
+          }`}
       >
         <CarouselFrame2 />
       </div>
       <div
-        className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-          currentIndex === 2 ? "opacity-100" : "opacity-0"
-        }`}
+        className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${currentIndex === 2 ? "opacity-100" : "opacity-0"
+          }`}
       >
         <CarouselFrame3 />
       </div>
       <div
-        className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-          currentIndex === 3 ? "opacity-100" : "opacity-0"
-        }`}
+        className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${currentIndex === 3 ? "opacity-100" : "opacity-0"
+          }`}
       >
         <CarouselFrame4 />
       </div>
       <div
-        className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-          currentIndex === 4 ? "opacity-100" : "opacity-0"
-        }`}
+        className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${currentIndex === 4 ? "opacity-100" : "opacity-0"
+          }`}
       >
         <CarouselFrame5 />
       </div>
       <div
-        className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-          currentIndex === 5 ? "opacity-100" : "opacity-0"
-        }`}
+        className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${currentIndex === 5 ? "opacity-100" : "opacity-0"
+          }`}
       >
         <CarouselFrame6 />
       </div>
       <div
-        className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-          currentIndex === 6 ? "opacity-100" : "opacity-0"
-        }`}
+        className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${currentIndex === 6 ? "opacity-100" : "opacity-0"
+          }`}
       >
         <CarouselFrame7 />
       </div>
