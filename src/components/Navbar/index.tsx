@@ -59,9 +59,8 @@ interface HeaderItem {
 // Extract backdrop component for readability
 const Backdrop = memo(({ visible }: { visible: boolean }) => (
   <div
-    className={`fixed left-0 w-full top-30 z-[10] backdrop-blur-md transition-opacity duration-300 delay-100 bg-black/50 ${
-      visible ? "opacity-100 h-screen" : "opacity-0 h-0"
-    }`}
+    className={`fixed left-0 w-full top-30 z-[10] backdrop-blur-md transition-opacity duration-300 delay-100 bg-black/50 ${visible ? "opacity-100 h-screen" : "opacity-0 h-0"
+      }`}
   />
 ));
 
@@ -87,9 +86,8 @@ const DropdownLink = memo(
       <a
         href={link.href}
         target={link.openInNewTab ? "_blank" : undefined}
-        className={`${
-          isMainList ? "text-[25px] font-semibold" : "text-xs mt-4"
-        } text-tertiary block relative after:absolute after:left-0 after:-bottom-1 after:w-5 after:h-[3px] after:bg-primary after:opacity-0 hover:after:opacity-100 after:transition-opacity after:duration-300`}
+        className={`${isMainList ? "text-[25px] font-semibold" : "text-xs mt-4"
+          } text-tertiary block relative after:absolute after:left-0 after:-bottom-1 after:w-5 after:h-[3px] after:bg-primary after:opacity-0 hover:after:opacity-100 after:transition-opacity after:duration-300`}
       >
         {link.name}
       </a>
@@ -282,21 +280,7 @@ const Navbar: React.FC = () => {
       </Suspense>
 
       <PopupComponent isOpen={isPopupOpen} onClose={handlePopupClose}>
-        {/* <div className="mt-10 mx-2 md:mx-4 flex flex-col items-center justify-center w-90 md:w-120 xl:w-140 relative">
-          <Image src={PopupArt1} alt="Popup Art 1" className="w-full" />
-          <Link
-            href="/airdrop"
-            onClick={handlePopupClose}
-            className="mb-10 mt-4"
-          >
-            <CustomButton2
-              image={RegisterButtonImage}
-              text={"REGISTER NOW!"}
-              link="/airdrop"
-              imageStyling="w-20 md:w-30"
-            />
-          </Link>
-        </div> */}
+
 
         <div className="mt-10 mx-2 px-10 flex flex-col items-center justify-center w-90 md:w-120 xl:w-140 relative">
           <Image src={PopupArt1} alt="Popup Art 1" className="w-30 md:w-40" />
@@ -328,12 +312,12 @@ const Navbar: React.FC = () => {
         {/* {!isMobile && <Backdrop visible={backdropVisibility} />}
         {isMobile && <Backdrop visible={menuOpen} />} */}
 
-        <div className="flex items-center justify-between w-full 2xl:justify-start 2xl:w-auto">
+        <div className="flex items-center justify-between w-full xl:justify-start xl:w-auto">
           <Logo />
 
           {/* Mobile menu toggle button */}
           <button
-            className="flex 2xl:hidden text-secondry"
+            className="flex xl:hidden text-secondry"
             onClick={toggleMobileMenu}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
           >
@@ -365,7 +349,7 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Desktop Navigation */}
-        <div className="hidden 2xl:flex items-center">
+        <div className="hidden xl:flex items-center">
           <ul className="inline-flex my-0 flex-1">
             {headerData.map((element, idx) => (
               <li
@@ -381,9 +365,8 @@ const Navbar: React.FC = () => {
                 <a
                   href={element.href}
                   target={element.openInNewTab ? "_blank" : undefined}
-                  className={`text-sm font-normal transition-all duration-300 hover:text-primary ${
-                    element.active ? "text-primary" : "text-tertiary"
-                  } group-hover:text-primary`}
+                  className={`text-sm font-normal transition-all duration-300 hover:text-primary ${element.active ? "text-primary" : "text-tertiary"
+                    } group-hover:text-primary`}
                   onMouseEnter={() =>
                     updateBackDropVisibility(
                       !element.hasMegaDrop ? "" : "enter"
@@ -406,12 +389,11 @@ const Navbar: React.FC = () => {
                     <div className="flex w-full justify-between h-auto my-10 px-[20px] pl-[210px]">
                       {element.dropDownContent?.map((section, elemIdx) => (
                         <div
-                          className={`w-[calc(25%-30px)] leading-[35px] flex flex-col ${
-                            section.mainList &&
+                          className={`w-[calc(25%-30px)] leading-[35px] flex flex-col ${section.mainList &&
                             element.mainTextDesktop !== "Eco"
-                              ? "min-w-100"
-                              : "min-w-60"
-                          }`}
+                            ? "min-w-100"
+                            : "min-w-60"
+                            }`}
                           key={elemIdx}
                         >
                           <header className="text-xs font-medium my-6">
@@ -442,7 +424,7 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Auth Section (Desktop) */}
-        <div className="hidden 2xl:block">
+        <div className="hidden xl:block">
           {isAuthenticated && user ? (
             <div className="text-sm font-normal transition-all duration-300 flex gap-10">
               <button
@@ -476,9 +458,8 @@ const Navbar: React.FC = () => {
 
         {/* Mobile Menu */}
         <div
-          className={`absolute left-0 top-26 w-full p-8 bg-bg shadow-lg transform z-20 ${
-            menuOpen ? "translate-y-0" : "-translate-y-[130%]"
-          }  2xl:hidden max-h-[calc(100vh-150px)] overflow-y-auto`}
+          className={`absolute left-0 top-26 w-full p-8 bg-bg shadow-lg transform z-20 ${menuOpen ? "translate-y-0" : "-translate-y-[130%]"
+            }  xl:hidden max-h-[calc(100vh-150px)] overflow-y-auto`}
         >
           {/* Auth Section (Mobile) */}
           <div className="mb-6">
@@ -503,7 +484,7 @@ const Navbar: React.FC = () => {
                 </button>
               </div>
             ) : (
-              <div className="text-xl 2xl:text-sm font-normal transition-all duration-300 flex items-center justify-center w-full gap-10">
+              <div className="text-xl xl:text-sm font-normal transition-all duration-300 flex flex-col items-start justify-center w-full gap-10">
                 <button
                   onClick={() => {
                     setIsLoginPopupOpen(true);
@@ -552,9 +533,8 @@ const Navbar: React.FC = () => {
                             <Link
                               key={linkIdx}
                               href={link.href}
-                              className={`block text-lg my-3 hover:text-primary ${
-                                section.mainList ? "font-bold text-xl" : ""
-                              }`}
+                              className={`block text-lg my-3 hover:text-primary ${section.mainList ? "font-bold text-xl" : ""
+                                }`}
                               onClick={closeMobileMenu}
                             >
                               {link.name}

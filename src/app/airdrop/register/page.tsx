@@ -133,7 +133,7 @@ export default function AirdropRegisterPage() {
         general:
           error instanceof Error && "response" in error
             ? (errorMessage as { message?: string })?.message ||
-              "An error occurred"
+            "An error occurred"
             : "Network error or server unavailable. Please try again.",
       });
       setIsPopupOpen(true);
