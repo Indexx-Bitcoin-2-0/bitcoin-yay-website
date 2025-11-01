@@ -8,6 +8,7 @@ import SetPasswordPopup from "@/components/SetPasswordPopup";
 import EmailVerificationPopup from "@/components/EmailVerificationPopup";
 import SuccessRegistrationPopup from "@/components/SuccessRegistrationPopup";
 import { useAuth } from "@/contexts/AuthContext";
+import { getGmailAliasInfo } from "@/lib/utils";
 import {
   GOOGLE_REGISTER_API_ROUTE,
   REGISTER_API_ROUTE,
@@ -98,6 +99,12 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
       return;
     }
 
+    const aliasInfo = getGmailAliasInfo(formData.email);
+    if (aliasInfo.isGmail && aliasInfo.hasAlias) {
+      setEmailAvailable(null);
+      return;
+    }
+
     const timeoutId = setTimeout(async () => {
       setIsCheckingEmail(true);
       try {
@@ -182,6 +189,7 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
 
   const validateForm = (): boolean => {
     const newErrors: { [key: string]: string } = {};
+    const emailAliasInfo = getGmailAliasInfo(formData.email);
 
     if (!formData.firstName.trim()) {
       newErrors.firstName = "First name is required.";
@@ -211,6 +219,9 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
       newErrors.email = "Email is required.";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Email address is invalid.";
+    } else if (emailAliasInfo.isGmail && emailAliasInfo.hasAlias) {
+      newErrors.email =
+        "Gmail aliases (like using '+' tags or @googlemail.com) aren't supported. Please use your primary Gmail address.";
     } else if (emailAvailable !== true) {
       newErrors.email = "Email is already registered or not validated.";
     }
