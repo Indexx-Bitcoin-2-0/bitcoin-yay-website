@@ -273,7 +273,7 @@ export default function PrivacyPolicy() {
               <CustomListItem content="If payment fails and the grace period expires, access to premium features will be revoked automatically. " />
             </>
           }
-          
+
         />
 
         <InfoSection
@@ -781,6 +781,229 @@ export default function PrivacyPolicy() {
           desc="Managing Cookies:"
           endingLine="You can adjust cookie preferences through your browser settings. To learn how to control cookies, visit AboutCookies.org. Note that disabling cookies may impact website functionality."
         />
+
+        {/* Quantum Mining Sales & Purchase Policy */}
+        <div className="my-20">
+          <h2 className="text-2xl md:text-5xl font-bold mt-8 max-w-300 md:leading-16 text-secondary">
+            Bitcoin Yay — Quantum Mining Sales & Purchase Policy
+          </h2>
+          <p className="text-xl md:text-2xl font-medium my-6 text-tertiary">
+            Issued By: Bitcoin Yay (Hosted by Indexx.ai)
+          </p>
+
+          <InfoSection
+            title="1. Introduction"
+            content={
+              <>
+                <CustomListItem content="This Sales & Purchase Policy governs all transactions made through the Bitcoin Yay Quantum Mining feature. By completing a Quantum Mining purchase, you acknowledge that you have read, understood, and agreed to the terms outlined below." />
+                <CustomListItem content="Quantum Mining allows users to acquire BTCY tokens instantly, without having to mine 100,000 BTCY through the app. It is designed for users who wish to gain early exposure to BTCY before official exchange listings." />
+              </>
+            }
+          />
+
+          <InfoSection
+            title="2. Nature of Purchase"
+            content={
+              <>
+                <CustomListItem content="All Quantum Mining purchases are final and non-refundable." />
+                <CustomListItem content="Upon payment confirmation, the purchased BTCY tokens are automatically credited to the user's Indexx Asset Wallet." />
+                <CustomListItem content="Indexx.ai is the official host platform for Bitcoin Yay and functions as the custodial wallet and exchange infrastructure for BTCY." />
+                <CustomListItem content="Users are not required to transfer or claim their purchased tokens manually — all assets are secured and viewable within their Indexx account." />
+              </>
+            }
+          />
+
+          <InfoSection
+            title="3. Token Storage and Access"
+            content={
+              <>
+                <CustomListItem content="BTCY purchased through Quantum Mining is deposited directly into the Indexx Asset Wallet linked to the buyer's verified account." />
+                <CustomListItem content="Users can access their wallet anytime by logging into www.indexx.ai with their registered email and password." />
+                <CustomListItem content="The wallet balance will display the BTCY holdings acquired via Quantum Mining." />
+                <CustomListItem content="Tokens remain securely stored until the official BTCY listing date, after which users will be able to trade, withdraw, or utilize their BTCY tokens within the Indexx ecosystem." />
+              </>
+            }
+          />
+
+          <InfoSection
+            title="4. Refund Policy"
+            content={
+              <>
+                <CustomListItem content="All Quantum Mining transactions are final." />
+                <CustomListItem content="Once the payment is processed and BTCY tokens have been delivered to the Indexx wallet, no refunds, chargebacks, or reversals can be issued." />
+                <CustomListItem content="This applies regardless of payment method (PayPal, credit card, cryptocurrency, etc.)." />
+                <CustomListItem content="By proceeding with a Quantum Mining purchase, users explicitly acknowledge that they waive any right to a refund or reversal of funds." />
+              </>
+            }
+          />
+
+          <InfoSection
+            title="5. Token Listing & Trading"
+            content={
+              <>
+                <CustomListItem content="BTCY tokens purchased via Quantum Mining will become tradable on Indexx.ai upon official listing." />
+                <CustomListItem content="Listing timelines and exchange details will be communicated publicly through official Bitcoin Yay and Indexx.ai channels." />
+                <CustomListItem content="Until then, tokens remain visible but locked within the Indexx Asset Wallet, ensuring secure custody." />
+              </>
+            }
+          />
+
+          <InfoSection
+            title="6. User Responsibilities"
+            desc="Users are responsible for:"
+            content={
+              <>
+                <CustomListItem content="Ensuring they are logged into the correct Indexx account before completing a purchase." />
+                <CustomListItem content="Reading all Quantum Mining instructions and policies prior to making payment." />
+                <CustomListItem content="Maintaining security of their Indexx and Bitcoin Yay login credentials." />
+                <CustomListItem content="Staying informed through official communication channels to avoid misinformation or scams." />
+              </>
+            }
+          />
+
+          <InfoSection
+            title="7. Disclaimer"
+            endingLine="Bitcoin Yay and Indexx.ai do not provide investment or financial advice. All token purchases carry inherent digital asset risks. Prices, token supply, and rewards may vary as outlined in official tokenomics documentation."
+          />
+
+          <InfoSection
+            title="8. Support & Contact"
+            desc="For any questions or help accessing your Indexx Asset Wallet, please contact:"
+            content={
+              <>
+                <CustomListItem content="support@bitcoinyay.com or support@indexx.ai" />
+              </>
+            }
+          />
+
+          <div className="my-10">
+            <p className="text-sm md:text-base font-semibold my-4">Summary</p>
+            <p className="text-sm md:text-base text-tertiary my-4">
+              When you buy BTCY through Quantum Mining:
+            </p>
+            <ul className="list-disc ml-6 my-4 flex flex-col gap-3">
+              <li className="text-sm md:text-base text-tertiary">
+                Your BTCY is instantly delivered to your Indexx Asset Wallet.
+              </li>
+              <li className="text-sm md:text-base text-tertiary">
+                No refunds are possible once the transaction is complete.
+              </li>
+              <li className="text-sm md:text-base text-tertiary">
+                BTCY will become tradable on Indexx.ai when officially listed.
+              </li>
+              <li className="text-sm md:text-base text-tertiary">
+                Keep your Indexx login secure and follow official channels for updates.
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Power Mining Subscription Purchase Policy */}
+        <div className="my-20">
+          <h2 className="text-2xl md:text-5xl font-bold mt-8 max-w-300 md:leading-16 text-secondary">
+            Bitcoin Yay — Power Mining Subscription Purchase Policy
+          </h2>
+          <p className="text-xl md:text-2xl font-medium my-6 text-tertiary">
+            Issued By: Bitcoin Yay
+          </p>
+
+          <InfoSection
+            title="1. Introduction"
+            content={
+              <>
+                <CustomListItem content="This policy outlines the terms governing all purchases of Power Mining Subscriptions within the Bitcoin Yay app." />
+                <CustomListItem content="Power Mining subscriptions allow users to enhance their mining performance by increasing mining power and duration for a set period." />
+              </>
+            }
+          />
+
+          <InfoSection
+            title="2. Nature of Subscription"
+            content={
+              <>
+                <CustomListItem content="Power Mining subscriptions are digital, non-tangible services that activate immediately upon purchase." />
+                <CustomListItem content="Each subscription type (Electric, Turbo, Nuclear, etc.) offers unique mining speed and duration benefits as detailed in the app." />
+                <CustomListItem content="Subscription effects are applied instantly to the user's account once payment is confirmed." />
+              </>
+            }
+          />
+
+          <InfoSection
+            title="3. Refund Policy"
+            content={
+              <>
+                <CustomListItem content="All Power Mining subscription purchases are final and non-refundable." />
+                <CustomListItem content="Since the benefits are delivered instantly upon activation, Bitcoin Yay cannot issue refunds, exchanges, or partial credits under any circumstances." />
+                <CustomListItem content="Users acknowledge this policy before completing any Power Mining purchase." />
+                <CustomListItem content="Attempted chargebacks or refund disputes may result in suspension of account privileges." />
+              </>
+            }
+          />
+
+          <InfoSection
+            title="4. Renewal and Expiry"
+            content={
+              <>
+                <CustomListItem content="Each Power Mining subscription runs for its specified time period (e.g., 7 days, 30 days)." />
+                <CustomListItem content="Renewal is optional and requires a new purchase." />
+                <CustomListItem content="Once expired, mining power reverts to the standard base level unless renewed." />
+              </>
+            }
+          />
+
+          <InfoSection
+            title="5. User Responsibilities"
+            desc="Users are responsible for:"
+            content={
+              <>
+                <CustomListItem content="Reviewing subscription details (duration, benefits, cost) before confirming payment." />
+                <CustomListItem content="Maintaining sufficient account balance or payment authorization." />
+                <CustomListItem content="Understanding that benefits begin immediately and cannot be paused, transferred, or refunded." />
+              </>
+            }
+          />
+
+          <InfoSection
+            title="6. System Availability"
+            content={
+              <>
+                <CustomListItem content="Bitcoin Yay strives to maintain uninterrupted service. However, temporary downtime or maintenance may occur." />
+                <CustomListItem content="In such cases, subscriptions will continue counting in real time; Bitcoin Yay is not liable for external factors (e.g., user device issues or connectivity)." />
+              </>
+            }
+          />
+
+          <InfoSection
+            title="7. Support & Contact"
+            desc="For assistance or technical issues with Power Mining subscriptions, contact:"
+            content={
+              <>
+                <CustomListItem content="support@bitcoinyay.com" />
+              </>
+            }
+          />
+
+          <div className="my-10">
+            <p className="text-sm md:text-base font-semibold my-4">Summary</p>
+            <p className="text-sm md:text-base text-tertiary my-4">
+              When you buy a Power Mining subscription:
+            </p>
+            <ul className="list-disc ml-6 my-4 flex flex-col gap-3">
+              <li className="text-sm md:text-base text-tertiary">
+                Your mining boost activates immediately.
+              </li>
+              <li className="text-sm md:text-base text-tertiary">
+                No refunds are possible once purchased.
+              </li>
+              <li className="text-sm md:text-base text-tertiary">
+                Subscription effects expire automatically after their set duration.
+              </li>
+              <li className="text-sm md:text-base text-tertiary">
+                Renew anytime to keep your boosted mining power active.
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div >
   );
