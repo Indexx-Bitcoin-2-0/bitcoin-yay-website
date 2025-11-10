@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronDown, Check } from "lucide-react";
 import {
   Accordion,
@@ -51,6 +51,7 @@ import {
   MIN_PURCHASE_AMOUNT_USD,
   validateOrderData,
   SocketEventHandlers,
+  QuantumOrderSocketPayload,
 } from "@/lib/quantum-mining";
 
 interface Errors {
@@ -74,6 +75,194 @@ const ComingSoonBadge = ({ label = "Coming soon" }: { label?: string }) => (
   </span>
 );
 
+const ORDER_ID_KEYS = ["orderId", "order_id", "orderID", "id"] as const;
+
+type OrderSignal = QuantumOrderSocketPayload & { raw?: unknown };
+
+const toNumeric = (value: unknown): number | undefined => {
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : undefined;
+  }
+  if (typeof value === "string") {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : undefined;
+  }
+  return undefined;
+};
+
+const buildOrderSignal = (
+  source: Record<string, unknown>,
+  orderId: string,
+  raw: unknown
+): OrderSignal => {
+  const statusCandidates = [
+    source.status,
+    source.state,
+    source.currentStatus,
+    source.paymentStatus,
+  ];
+  const amountCandidates = [
+    source.amount,
+    source.orderAmount,
+    source.total,
+    source.value,
+  ];
+  const currencyCandidates = [
+    source.currency,
+    source.currencyCode,
+    source.currency_code,
+    source.currencyIso,
+  ];
+  const paymentTypeCandidates = [
+    source.paymentType,
+    source.payment_type,
+    source.paymentMethod,
+    source.payment_method,
+    source.method,
+  ];
+  const orderTypeCandidates = [
+    source.orderType,
+    source.order_type,
+    source.type,
+    source.category,
+  ];
+
+  let amount = undefined;
+  for (const candidate of amountCandidates) {
+    const parsed = toNumeric(candidate);
+    if (parsed !== undefined) {
+      amount = parsed;
+      break;
+    }
+  }
+
+  let currency: string | undefined;
+  for (const candidate of currencyCandidates) {
+    if (typeof candidate === "string" && candidate.trim()) {
+      currency = candidate;
+      break;
+    }
+  }
+
+  const nestedAmount = source.amount;
+  if (typeof nestedAmount === "object" && nestedAmount !== null) {
+    const nested = nestedAmount as Record<string, unknown>;
+    if (amount === undefined) {
+      const nestedValue = toNumeric(nested.value ?? nested.total ?? nested.amount);
+      if (nestedValue !== undefined) {
+        amount = nestedValue;
+      }
+    }
+    if (!currency) {
+      const nestedCurrency =
+        nested.currency ??
+        nested.currencyCode ??
+        nested.currency_code ??
+        nested.currencyIso;
+      if (typeof nestedCurrency === "string" && nestedCurrency.trim()) {
+        currency = nestedCurrency;
+      }
+    }
+  }
+
+  let paymentType: string | undefined;
+  for (const candidate of paymentTypeCandidates) {
+    if (typeof candidate === "string" && candidate.trim()) {
+      paymentType = candidate;
+      break;
+    }
+  }
+
+  let orderType: string | undefined;
+  for (const candidate of orderTypeCandidates) {
+    if (typeof candidate === "string" && candidate.trim()) {
+      orderType = candidate;
+      break;
+    }
+  }
+
+  let status: string | undefined;
+  for (const candidate of statusCandidates) {
+    if (typeof candidate === "string" && candidate.trim()) {
+      status = candidate;
+      break;
+    }
+  }
+
+  return {
+    orderId,
+    status,
+    amount,
+    currency,
+    paymentType,
+    orderType,
+    raw,
+  };
+};
+
+const findOrderSignal = (
+  payload: unknown,
+  orderIds: string[],
+  visited = new WeakSet<object>()
+): OrderSignal | null => {
+  if (!payload || !orderIds.length) return null;
+  if (Array.isArray(payload)) {
+    if (visited.has(payload as unknown as object)) return null;
+    visited.add(payload as unknown as object);
+    for (const item of payload) {
+      const match = findOrderSignal(item, orderIds, visited);
+      if (match) return match;
+    }
+    return null;
+  }
+
+  if (typeof payload !== "object" || payload === null) {
+    return null;
+  }
+
+  if (visited.has(payload as object)) return null;
+  visited.add(payload as object);
+
+  const record = payload as Record<string, unknown>;
+
+  for (const key of ORDER_ID_KEYS) {
+    const value = record[key];
+    if (typeof value === "string" || typeof value === "number") {
+      const id = String(value);
+      if (orderIds.includes(id)) {
+        return buildOrderSignal(record, id, payload);
+      }
+    }
+  }
+
+  for (const value of Object.values(record)) {
+    const match = findOrderSignal(value, orderIds, visited);
+    if (match) return match;
+  }
+
+  return null;
+};
+
+const COMPLETED_STATUS_KEYWORDS = [
+  "completed",
+  "complete",
+  "approved",
+  "captured",
+  "success",
+  "succeeded",
+  "done",
+  "paid",
+  "confirmed",
+] as const;
+
+const isCompletedStatus = (status?: string) => {
+  if (!status) return false;
+  const normalized = status.toLowerCase();
+  return COMPLETED_STATUS_KEYWORDS.some((keyword) =>
+    normalized.includes(keyword)
+  );
+};
+
 const QuantumMiningPage = () => {
   const { user } = useAuth();
 
@@ -91,6 +280,10 @@ const QuantumMiningPage = () => {
   const [btcyPrice, setBtcyPrice] = useState(0);
   // Active order (crypto only)
   const [activeOrder, setActiveOrder] = useState<CryptoOrderData | null>(null);
+  const [pendingOrderId, setPendingOrderId] = useState<string | null>(null);
+  const [latestOrderSignal, setLatestOrderSignal] = useState<OrderSignal | null>(
+    null
+  );
 
   // Popups
   const [successOpen, setSuccessOpen] = useState(false);
@@ -98,8 +291,58 @@ const QuantumMiningPage = () => {
 
   // Socket
   const socketRef = useRef<unknown>(null);
+  const activeOrderRef = useRef<CryptoOrderData | null>(null);
+  const pendingOrderIdRef = useRef<string | null>(null);
 
   const handledReturnRef = useRef(false);
+
+  useEffect(() => {
+    activeOrderRef.current = activeOrder;
+  }, [activeOrder]);
+
+  useEffect(() => {
+    pendingOrderIdRef.current = pendingOrderId;
+  }, [pendingOrderId]);
+
+  const upsertLatestSignal = useCallback((signal: OrderSignal) => {
+    setLatestOrderSignal((prev) => {
+      if (!prev || prev.orderId !== signal.orderId) {
+        return signal;
+      }
+      return {
+        ...prev,
+        ...signal,
+      };
+    });
+  }, []);
+
+  const getTrackedOrderIds = useCallback(() => {
+    const ids = new Set<string>();
+    if (pendingOrderIdRef.current) {
+      ids.add(pendingOrderIdRef.current);
+    }
+    if (activeOrderRef.current?.orderId) {
+      ids.add(activeOrderRef.current.orderId);
+    }
+    return Array.from(ids);
+  }, []);
+
+  const finalizeOrder = useCallback(
+    (signal?: OrderSignal) => {
+      if (signal) {
+        upsertLatestSignal(signal);
+      }
+      setIsPaymentPopupOpen(false);
+      setFailOpen(false);
+      setSuccessOpen(true);
+      setActiveOrder(null);
+      setPendingOrderId(null);
+      activeOrderRef.current = null;
+      pendingOrderIdRef.current = null;
+      clearPayPalOrderData();
+    },
+    [upsertLatestSignal, clearPayPalOrderData]
+  );
 
   useEffect(() => {
     if (handledReturnRef.current) return;
@@ -134,6 +377,8 @@ const QuantumMiningPage = () => {
         return;
       }
 
+      setPendingOrderId(result.orderId);
+
       (async () => {
         try {
           const res = await getUserOrder({
@@ -141,51 +386,79 @@ const QuantumMiningPage = () => {
             orderId: result.orderId!,
           });
 
-          const body = (res.data as Record<string, unknown>) || {};
-          // Be flexible about shape
-          const statusUpper = (() => {
-            const status = body?.status as string;
-            if (status) return status.toUpperCase();
+          const body = res.data as unknown;
+          const bodyRecord =
+            typeof body === "object" && body !== null
+              ? (body as Record<string, unknown>)
+              : {};
 
-            const data = body?.data as Record<string, unknown>;
-            if (data?.status) return (data.status as string).toUpperCase();
+          const signal = buildOrderSignal(
+            bodyRecord,
+            result.orderId!,
+            bodyRecord
+          );
 
-            const order = body?.order as Record<string, unknown>;
-            if (order?.status) return (order.status as string).toUpperCase();
+          const fallbackStatus = (() => {
+            if (signal.status) return signal.status;
 
-            const purchaseUnits = body?.purchase_units as unknown[];
+            const directStatus = bodyRecord?.status;
+            if (typeof directStatus === "string" && directStatus) {
+              return directStatus;
+            }
+
+            const data = bodyRecord?.data as Record<string, unknown>;
+            if (data?.status && typeof data.status === "string") {
+              return data.status;
+            }
+
+            const order = bodyRecord?.order as Record<string, unknown>;
+            if (order?.status && typeof order.status === "string") {
+              return order.status;
+            }
+
+            const purchaseUnits = bodyRecord?.purchase_units as unknown[];
             if (purchaseUnits?.[0]) {
               const firstUnit = purchaseUnits[0] as Record<string, unknown>;
               const payments = firstUnit?.payments as Record<string, unknown>;
               const captures = payments?.captures as unknown[];
               if (captures?.[0]) {
                 const firstCapture = captures[0] as Record<string, unknown>;
-                if (firstCapture?.status)
-                  return (firstCapture.status as string).toUpperCase();
+                const captureStatus = firstCapture?.status;
+                if (typeof captureStatus === "string") {
+                  return captureStatus;
+                }
               }
             }
 
             return "";
           })();
 
-          if (
-            statusUpper === "COMPLETED" ||
-            statusUpper === "APPROVED" ||
-            statusUpper === "CAPTURED"
-          ) {
-            setSuccessOpen(true);
+          const normalizedStatus = signal.status || fallbackStatus;
+          const withStatus: OrderSignal = {
+            ...signal,
+            status: normalizedStatus,
+          };
+
+          upsertLatestSignal(withStatus);
+
+          if (isCompletedStatus(normalizedStatus)) {
+            finalizeOrder(withStatus);
           } else {
             setFailOpen(true);
+            setPendingOrderId(null);
+            pendingOrderIdRef.current = null;
+            clearPayPalOrderData();
           }
         } catch (e) {
           console.error("getUserOrder failed:", e);
           setFailOpen(true);
-        } finally {
+          setPendingOrderId(null);
+          pendingOrderIdRef.current = null;
           clearPayPalOrderData();
         }
       })();
     }
-  }, [user?.email]);
+  }, [finalizeOrder, upsertLatestSignal, user?.email]);
 
   const handlePayAmountChange = (value: string) => {
     setPayAmount(value);
@@ -237,20 +510,77 @@ const QuantumMiningPage = () => {
       onDisconnect: () => console.log("ws disconnected"),
       onOrderCreated: (data) => console.log("order:created", data),
       onPaymentWatching: (data) => console.log("payment:watching", data),
-      onPaymentPending: (data) => console.log("payment:pending", data),
+      onPaymentPending: (data) => {
+        console.log("payment:pending", data);
+        const tracked = getTrackedOrderIds();
+        if (!tracked.length) return;
+        const signal = findOrderSignal(data, tracked);
+        if (signal) {
+          upsertLatestSignal({
+            ...signal,
+            status: signal.status || "PENDING",
+          });
+        }
+      },
       onOrderConfirmed: (data) => {
         console.log("order:confirmed", data);
-        setIsPaymentPopupOpen(false);
-        setSuccessOpen(true);
-        setActiveOrder(null);
+        const tracked = getTrackedOrderIds();
+        if (!tracked.length) return;
+        let signal = findOrderSignal(data, tracked);
+        if (
+          !signal &&
+          data &&
+          typeof data === "object" &&
+          "orderId" in data &&
+          data.orderId
+        ) {
+          const orderId = String(data.orderId);
+          if (tracked.includes(orderId)) {
+            signal = buildOrderSignal(
+              data as Record<string, unknown>,
+              orderId,
+              data
+            );
+          }
+        }
+        if (signal) {
+          finalizeOrder({
+            ...signal,
+            status: signal.status || "COMPLETED",
+          });
+        }
       },
       onOrderExpired: (data) => {
         console.log("order:expired", data);
-        setIsPaymentPopupOpen(false);
-        setFailOpen(true);
-        setActiveOrder(null);
+        const tracked = getTrackedOrderIds();
+        if (!tracked.length) return;
+        const signal = findOrderSignal(data, tracked);
+        if (signal) {
+          upsertLatestSignal({
+            ...signal,
+            status: signal.status || "EXPIRED",
+          });
+          setIsPaymentPopupOpen(false);
+          setActiveOrder(null);
+          activeOrderRef.current = null;
+          setPendingOrderId(null);
+          pendingOrderIdRef.current = null;
+          setFailOpen(true);
+          clearPayPalOrderData();
+        }
       },
-      onOrdersUpdate: (data) => console.log("orders:update", data),
+      onOrdersUpdate: (data) => {
+        console.log("orders:update", data);
+        const tracked = getTrackedOrderIds();
+        if (!tracked.length) return;
+        const signal = findOrderSignal(data, tracked);
+        if (signal) {
+          upsertLatestSignal(signal);
+          if (isCompletedStatus(signal.status)) {
+            finalizeOrder(signal);
+          }
+        }
+      },
     };
 
     const socket = createQuantumSocket(user.email, socketHandlers);
@@ -260,7 +590,7 @@ const QuantumMiningPage = () => {
       socket.disconnect();
       socketRef.current = null;
     };
-  }, [user?.email]);
+  }, [finalizeOrder, getTrackedOrderIds, upsertLatestSignal, user?.email]);
 
   const trimmedPayAmount = payAmount.trim();
   const numericPayAmount = Number(trimmedPayAmount);
@@ -287,6 +617,10 @@ const QuantumMiningPage = () => {
       setIsPaymentPopupOpen(false);
       return;
     }
+
+    setFailOpen(false);
+    setSuccessOpen(false);
+    setLatestOrderSignal(null);
 
     try {
       // Build payload "based on the above data"
@@ -337,6 +671,35 @@ const QuantumMiningPage = () => {
         };
         storePayPalOrderData(stash);
 
+        if (stash.orderId) {
+          setPendingOrderId(stash.orderId);
+          pendingOrderIdRef.current = stash.orderId;
+          const amountNumeric = toNumeric(
+            data?.orderAmount ?? data?.amount ?? payload.amount
+          );
+          const currency =
+            typeof data?.orderCurrency === "string" && data.orderCurrency
+              ? (data.orderCurrency as string)
+              : selectedPaymentOption === "USD"
+              ? "USD"
+              : undefined;
+          const orderTypeValue =
+            (typeof data?.orderType === "string" && data.orderType) || "Quantum";
+          const paymentTypeValue =
+            (typeof data?.paymentType === "string" && data.paymentType) ||
+            selectedPaymentOption;
+
+          upsertLatestSignal({
+            orderId: stash.orderId,
+            status: "PENDING",
+            amount: amountNumeric,
+            currency,
+            paymentType: paymentTypeValue,
+            orderType: orderTypeValue,
+            raw: data,
+          });
+        }
+
         window.location.href = approve;
         return;
       }
@@ -352,13 +715,31 @@ const QuantumMiningPage = () => {
         blockchain: data.blockchain as "Ethereum" | "Solana",
       };
 
+      setPendingOrderId(order.orderId);
+      pendingOrderIdRef.current = order.orderId;
+      upsertLatestSignal({
+        orderId: order.orderId,
+        status: "PENDING",
+        amount: order.amount,
+        currency: selectedPaymentOption,
+        paymentType: selectedPaymentOption,
+        orderType: "Quantum",
+        raw: order,
+      });
       setActiveOrder(order);
       setErrors({});
       setIsPaymentPopupOpen(true);
     } catch (err: unknown) {
       console.error("Order create failed", err);
       setFailOpen(true);
+      setPendingOrderId(null);
+      pendingOrderIdRef.current = null;
     }
+  };
+
+  const handleCloseSuccess = () => {
+    setSuccessOpen(false);
+    setLatestOrderSignal(null);
   };
 
   return (
@@ -804,7 +1185,8 @@ const QuantumMiningPage = () => {
 
       <SuccessPopup
         isOpen={successOpen}
-        onClose={() => setSuccessOpen(false)}
+        onClose={handleCloseSuccess}
+        orderSummary={latestOrderSignal || undefined}
       />
       <UnsuccessPopup isOpen={failOpen} onClose={() => setFailOpen(false)} />
     </div>
