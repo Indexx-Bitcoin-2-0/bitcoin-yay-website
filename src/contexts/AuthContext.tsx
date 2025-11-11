@@ -55,7 +55,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setUser(userData);
   };
 
+  const clearBrowserStorage = () => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    try {
+      window.localStorage.clear();
+    } catch (error) {
+      console.warn("Unable to clear localStorage during logout", error);
+    }
+
+    try {
+      window.sessionStorage.clear();
+    } catch (error) {
+      console.warn("Unable to clear sessionStorage during logout", error);
+    }
+  };
+
   const logout = () => {
+    clearBrowserStorage();
     clearAuthData();
     setUser(null);
   };

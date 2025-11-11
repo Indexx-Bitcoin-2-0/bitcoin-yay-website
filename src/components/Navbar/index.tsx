@@ -422,6 +422,38 @@ const BalanceInfoModal: React.FC<BalanceInfoModalProps> = ({
 };
 
 const BALANCE_MODAL_CONTENT = balanceCopy.modals;
+const LOGOUT_REDIRECT_PATH = (() => {
+  const rawBasePath = process.env.NEXT_PUBLIC_BASE_PATH?.trim();
+
+  if (!rawBasePath || rawBasePath === "/" || rawBasePath === ".") {
+    return "/";
+  }
+
+  const prefixedPath = rawBasePath.startsWith("/")
+    ? rawBasePath
+    : `/${rawBasePath}`;
+
+  return prefixedPath.endsWith("/") && prefixedPath.length > 1
+    ? prefixedPath.slice(0, -1)
+    : prefixedPath;
+})();
+
+const redirectToBasePath = (router: ReturnType<typeof useRouter>) => {
+  const sanitizedPath =
+    !LOGOUT_REDIRECT_PATH || LOGOUT_REDIRECT_PATH === "/"
+      ? "/"
+      : LOGOUT_REDIRECT_PATH;
+
+  if (typeof window !== "undefined") {
+    const targetUrl = sanitizedPath.startsWith("http")
+      ? sanitizedPath
+      : `${window.location.origin.replace(/\/$/, "")}${sanitizedPath}`;
+    window.location.assign(targetUrl);
+    return;
+  }
+
+  router.push(sanitizedPath);
+};
 
 // Main component
 const Navbar: React.FC = () => {
@@ -438,6 +470,7 @@ const Navbar: React.FC = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const currentPath = usePathname();
+  const router = useRouter();
 
   // Auth related states
   const { user, isAuthenticated, logout } = useAuth();
@@ -566,6 +599,8 @@ const Navbar: React.FC = () => {
     setIsBalanceLoading(false);
     setActiveBalanceModal(null);
     balanceTriggerRef.current = null;
+    closeMobileMenu();
+    redirectToBasePath(router);
   };
 
   // Initial check for dropdown visibility
@@ -1086,10 +1121,7 @@ const Navbar: React.FC = () => {
                   <span className="text-tertiary">{user.email}</span>
                 </div>
                 <button
-                  onClick={() => {
-                    handleLogout();
-                    closeMobileMenu();
-                  }}
+                  onClick={handleLogout}
                   className="hover:text-primary text-tertiary cursor-pointer"
                 >
                   Logout

@@ -6,6 +6,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { getCaptainBeeByEmail, loginWithToken, decodeJWT } from "@/lib/signInToken";
 import type { User } from "@/lib/auth";
 
+const SIGN_IN_TOKEN_PARAM = "signInToken";
+
 interface TokenPayload {
   email?: string;
   userType?: string;
@@ -20,6 +22,32 @@ const buildRedirectUrl = (pathname: string, params: URLSearchParams): string => 
   return nextQuery ? `${pathname}?${nextQuery}` : pathname;
 };
 
+const removeSignInTokenFromUrl = (fallbackPath?: string) => {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  try {
+    const url = new URL(window.location.href);
+    if (!url.searchParams.has(SIGN_IN_TOKEN_PARAM) && !fallbackPath) {
+      return;
+    }
+
+    url.searchParams.delete(SIGN_IN_TOKEN_PARAM);
+    const cleanedSearch = url.searchParams.toString();
+    const nextPath =
+      fallbackPath ??
+      `${url.pathname}${cleanedSearch ? `?${cleanedSearch}` : ""}${url.hash}`;
+
+    window.history.replaceState({}, "", nextPath);
+  } catch (error) {
+    console.warn("Failed to strip signInToken from URL", error);
+    if (fallbackPath) {
+      window.history.replaceState({}, "", fallbackPath);
+    }
+  }
+};
+
 export const useSignInTokenLogin = (): void => {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -30,7 +58,7 @@ export const useSignInTokenLogin = (): void => {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const token = searchParams.get("signInToken");
+    const token = searchParams.get(SIGN_IN_TOKEN_PARAM);
     if (!token) return;
 
     const hasRedirected = window.localStorage.getItem("redirected");
@@ -104,11 +132,12 @@ export const useSignInTokenLogin = (): void => {
           window.localStorage.setItem("username", userData.username);
         }
 
-        paramsSnapshot.delete("signInToken");
+        paramsSnapshot.delete(SIGN_IN_TOKEN_PARAM);
         const nextUrl = buildRedirectUrl(pathname, paramsSnapshot);
-        router.replace(nextUrl, { scroll: false });
+        removeSignInTokenFromUrl(nextUrl);
+        await router.replace(nextUrl, { scroll: false });
 
-        window.location.reload();
+        window.location.replace(nextUrl);
       } catch (error) {
         console.error("Automatic login with signInToken failed", error);
         activeTokenRef.current = null;
