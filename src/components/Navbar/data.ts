@@ -222,8 +222,8 @@ const header_data = [
     mainTextDesktop: "Eco",
     mainTextMob: "Eco",
     active: false,
-    href: "https://indexx.ai",
-    openInNewTab: true,
+    href: "/btcy-indexx-relationship",
+    openInNewTab: false,
     hasMegaDrop: true,
     dropDownContent: [
       {
@@ -351,13 +351,13 @@ const header_data = [
       },
     ],
   },
-  
+
   {
     mainTextDesktop: "WIBS",
     mainTextMob: "WIBS",
     active: false,
-    href: "https://whoisbitcoinsatoshi.wtf",
-    openInNewTab: true,
+    href: "/btcy-wibs-relationship",
+    openInNewTab: false,
     hasMegaDrop: true,
     dropDownContent: [
       {
