@@ -165,73 +165,13 @@ export default function Home() {
       {/* Part 01 */}
       <HeroComponent />
 
-      <div
-        id="download-app"
-        className="mt-120 md:mt-40 lg:mt-120 relative flex flex-col items-center justify-center"
-      >
-        {/* <Image
-          src={BirthdayBanner}
-          alt="Birthday Banner"
-          className="w-full hidden lg:block"
-        />
-         <Image
-          src={BirthdayBannerTablet}
-          alt="Birthday Banner"
-          className="w-full hidden md:block lg:hidden"
-        />
-        
-        <Image
-          src={BirthdayBannerMobile}
-          alt="Birthday Banner"
-          className="w-full md:hidden"
-        />
-        <div className="flex justify-center items-center mt-10 md:mt-20 lg:-mt-50 xl:-mt-64 2xl:-mt-80 lg:ml-10">
-          <CustomButton2
-            image={RegisterButtonImage}
-            text="REGISTER NOW!"
-            link="/airdrop"
-            imageStyling="w-30 md:w-30 xl:w-40"
-          />
-        </div> */}
-        {/* <Link
-          href="/airdrop"
-          className="mb-10 mt-4 absolute bottom-40 md:-bottom-20 xl:-bottom-10 "
-        >
-          <button className="border-2 border-primary text-primary px-4 py-2 md:py-4 rounded-md flex items-center justify-center cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
-            <p className="text-primary text-2xl md:text-3xl xl:text-4xl font-semibold">
-              COUNT ME IN
-            </p>
-          </button>
-        </Link> */}
-        {/* <div className="mt-10 flex flex-col md:flex-row gap-10 md:gap-20 justify-center items-center">
-          <Link
-            href="https://apps.apple.com/ph/app/bitcoin-yay/id6744868017"
-            target="_blank"
-          >
-            <Image
-              src={ApplestoreDownloadButton}
-              alt="Get on Apple Store"
-              className="w-64 h-24 mt-10 hover:scale-105 transition-transform duration-300 ease-in-out"
-            />
-          </Link>
-          <Link
-            href="https://play.google.com/store/apps/details?id=com.bitcoin2&hl=en"
-            target="_blank"
-          >
-            <Image
-              src={PlaystoreDownloadButton}
-              alt="Get on Play Store"
-              className="w-64 h-24 mt-10 hover:scale-105 transition-transform duration-300 ease-in-out"
-            />
-          </Link>
-        </div> */}
-      </div>
+
 
       {/* Mining Navigation button #######################################################################################  */}
-      <div className="flex mt-40 mb-40 gap-30 flex-wrap justify-center items-center max-w-5xl mx-auto">
+      <div className="flex mt-40 mb-40 gap-30 flex-wrap justify-center max-w-7xl mx-auto">
         <Link
           href="/mining/free-mining"
-          className="flex flex-col items-center justify-center group"
+          className="flex flex-col items-center justify-start group"
         >
           <div className="h-32 flex justify-center items-center">
             <Image
@@ -241,15 +181,20 @@ export default function Home() {
             />
           </div>
           <p className="mt-4 text-lg font-semibold group-hover:text-primary">
-            FREE MINING
+            SNATCH MINING
           </p>
+          <p className="mt-2 text-base text-white">Free</p>
+          <p className="mt-2 text-sm text-white max-w-xs text-center">
+            Mine BTCY for free no rigs, no costs, just tap and earn directly from your phone.
+          </p>
+
         </Link>
         <button
           type="button"
           onClick={() => setIsPowerMiningActive(!isPowerMiningActive)}
-          className="flex flex-col items-center justify-center group cursor-pointer"
+          className="flex flex-col items-center justify-start group cursor-pointer"
         >
-          <div className="h-32 flex justify-center items-center">
+          <div className="h-32 flex justify-center items-center" >
             <Image
               src={PowerMiningButtonImage}
               alt="Electric Mining"
@@ -257,16 +202,19 @@ export default function Home() {
             />
           </div>
           <p
-            className={`mt-4 text-lg font-semibold group-hover:text-primary ${
-              isPowerMiningActive ? "text-primary" : ""
-            }`}
+            className={`mt-4 text-lg font-semibold group-hover:text-primary ${isPowerMiningActive ? "text-primary" : ""
+              }`}
           >
             POWER MINING
+          </p>
+          <p className="mt-2 text-base text-white">Subscribe</p>
+          <p className="mt-2 text-sm text-white max-w-xs text-center">
+            Upgrade your mining speed up to 6x earn faster, reach Alchemy sooner, and maximize every session.
           </p>
         </button>
         <Link
           href="/mining/quantum-mining"
-          className="flex flex-col items-center justify-center group"
+          className="flex flex-col items-center justify-start group "
         >
           <div className="h-32 flex justify-center items-center">
             <Image
@@ -275,58 +223,79 @@ export default function Home() {
               className="w-56 group-hover:scale-105 transition-all duration-300 mb-4"
             />
           </div>
-          <p className="mt-2 text-lg font-semibold group-hover:text-primary">
+          <p className="mt-4 text-lg font-semibold group-hover:text-primary">
             QUANTUM MINING
+          </p>
+          <p className="mt-2 text-base text-white">Buy</p>
+          <p className="mt-2 text-sm text-white max-w-xs text-center">
+            Get tradable BTCY instantly skip the 100K grind and unlock real-time access to BTCY's value.
           </p>
         </Link>
         {isPowerMiningActive && (
-          <div className="flex flex-wrap gap-30 items-center justify-center">
-            <Link
-              href="/mining/electric-mining"
-              className="flex flex-col items-center justify-center group"
-            >
-              <div className="h-32 flex justify-center items-center">
-                <Image
-                  src={ElectricMiningButtonImage}
-                  alt="Electric Mining"
-                  className="w-18 group-hover:scale-105 transition-all duration-300"
-                />
-              </div>
-              <p className="mt-2 text-lg font-semibold group-hover:text-primary">
-                ELECTRIC
-              </p>
-            </Link>
-            <Link
-              href="/mining/turbo-mining"
-              className="flex flex-col items-center justify-center group"
-            >
-              <div className="h-32 flex justify-center items-center">
-                <Image
-                  src={TurbineMiningButtonImage}
-                  alt="Electric Mining"
-                  className="w-28 group-hover:scale-105 transition-all duration-300"
-                />
-              </div>
-              <p className="mt-2 text-lg font-semibold group-hover:text-primary">
-                TURBO
-              </p>
-            </Link>
-            <Link
-              href="/mining/nuclear-mining"
-              className="flex flex-col items-center justify-center group"
-            >
-              <div className="h-32 flex justify-center items-center">
-                <Image
-                  src={NuclearMiningButtonImage}
-                  alt="Electric Mining"
-                  className="w-30 group-hover:scale-105 transition-all duration-300"
-                />
-              </div>
-              <p className="mt-2 text-lg font-semibold group-hover:text-primary">
-                NUCLEAR
-              </p>
-            </Link>
-          </div>
+          <>
+            <div className="w-full text-center mt-20 mb-10">
+              <h2 className="text-3xl md:text-4xl font-bold text-white">
+                3 Subscriptions Power Mining Plans
+              </h2>
+            </div>
+            <div className="flex flex-wrap gap-30  justify-center w-full">
+              <Link
+                href="/mining/electric-mining"
+                className="flex flex-col items-center justify-center group"
+              >
+                <div className="h-32 flex justify-center items-center">
+                  <Image
+                    src={ElectricMiningButtonImage}
+                    alt="Electric Mining"
+                    className="w-18 group-hover:scale-105 transition-all duration-300"
+                  />
+                </div>
+                <p className="mt-2 text-lg font-semibold group-hover:text-primary">
+                  ELECTRIC MINING
+                </p>
+                <p className="mt-2 text-sm text-white max-w-xs text-center">
+                  Charge your mining speed with extra power double your earning rate and keep your sessions running stronger, longer.
+                </p>
+              </Link>
+              <Link
+                href="/mining/turbo-mining"
+                className="flex flex-col items-center justify-start group "
+              >
+                <div className="h-32 flex justify-center items-center ">
+                  <Image
+                    src={TurbineMiningButtonImage}
+                    alt="Electric Mining"
+                    className="w-28 group-hover:scale-105 transition-all duration-300"
+                  />
+                </div>
+                <p className="mt-2 text-lg font-semibold group-hover:text-primary">
+                  TURBO MINING
+                </p>
+                <p className="mt-2 text-sm text-white max-w-xs text-center">
+                  Experience 6x faster mining climb to Alchemy in record time and multiply your BTCY rewards.
+                </p>
+              </Link>
+              <Link
+                href="/mining/nuclear-mining"
+                className="flex flex-col items-center justify-start group "
+              >
+                <div className="h-32 flex justify-center items-center ">
+                  <Image
+                    src={NuclearMiningButtonImage}
+                    alt="Electric Mining"
+                    className="w-30 group-hover:scale-105 transition-all duration-300"
+                  />
+                </div>
+                <p className="mt-2 text-lg font-semibold group-hover:text-primary">
+                  NUCLEAR MINING
+                </p>
+                <p className="mt-2 text-sm text-white max-w-xs text-center">
+                  The ultimate boost maximum power, maximum output. Unlock BTCY's highest earning potential with unstoppable mining energy.
+                </p>
+              </Link>
+            </div>
+          </>
+
         )}
       </div>
 
@@ -495,6 +464,18 @@ export default function Home() {
             <p className="text-tertiary mt-10 text-lg max-w-86 text-center">
               Scan or Click on the QR to Download from the Apple Store
             </p>
+            <div className="flex flex-col items-center justify-center mt-10">
+              <CustomButton2
+                image={DownloadLogo}
+                text="Download the Mining App"
+                onClick={() => {
+                  window.open(
+                    "https://apps.apple.com/ph/app/bitcoin-yay/id6744868017",
+                    "_blank"
+                  );
+                }}
+              />
+            </div>
           </div>
           <div
             className="flex flex-col items-center justify-center"
@@ -523,6 +504,18 @@ export default function Home() {
             <p className="text-tertiary mt-10 text-lg max-w-86 text-center">
               Scan or Click on the QR to Download from the Google Play
             </p>
+            <div className="flex flex-col items-center justify-center mt-10">
+              <CustomButton2
+                image={DownloadLogo}
+                text="Download the Mining App"
+                onClick={() => {
+                  window.open(
+                    "https://play.google.com/store/apps/details?id=com.bitcoin2&hl=en",
+                    "_blank"
+                  );
+                }}
+              />
+            </div>
           </div>
         </div>
 
