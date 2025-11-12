@@ -15,21 +15,19 @@ import Whitepaper06 from "@/assets/images/whitepaper/whitepaper-06.svg";
 import Whitepaper07 from "@/assets/images/whitepaper/whitepaper-066.svg";
 import Whitepaper08 from "@/assets/images/whitepaper/whitepaper-07.svg";
 import Whitepaper09 from "@/assets/images/whitepaper/whitepaper-08.svg";
-// import Whitepaper10 from "@/assets/images/whitepaper/whitepaper-09.svg";
-// import Whitepaper11 from "@/assets/images/whitepaper/whitepaper-10.svg";
 
 export const metadata = {
-  title: "Bitcoin Yay Whitepaper - Technical Documentation & Tokenomics",
+  title: "Bitcoin Yay Whitepaper - A Decentralized Micro-Value Ecosystem",
   description:
     "Read the official Bitcoin Yay whitepaper covering technical architecture, tokenomics, AI-powered mobile mining, and blockchain ecosystem. Learn about BTCY's 21 trillion token supply and Proof-of-Participation mechanism.",
   openGraph: {
-    title: "Bitcoin Yay Whitepaper - Technical Documentation & Tokenomics",
+    title: "Bitcoin Yay Whitepaper - A Decentralized Micro-Value Ecosystem",
     description:
       "Read the official Bitcoin Yay whitepaper covering technical architecture, tokenomics, AI-powered mobile mining, and blockchain ecosystem. Learn about BTCY's 21 trillion token supply and Proof-of-Participation mechanism.",
   },
 };
 
-export default function whitepaper() {
+export default function Whitepaper() {
   return (
     <div className=" mx-auto max-w-[90vw] lg:px-10 py-8 mt-40">
       <CustomStyledConatiner>
@@ -42,114 +40,153 @@ export default function whitepaper() {
       </CustomStyledConatiner>
       <div className="md:p-10 lg:p-18">
         <InfoSection
-          title="Bitcoin-Yay: A Decentralized Ecosystem Coin"
-          desc="Abstract"
-          endingLine="Bitcoin-Yay (BTCY) is a decentralized cryptocurrency designed as the foundation of a next-generation blockchain ecosystem. Built on the Stellar blockchain, Bitcoin-Yay enables fast, low-cost transactions while incorporating features like AI-driven mining, smart contracts, and decentralized governance. This white paper details the design, implementation, tokenomics, security, and governance of Bitcoin-Yay, aiming to create a sustainable, community-driven financial network."
+          title="Bitcoin-Yay (BTCY): A Decentralized Micro-Value Ecosystem"
+
+
         />
         <InfoSection
-          desc=" Relationship with Bitcoin:"
-          endingLine="Bitcoin-Yay follows Bitcoin’s market performance while being backed by the Indexx Trading Bot to maintain value stability and market efficiency."
+          desc="Whitepaper"
+          endingLine="Status: Off-chain Beta today. Testnet and mainnet (Stellar-fork + Soroban) are in development. Features/timelines may evolve."
         />
+        <InfoSection
+          desc="Abstract"
+          endingLine="Bitcoin-Yay (BTCY) is a micro-value currency designed to move small amounts fast and cheaply, then settle to an on-chain ledger. BTCY will launch on a Stellar-based chain (planned fork) to leverage low fees, fast finality, and Soroban smart contracts. The ecosystem pairs AI-assisted Proof-of-Participation (PoP) mining, on-chain governance, and a dual-balance model (off-chain &quot;BTCY Nugget&quot; → on-chain &quot;BTCY Token&quot;). This preview outlines the design, tokenomics, security posture, and a phased roadmap from today's off-chain beta to mainnet."
+        />
+
+
         <div className="flex justify-center items-center my-30">
           <Image src={Whitepaper01} alt="Whitepaper-01" />
         </div>
+
         <InfoSection
           title="1. Introduction"
-          endingLine="The cryptocurrency industry has evolved significantly, but challenges such as scalability, transaction fees, and sustainability persist. Bitcoin-Yay seeks to address these by leveraging Stellar’s high-performance blockchain and incorporating AI-based mechanisms for mining, governance, and transactions.Bitcoin-Yay serves as the core currency within the ecosystem, powering transactions, governance, rewards, and decentralized finance (DeFi) applications. Unlike traditional proof-of-work (PoW) blockchains, Bitcoin-Yay adopts a Proof-of-Participation (PoP) model, making it more energy-efficient and inclusive. Bitcoin-Yay follows Bitcoin’s performance while being backed by the Indexx Trading Bot to maintain value stability and market efficiency."
+          desc="Many users are priced out of everyday crypto due to fees, latency, and UX hurdles. BTCY targets that gap with:"
+          content={
+            <>
+              <CustomListItem content="PoP mining (mobile both iOS and Android) instead of energy-heavy PoW." />
+              <CustomListItem content="Planned Stellar-fork for speed/finality; Soroban for programmability." />
+              <CustomListItem content="A dual-balance migration: off-chain accruals today; on-chain ownership after compliance and mainnet." />
+            </>
+          }
         />
+
+        <CustomP start="Important: BTCY's market behavior tracks Bitcoin thematically (1 BTC = 1,000,000 BTCY as a micro-unit framing), not a legal peg or guarantee. Market-making and liquidity tools (e.g., Indexx bots) may support liquidity, not price promises." />
 
         <div className="flex justify-center items-center my-30">
           <Image src={Whitepaper02} alt="Whitepaper-02" />
         </div>
 
         <InfoSection
-          title="2. Core Features of Bitcoin-Yay"
-          desc="2.1 Fast and Scalable Transactions"
+          title="2. Core Features"
+          desc="2.1 Fast & Low-Cost Settlement (Coming Soon: mainnet)"
           content={
             <>
-              <CustomListItem content="Built on the Stellar blockchain, enabling 1,000+ transactions per second (TPS)." />
-              <CustomListItem content="Low-cost transactions due to Stellar's efficient consensus model." />
-              <CustomListItem content="Supports cross-border payments and remittances." />
+              <CustomListItem content="Stellar-family consensus with sub-second confirmation targets and low fees." />
+              <CustomListItem content="Cross-border friendly; built for micro-payments and in-app actions." />
+            </>
+          }
+        />
+
+        <InfoSection
+          desc="2.2 AI-Assisted Proof-of-Participation (PoP)"
+          content={
+            <>
+              <CustomListItem content="Users earn Nugget (off-chain balance) via presence, quests, referrals, and anti-bot-checked sessions." />
+              <CustomListItem content="No energy-intensive mining; runs on iOS/Android." />
+            </>
+          }
+        />
+
+        <InfoSection
+          desc="2.3 Smart Contracts with Soroban (Coming Soon)"
+          content={
+            <>
+              <CustomListItem content="Programmable assets: staking, rewards, on-chain governance." />
+              <CustomListItem content="Low execution cost vs. legacy L1s." />
+              <CustomListItem content="(Removed misleading claim) No native ZKPs in v1; privacy features may arrive later through audited contracts or external proofs." />
+            </>
+          }
+        />
+
+        <InfoSection
+          desc="2.4 Governance (DAO)"
+          content={
+            <>
+              <CustomListItem content="Off-chain voting today for proposals and roadmapping." />
+              <CustomListItem content="On-chain voting & treasury after mainnet with transparent metrics (coming soon)." />
+            </>
+          }
+        />
+
+        <InfoSection
+          desc="2.5 Interoperability (Roadmap)"
+          content={
+            <>
+              <CustomListItem content="Bridges to BTCY other chains (Ethereum/BSC/Solana) are planned after mainnet stability and audits." />
+              <CustomListItem content="Separate brand assets (e.g., WiBS meme coin) may interoperate through governed bridges." />
+            </>
+          }
+        />
+
+        <InfoSection
+          desc="2.6 Security & Sustainability"
+          content={
+            <>
+              <CustomListItem content="Federated Byzantine Agreement (FBA)—quorum slices, fast finality." />
+              <CustomListItem content="Validator onboarding with KYC/attestation in early phases → progressive decentralization." />
+              <CustomListItem content="Continuous monitoring for Sybil/bot activity and fraud." />
             </>
           }
         />
         <InfoSection
-          desc="2.2 AI-Powered Proof-of-Participation (PoP) Mining"
+          desc="2.7 Product Ecosystem (What's Live vs Coming)"
+
           content={
             <>
-              <CustomListItem content="6-Hour Mining Sessions: Users participate in mining sessions lasting 6 hours each (replacing any previous 24-hour session concept)." />
-              <CustomListItem content="AI-based mining replaces traditional mining mechanisms." />
-              <CustomListItem content="Users earn BTCY through engagement, transactions, and holding tokens." />
-              <CustomListItem content="Mobile/web mining similar to Pi Network—lightweight and energy efficient." />
+              <CustomP start="Live (Off-chain Beta):" />
+              <CustomListItem content="BTCY Mining App (PoP sessions, fraud checks, subscription boosts)." />
+              <CustomListItem content="Nugget Ledger (off-chain accruals)." />
+              <CustomListItem content="Linked Accounts Hub (up to 5 linked accounts; shared checks)." />
             </>
           }
         />
         <InfoSection
-          desc="2.3 Earn BTCY Power by Watching Ads"
+          desc="2.8 Coming Soon"
           content={
             <>
-              <CustomListItem content="Users can earn BTCY mining power by watching daily ads in the Indexx ecosystem." />
-              <CustomListItem content="Watching up to 25 ads per day grants bonus mining time or boosted power." />
-              <CustomListItem content="Rewards scale with streaks (e.g., 6 hours on Day 1 and increasing bonuses) as defined in the Daily Ads logic." />
+              <CustomListItem content="Indexx Exchange integrations for BTCY pairs." />
+              <CustomListItem content="Block Explorer (chain metrics, tx history)." />
+              <CustomListItem content="Developer Hub (docs, SDKs, grants)." />
+              <CustomListItem content="Shop / Pay / Browser / Social (ship in waves after core is stable)." />
+              <CustomListItem content="Indexx Brainstorm / DAO Hive (on-chain governance + funding)." />
             </>
           }
+          endingLine="We’re deliberately staging launches. Utility beats breadth."
         />
-        <InfoSection
-          desc="2.4 Smart Contracts via Soroban"
-          content={
-            <>
-              <CustomListItem content="Enables programmable transactions and decentralized applications (dApps)." />
-              <CustomListItem content="Supports automated staking, lending, and DeFi protocols." />
-              <CustomListItem content="Low execution costs compared to Ethereum's gas fees." />
-            </>
-          }
-        />
-        <InfoSection
-          desc="2.5 Decentralized Governance (DAO)"
-          content={
-            <>
-              <CustomListItem content="Token-based voting allows community participation in decision-making." />
-              <CustomListItem content="Holders of BTCY can propose and vote on ecosystem upgrades." />
-              <CustomListItem content="No centralized authority—fully decentralized decision-making." />
-            </>
-          }
-        />
-        <InfoSection
-          desc="2.6 Interoperability & Cross-Chain Compatibility"
-          content={
-            <>
-              <CustomListItem content="Seamless asset bridging between Bitcoin-Yay, Bitcoin-YeeHaw (stablecoin), WiBS (meme coin), and Bitcoin YAY NFT." />
-              <CustomListItem content="Integrates with major Ethereum, Binance Smart Chain, and Solana networks." />
-            </>
-          }
-        />
-        <InfoSection
-          desc="2.7 Security & Sustainability"
-          content={
-            <>
-              <CustomListItem content="Stellar's Federated Byzantine Agreement (FBA) ensures high security." />
-              <CustomListItem content="Transactions validated by trusted nodes prevent attacks." />
-              <CustomListItem content="Self-sustaining economic model with long-term sustainability." />
-            </>
-          }
-        />
+
+
+
+
+
+
+
         <div className="flex justify-center items-center my-30">
-          <Image src={Whitepaper03} alt="Whitepaper-03" />
+          <Image src={Whitepaper04} alt="Whitepaper-04" />
         </div>
+
         <InfoSection
-          title="3. Product Ecosystem"
-          desc="Indexx Mining App / Bitcoin YAY Mining App"
+          title="3. Technical Architecture"
+          desc="Consensus"
           content={
             <>
-              <CustomListItem content="AI-powered mining algorithm with 6-hour mining sessions." />
-              <CustomListItem content="Fraud detection to prevent bot-based mining abuse." />
-              <CustomListItem content="Smart mining subscriptions for premium mining speeds." />
-              <CustomListItem content="Daily Ads Integration for earning BTCY Power." />
+              <CustomListItem content="Planned Stellar-fork with FBA." />
+              <CustomListItem content="Early validator set curated for reliability → expand to community as observability and economic security grow." />
             </>
           }
         />
+
         <InfoSection
-          desc="Indexx Wallet / Bitcoin Yay Wallet"
+          desc="Asset Model & Supply"
           content={
             <>
               <CustomListItem content="Multi-chain support for BTCY, BTC, ETH, INEX, and more." />
@@ -162,308 +199,281 @@ export default function whitepaper() {
           desc="Indexx CEX & DEX"
           content={
             <>
-              <CustomListItem content="Centralized and decentralized exchanges with AI-powered yield optimization, arbitrage trading, and real-time risk management." />
+              <CustomListItem content="Total Supply (fixed): 21,000,000,000,000 BTCY (21 trillion)" />
+              <CustomListItem content="Rationale: 1 BTC = 1,000,000 BTCY (micro-unit framing) × 21,000,000 BTC maximum → 21T BTCY." />
             </>
           }
         />
 
-        <CustomP start="(Other ecosystem components such as Indexx Block Explorer AI, Indexx AI Browser, Indexx Connect, Indexx Brainstorm AI, Indexx Shop, Indexx Pay, Indexx AI Smart Crypto, Indexx Developer Hub, Indexx Lotto, and Indexx DAO/Hive remain as in the original draft.)" />
-
-        <div className="flex justify-center items-center my-30">
-          <Image src={Whitepaper04} alt="Whitepaper-04" />
-        </div>
 
         <InfoSection
-          title="4. Technical Architecture"
-          desc="Consensus Mechanism"
+          desc="Genesis Allocation (illustrative, final TGE to publish pre-mainnet):"
           content={
             <>
-              <CustomListItem content="Federated Byzantine Agreement (FBA) allows fast, secure, and scalable consensus." />
-              <CustomListItem content="Eliminates energy-intensive mining." />
+              <CustomListItem content="50% Mining/Participation rewards (multi-year)" />
+              <CustomListItem content="20% Ecosystem/Grants/Community" />
+              <CustomListItem content="15% Liquidity/Market-making/Treasury" />
+              <CustomListItem content="10% Core Contributors (vesting)" />
+              <CustomListItem content="5% Reserves (security, emergencies)" />
+              <CustomListItem content="(Adjustable before TGE; will be finalized with audit.)" />
             </>
           }
         />
+
         <InfoSection
-          desc="Token Issuance & Distribution"
+          desc="Dual-Balance Flow (Live → Mainnet)"
           content={
             <>
-              <CustomListItem content="Native Stellar asset with a fixed total supply of 21 trillion BTCY (1 BTC = 1,000,000 BTCY)." />
-              <CustomListItem content="Distribution:" />
-              <CustomListItem content="50% - Mining Rewards (Proof-of-Participation)" />
-              <CustomListItem content="25% - Ecosystem Development" />
-              <CustomListItem content="10% - Community & DAO Treasury (Airdrop)" />
-              <CustomListItem content="10% - Partnerships & Marketing" />
-              <CustomListItem content="5% - Team & Advisors" />
+              <CustomListItem content="BTCY Nugget: off-chain, non-transferable accrual; records contribution history." />
+              <CustomListItem content="BTCY Token: on-chain asset minted/credited after compliance + conversion events (e.g., Alchemy upgrades, Quantum Mining purchases) post-mainnet." />
             </>
           }
         />
+
         <InfoSection
-          desc="Smart Contracts on Soroban"
+          desc="Smart Contracts (Soroban)"
           content={
             <>
-              <CustomListItem content="Automated staking, yield farming, and cross-chain transactions." />
-              <CustomListItem content="Programmable governance models." />
-            </>
-          }
-        />
-        <InfoSection
-          desc="Decentralized Identity & Privacy"
-          content={
-            <>
-              <CustomListItem content="Zero-Knowledge Proofs (ZKP) ensure transaction privacy." />
-              <CustomListItem content="Non-custodial wallets for user security." />
+              <CustomListItem content="Staking/rewards, vesting/conversions, DAO voting." />
+              <CustomListItem content="Security first: audits, guarded launches, circuit-breakers." />
+              <CustomListItem content="(Removed) &quot;ZKP by default.&quot; If/when privacy is added, it will be explicitly specified and audited." />
             </>
           }
         />
 
         <div className="flex justify-center items-center my-30">
-          <Image src={Whitepaper05} alt="Whitepaper-04" />
+          <Image src={Whitepaper05} alt="Whitepaper-05" />
         </div>
 
         <InfoSection
-          title="5. Economic Model & Tokenomics"
-          desc="Tokenomics"
+          title="4. Economic Model & Tokenomics"
+          desc="Price & Market Language"
           content={
             <>
-              <CustomListItem
-                title="Start Price: "
-                content="$0.10 (subject to market dynamics)."
-              />
-              <CustomListItem
-                title="Supply Model: "
-                content="Controlled emission with deflationary mechanisms."
-              />
-              <CustomListItem
-                title="Mining Rewards: "
-                content="AI-moderated to maintain balance and scarcity."
-              />
-              <CustomListItem
-                title="Session Length: "
-                content="All mining plans operate in 6-hour sessions, but rates below are expressed per hour for clarity."
-              />
+              <CustomListItem content="Remove hard &quot;Start Price $0.21.&quot;" />
+              <CustomListItem content="Use: &quot;Initial reference price and liquidity bands will be disclosed prior to listings.&quot;" />
+              <CustomListItem content="You can maintain a soft floor narrative in docs, but avoid guarantees." />
             </>
           }
         />
-        <InfoSection desc="5.1 Mining & Subscription Plans (Hourly Rates)" />
+
+        <InfoSection
+          desc="Emissions & Deflation"
+          content={
+            <>
+              <CustomListItem content="Controlled emissions via PoP schedules; anti-sybil controls to preserve scarcity." />
+              <CustomListItem content="Programmed reductions (e.g., annual halving or epoch-based step-downs)." />
+              <CustomListItem content="Optional burns sourced from app fees or treasury governance (subject to DAO approval)." />
+            </>
+          }
+        />
+
+        <InfoSection desc="Subscriptions" />
 
         <div className="overflow-x-auto my-10">
-          <table className="min-w-full bg-transparent border-collapse text-sm lg:text-xl lg:table-fixed">
+          <table className="min-w-full bg-transparent border-2 border-bg2 border-collapse text-sm lg:text-xl lg:table-fixed">
             <thead>
-              <tr className="">
-                <th className="py-2 px-2 md:py-3 md:px-4 text-left min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal">
+              <tr className="border-b-2 border-bg2">
+                <th className="py-2 px-2 md:py-3 md:px-4 text-left min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal border-r border-bg2 ">
                   Plan
                 </th>
-                <th className="py-2 px-2 sm:px-2 md:py-3 md:px-4 text-left min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal">
-                  Cost
+                <th className="py-2 px-2 sm:px-2 md:py-3 md:px-4 text-left min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal border-r border-bg2 ">
+                  Monthly Fee
                 </th>
-                <th className="py-2 px-2 sm:px-2 md:py-3 md:px-4 text-left min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal">
-                  Speed Boost
+                <th className="py-2 px-2 sm:px-2 md:py-3 md:px-4 text-left min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal border-r border-bg2 ">
+                  Speed / Output
                 </th>
-                <th className="py-2 px-2 sm:px-2 md:py-3 md:px-4 text-left min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal">
-                  Approx. Mining Rate*
-                </th>
-                <th className="py-2 px-2 sm:px-2 md:py-3 md:px-4 text-left min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal">
+                <th className="py-2 px-2 sm:px-2 md:py-3 md:px-4 text-left min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal ">
                   Key Benefits
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr className="my-6">
-                <td className="py-2 px-2 sm:px-0 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal align-top">
-                  Free Plan (&quot;Snatch Gopher&quot;)
+              <tr className="border-b border-bg2">
+                <td className="py-2 px-2 sm:px-0 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal align-top border-r border-bg2">
+                  Snatch (Free)
                 </td>
-                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal align-top">
+                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal align-top border-r border-bg2">
                   $0
                 </td>
-                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal align-top">
-                  1x
+                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal align-top border-r border-bg2">
+                  1x baseline
                 </td>
-                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal align-top">
-                  ~3 BTCY/hour
-                </td>
-                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal align-top">
-                  Every user can join this plan at no cost. To maintain free
-                  mining rewards, users may be asked to perform simple
-                  engagement activities (e.g., view a few ads daily or remain
-                  active in the app). This plan maximizes accessibility — even
-                  without any investment, a user can steadily accumulate BTCY
-                  through regular app use.
+                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal align-top">
+                  Standard mobile mining, ads, referral boosts
                 </td>
               </tr>
-              <tr className="my-6">
-                <td className="py-2 px-2 sm:px-0 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal align-top">
+              <tr className="border-b border-bg2">
+                <td className="py-2 px-2 sm:px-0 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal align-top border-r border-bg2">
                   Electric Power
                 </td>
-                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal align-top">
-                  $100 / month
+                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal align-top border-r border-bg2">
+                  $100/mo
                 </td>
-                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal align-top">
-                  3x
+                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal align-top border-r border-bg2">
+                  ≈ 9 BTCY/hour (≈ $0.90*)
                 </td>
-                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal align-top">
-                  ~9 BTCY / hour
-                </td>
-                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal align-top">
-                  Triples the free mining output. Subscribers earn tokens faster
-                  and enjoy perks such as priority in transaction processing
-                  (their transfers are slightly prioritized if the network is
-                  busy).
+                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal align-top">
+                  Always-on Electric tier, referral bonuses, priority support
                 </td>
               </tr>
-              <tr className="my-6">
-                <td className="py-2 px-2 sm:px-0 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal align-top">
+              <tr className="border-b border-bg2">
+                <td className="py-2 px-2 sm:px-0 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal align-top border-r border-bg2">
                   Turbo Power
                 </td>
-                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal align-top">
-                  $300 / month
+                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal align-top border-r border-bg2">
+                  $300/mo
                 </td>
-                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal align-top">
-                  6x
+                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal align-top border-r border-bg2">
+                  ≈ 18 BTCY/hour (≈ $1.80*)
                 </td>
-                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal align-top">
-                  ~18 BTCY / hour
-                </td>
-                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal align-top">
-                  Provides six times the free-plan output. Turbo users benefit
-                  from &quot;super speed&quot; mining and also get priority for
-                  withdrawals — if withdrawal queues occur, Turbo plan requests
-                  are processed before Free/Electric users.
+                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal align-top">
+                  Double Electric throughput, automated boosts, priority payouts
                 </td>
               </tr>
-              <tr className="my-6">
-                <td className="py-2 px-2 sm:px-0 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal align-top">
+              <tr className="border-b border-bg2">
+                <td className="py-2 px-2 sm:px-0 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal align-top border-r border-bg2">
                   Nuclear Power
                 </td>
-                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal align-top">
-                  $600 / month
+                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal align-top border-r border-bg2">
+                  $600/mo
                 </td>
-                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal align-top">
-                  9x
+                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal align-top border-r border-bg2">
+                  ≈ 27 BTCY/hour (≈ $2.70*)
                 </td>
-                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal align-top">
-                  ~27 BTCY / hour
-                </td>
-                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal align-top">
-                  Offers the highest standard mining rate with nine times the
-                  base output. Nuclear subscribers enjoy VIP support (dedicated
-                  customer service, faster issue resolution, and exclusive
-                  community perks).
+                <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal align-top">
+                  Maximum AI-driven yield, VIP support, exclusive bonus drops
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <p className="text-center text-xl my-10 mx-auto max-w-4xl font-semibold">
-          Rates shown are per hour. Over a full 6-hour session, the approximate
-          total mined is 6× the hourly figure (e.g., Free ≈18 BTCY per session,
-          Nuclear ≈162 BTCY per session).
-        </p>
 
-        <div className="mt-40"></div>
+        <div className="flex justify-center items-center my-30">
+          <Image src={Whitepaper03} alt="Whitepaper-03" />
+        </div>
+
+
         <InfoSection
-          desc="5.2 Ad-Watching Rewards"
+          desc="Incentives"
           content={
             <>
-              <CustomListItem content="Earning BTCY Power: Users can earn extra BTCY Power by watching up to 25 advertisements daily." />
-              <CustomListItem content="Daily Streaks: Maintaining daily streaks increases either the bonus time or mining power. An example is provided: 6 hours on Day 1, scaling up to 24 hours on Day 7." />
-              <CustomListItem content="Reward Crediting: Rewards are automatically deposited into user wallets using smart contracts." />
+              <CustomListItem content="Airdrops, referrals, staking boosts, and DAO perks—ratified by governance." />
             </>
           }
         />
 
         <InfoSection
-          desc="Deflationary Model"
+          desc="Dual-Balance Conversion"
           content={
             <>
-              <CustomListItem content="Token Burns: Token burns are implemented to reduce the overall supply of tokens, thereby increasing their scarcity." />
-              <CustomListItem content="Mining Reward Halving: The mining reward is halved every 6 months, a mechanism designed to control inflation." />
+              <CustomListItem content="Earn Nugget → Mine + linked-account checks → convert to BTCY Token through approved flows (Alchemy/Quantum/mining milestones)." />
             </>
           }
         />
 
         <div className="flex justify-center items-center my-30">
-          <Image src={Whitepaper06} alt="Whitepaper-04" />
+          <Image src={Whitepaper06} alt="Whitepaper-06" />
         </div>
 
         <InfoSection
-          title="6. Withdrawal Rules"
-          endingLine="To maintain network stability, prevent spam withdrawals, and ensure fair distribution, Bitcoin-Yay (BTCY) implements a structured withdrawal and usage vetting system:"
+          title="5. Withdrawals"
+          endingLine="Minimum to unlock withdrawals/spend: 10,000 BTCY for Lotto and 100,000 BTCY for Alchemy"
         />
 
         <InfoSection
-          desc="6.1 Minimum Withdrawal Threshold"
+          desc="Rails & Fees (clarified units):"
           content={
             <>
-              <CustomListItem content="Users must accumulate at least 10,000 BTCY before they can initiate any withdrawal." />
-              <CustomListItem content="Withdrawals below this threshold are not permitted, ensuring that network fees and security checks remain cost-efficient." />
+              <CustomListItem content="To Indexx Wallet/Exchange: Zero fee" />
+              <CustomListItem content="To external chain address: network fee + service fee up to 3% (covers compliance + routing)." />
+            </>
+          }
+        />
+
+        <CustomP start="(Exact fees published per route at withdrawal time. Coming soon once we have live chain)" />
+
+        <div className="flex justify-center items-center my-30">
+          <Image src={Whitepaper07} alt="Whitepaper-07" />
+        </div>
+
+        <InfoSection
+          title="6. Roadmap (Milestone-based, not year-promise)"
+          desc="Phase A — Off-chain Beta (Live)"
+          content={
+            <>
+              <CustomListItem content="Mining app (PoP), Nugget ledger, subscription boosts, anti-bot." />
+              <CustomListItem content="Off-chain DAO voting, proposal hub." />
             </>
           }
         />
 
         <InfoSection
-          desc="6.2 Usage Thresholds for Ecosystem Activities"
+          desc="Phase B — Devnet/Testnet (Coming Soon)"
           content={
             <>
-              <CustomListItem
-                title="Indexx Lotto: "
-                content="A minimum balance of 10,000 BTCY is required to participate in the on-chain lottery."
-              />
-              <CustomListItem
-                title="Alchemy Game: "
-                content="Users must hold at least 100,000 BTCY to access the Alchemy feature, which allows advanced token transformation and reward multipliers."
-              />
-              <CustomListItem content="These thresholds protect against abuse and create meaningful participation requirements." />
+              <CustomListItem content="Stellar-fork nodes, Soroban contracts (staking, conversion, governance)." />
+              <CustomListItem content="Faucet, explorer (read-only), SDKs, validator early access." />
+            </>
+          }
+        />
+
+        <InfoSection
+          desc="Phase C — Mainnet (Coming Soon)"
+          content={
+            <>
+              <CustomListItem content="BTCY Token live, wallet releases, on-chain conversions, initial listings." />
+              <CustomListItem content="DAO on-chain: proposals, quorum, treasury transparency." />
+            </>
+          }
+        />
+
+        <InfoSection
+          desc="Phase D — Ecosystem & Bridges (Post-Mainnet)"
+          content={
+            <>
+              <CustomListItem content="CEX/DEX pairs, grants, builders program." />
+              <CustomListItem content="Optional bridges and additional assets (e.g., WiBS) after audits." />
+            </>
+          }
+        />
+
+        <CustomP start="Each phase ships only after audits, SLOs, and risk thresholds are met." />
+
+        <div className="flex justify-center items-center my-30">
+          <Image src={Whitepaper08} alt="Whitepaper-08" />
+        </div>
+
+        <InfoSection
+          title="7. Community & Compliance"
+          content={
+            <>
+              <CustomListItem content="Ongoing security reviews, public dashboards, and incident disclosures." />
+              <CustomListItem content="Regional compliance for KYC/AML, sanctions, and consumer disclosures." />
+              <CustomListItem content="Ambassador & builder programs with transparent criteria." />
             </>
           }
         />
 
         <div className="flex justify-center items-center my-30">
-          <Image src={Whitepaper07} alt="Whitepaper-04" />
+          <Image src={Whitepaper09} alt="Whitepaper-09" />
         </div>
 
         <InfoSection
-          title="7. Roadmap"
-          content={
-            <>
-              <CustomListItem
-                title="Phase 1 (2025-2026): "
-                content="Deploy AI-powered 6-hour mining, launch dedicated mining application, and integrate ad-watching rewards."
-              />
-              <CustomListItem
-                title="Phase 2 (2026-2027): "
-                content="Cross-chain integrations, develop chat/browser/AI wallet, and implement Indexx Pay for real-world payments."
-              />
-              <CustomListItem
-                title="Phase 3 (2027-2029): "
-                content="Mass adoption, establish full decentralized governance, and achieve $200 billion market valuation."
-              />
-            </>
-          }
+          title="8. Conclusion"
+          endingLine="BTCY focuses on everyday, micro-value activity with a practical path from off-chain beta to a performant, audited mainnet. The dual-balance model, PoP mining, and Soroban programmability aim to make crypto usable first—and decentralized over time with transparent governance."
         />
 
-        <div className="flex justify-center items-center my-30">
-          <Image src={Whitepaper08} alt="Whitepaper-04" />
-        </div>
-
         <InfoSection
-          title="8. Future Developments & Community Engagement"
+          title="Join the Bitcoin-Yay Ecosystem"
           content={
             <>
-              <CustomListItem content="Continued R&D for AI-based mining algorithms." />
-              <CustomListItem content="Partnerships for merchants accepting BTCY as payment." />
-              <CustomListItem content="Ongoing security audits and enhancements." />
+              <CustomListItem content="Website: bitcoinyay.com" />
+              <CustomListItem content="Telegram: t.me/+pC3IVlPlwSEyODAx" />
+              <CustomListItem content="X (Twitter): x.com/bitcoin_YAY" />
             </>
           }
-        />
-
-        <div className="flex justify-center items-center my-30">
-          <Image src={Whitepaper09} alt="Whitepaper-04" />
-        </div>
-
-        <InfoSection
-          title="9. Conclusion"
-          endingLine="Bitcoin-Yay (BTCY) represents a new era of blockchain ecosystems with fast transactions, AI-based 6-hour mining sessions, and ad-watching rewards that let users earn BTCY Power through daily engagement. By leveraging Stellar's robust infrastructure, it enables scalable, sustainable, and secure financial interactions. With its deflationary model, cross-chain compatibility, and user-friendly participation incentives, Bitcoin-Yay is positioned to redefine decentralized economies."
         />
       </div>
     </div>
