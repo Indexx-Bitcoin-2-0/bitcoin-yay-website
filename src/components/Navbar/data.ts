@@ -162,8 +162,8 @@ const header_data = [
     hasMegaDrop: false,
   },
   {
-    mainTextDesktop: "Chain",
-    mainTextMob: "Chain",
+    mainTextDesktop: "Chains",
+    mainTextMob: "Chains",
     active: false,
     href: "/blockchain",
     hasMegaDrop: true,
