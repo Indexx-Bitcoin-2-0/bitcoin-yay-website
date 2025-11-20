@@ -1,99 +1,121 @@
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
-
-import ArtImage1 from "@/assets/images/alchemy/claim/art-1.webp";
-
-import NodeButtonImage from "@/assets/images/buttons/nodes-button.webp";
-import DexButtonImage from "@/assets/images/buttons/dex-button.webp";
-
+import { Check } from "lucide-react";
 import CustomButton2 from "@/components/CustomButton2";
+import WalletIcon from '@/assets/images/alchemy/home/walletIcon.png';
 
-export default function Claim() {
+const availableBalance = "250,000";
+
+const claimDestinations = [
+  {
+    id: "tron",
+    name: "Tron",
+    description: "Decentralized wallet on Tron Network",
+    recommended: "TronLink",
+  },
+  {
+    id: "solana",
+    name: "Solana",
+    description: "Decentralized wallet on Solana Network",
+    recommended: "Phantom",
+  },
+  {
+    id: "indexx",
+    name: "Indexx Asset Wallet",
+    description: "Centralized exchange wallet",
+  },
+];
+
+export default function ClaimPage() {
+  const [selectedDestination, setSelectedDestination] = useState("tron");
+
+  const handleClaim = () => {
+    // Handle claim logic here
+    console.log("Claiming tokens to:", selectedDestination);
+  };
+
   return (
-    <div className="mx-auto mt-40 lg:mt-60 px-4 md:px-20 xl:px-40">
-      <div className="flex flex-col lg:flex-row items-center justify-center w-full gap-20">
-        <Image src={ArtImage1} alt="art 1" className="w-60 md:w-60 xl:w-80" />
-        <div className="flex flex-col justify-center items-center">
-          <h1 className="text-5xl md:text-7xl xl:text-8xl font-bold">
-            Claim your BTCY
+    <div className="min-h-screen bg-bg0 text-white">
+      <div className="mx-auto max-w-3xl px-6 py-20 mt-40">
+        {/* Header */}
+        <div className="text-center mb-20">
+          <h1 className="text-xl md:text-xl font-bold text-white mb-4">
+            Claim Your Tokens
           </h1>
-          <h4 className="mt-10 md:mt-20 text-3xl md:text-5xl font-semibold">
-            Chose your ------
-          </h4>
+          <p className="text-base md:text-base text-tertiary">
+            Transform your mined Bitcoin-Yay Nuggets into real digital tokens
+          </p>
         </div>
-      </div>
-      <div className="mt-20 mb-40 flex items-center justify-center gap-40 px-10">
-        <CustomButton2
-          image={NodeButtonImage}
-          text="CEX"
-          link="#"
-          imageStyling="w-30"
-        />
-        <CustomButton2
-          image={DexButtonImage}
-          text="DEX"
-          link="#"
-          imageStyling="w-30"
-        />
-      </div>
 
-      <div className="mt-80 font-light flex flex-col gap-2 mb-40">
-        <h3 className="text-xl font-semibold">Disclaimer</h3>
-        <p>
-          By participating in the BTCY Alchemy process, you acknowledge the
-          following:
-        </p>
+        {/* Available Balance */}
+        <div className="text-center mb-12 md:mb-16">
+          <p className="text-sm md:text-base text-tertiary mb-3 md:mb-4">AVAILABLE BALANCE</p>
+          <p className="text-5xl md:text-7xl lg:text-8xl font-bold text-white leading-tight">{availableBalance}</p>
+          <p className="text-xl md:text-xl text-tertiary mt-2 md:mt-3">BTCY</p>
+        </div>
 
-        <p>Claim Options:</p>
+        {/* Select Claim Destination */}
+        <div className="mb-12 md:mb-16">
+          <h2 className="text-xl md:text-xl text-white mb-6 md:mb-8">
+            Select Claim Destination
+          </h2>
+          <div className="space-y-4 md:space-y-5">
+            {claimDestinations.map((destination) => (
+              <div
+                key={destination.id}
+                onClick={() => setSelectedDestination(destination.id)}
+                className={`relative p-5 md:p-6 rounded-lg border-2 cursor-pointer transition-all ${selectedDestination === destination.id
+                  ? "border-bg2"
+                  : "border-bg2 hover:border-bg3"
+                  }`}
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2 md:mb-3">
+                      <h3 className="text-lg md:text-xl font-semibold text-white">
+                        {destination.name}
+                      </h3>
+                    </div>
+                    <p className="text-sm md:text-base text-tertiary mb-1 md:mb-2">
+                      {destination.description}
+                    </p>
+                    {destination.recommended && (
+                      <p className="text-xs md:text-sm text-white">
+                        Recommended: {destination.recommended}
+                      </p>
+                    )}
+                  </div>
+                  {selectedDestination === destination.id && (
+                    <div className="flex-shrink-0">
+                      <div className="w-6 h-6 md:w-7 md:h-7 rounded-full bg-primary flex items-center justify-center">
+                        <Check className="w-4 h-4 md:w-5 md:h-5 text-white" strokeWidth={3} />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
 
-        <p>CEX (Centralized Exchange – Indexx Exchange)</p>
-        <p>
-          Claiming to CEX will send your reward directly to your Indexx Exchange
-          account.
-        </p>
-        <ul className="list-disc pl-4">
-          <li>Fast processing</li>
-          <li>No gas fees</li>
-          <li>Managed by Indexx</li>
-        </ul>
+        {/* Claim Tokens Button */}
+        <div className="flex justify-center mb-6 md:mb-8">
+          <CustomButton2
+            text="Claim Tokens"
+            image={WalletIcon}
+            imageStyling="w-20 md:w-30"
+            onClick={handleClaim}
+          />
+        </div>
 
-        <p>You need a registered and verified Indexx account.</p>
-
-        <p>DEX (Decentralized Exchange – Wallet Claim, e.g., MetaMask)</p>
-        <p>
-          Claiming to DEX sends your reward to your connected blockchain wallet.
-        </p>
-        <ul className="list-disc pl-4">
-          <li>Full user control</li>
-          <li>Can interact with DeFi, staking, swaps</li>
-        </ul>
-
-        <p>You pay gas fees (on the blockchain network)</p>
-        <p>
-          Make sure your wallet is connected and ready (MetaMask, WalletConnect,
-          etc.)
-        </p>
-
-        <p>Important Notes:</p>
-        <ul className="list-disc pl-4">
-          <li>You can “only claim once per reward”</li>
-          <li>
-            Claims are “recorded on-chain or in our backend” for verification.
-          </li>
-          <li>
-            If you choose DEX, ensure you understand how to manage blockchain
-            wallets.
-          </li>
-          <li>Lost tokens due to incorrect addresses are “non-recoverable”.</li>
-          <li>
-            For CEX claims, Indexx manages all custody and record-keeping.
-          </li>
-        </ul>
-
-        <p>Security Reminder:</p>
-        <ul className="list-disc pl-4">
-          <li>Never share your wallet private keys or seed phrases.</li>
-          <li>Only use official Indexx DApp links for claiming.</li>
-        </ul>
+        {/* Disclaimer */}
+        <div className="text-center">
+          <p className="text-xs md:text-sm text-tertiary max-w-2xl mx-auto leading-relaxed">
+            All claims are final and cannot be reversed. Gas fees may apply for decentralized wallets.
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -23,6 +23,16 @@ const header_data = [
         ],
       },
       {
+        heading: "History",
+        links: [
+          {
+            name: "View History",
+            href: "/alchemy/history",
+          },
+        ],
+      },
+
+      {
         heading: "Support",
         links: [
           {
@@ -175,6 +185,19 @@ const header_data = [
           {
             name: "Bitcoin Yay Blockchain Expo",
             href: "/bible/blockchain/details",
+          },
+        ],
+      },
+      {
+        heading: "CONTRACT ADDRESS",
+        links: [
+          {
+            name: "Solana",
+            href: "/btcy-token-contracts",
+          },
+          {
+            name: "Tron",
+            href: "/btcy-token-contracts",
           },
         ],
       },
