@@ -20,13 +20,27 @@ import HowItWorksArt from "@/assets/images/alchemy/home/howItWorks.png";
 import WalletIcon from '@/assets/images/alchemy/home/walletIcon.png'
 
 import CustomButton2 from "@/components/CustomButton2";
+import { useAuth } from "@/contexts/AuthContext";
+import LoginPopup from "@/components/LoginPopup";
+import { getUserBTCYBalance } from "@/lib/alchemy";
+import { MINIMUM_BTCY_BALANCE_FOR_ALCHEMY } from "@/app/alchemy/constants";
+import { getAuthenticatedWalletUrl } from "@/lib/authenticated-wallet";
 import axios from "axios";
 
 import FortuneFunnelIcon from "@/assets/images/alchemy/fortuneFunnel.svg";
 import MegaPathIcon from "@/assets/images/alchemy/mega_path.svg";
 import AlchemyGatewayIcon from "@/assets/images/alchemy/AlchemyGateway.svg";
 import DownArrowIcon from '@/assets/images/alchemy/downArrow.svg'
+
+const MAX_NUGGET_INPUT = 1000;
+const WALLET_OVERVIEW_BASE_URL = "https://cex.indexx.ai/wallet/overview";
+const MINIMUM_BALANCE_MESSAGE = `You need at least ${MINIMUM_BTCY_BALANCE_FOR_ALCHEMY.toLocaleString(
+  "en-US"
+)} BTCY to start an Alchemy`;
+
 export default function AlchemyPage() {
+  const { user, isLoading: isAuthLoading } = useAuth();
+  const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
   const [isPowerMiningActive, setIsPowerMiningActive] = useState(false);
 
   const [btcPrice, setBtcPrice] = useState<number | null>(null);
@@ -34,9 +48,42 @@ export default function AlchemyPage() {
   const [nuggetInput, setNuggetInput] = useState("");
   const [tokenOutput, setTokenOutput] = useState("");
   const [showIgnited, setShowIgnited] = useState(false);
+  const [userBalance, setUserBalance] = useState<number | null>(null);
+  const [balanceLoading, setBalanceLoading] = useState(false);
+  const [balanceError, setBalanceError] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [inputError, setInputError] = useState<string | null>(null);
+  const [walletUrl, setWalletUrl] = useState(WALLET_OVERVIEW_BASE_URL);
   const popupTimerRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
 
+  const handleLoginSuccess = () => setIsLoginPopupOpen(false);
+  const handleCloseLoginPopup = () => setIsLoginPopupOpen(false);
+  const handleRegisterClick = () => setIsLoginPopupOpen(false);
+
+  const handleNuggetInputChange = (rawValue: string) => {
+    setFormError(null);
+    const digitsOnly = rawValue.replace(/[^0-9]/g, "");
+    if (!digitsOnly) {
+      setNuggetInput("");
+      setInputError(null);
+      return;
+    }
+
+    const numericValue = Number(digitsOnly);
+    const clampedValue = Math.min(numericValue, MAX_NUGGET_INPUT);
+    setNuggetInput(String(clampedValue));
+
+    if (numericValue > MAX_NUGGET_INPUT) {
+      setInputError(
+        `You can only convert up to ${MAX_NUGGET_INPUT.toLocaleString(
+          "en-US"
+        )} BTCY per session.`
+      );
+    } else {
+      setInputError(null);
+    }
+  };
 
   useEffect(() => {
     const fetchPrices = async () => {
@@ -69,10 +116,113 @@ export default function AlchemyPage() {
     };
   }, []);
 
+  useEffect(() => {
+    let isActive = true;
+
+    const loadBalance = async () => {
+      if (isAuthLoading) {
+        return;
+      }
+
+      if (!user?.email) {
+        if (isActive) {
+          setUserBalance(null);
+          setBalanceError(null);
+          setBalanceLoading(false);
+        }
+        return;
+      }
+
+      setBalanceLoading(true);
+      setBalanceError(null);
+      try {
+        const response = await getUserBTCYBalance(user.email);
+        if (!isActive) return;
+
+        const totalBalance =
+          response.data?.totalBTCYBalance ?? response.data?.balance ?? 0;
+
+        setUserBalance(totalBalance);
+        if (totalBalance < MINIMUM_BTCY_BALANCE_FOR_ALCHEMY) {
+          setBalanceError(MINIMUM_BALANCE_MESSAGE);
+        } else {
+          setBalanceError(null);
+        }
+      } catch (error) {
+        if (!isActive) return;
+        setBalanceError(
+          "Unable to read your BTCY balance. Please refresh or log in again."
+        );
+      } finally {
+        if (isActive) {
+          setBalanceLoading(false);
+        }
+      }
+    };
+
+    loadBalance();
+
+    return () => {
+      isActive = false;
+    };
+  }, [user, isAuthLoading]);
+
+  useEffect(() => {
+    let isActive = true;
+
+    const buildWalletLink = async () => {
+      const url = await getAuthenticatedWalletUrl(WALLET_OVERVIEW_BASE_URL);
+      if (isActive) {
+        setWalletUrl(url);
+      }
+    };
+
+    buildWalletLink();
+
+    return () => {
+      isActive = false;
+    };
+  }, [user?.email]);
+
   const handleConvert = () => {
-    if (!nuggetInput) return;
+    setFormError(null);
+
+    if (inputError) {
+      setFormError("Please fix the nugget amount before converting.");
+      return;
+    }
+
+    if (!user) {
+     //setFormError("Log in to convert your Bitcoin-Yay Nuggets.");
+      setIsLoginPopupOpen(true);
+      return;
+    }
+
+    if (balanceLoading) {
+      setFormError("Checking your BTCY balance. Please wait...");
+      return;
+    }
+
+    if (userBalance === null) {
+      setFormError("Unable to read your BTCY balance yet.");
+      return;
+    }
+
+    if (userBalance < MINIMUM_BTCY_BALANCE_FOR_ALCHEMY) {
+      setFormError(MINIMUM_BALANCE_MESSAGE);
+      return;
+    }
+
+    if (!nuggetInput) {
+      setFormError("Enter the amount of nuggets you want to refine.");
+      return;
+    }
+
     const amount = Number(nuggetInput);
-    if (Number.isNaN(amount)) return;
+    if (Number.isNaN(amount) || amount <= 0) {
+      setFormError("Enter a valid nugget amount.");
+      return;
+    }
 
     const multiplier = Number((Math.random() * 2 + 0.5).toFixed(2));
     const converted = (amount * multiplier).toFixed(2);
@@ -162,25 +312,44 @@ export default function AlchemyPage() {
             type="text"
             inputMode="numeric"
             value={nuggetInput}
-            onChange={(e) => setNuggetInput(e.target.value)}
+            onChange={(e) => handleNuggetInputChange(e.target.value)}
             placeholder="Enter Nuggets Amount"
             className="mt-10 w-full rounded-2xl bg-bg2/70 border border-bg2 px-6 py-4 text-center text-xl text-white placeholder:text-tertiary focus:outline-none focus:ring-2 focus:ring-primary"
           />
+          {inputError && (
+            <p className="mt-4 text-sm text-red-500 text-center">{inputError}</p>
+          )}
+          {user ? (
+            <p className="mt-4 text-sm text-tertiary">
+              Available balance:
+              {balanceLoading
+                ? " Checking..."
+                : userBalance !== null
+                ? ` ${userBalance.toLocaleString()} BTCY`
+                : " — BTCY"}
+            </p>
+          ) : (
+            <p className="mt-4 text-sm text-tertiary">
+              Log in to view your Bitcoin-Yay balance and start converting.
+            </p>
+          )}
 
           <div className="flex justify-center items-center mt-10">
             <Image src={DownArrowIcon} alt="Down Arrow" className="w-20 h-20" />
           </div>
           <div className="flex flex-col items-center gap-4 mt-10 hover:text-primary transition-colors">
-
             <CustomButton2
               text="Click & Convert"
               image={ClickConvertIcon}
               onClick={handleConvert}
               imageStyling="w-20 md:w-30"
-
             />
-
           </div>
+          {(formError || balanceError) && (
+            <p className="mt-4 text-sm text-red-500 text-center max-w-md">
+              {formError || balanceError}
+            </p>
+          )}
         </div>
 
         <div className="text-center">
@@ -199,7 +368,8 @@ export default function AlchemyPage() {
               text="Review your wallet"
               image={WalletIcon}
               imageStyling="w-20 md:w-30"
-              link="/wallet"
+              link={walletUrl}
+              _blank
             />
           </div>
         </div>
@@ -798,6 +968,12 @@ export default function AlchemyPage() {
           understood, and agree to all the above terms.
         </p>
       </div>
+      <LoginPopup
+        isOpen={isLoginPopupOpen}
+        onClose={handleCloseLoginPopup}
+        onLoginSuccess={handleLoginSuccess}
+        onRegisterClick={handleRegisterClick}
+      />
     </div >
   );
 }
