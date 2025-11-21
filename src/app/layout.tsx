@@ -1,6 +1,8 @@
 import "./globals.css";
+import { Suspense } from "react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import SignInTokenHandler from "@/components/SignInTokenHandler";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { GoogleOAuthProvider } from "@react-oauth/google"; // ✅ Import this
 
@@ -58,6 +60,9 @@ export default function RootLayout({
           clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}
         >
           <AuthProvider>
+            <Suspense fallback={null}>
+              <SignInTokenHandler />
+            </Suspense>
             <Navbar />
             <main>{children}</main>
             <Footer />

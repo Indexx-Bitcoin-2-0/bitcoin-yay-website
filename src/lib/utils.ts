@@ -1,9 +1,78 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import axios from "axios";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
+}
+
+const GMAIL_DOMAINS = new Set(["gmail.com", "googlemail.com"]);
+
+export type GmailAliasReason = "plus" | "googlemail";
+
+export interface GmailAliasInfo {
+  normalizedEmail: string;
+  isGmail: boolean;
+  hasAlias: boolean;
+  reasons: GmailAliasReason[];
+}
+
+export function getGmailAliasInfo(email: string): GmailAliasInfo {
+  const trimmed = (email || "").trim();
+  if (!trimmed) {
+    return {
+      normalizedEmail: "",
+      isGmail: false,
+      hasAlias: false,
+      reasons: [],
+    };
+  }
+
+  const lower = trimmed.toLowerCase();
+  const atIndex = lower.lastIndexOf("@");
+
+  if (atIndex === -1) {
+    return {
+      normalizedEmail: lower,
+      isGmail: false,
+      hasAlias: false,
+      reasons: [],
+    };
+  }
+
+  const localPartRaw = lower.slice(0, atIndex);
+  const domainRaw = lower.slice(atIndex + 1);
+  const isGmail = GMAIL_DOMAINS.has(domainRaw);
+
+  if (!isGmail) {
+    return {
+      normalizedEmail: lower,
+      isGmail: false,
+      hasAlias: false,
+      reasons: [],
+    };
+  }
+
+  const reasons: GmailAliasReason[] = [];
+  let localPart = localPartRaw;
+
+  const plusIndex = localPart.indexOf("+");
+  if (plusIndex !== -1) {
+    localPart = localPart.slice(0, plusIndex);
+    reasons.push("plus");
+  }
+
+  if (domainRaw === "googlemail.com") {
+    reasons.push("googlemail");
+  }
+
+  const normalizedLocal = localPart.replace(/\./g, "");
+
+  return {
+    normalizedEmail: `${normalizedLocal}@gmail.com`,
+    isGmail: true,
+    hasAlias: reasons.length > 0,
+    reasons,
+  };
 }
 
 export function extractApiMessage(payload: any): string | undefined {
