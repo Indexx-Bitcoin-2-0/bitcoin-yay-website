@@ -6,6 +6,7 @@ import React, {
   useState,
   useEffect,
   ReactNode,
+  useCallback,
 } from "react";
 import {
   saveAuthData,
@@ -22,6 +23,7 @@ interface AuthContextType {
   login: (userData: User) => void;
   logout: () => void;
   checkAuth: () => void;
+  setIsLoadingState: (value: boolean) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -53,10 +55,33 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setUser(userData);
   };
 
+  const clearBrowserStorage = () => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    try {
+      window.localStorage.clear();
+    } catch (error) {
+      console.warn("Unable to clear localStorage during logout", error);
+    }
+
+    try {
+      window.sessionStorage.clear();
+    } catch (error) {
+      console.warn("Unable to clear sessionStorage during logout", error);
+    }
+  };
+
   const logout = () => {
+    clearBrowserStorage();
     clearAuthData();
     setUser(null);
   };
+
+  const setIsLoadingState = useCallback((value: boolean) => {
+    setIsLoading(value);
+  }, []);
 
   useEffect(() => {
     checkAuth();
@@ -69,6 +94,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     login,
     logout,
     checkAuth,
+    setIsLoadingState,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

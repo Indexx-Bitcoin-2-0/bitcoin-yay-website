@@ -36,6 +36,19 @@ export default function PaymentPopup({
   const [qrSrc, setQrSrc] = useState<string>("");
 
   const icon = cryptoType === "USDT" ? USDTIcon : USDCIcon;
+  // Strip schemes/query params so QR scan only provides the raw address.
+  const sanitizeReceiverAddress = (raw: string) => {
+    const trimmed = raw.trim();
+    const withoutParams = trimmed.split("?")[0];
+    if (!withoutParams) return trimmed;
+    if (withoutParams.includes(":")) {
+      const [maybeScheme, ...rest] = withoutParams.split(":");
+      if (rest.length > 0 && maybeScheme.length <= 10) {
+        return rest.join(":") || trimmed;
+      }
+    }
+    return withoutParams;
+  };
 
   // countdown based on server expiresAt (10 mins)
   const timeLeft = useMemo(() => {
@@ -44,6 +57,11 @@ export default function PaymentPopup({
     const diffSec = Math.ceil((end - now.getTime()) / 1000); // ceil avoids instant 9:59
     return Math.max(0, diffSec);
   }, [order?.expiresAt, now]);
+
+  const sanitizedReceiverAddress = useMemo(() => {
+    if (!order?.receiverAddress) return "";
+    return sanitizeReceiverAddress(order.receiverAddress);
+  }, [order?.receiverAddress]);
   
   const formatTime = (s: number) => {
     const m = Math.floor(s / 60);
@@ -68,17 +86,19 @@ export default function PaymentPopup({
   // generate QR of the address (simple + widely supported)
   useEffect(() => {
     const run = async () => {
-      if (!isOpen || !order?.receiverAddress) return;
+      if (!isOpen || !sanitizedReceiverAddress) return;
       try {
-        const data = order.receiverAddress.trim();
-        const url = await QRCode.toDataURL(data, { width: 512, margin: 1 });
+        const url = await QRCode.toDataURL(sanitizedReceiverAddress, {
+          width: 512,
+          margin: 1,
+        });
         setQrSrc(url);
       } catch (e) {
         console.error("QR gen failed", e);
       }
     };
     run();
-  }, [isOpen, order?.receiverAddress]);
+  }, [isOpen, sanitizedReceiverAddress]);
 
   if (!order) return null;
   if (!isOpen) return null;
@@ -100,10 +120,9 @@ export default function PaymentPopup({
           <p className="text-2xl lg:text-3xl">{cryptoType} • {order.blockchain}</p>
         </div>
 
-        {/* amount to send */}
-        {/* <p className="mt-4 text-xl md:text-2xl">
+        <p className="mt-4 text-xl md:text-2xl">
           Send <span className="font-bold">{order.amount}</span> {cryptoType}
-        </p> */}
+        </p>
 
         {/* countdown */}
         <div className="text-3xl font-semibold mt-2">{formatTime(timeLeft)}</div>
@@ -127,10 +146,16 @@ export default function PaymentPopup({
         <div className="mt-4 text-left">
           <p className="text-sm md:text-base text-tertiary">Receiver address</p>
           <div className="mt-2 flex items-center gap-2 bg-bg2 border border-bg3 rounded-md p-3 overflow-hidden">
-            <code className="text-xs md:text-sm break-all">{order.receiverAddress}</code>
+            <code className="text-xs md:text-sm break-all">
+              {sanitizedReceiverAddress || order.receiverAddress}
+            </code>
             <button
               className="ml-auto p-2 rounded hover:bg-bg"
-              onClick={() => navigator.clipboard.writeText(order.receiverAddress)}
+              onClick={() =>
+                navigator.clipboard.writeText(
+                  sanitizedReceiverAddress || order.receiverAddress,
+                )
+              }
               title="Copy"
             >
               <Copy className="w-4 h-4" />

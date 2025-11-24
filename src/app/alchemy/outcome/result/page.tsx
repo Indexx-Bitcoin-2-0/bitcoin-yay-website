@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Copy, Share2, Flag, X } from "lucide-react";
@@ -12,6 +12,8 @@ import PointingButtonImage from "@/assets/images/buttons/point-button.webp";
 import CustomButton2 from "@/components/CustomButton2";
 import WalletIcon from '@/assets/images/alchemy/home/walletIcon.png'
 import ConvertIcon from '@/assets/images/alchemy/home/tryagain.png'
+import { useAuth } from "@/contexts/AuthContext";
+import LoginPopup from "@/components/LoginPopup";
 
 const conversionSummary = {
     nuggets: "50,000",
@@ -35,8 +37,53 @@ const transactionDetails = {
 };
 
 export default function AlchemyOutcomeResultPage() {
+    const { user, isLoading } = useAuth();
+    const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
     const [showSidebar, setShowSidebar] = useState(false);
     const [showShareMenu, setShowShareMenu] = useState(false);
+
+    useEffect(() => {
+        if (!isLoading && !user) {
+            setIsLoginPopupOpen(true);
+        }
+    }, [isLoading, user]);
+
+    const handleLoginSuccess = () => setIsLoginPopupOpen(false);
+    const handleCloseLoginPopup = () => setIsLoginPopupOpen(false);
+    const handleRegisterClick = () => setIsLoginPopupOpen(false);
+
+    if (isLoading) {
+        return <div className="mt-40 text-center text-3xl">Loading...</div>;
+    }
+
+    if (!user) {
+        return (
+            <>
+                <div className="min-h-screen bg-bg0 text-white flex flex-col items-center justify-center px-6 py-20">
+                    <div className="max-w-xl text-center space-y-4">
+                        <h1 className="text-3xl md:text-4xl font-semibold">
+                            Alchemy Result
+                        </h1>
+                        <p className="text-sm md:text-base text-tertiary">
+                            Please log in to view your Alchemy result and related rewards.
+                        </p>
+                        <CustomButton2
+                            text="Log in to continue"
+                            image={WalletIcon}
+                            imageStyling="w-20 md:w-30"
+                            onClick={() => setIsLoginPopupOpen(true)}
+                        />
+                    </div>
+                </div>
+                <LoginPopup
+                    isOpen={isLoginPopupOpen}
+                    onClose={handleCloseLoginPopup}
+                    onLoginSuccess={handleLoginSuccess}
+                    onRegisterClick={handleRegisterClick}
+                />
+            </>
+        );
+    }
 
     const copyTransactionId = () => {
         navigator.clipboard.writeText(transactionDetails.transactionId);

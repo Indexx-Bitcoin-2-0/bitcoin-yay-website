@@ -3,7 +3,11 @@ import {
   ALCHEMY_COMPLETE_API_ROUTE,
   ALCHEMY_CONFIG_API_ROUTE,
   ALCHEMY_GET_USER_SUBSCRIPTION,
+  GET_MINING_STATUS_API_ROUTE,
+  ALCHEMY_SESSIONS_API_ROUTE,
   GET_USER_BTCY_BALANCE_API_ROUTE,
+  GET_USER_MINING_BALANCE_API_ROUTE,
+  GET_USER_WALLET_BALANCE_API_ROUTE,
 } from "@/routes";
 
 export const ALCHEMY_DISABLED = false;
@@ -99,6 +103,17 @@ function getAccessToken(): string | null {
     .access_token;
 }
 
+async function parseJsonSafe(response: Response) {
+  try {
+    return await response.json();
+  } catch (error) {
+    const fallback =
+      (await response.text().catch(() => "")) || "Unable to parse response body";
+    console.error("parseJsonSafe fallback:", fallback, error);
+    return { error: fallback };
+  }
+}
+
 /**
  * Creates a new alchemy session
  */
@@ -121,7 +136,7 @@ export async function createAlchemy(
       body: JSON.stringify(data),
     });
 
-    const result = await response.json();
+    const result = await parseJsonSafe(response);
 
     if (!response.ok) {
       throw new Error(result.error || "Failed to start alchemy session");
@@ -167,7 +182,7 @@ export async function completeAlchemy(
       body: JSON.stringify(data),
     });
 
-    const result = await response.json();
+    const result = await parseJsonSafe(response);
 
     if (!response.ok) {
       throw new Error(result.error || "Failed to complete alchemy session");
@@ -210,7 +225,7 @@ export async function getAlchemyConfig(): Promise<AlchemyConfigResponse> {
       },
     });
 
-    const result = await response.json();
+    const result = await parseJsonSafe(response);
     console.log("result", result)
     if (!response.ok) {
       throw new Error(result.error || "Failed to fetch alchemy config");
@@ -255,7 +270,7 @@ export async function getUserSubscription(email: string): Promise<UserSubscripti
       }
     );
 
-    const result = await response.json();
+    const result = await parseJsonSafe(response);
 
     if (!response.ok) {
       throw new Error(result.error || "Failed to fetch user subscription");
@@ -273,39 +288,373 @@ export async function getUserSubscription(email: string): Promise<UserSubscripti
   }
 }
 
-export interface UserBTCYBalanceResponse {
+export interface MiningStatusData {
+  miningRate?: number | string;
+  sessionStartTime?: string;
+  lastClaimTime?: string;
+  sessionEndTime?: string;
+  isMiningActive?: boolean;
+}
+
+export interface MiningStatusResponse {
+  status: number;
+  data?: MiningStatusData;
+  error?: string;
+}
+
+export async function getMiningStatus(
+  email: string
+): Promise<MiningStatusResponse> {
+  if (!email) {
+    return {
+      status: 400,
+      error: "Email is required",
+    };
+  }
+
+  try {
+    const encodedEmail = encodeURIComponent(email);
+    const url = `${GET_MINING_STATUS_API_ROUTE}?email=${encodedEmail}`;
+
+    const headers: HeadersInit = {
+      "Content-Type": "application/json",
+    };
+
+    const accessToken = getAccessToken();
+    if (accessToken) {
+      headers.Authorization = `Bearer ${accessToken}`;
+    }
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers,
+    });
+    const result = await parseJsonSafe(response);
+
+    if (!response.ok) {
+      throw new Error(result?.error || "Failed to fetch mining status");
+    }
+
+    return {
+      status: response.status,
+      data: result?.data ?? result,
+    };
+  } catch (error) {
+    console.error("getMiningStatus error:", error);
+    return {
+      status: 500,
+      error: error instanceof Error ? error.message : "Failed to fetch mining status",
+    };
+  }
+}
+
+const toFiniteNumber = (value: unknown): number | undefined => {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return value;
+  }
+
+  if (typeof value === "string") {
+    const parsed = Number(value);
+    if (Number.isFinite(parsed)) {
+      return parsed;
+    }
+  }
+
+  return undefined;
+};
+
+const toSafeNumber = (value: unknown): number => {
+  const numeric = Number(value);
+  return Number.isFinite(numeric) ? numeric : 0;
+};
+
+const sumNumbers = (...values: Array<unknown>): number =>
+  values.reduce<number>((total, value) => {
+    const numericValue = toFiniteNumber(value);
+    return numericValue !== undefined ? total + numericValue : total;
+  }, 0);
+
+const pickFirstNumber = (...values: Array<unknown>): number => {
+  for (const value of values) {
+    if (value === undefined || value === null) continue;
+    const numericValue = toFiniteNumber(value);
+    if (numericValue !== undefined) {
+      return numericValue;
+    }
+  }
+
+  return 0;
+};
+
+interface UserMiningBalanceData {
+  email: string;
+  transferableBalance: number;
+  unverifiedBalance: number;
+  migratedBalance: number;
+  totalBalance: number;
+}
+
+export interface UserMiningBalanceResponse {
+  status: number;
+  data: UserMiningBalanceData;
+  error?: string;
+}
+
+export interface UserWalletBalanceResponse {
   status: number;
   data: {
     email: string;
+    symbol?: string;
+    network?: string;
     balance: number;
-    totalBTCYBalance: number;
-    userType: string;
-    plan: string;
+    [key: string]: unknown;
   };
   error?: string;
 }
 
-export async function getUserBTCYBalance(email: string): Promise<UserBTCYBalanceResponse> {
+const normalizeMiningBalance = (
+  email: string,
+  raw: unknown
+): UserMiningBalanceData => {
+  const source =
+    raw && typeof raw === "object" && raw !== null
+      ? (raw as Record<string, unknown>)
+      : {};
+
+  const transferableBalance =
+    toFiniteNumber(source["transferableBalance"]) ??
+    toFiniteNumber(source["transferableBTCYBalance"]) ??
+    0;
+
+  const unverifiedBalance =
+    toFiniteNumber(source["unverifiedBalance"]) ??
+    toFiniteNumber(source["pendingBalance"]) ??
+    toFiniteNumber(source["pendingBTCYBalance"]) ??
+    0;
+
+  const migratedBalance =
+    toFiniteNumber(source["migratedBalance"]) ??
+    toFiniteNumber(source["migratedBTCYBalance"]) ??
+    0;
+
+  const totalBalance =
+    toFiniteNumber(source["totalBalance"]) ??
+    toFiniteNumber(source["balance"]) ??
+    sumNumbers(transferableBalance, unverifiedBalance, migratedBalance);
+
+  return {
+    email,
+    transferableBalance,
+    unverifiedBalance,
+    migratedBalance,
+    totalBalance,
+  };
+};
+
+export async function getUserMiningBalance(email: string): Promise<UserMiningBalanceResponse> {
+  const emptyData = normalizeMiningBalance(email, undefined);
+
+  if (!email) {
+    return {
+      status: 400,
+      data: emptyData,
+      error: "Email is required to fetch mining balance",
+    };
+  }
+
   try {
+    const headers: HeadersInit = {
+      "Content-Type": "application/json",
+    };
+
+    const accessToken = getAccessToken();
+    if (accessToken) {
+      headers.Authorization = `Bearer ${accessToken}`;
+    }
+
     const response = await fetch(
-      `${GET_USER_BTCY_BALANCE_API_ROUTE}/${email}`,
+      `${GET_USER_MINING_BALANCE_API_ROUTE}/${encodeURIComponent(email)}`,
       {
         method: "GET",
+        headers,
       }
     );
 
-    const result = await response.json();
+    const result = await parseJsonSafe(response);
 
-    if (!response.ok) {
-      throw new Error(result.error || "Failed to fetch user BTCY balance");
-    }
+    const status =
+      typeof result?.status === "number" ? result.status : response.status;
 
-    return result;
+    const normalized = normalizeMiningBalance(email, result?.data ?? result);
+
+    const rawError =
+      typeof result?.message === "string"
+        ? result.message
+        : typeof result?.error === "string"
+        ? result.error
+        : undefined;
+
+    return {
+      status,
+      data: normalized,
+      error: response.ok ? undefined : rawError,
+    };
   } catch (error) {
     return {
       status: 500,
-      data: { email, balance: 0, totalBTCYBalance: 0, userType: "", plan: "" },
-      error: error instanceof Error ? error.message : "Failed to fetch user BTCY balance",
+      data: emptyData,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to fetch mining balance",
+    };
+  }
+}
+
+export async function getUserWalletBalance(
+  email: string,
+  symbol: string,
+  network: string
+): Promise<UserWalletBalanceResponse> {
+  const emptyData: UserWalletBalanceResponse = {
+    status: 400,
+    data: {
+      email,
+      symbol,
+      network,
+      balance: 0,
+    },
+    error: "Email, symbol, and network are required",
+  };
+
+  if (!email || !symbol || !network) {
+    return emptyData;
+  }
+
+  try {
+    const params = new URLSearchParams({
+      email,
+      symbol,
+      network,
+    });
+
+    const headers: HeadersInit = {
+      "Content-Type": "application/json",
+    };
+
+    const accessToken = getAccessToken();
+    if (accessToken) {
+      headers.Authorization = `Bearer ${accessToken}`;
+    }
+
+    const response = await fetch(
+      `${GET_USER_WALLET_BALANCE_API_ROUTE}?${params.toString()}`,
+      {
+        method: "GET",
+        headers,
+      }
+    );
+    const result = await parseJsonSafe(response);
+
+    if (!response.ok) {
+      throw new Error(result?.error || "Failed to fetch wallet balance");
+    }
+
+    return {
+      status: response.status,
+      data: {
+        email,
+        symbol,
+        network,
+        balance: toSafeNumber(result?.data?.balance ?? result?.balance ?? 0),
+        ...result?.data,
+      },
+    };
+  } catch (error) {
+    console.error("getUserWalletBalance error:", error);
+    return {
+      status: 500,
+      data: {
+        email,
+        symbol,
+        network,
+        balance: 0,
+      },
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to fetch wallet balance",
+    };
+  }
+}
+export interface AlchemySessionRecord {
+  _id?: string;
+  sessionId?: string;
+  email?: string;
+  userType?: string;
+  coinName?: string;
+  inputAmount?: number;
+  resultAmount?: number;
+  multiplier?: number;
+  category?: string;
+  stage?: string;
+  status?: string;
+  notes?: string;
+  startedAt?: string;
+  completedAt?: string;
+  durationMinutes?: number;
+  createdAt?: string;
+}
+
+export interface AlchemySessionsResponse {
+  status: number;
+  sessions: AlchemySessionRecord[];
+  error?: string;
+}
+
+export async function getAlchemySessionsByEmail(
+  email: string
+): Promise<AlchemySessionsResponse> {
+  try {
+    const accessToken = getAccessToken();
+
+    if (!accessToken) {
+      throw new Error("No access token found. Please login first.");
+    }
+
+    const encodedEmail = encodeURIComponent(email);
+    const response = await fetch(
+      `${ALCHEMY_SESSIONS_API_ROUTE}/${encodedEmail}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    const result = await parseJsonSafe(response);
+
+    if (!response.ok) {
+      throw new Error(result?.error || "Failed to fetch alchemy sessions");
+    }
+
+    const sessions =
+      result?.sessions ??
+      result?.data?.sessions ??
+      result ??
+      [];
+
+    return {
+      status: response.status,
+      sessions: Array.isArray(sessions) ? sessions : [],
+    };
+  } catch (error) {
+    console.error("getAlchemySessionsByEmail error:", error);
+    return {
+      status: 500,
+      sessions: [],
+      error: error instanceof Error ? error.message : "Failed to fetch sessions",
     };
   }
 }

@@ -6,6 +6,7 @@ import Image from "next/image";
 import axios, { AxiosError } from "axios";
 
 import { AIRDROP_REGISTER_API_ROUTE } from "@/routes";
+import { getGmailAliasInfo } from "@/lib/utils";
 
 import BgImage1 from "@/assets/images/airdrop/bg-art-1.webp";
 import BgImage2 from "@/assets/images/airdrop/bg-art-2.webp";
@@ -54,11 +55,15 @@ export default function AirdropRegisterPage() {
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
+    const emailAliasInfo = getGmailAliasInfo(email);
 
     if (!email.trim()) {
       newErrors.email = "Email address is required.";
     } else if (!/\S+@\S+\.\S+/.test(email)) {
       newErrors.email = "Email address is invalid.";
+    } else if (emailAliasInfo.isGmail && emailAliasInfo.hasAlias) {
+      newErrors.email =
+        "Gmail aliases (like using '+' tags or @googlemail.com) aren't supported. Please use your primary Gmail address.";
     }
 
     if (!username.trim()) {

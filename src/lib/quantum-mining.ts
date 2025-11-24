@@ -60,6 +60,22 @@ export type PriceData = {
   btcyPrice: number;
 };
 
+export type QuantumOrderSocketPayload = {
+  orderId: string;
+  status?: string;
+  amount?: number;
+  currency?: string;
+  paymentType?: string;
+  orderType?: string;
+  [key: string]: unknown;
+};
+
+export type QuantumOrdersUpdatePayload =
+  | QuantumOrderSocketPayload
+  | QuantumOrderSocketPayload[]
+  | Record<string, unknown>
+  | Array<Record<string, unknown>>;
+
 // Socket event types
 export type SocketEventHandlers = {
   onConnect?: (socketId: string) => void;
@@ -67,9 +83,9 @@ export type SocketEventHandlers = {
   onOrderCreated?: (data: unknown) => void;
   onPaymentWatching?: (data: unknown) => void;
   onPaymentPending?: (data: unknown) => void;
-  onOrderConfirmed?: (data: unknown) => void;
-  onOrderExpired?: (data: unknown) => void;
-  onOrdersUpdate?: (data: unknown) => void;
+  onOrderConfirmed?: (data: QuantumOrderSocketPayload) => void;
+  onOrderExpired?: (data: QuantumOrderSocketPayload) => void;
+  onOrdersUpdate?: (data: QuantumOrdersUpdatePayload) => void;
 };
 
 
@@ -180,17 +196,17 @@ export function createQuantumSocket(
     handlers.onPaymentPending?.(data);
   });
 
-  socket.on("order:confirmed", (data: unknown) => {
+  socket.on("order:confirmed", (data: QuantumOrderSocketPayload) => {
     console.log("order:confirmed", data);
     handlers.onOrderConfirmed?.(data);
   });
 
-  socket.on("order:expired", (data: unknown) => {
+  socket.on("order:expired", (data: QuantumOrderSocketPayload) => {
     console.log("order:expired", data);
     handlers.onOrderExpired?.(data);
   });
 
-  socket.on("orders:update", (data: unknown) => {
+  socket.on("orders:update", (data: QuantumOrdersUpdatePayload) => {
     console.log("orders:update", data);
     handlers.onOrdersUpdate?.(data);
   });
@@ -286,9 +302,17 @@ export function optionToCurrencyIn(opt: PaymentOption): PaymentOption {
 }
 
 /**
+ * Minimum USD amount allowed for a purchase
+ */
+export const MIN_PURCHASE_AMOUNT_USD = 10;
+
+/**
  * Calculates BTCY amount from USD amount
  */
-export function calculateBTCYAmount(usdAmount: number, btcyPrice: number): number {
+export function calculateBTCYAmount(
+  usdAmount: number,
+  btcyPrice: number
+): number {
   return usdAmount / btcyPrice;
 }
 
@@ -301,9 +325,12 @@ export function validateOrderData(
   selectedNetwork?: "Ethereum" | "Solana"
 ): { isValid: boolean; errors: Record<string, string> } {
   const errors: Record<string, string> = {};
+  const numericAmount = Number(payAmount);
 
-  if (!payAmount || isNaN(Number(payAmount))) {
+  if (!payAmount || Number.isNaN(numericAmount)) {
     errors.payAmount = "Please enter a valid amount";
+  } else if (numericAmount < MIN_PURCHASE_AMOUNT_USD) {
+    errors.payAmount = `Minimum purchase is $${MIN_PURCHASE_AMOUNT_USD}`;
   }
 
   if (isCryptoPayment(selectedPaymentOption) && !selectedNetwork) {
