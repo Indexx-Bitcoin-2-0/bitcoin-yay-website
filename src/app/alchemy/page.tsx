@@ -181,6 +181,9 @@ export default function AlchemyPage() {
             />
 
           </div>
+          <div className="flex justify-center items-center mt-10">
+            <Image src={DownArrowIcon} alt="Down Arrow" className="w-20 h-20" />
+          </div>
         </div>
 
         <div className="text-center">
