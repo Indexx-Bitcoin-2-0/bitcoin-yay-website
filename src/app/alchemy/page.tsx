@@ -347,9 +347,11 @@ export default function AlchemyPage() {
           </div>
 
           {(formError || balanceError) && (
-            <p className="mt-4 text-sm text-red-500 text-center max-w-md">
-              {formError || balanceError}
-            </p>
+            <div className="mt-4 flex justify-center">
+              <p className="text-sm text-red-500 text-center max-w-md">
+                {formError || balanceError}
+              </p>
+            </div>
           )}
           <div className="flex justify-center items-center mt-10">
             <Image src={DownArrowIcon} alt="Down Arrow" className="w-20 h-20" />
