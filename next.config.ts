@@ -44,6 +44,11 @@ const nextConfig = {
         hostname: 'developer.apple.com',
       },
     ],
+    // When the CDN (bitcoinyay.com) already handles static assets, disable
+    // Next.js image optimization so `_next/image` paths are served without
+    // being rewritten. This avoids the 400 responses from `_next/image`
+    // not being reachable from the CDN.
+    unoptimized: true,
   },
   eslint: {
     ignoreDuringBuilds: true, // ✅ Skip ESLint errors during production build
