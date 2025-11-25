@@ -25,6 +25,7 @@ const nextConfig = {
       },
     ];
   },
+
   async rewrites() {
     return [
       {
@@ -33,6 +34,7 @@ const nextConfig = {
       },
     ];
   },
+
   images: {
     remotePatterns: [
       {
@@ -44,18 +46,17 @@ const nextConfig = {
         hostname: 'developer.apple.com',
       },
     ],
-    // When the CDN (bitcoinyay.com) already handles static assets, disable
-    // Next.js image optimization so `_next/image` paths are served without
-    // being rewritten. This avoids the 400 responses from `_next/image`
-    // not being reachable from the CDN.
+    // Disable Next.js image optimization so it doesn't use /_next/image
     unoptimized: true,
   },
+
   eslint: {
-    ignoreDuringBuilds: true, // ✅ Skip ESLint errors during production build
+    ignoreDuringBuilds: true,
   },
+
   typescript: {
-    ignoreBuildErrors: true, // ✅ Skip TypeScript type errors during production build
+    ignoreBuildErrors: true,
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
