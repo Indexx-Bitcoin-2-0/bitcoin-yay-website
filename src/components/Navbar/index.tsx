@@ -631,6 +631,12 @@ const Navbar: React.FC = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   // Check if popup should be shown
   useEffect(() => {
+    // Don't show popup on /download page
+    if (currentPath === "/download") {
+      setIsPopupOpen(false);
+      return;
+    }
+
     const checkPopupTiming = () => {
       const lastPopupClosed = localStorage.getItem("bitcoinYayPopupLastClosed");
       const now = new Date().getTime();
@@ -649,7 +655,7 @@ const Navbar: React.FC = () => {
     };
 
     checkPopupTiming();
-  }, []);
+  }, [currentPath]);
 
   // Handle popup close
   const handlePopupClose = () => {
@@ -816,8 +822,8 @@ const Navbar: React.FC = () => {
           const endTimeMs = endTimestamp
             ? new Date(endTimestamp).getTime()
             : startTimeMs
-            ? startTimeMs + MINING_SESSION_DURATION_HOURS * HOUR_IN_MS
-            : null;
+              ? startTimeMs + MINING_SESSION_DURATION_HOURS * HOUR_IN_MS
+              : null;
 
           const miningActive =
             Boolean(statusData?.isMiningActive) &&
@@ -901,34 +907,34 @@ const Navbar: React.FC = () => {
         <ReferralHandler onReferralDetected={handleReferralDetected} />
       </Suspense>
 
-      <PopupComponent isOpen={isPopupOpen} onClose={handlePopupClose}>
-
-
-        <div className="mt-10 mx-2 px-10 flex flex-col items-center justify-center w-90 md:w-120 xl:w-140 relative">
-          <Image src={PopupArt1} alt="Popup Art 1" className="w-30 md:w-40" />
-          <h1 className="mt-4 text-3xl xl:text-4xl text-center font-bold text-[#5000AD]">
-            “Notice”
-          </h1>
-          <p className="mt-4 text-lg xl:text-xl font-light text-center">
-            All features are in beta and subject to change. Your feedback helps
-            us improve. Please let us know via our Contact Us page.
-          </p>
-          <div className="flex gap-20 my-4 xl:my-8">
-            <CustomButton2
-              image={ThumbsUpButtonImage}
-              text={"Got it"}
-              onClick={() => handlePopupClose()}
-              imageStyling="w-20 lg:w-24"
-            />
-            <CustomButton2
-              image={RegisterButtonImage}
-              text={"Contact Us"}
-              link="/support/#contact-us"
-              imageStyling="w-20 lg:w-24"
-            />
+      {currentPath !== "/download" && (
+        <PopupComponent isOpen={isPopupOpen} onClose={handlePopupClose}>
+          <div className="mt-10 mx-2 px-10 flex flex-col items-center justify-center w-90 md:w-120 xl:w-140 relative">
+            <Image src={PopupArt1} alt="Popup Art 1" className="w-30 md:w-40" />
+            <h1 className="mt-4 text-3xl xl:text-4xl text-center font-bold text-[#5000AD]">
+              "Notice"
+            </h1>
+            <p className="mt-4 text-lg xl:text-xl font-light text-center">
+              All features are in beta and subject to change. Your feedback helps
+              us improve. Please let us know via our Contact Us page.
+            </p>
+            <div className="flex gap-20 my-4 xl:my-8">
+              <CustomButton2
+                image={ThumbsUpButtonImage}
+                text={"Got it"}
+                onClick={() => handlePopupClose()}
+                imageStyling="w-20 lg:w-24"
+              />
+              <CustomButton2
+                image={RegisterButtonImage}
+                text={"Contact Us"}
+                link="/support/#contact-us"
+                imageStyling="w-20 lg:w-24"
+              />
+            </div>
           </div>
-        </div>
-      </PopupComponent>
+        </PopupComponent>
+      )}
 
       <div className="relative flex items-center justify-between h-[150px] px-4 lg:px-[60px] mx-auto">
         {/* {!isMobile && <Backdrop visible={backdropVisibility} />}
