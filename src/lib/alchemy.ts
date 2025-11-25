@@ -314,7 +314,7 @@ export async function getMiningStatus(
 
   try {
     const encodedEmail = encodeURIComponent(email);
-    const url = `${GET_MINING_STATUS_API_ROUTE}?email=${encodedEmail}`;
+    const url = `${GET_MINING_STATUS_API_ROUTE}/${encodedEmail}`;
 
     const headers: HeadersInit = {
       "Content-Type": "application/json",
@@ -511,6 +511,124 @@ export async function getUserMiningBalance(email: string): Promise<UserMiningBal
   }
 }
 
+export interface UserBTCYBalanceResponse {
+  status: number;
+  data: {
+    email?: string;
+    plan?: string;
+    userType?: string;
+    totalBTCYBalance?: number;
+    balance?: number;
+    [key: string]: unknown;
+  };
+  error?: string;
+}
+
+export async function getUserBTCYBalance(
+  email: string
+): Promise<UserBTCYBalanceResponse> {
+  const emptyData: UserBTCYBalanceResponse = {
+    status: 400,
+    data: {
+      email,
+      totalBTCYBalance: 0,
+      balance: 0,
+    },
+    error: "Email is required to fetch BTCY balance",
+  };
+
+  if (!email) {
+    return emptyData;
+  }
+
+  try {
+    const headers: HeadersInit = {
+      "Content-Type": "application/json",
+    };
+
+    const accessToken = getAccessToken();
+    if (accessToken) {
+      headers.Authorization = `Bearer ${accessToken}`;
+    }
+
+    const response = await fetch(
+      `${GET_USER_BTCY_BALANCE_API_ROUTE}/${encodeURIComponent(email)}`,
+      {
+        method: "GET",
+        headers,
+      }
+    );
+    const result = await parseJsonSafe(response);
+
+    const asRecord = (value: unknown): Record<string, unknown> =>
+      value && typeof value === "object" && !Array.isArray(value)
+        ? (value as Record<string, unknown>)
+        : {};
+
+    const resultRecord = asRecord(result);
+    const dataSource =
+      "data" in resultRecord &&
+      typeof resultRecord["data"] === "object"
+        ? (resultRecord["data"] as Record<string, unknown>)
+        : resultRecord;
+
+    const totalBTCYBalance = toSafeNumber(
+      pickFirstNumber(
+        dataSource["totalBTCYBalance"],
+        dataSource["totalBalance"],
+        dataSource["balance"],
+        dataSource["transferableBTCYBalance"],
+        dataSource["btcYBalance"],
+        dataSource["availableBalance"]
+      )
+    );
+
+    const normalizedData = {
+      ...dataSource,
+      email,
+      totalBTCYBalance,
+      balance: toSafeNumber(
+        pickFirstNumber(
+          dataSource["balance"],
+          dataSource["totalBTCYBalance"],
+          dataSource["totalBalance"],
+          totalBTCYBalance
+        )
+      ),
+    };
+
+    const rawError =
+      typeof resultRecord["message"] === "string"
+        ? (resultRecord["message"] as string)
+        : typeof resultRecord["error"] === "string"
+        ? (resultRecord["error"] as string)
+        : undefined;
+
+    return {
+      status:
+        typeof resultRecord["status"] === "number"
+          ? (resultRecord["status"] as number)
+          : response.status,
+      data: normalizedData,
+      error: response.ok ? undefined : rawError,
+    };
+  } catch (error) {
+    console.error("getUserBTCYBalance error:", error);
+    return {
+      status: 500,
+      data: {
+        email,
+        totalBTCYBalance: 0,
+        balance: 0,
+      },
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to fetch BTCY balance",
+    };
+  }
+}
+
 export async function getUserWalletBalance(
   email: string,
   symbol: string,
@@ -532,12 +650,6 @@ export async function getUserWalletBalance(
   }
 
   try {
-    const params = new URLSearchParams({
-      email,
-      symbol,
-      network,
-    });
-
     const headers: HeadersInit = {
       "Content-Type": "application/json",
     };
@@ -547,13 +659,14 @@ export async function getUserWalletBalance(
       headers.Authorization = `Bearer ${accessToken}`;
     }
 
-    const response = await fetch(
-      `${GET_USER_WALLET_BALANCE_API_ROUTE}?${params.toString()}`,
-      {
-        method: "GET",
-        headers,
-      }
-    );
+    const endpoint = `${GET_USER_WALLET_BALANCE_API_ROUTE}/${encodeURIComponent(
+      email
+    )}/${encodeURIComponent(symbol)}/${encodeURIComponent(network)}`;
+
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers,
+    });
     const result = await parseJsonSafe(response);
 
     if (!response.ok) {
@@ -587,6 +700,7 @@ export async function getUserWalletBalance(
     };
   }
 }
+
 export interface AlchemySessionRecord {
   _id?: string;
   sessionId?: string;
