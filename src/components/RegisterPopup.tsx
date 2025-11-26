@@ -8,7 +8,7 @@ import SetPasswordPopup from "@/components/SetPasswordPopup";
 import EmailVerificationPopup from "@/components/EmailVerificationPopup";
 import SuccessRegistrationPopup from "@/components/SuccessRegistrationPopup";
 import { useAuth } from "@/contexts/AuthContext";
-import { getGmailAliasInfo } from "@/lib/utils";
+import { extractApiMessage, getGmailAliasInfo, mapNoUserFoundMessage } from "@/lib/utils";
 import {
   GOOGLE_REGISTER_API_ROUTE,
   REGISTER_API_ROUTE,
@@ -23,7 +23,6 @@ import GoogleRegisterButtonImage from "@/assets/images/buttons/google-button.web
 import CustomButton2 from "@/components/CustomButton2";
 import { ChevronDown, Check, Eye, EyeOff } from "lucide-react";
 import { useGoogleLogin } from "@react-oauth/google";
-// import { extractApiMessage, normalizeErrorMessage } from "@/lib/utils";
 
 interface RegisterPopupProps {
   isOpen: boolean;
@@ -382,16 +381,21 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
           // Always show SetPasswordPopup after Google registration
           setShowSetPassword(true);
         } else {
-          setErrors({
-            general: res?.data?.message || "Google signup failed.",
-          });
+          const rawErrorMessage = extractApiMessage(res?.data);
+          const finalMessage =
+            mapNoUserFoundMessage(rawErrorMessage) ??
+            rawErrorMessage ??
+            "Google signup failed.";
+          setErrors({ general: finalMessage });
         }
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
-          const errorMessage =
-            error.response?.data?.message ||
+          const rawErrorMessage = extractApiMessage(error.response?.data);
+          const finalMessage =
+            mapNoUserFoundMessage(rawErrorMessage) ??
+            rawErrorMessage ??
             "Google signup failed. Please try again.";
-          setErrors({ general: errorMessage });
+          setErrors({ general: finalMessage });
         } else {
           setErrors({
             general: "Unexpected error occurred. Please try again.",

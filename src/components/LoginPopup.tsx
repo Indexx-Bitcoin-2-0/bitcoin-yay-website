@@ -18,6 +18,7 @@ import GoogleLoginButtonImage from "@/assets/images/buttons/google-button.webp";
 import CustomButton2 from "@/components/CustomButton2";
 import { Eye, EyeOff } from "lucide-react";
 import { useGoogleLogin } from "@react-oauth/google";
+import { extractApiMessage, mapNoUserFoundMessage } from "@/lib/utils";
 
 interface GoogleTokenResponse {
   access_token: string;
@@ -177,22 +178,21 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
             setShowSetPassword(true);
           }
         } else {
-          // Any other backend response
-          const errorMessage =
-            res?.data?.data ||
-            res?.data?.data?.message ||
-            res?.data?.message ||
+          const rawErrorMessage = extractApiMessage(res?.data);
+          const finalMessage =
+            mapNoUserFoundMessage(rawErrorMessage) ??
+            rawErrorMessage ??
             "Google login failed. Please try again.";
-          setErrors({ general: errorMessage });
+          setErrors({ general: finalMessage });
         }
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
-          const errorMessage =
-            error.response?.data?.data ||
-            error.response?.data?.data?.message ||
-            error.response?.data?.message ||
+          const rawErrorMessage = extractApiMessage(error.response?.data);
+          const finalMessage =
+            mapNoUserFoundMessage(rawErrorMessage) ??
+            rawErrorMessage ??
             "Google login failed. Please try again.";
-          setErrors({ general: errorMessage });
+          setErrors({ general: finalMessage });
         } else {
           setErrors({
             general: "Unexpected error occurred. Please try again.",

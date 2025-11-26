@@ -115,3 +115,21 @@ export function normalizeErrorMessage(status?: number, rawMsg?: string): string 
   // default
   return rawMsg || "Registration failed. Please try again.";
 }
+
+export function mapNoUserFoundMessage(rawMessage?: string): string | undefined {
+  if (!rawMessage) {
+    return undefined;
+  }
+
+  const normalized = rawMessage.trim();
+  if (!normalized) {
+    return undefined;
+  }
+
+  const containsNoUserFound = /no\s+user\s+found/i.test(normalized);
+  if (containsNoUserFound) {
+    return "No user found. Please register first.";
+  }
+
+  return undefined;
+}
