@@ -18,7 +18,7 @@ const NuclearMiningPage = () => {
             className="w-20 md:w-40"
           />
           <h1 className="text-4xl md:text-5xl xl:text-8xl font-bold">
-            Nuclear Mining Gopher
+            Nuclear Mining Plan
           </h1>
         </div>
         <Image

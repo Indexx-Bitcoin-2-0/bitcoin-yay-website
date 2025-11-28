@@ -251,7 +251,7 @@ export default function Home() {
                   />
                 </div>
                 <p className="mt-2 text-lg font-semibold group-hover:text-primary">
-                  ELECTRIC MINING
+                  ELECTRIC MINING PLAN
                 </p>
                 <p className="mt-2 text-sm text-white max-w-xs text-center">
                   Charge your mining speed with extra power double your earning rate and keep your sessions running stronger, longer.
@@ -269,7 +269,7 @@ export default function Home() {
                   />
                 </div>
                 <p className="mt-2 text-lg font-semibold group-hover:text-primary">
-                  TURBO MINING
+                  TURBO MINING PLAN
                 </p>
                 <p className="mt-2 text-sm text-white max-w-xs text-center">
                   Experience 6x faster mining climb to Alchemy in record time and multiply your BTCY rewards.
@@ -287,7 +287,7 @@ export default function Home() {
                   />
                 </div>
                 <p className="mt-2 text-lg font-semibold group-hover:text-primary">
-                  NUCLEAR MINING
+                  NUCLEAR MINING PLAN
                 </p>
                 <p className="mt-2 text-sm text-white max-w-xs text-center">
                   The ultimate boost maximum power, maximum output. Unlock BTCY's highest earning potential with unstoppable mining energy.
