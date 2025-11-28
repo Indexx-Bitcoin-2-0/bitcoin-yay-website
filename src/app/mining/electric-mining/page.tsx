@@ -32,7 +32,7 @@ const ElectricMiningPage = () => {
             9 BTCY/<span className="text-3xl md:text-6xl font-bold">Hr</span>
           </p>
           <ul className="mt-20 list-disc list-inside text-xl flex flex-col gap-6">
-            <li>$ 100/m subscription fee</li>
+            <li>$ 30/m subscription fee</li>
             <li>1 BTCY ~ $ 0.10</li>
             <li>~9 BTCY/hour ~ $ 0.90</li>
             <li className="text-primary">Referral Bonuses</li>

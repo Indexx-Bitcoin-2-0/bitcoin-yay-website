@@ -32,7 +32,7 @@ const NuclearMiningPage = () => {
             27 BTCY/<span className="text-3xl md:text-6xl font-bold">Hr</span>
           </p>
           <ul className="mt-20 list-disc list-inside text-xl flex flex-col gap-6">
-            <li>$ 600/m subscription fee</li>
+            <li>$ 180/m subscription fee</li>
             <li>1 BTCY ~ $ 0.10</li>
             <li>~27 BTCY/hour ~ $ 2.70</li>
             <li className="text-primary">Referral Bonuses</li>
