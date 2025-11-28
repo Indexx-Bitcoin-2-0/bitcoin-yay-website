@@ -2,7 +2,7 @@
 
 export const dynamic = "force-dynamic";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { clusterApiUrl, Connection, LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
 import { useSearchParams } from "next/navigation";
 import TronWeb from "tronweb";
@@ -152,7 +152,7 @@ type TronClaimStatusState = {
   hasClaimed: boolean | null;
 };
 
-export default function ClaimPage() {
+function ClaimPageContent() {
   const { user, isLoading } = useAuth();
   const [selectedDestination, setSelectedDestination] = useState<ClaimDestinationId>("tron");
   const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
@@ -1082,7 +1082,15 @@ export default function ClaimPage() {
             All claims are final and cannot be reversed. Gas fees may apply for decentralized wallets.
           </p>
         </div>
-      </div>
-    </div>
+  </div>
+</div>
+ );
+}
+
+export default function ClaimPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-bg0 text-white flex items-center justify-center">Loading...</div>}>
+      <ClaimPageContent />
+    </Suspense>
   );
 }
