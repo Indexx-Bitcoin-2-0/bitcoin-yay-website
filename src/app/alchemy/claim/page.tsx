@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+
 import { useEffect, useState } from "react";
 import { clusterApiUrl, Connection, LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
 import { useSearchParams } from "next/navigation";
@@ -372,15 +374,19 @@ export default function ClaimPage() {
 
     syncEthereumState();
 
-    const handleAccountsChanged = (accounts: string[]) => {
+    const handleAccountsChanged = (accounts: unknown) => {
+      const normalizedAccounts = Array.isArray(accounts)
+        ? accounts.filter((item): item is string => typeof item === "string")
+        : [];
       setEthereumState((prev) => ({
         ...prev,
-        connected: Boolean(accounts?.length),
-        address: accounts?.[0] ?? "",
+        connected: Boolean(normalizedAccounts.length),
+        address: normalizedAccounts[0] ?? "",
       }));
     };
 
-    const handleChainChanged = (chainId: string) => {
+    const handleChainChanged = (chainId: unknown) => {
+      if (typeof chainId !== "string") return;
       setEthereumState((prev) => ({ ...prev, chainId }));
     };
 
