@@ -21,7 +21,7 @@ const BlockchainPage = () => {
         <div className="flex flex-col items-center justify-center">
           <p className="text-2xl font-bold text-primary">Welcome to</p>
           <h1 className="text-4xl md:text-7xl font-semibold my-6">
-          Bitcoin Yay Blockchain
+          bitcoin-yay Blockchain
           </h1>
           <p className="text-lg max-w-150">
             Where ancient philosophy meets next-gen crypto. Powered by AI,
@@ -35,7 +35,7 @@ const BlockchainPage = () => {
       <div className="mt-80 flex flex-col items-center justify-center text-center">
         <p className="text-2xl font-bold text-primary">What is</p>
         <h3 className="text-4xl md:text-5xl font-semibold my-6">
-        Bitcoin Yay Blockchain
+        bitcoin-yay Blockchain
         </h3>
         <div className="my-10 flex flex-col md:flex-row items-center justify-center">
           <Image
@@ -50,7 +50,7 @@ const BlockchainPage = () => {
           />
         </div>
         <p className="text-base max-w-160 mt-10 text-tertiary">
-          <strong>Balance in Motion.</strong> At its core, Bitcoin Yay Blockchain
+          <strong>Balance in Motion.</strong> At its core, bitcoin-yay Blockchain
           channels the dual forces of Yin (passive, efficient) and Yang (active,
           secure) into a dynamic, AI-optimized ecosystem. It’s a philosophy
           turned into code — balancing off-chain speed with on-chain security,
@@ -70,7 +70,7 @@ const BlockchainPage = () => {
 
       {/* Part 04 */}
       <div className="mt-80 flex flex-col items-center justify-center text-center">
-        <p className="text-2xl font-bold text-primary">Bitcoin Yay</p>
+        <p className="text-2xl font-bold text-primary">bitcoin-yay</p>
         <h3 className="text-4xl md:text-5xl font-semibold my-6">
           Philosophy in Blockchain
         </h3>
@@ -90,7 +90,7 @@ const BlockchainPage = () => {
                   <strong className="text-tertiary">
                     Yin and Yang Relationship:
                   </strong>{" "}
-                  Just as Bitcoin and Bitcoin Yay complement each other, so too
+                  Just as Bitcoin and bitcoin-yay complement each other, so too
                   should every component of the blockchain operate with duality
                   in mind — one supports or balances the other.
                 </p>
@@ -141,7 +141,7 @@ const BlockchainPage = () => {
                 className="w-10 h-10"
               />
               <p className="md:pl-4 mt-4 md:mt-0 ">
-                <strong className="text-tertiary"> Bitcoin Yay (BTCY) </strong>
+                <strong className="text-tertiary"> bitcoin-yay (BTCY) </strong>
                 represents the innovative, fast-moving, user-centric governance
                 and mining coin (Yang).
               </p>

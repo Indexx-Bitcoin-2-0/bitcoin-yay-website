@@ -33,7 +33,7 @@ const CustomCard = ({
       <div className="flex flex-col items-center justify-center">
         <Image
           src={BitcoinYayLogo}
-          alt="Bitcoin Yay Logo"
+          alt="bitcoin-yay Logo"
           className="mt-10 w-50"
         />
       </div>

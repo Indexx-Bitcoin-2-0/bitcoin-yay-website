@@ -71,11 +71,11 @@ const header_data = [
             href: "/bible/tokenomics",
           },
           {
-            name: "Bitcoin Yay Blockchain",
+            name: "bitcoin-yay Blockchain",
             href: "/bible/blockchain",
           },
           {
-            name: "Bitcoin Yay Wallet",
+            name: "bitcoin-yay Wallet",
             href: "/bible/bitcoin-yay-wallet",
           },
         ],
@@ -183,7 +183,7 @@ const header_data = [
         mainList: true,
         links: [
           {
-            name: "Bitcoin Yay Blockchain Expo",
+            name: "bitcoin-yay Blockchain Expo",
             href: "/bible/blockchain/details",
           },
         ],
@@ -197,6 +197,14 @@ const header_data = [
           },
           {
             name: "Tron",
+            href: "/btcy-token-contracts",
+          },
+          {
+            name: "Ethereum",
+            href: "/btcy-token-contracts",
+          },
+          {
+            name: "Binance",
             href: "/btcy-token-contracts",
           },
         ],
@@ -220,7 +228,7 @@ const header_data = [
     hasMegaDrop: true,
     dropDownContent: [
       {
-        heading: "Explore Bitcoin Yay DAO",
+        heading: "Explore bitcoin-yay DAO",
         mainList: true,
         links: [
           {

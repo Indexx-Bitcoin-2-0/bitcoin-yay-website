@@ -17,7 +17,7 @@ const CarouselFrame1 = () => {
     <div className="h-full relative flex flex-col md:flex-row justify-between items-center text-center md:text-left md:px-20 lg:px-40">
       <div className="w-full z-10">
         <h2 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold my-2 md:my-4">
-          Bitcoin Yay
+          bitcoin-yay
         </h2>
         <h3 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold my-2 md:my-4 max-w-2/3">
           The Micro Token of Bitcoin
@@ -46,7 +46,7 @@ const CarouselFrame2 = () => {
         <h3 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold my-2 md:my-4">is Here!</h3>
         <p className="text-lg md:text-xl xl:text-2xl hidden md:block max-w-1/2 mt-4">
           AI-Powered Mobile Mining. No Expensive Rigs. Just You, Your Phone, and
-          BTCY. Earn Bitcoin Yay effortlessly by participating daily. Fully
+          BTCY. Earn bitcoin-yay effortlessly by participating daily. Fully
           decentralized, mobile-first.
         </p>
       </div>

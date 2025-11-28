@@ -22,7 +22,13 @@ import WalletIcon from '@/assets/images/alchemy/home/walletIcon.png'
 import CustomButton2 from "@/components/CustomButton2";
 import { useAuth } from "@/contexts/AuthContext";
 import LoginPopup from "@/components/LoginPopup";
-import { getUserBTCYBalance } from "@/lib/alchemy";
+import {
+  getUserBTCYBalance,
+  processAlchemyConversion,
+  saveClickConvertSessionState,
+  getClickConvertSessionState,
+  ClickConvertSessionState,
+} from "@/lib/alchemy";
 import { MINIMUM_BTCY_BALANCE_FOR_ALCHEMY } from "@/app/alchemy/constants";
 import { getAuthenticatedWalletUrl } from "@/lib/authenticated-wallet";
 import axios from "axios";
@@ -53,9 +59,18 @@ export default function AlchemyPage() {
   const [balanceError, setBalanceError] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [inputError, setInputError] = useState<string | null>(null);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [walletUrl, setWalletUrl] = useState(WALLET_OVERVIEW_BASE_URL);
   const popupTimerRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
+  const [isProcessingAlchemy, setIsProcessingAlchemy] = useState(false);
+  const [liquidityPoolBalance, setLiquidityPoolBalance] = useState(650_000);
+  const LIQUIDITY_POOL_TARGET = 1_000_000;
+
+  const liquidityProgressPercent = Math.min(
+    100,
+    Math.round((liquidityPoolBalance / LIQUIDITY_POOL_TARGET) * 100)
+  );
 
   const handleLoginSuccess = () => setIsLoginPopupOpen(false);
   const handleCloseLoginPopup = () => setIsLoginPopupOpen(false);
@@ -106,6 +121,25 @@ export default function AlchemyPage() {
       }
     };
     fetchPrices();
+  }, []);
+
+  useEffect(() => {
+    const storedSession = getClickConvertSessionState();
+    if (!storedSession) return;
+
+    if (storedSession.resultAmount !== undefined) {
+      setTokenOutput(
+        Number(storedSession.resultAmount).toLocaleString("en-US", {
+          maximumFractionDigits: 2,
+        })
+      );
+    }
+
+    if (!storedSession.completedAt) {
+      setStatusMessage(
+        "Awaiting completion—your Nuggets are still refining through Alchemy."
+      );
+    }
   }, []);
 
   useEffect(() => {
@@ -184,8 +218,22 @@ export default function AlchemyPage() {
     };
   }, [user?.email]);
 
-  const handleConvert = () => {
+  const normalizeAlchemyUserType = (raw?: string): string => {
+    if (!raw) return "free";
+    const normalized = raw.trim().toLowerCase();
+    if (normalized.includes("quantum")) return "quantum";
+    if (normalized.includes("nuclear")) return "nuclear";
+    if (normalized.includes("turbo")) return "turbo";
+    if (normalized.includes("electric")) return "electric";
+    if (normalized.includes("free")) return "free";
+    return "free";
+  };
+
+  const handleConvert = async () => {
+    if (isProcessingAlchemy) return;
+
     setFormError(null);
+    setStatusMessage(null);
 
     if (inputError) {
       setFormError("Please fix the nugget amount before converting.");
@@ -193,7 +241,6 @@ export default function AlchemyPage() {
     }
 
     if (!user) {
-      //setFormError("Log in to convert your Bitcoin-Yay Nuggets.");
       setIsLoginPopupOpen(true);
       return;
     }
@@ -224,18 +271,55 @@ export default function AlchemyPage() {
       return;
     }
 
-    const multiplier = Number((Math.random() * 2 + 0.5).toFixed(2));
-    const converted = (amount * multiplier).toFixed(2);
-    setTokenOutput(converted);
+    setIsProcessingAlchemy(true);
+    setStatusMessage("Processing your Nuggets with the Alchemy engine...");
+    try {
+      const processResult = await processAlchemyConversion({
+        email: user.email,
+        nuggetTokens: amount,
+        userType: normalizeAlchemyUserType(user.userType),
+        referralCodeUsed: "",
+        nftBoostApplied: false,
+      });
 
-    setShowIgnited(true);
-    if (popupTimerRef.current) {
-      clearTimeout(popupTimerRef.current);
+      if (!processResult.success || !processResult.session?.sessionId) {
+        throw new Error(
+          processResult.error || "Failed to queue your Alchemy conversion."
+        );
+      }
+
+      const sessionPayload: ClickConvertSessionState = {
+        ...processResult.session,
+        sessionId: processResult.session.sessionId,
+        email: user.email,
+        inputAmount: amount,
+        createdAt: new Date().toISOString(),
+        startedAt:
+          processResult.session.startedAt ?? new Date().toISOString(),
+      };
+
+      saveClickConvertSessionState(sessionPayload);
+      setTokenOutput("");
+      setStatusMessage(
+        "Alchemy queued—your Nuggets will be processed in the next 60 minutes."
+      );
+      setShowIgnited(true);
+      if (popupTimerRef.current) {
+        clearTimeout(popupTimerRef.current);
+      }
+      popupTimerRef.current = setTimeout(() => {
+        setShowIgnited(false);
+        router.push("/alchemy/outcome");
+      }, 10000);
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Failed to start the conversion. Please try again.";
+      setFormError(message);
+    } finally {
+      setIsProcessingAlchemy(false);
     }
-    popupTimerRef.current = setTimeout(() => {
-      setShowIgnited(false);
-      router.push("/alchemy/outcome");
-    }, 10000);
   };
 
   return (
@@ -257,7 +341,7 @@ export default function AlchemyPage() {
               Alchemy is a magic algorithm that transforms your mined Bitcoin-Yay Nuggets into real digital tokens, crypto currency on multiple blockchain.Engage Alchemy, and let the magic turn your effort into real value.
             </p>
             <p className="mt-10 text-xl md:text-2xl">
-              This is the beginning of the transformation layer between mined Bitcoin-Yay nuggets and real Bitcoin-Yay tokens on the Bitcoin Yay system. Inspired by the ancient idea of alchemy — turning base metals into gold — this gateway transforms raw mined nuggets into real, liquid assets, ensuring fairness, sustainability, and long-term wealth growth.
+              This is the beginning of the transformation layer between mined Bitcoin-Yay nuggets and real Bitcoin-Yay tokens on the bitcoin-yay system. Inspired by the ancient idea of alchemy — turning base metals into gold — this gateway transforms raw mined nuggets into real, liquid assets, ensuring fairness, sustainability, and long-term wealth growth.
             </p>
           </div>
         </div>
@@ -272,7 +356,7 @@ export default function AlchemyPage() {
 
       <div className="mt-100 flex flex-col items-center text-center">
         <div className="px-4 text-2xl font-bold text-primary max-w-250 leading-tight">
-          Bitcoin Yay Is The Micro Token
+          bitcoin-yay Is The Micro Token
         </div>
         <div className="px-4 text-2xl font-bold text-primary max-w-250 leading-tight">
           And Petty Cash Of Bitcoin
@@ -281,7 +365,7 @@ export default function AlchemyPage() {
         <div className="px-4 mt-4 text-5xl font-bold text-white max-w-250 leading-snug">
           {btcPrice !== null && btcyPrice !== null ? (
             <>
-              Bitcoin ${btcPrice.toLocaleString()}, Bitcoin Yay $
+              Bitcoin ${btcPrice.toLocaleString()}, bitcoin-yay $
               {btcyPrice.toFixed(4)}
             </>
           ) : (
@@ -290,7 +374,24 @@ export default function AlchemyPage() {
         </div>
 
         <div className="px-4 mt-2 text-xs font-bold text-primary max-w-250">
-          1 Bitcoin = 1 Million Bitcoin Yay
+          1 Bitcoin = 1 Million bitcoin-yay
+        </div>
+        <div className="mt-8 w-full max-w-3xl px-4">
+          <div className="flex items-center justify-between text-[11px] uppercase text-tertiary">
+            <span>Liquidity pool</span>
+            <span>{liquidityProgressPercent}% funded</span>
+          </div>
+          <div className="mt-2 h-3 w-full overflow-hidden rounded-full bg-white/10">
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-primary to-secondary transition-all duration-500"
+              style={{ width: `${liquidityProgressPercent}%` }}
+            />
+          </div>
+          <p className="mt-2 text-[11px] text-tertiary">
+            {liquidityPoolBalance.toLocaleString("en-US")} /{" "}
+            {LIQUIDITY_POOL_TARGET.toLocaleString("en-US")} BTCY secured to back
+            the liquidity pool.
+          </p>
         </div>
       </div>
 
@@ -346,11 +447,21 @@ export default function AlchemyPage() {
             />
           </div>
 
-          {(formError || balanceError) && (
+          {(formError || balanceError || statusMessage) && (
             <div className="mt-4 flex justify-center">
-              <p className="text-sm text-red-500 text-center max-w-md">
-                {formError || balanceError}
-              </p>
+              {formError ? (
+                <p className="text-sm text-red-500 text-center max-w-md">
+                  {formError}
+                </p>
+              ) : balanceError ? (
+                <p className="text-sm text-red-500 text-center max-w-md">
+                  {balanceError}
+                </p>
+              ) : statusMessage ? (
+                <p className="text-sm text-primary text-center max-w-md">
+                  {statusMessage}
+                </p>
+              ) : null}
             </div>
           )}
           <div className="flex justify-center items-center mt-10">
@@ -437,7 +548,7 @@ export default function AlchemyPage() {
         </h2>
         <p className="mt-10 text-xl font-light text-center max-w-7xl mx-auto">
           Secure the network, earn rewards, and grow your holdings. Stake your
-          Bitcoin Yay now and let your crypto work for you.
+          bitcoin-yay now and let your crypto work for you.
         </p>
         {/* <div className="flex justify-center items-center mt-20">
           <CustomButton2

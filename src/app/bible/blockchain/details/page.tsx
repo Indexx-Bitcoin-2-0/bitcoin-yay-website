@@ -135,7 +135,7 @@ export default function DetailsPage() {
       <div className="flex flex-col items-center justify-center">
         <Image src={YingYangLogo} alt="logo" className="w-100" />
         <h1 className="mt-20 text-4xl md:text-6xl xl:text-8xl font-bold text-center">
-          Bitcoin Yay Blockchain Explorer
+          bitcoin-yay Blockchain Explorer
         </h1>
       </div>
 

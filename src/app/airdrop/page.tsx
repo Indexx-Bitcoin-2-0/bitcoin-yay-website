@@ -28,13 +28,13 @@ import DownloadButtonImage from "@/assets/images/buttons/download-button.webp";
 import UserReviewCards from "@/components/UserReviewCards";
 
 export const metadata = {
-  title: "Bitcoin Yay Airdrop - 4th July Freedom Boost FREE Mining",
+  title: "bitcoin-yay Airdrop - 4th July Freedom Boost FREE Mining",
   description:
-    "Join the Bitcoin Yay Freedom Boost Airdrop! Get 5 days of FREE turbo mining power on July 4th. Register now for the worldwide airdrop and start earning BTCY tokens instantly.",
+    "Join the bitcoin-yay Freedom Boost Airdrop! Get 5 days of FREE turbo mining power on July 4th. Register now for the worldwide airdrop and start earning BTCY tokens instantly.",
   openGraph: {
-    title: "Bitcoin Yay Airdrop - 4th July Freedom Boost FREE Mining",
+    title: "bitcoin-yay Airdrop - 4th July Freedom Boost FREE Mining",
     description:
-      "Join the Bitcoin Yay Freedom Boost Airdrop! Get 5 days of FREE turbo mining power on July 4th. Register now for the worldwide airdrop and start earning BTCY tokens instantly.",
+      "Join the bitcoin-yay Freedom Boost Airdrop! Get 5 days of FREE turbo mining power on July 4th. Register now for the worldwide airdrop and start earning BTCY tokens instantly.",
   },
 };
 
@@ -168,7 +168,7 @@ export default function Airdrop() {
               Download & Register
             </h4>
             <p className="text-xl font-light">
-              Download the Bitcoin Yay App and register with your email. Your
+              Download the bitcoin-yay App and register with your email. Your
               app email must match your BitcoinYay.com account to qualify.
             </p>
           </div>
@@ -278,7 +278,7 @@ export default function Airdrop() {
             Eligibility & Rules
           </h2>
           <ul className="mt-10 list-disc pl-6 text-xl md:text-3xl flex flex-col gap-6 md:gap-10">
-            <li>Have a valid Bitcoin Yay account and Indexx Wallet.</li>
+            <li>Have a valid bitcoin-yay account and Indexx Wallet.</li>
             <li>App email must match your BitcoinYay.com account email.</li>
             <li>
               One sign-up per person; duplicate or fraudulent entries will be
@@ -523,7 +523,7 @@ export default function Airdrop() {
         <div className="text-tertiary mt-20 max-w-5xl">
           <h5 className="mt-6 text-3xl font-bold">Q: How do I register?</h5>
           <p className="mt-4 text-lg">
-            A: Tap Join Airdrop Now, log in or create your Bitcoin Yay account,
+            A: Tap Join Airdrop Now, log in or create your bitcoin-yay account,
             and ensure your app email matches your website email.
           </p>
 

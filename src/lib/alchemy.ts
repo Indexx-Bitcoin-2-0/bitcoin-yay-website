@@ -4,6 +4,8 @@ import {
   ALCHEMY_CONFIG_API_ROUTE,
   ALCHEMY_GET_USER_SUBSCRIPTION,
   GET_MINING_STATUS_API_ROUTE,
+  ALCHEMY_PROCESS_API_ROUTE,
+  ALCHEMY_COMPLETE_V2_API_ROUTE,
   ALCHEMY_SESSIONS_API_ROUTE,
   GET_USER_BTCY_BALANCE_API_ROUTE,
   GET_USER_MINING_BALANCE_API_ROUTE,
@@ -74,6 +76,30 @@ export interface CompleteAlchemyResponse {
   error?: string;
 }
 
+export interface ProcessAlchemyData {
+  email: string;
+  nuggetTokens: number;
+  userType: string;
+  referralCodeUsed?: string;
+  nftBoostApplied?: boolean;
+}
+
+export type WithdrawalType = "indexx" | "solana" | "tron";
+
+export interface CompleteAlchemyProcessData {
+  sessionId: string;
+  withdrawalType?: WithdrawalType;
+  withdrawalAddress?: string;
+}
+
+export interface AlchemyProcessResponse {
+  success: boolean;
+  message?: string;
+  status?: number;
+  session?: AlchemySessionRecord;
+  error?: string;
+}
+
 export interface AlchemyConfigItem {
   input: number;
   multiplierRange: string;
@@ -113,7 +139,6 @@ async function parseJsonSafe(response: Response) {
     return { error: fallback };
   }
 }
-
 /**
  * Creates a new alchemy session
  */
@@ -196,6 +221,161 @@ export async function completeAlchemy(
     };
   } catch (error) {
     console.error("Complete alchemy error:", error);
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to complete alchemy session",
+    };
+  }
+}
+
+/**
+ * Processes a new click-and-convert Alchemy session using the v2 endpoint.
+ */
+const extractApiErrorMessage = (payload: any): string | null => {
+  if (!payload) return null;
+  if (typeof payload.error === "string" && payload.error.trim()) {
+    return payload.error;
+  }
+  if (typeof payload.message === "string" && payload.message.trim()) {
+    return payload.message;
+  }
+  if (Array.isArray(payload.messages) && payload.messages.length > 0) {
+    return payload.messages.filter(Boolean).join(" ");
+  }
+  return null;
+};
+
+const formatAlchemyCooldownMessage = (message: string): string | null => {
+  const match = message.match(/Next session available on ([\dTZ:\-+.]+)/i);
+  if (!match || !match[1]) {
+    return null;
+  }
+
+  const isoString = match[1].replace(/[.,;:]+$/, "");
+  const nextAttempt = new Date(isoString);
+  if (Number.isNaN(nextAttempt.getTime())) {
+    return null;
+  }
+
+  let formattedDate: string;
+  try {
+    formattedDate = new Intl.DateTimeFormat("en-US", {
+      dateStyle: "long",
+      timeStyle: "short",
+      timeZoneName: "short",
+    }).format(nextAttempt);
+  } catch {
+    formattedDate = nextAttempt.toLocaleString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+  }
+
+  return message.includes("locked")
+    ? `Alchemy sessions are currently locked. You can try again on ${formattedDate}.`
+    : `Next session opens on ${formattedDate}.`;
+};
+
+export async function processAlchemyConversion(
+  data: ProcessAlchemyData
+): Promise<AlchemyProcessResponse> {
+  try {
+    const accessToken = getAccessToken();
+
+    if (!accessToken) {
+      throw new Error("You need to login first to participate in alchemy");
+    }
+
+    const response = await fetch(ALCHEMY_PROCESS_API_ROUTE, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({
+        ...data,
+        referralCodeUsed: data.referralCodeUsed ?? "",
+        nftBoostApplied: data.nftBoostApplied ?? false,
+      }),
+    });
+
+    const result = await parseJsonSafe(response);
+    const sessionPayload = result.session ?? result.data ?? null;
+
+    if (!response.ok) {
+      const apiErrorMessage = extractApiErrorMessage(result);
+      const formattedMessage = apiErrorMessage
+        ? formatAlchemyCooldownMessage(apiErrorMessage) ?? apiErrorMessage
+        : "Failed to process alchemy session";
+      throw new Error(formattedMessage);
+    }
+
+    return {
+      success: true,
+      message: result.message ?? null,
+      status: result.status ?? null,
+      session: sessionPayload,
+    };
+  } catch (error) {
+    console.error("Process alchemy error:", error);
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to process alchemy session",
+    };
+  }
+}
+
+/**
+ * Completes a click-and-convert Alchemy session via the v2 endpoint.
+ */
+export async function completeAlchemyProcess(
+  data: CompleteAlchemyProcessData
+): Promise<AlchemyProcessResponse> {
+  try {
+    const accessToken = getAccessToken();
+
+    if (!accessToken) {
+      throw new Error("You need to login first to participate in alchemy");
+    }
+
+    const response = await fetch(ALCHEMY_COMPLETE_V2_API_ROUTE, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({
+        sessionId: data.sessionId,
+        withdrawalType: data.withdrawalType ?? "indexx",
+        withdrawalAddress: data.withdrawalAddress ?? "",
+      }),
+    });
+
+    const result = await parseJsonSafe(response);
+    const sessionPayload = result.session ?? result.data ?? null;
+
+    if (!response.ok) {
+      throw new Error(result.error || "Failed to complete alchemy session");
+    }
+
+    return {
+      success: true,
+      message: result.message,
+      status: result.status,
+      session: sessionPayload,
+    };
+  } catch (error) {
+    console.error("Complete alchemy process error:", error);
     return {
       success: false,
       error:
@@ -491,8 +671,8 @@ export async function getUserMiningBalance(email: string): Promise<UserMiningBal
       typeof result?.message === "string"
         ? result.message
         : typeof result?.error === "string"
-        ? result.error
-        : undefined;
+          ? result.error
+          : undefined;
 
     return {
       status,
@@ -568,7 +748,7 @@ export async function getUserBTCYBalance(
     const resultRecord = asRecord(result);
     const dataSource =
       "data" in resultRecord &&
-      typeof resultRecord["data"] === "object"
+        typeof resultRecord["data"] === "object"
         ? (resultRecord["data"] as Record<string, unknown>)
         : resultRecord;
 
@@ -601,8 +781,8 @@ export async function getUserBTCYBalance(
       typeof resultRecord["message"] === "string"
         ? (resultRecord["message"] as string)
         : typeof resultRecord["error"] === "string"
-        ? (resultRecord["error"] as string)
-        : undefined;
+          ? (resultRecord["error"] as string)
+          : undefined;
 
     return {
       status:
@@ -752,10 +932,10 @@ export async function getAlchemySessionsByEmail(
     if (!response.ok) {
       throw new Error(result?.error || "Failed to fetch alchemy sessions");
     }
-
+    console.log("result", result)
     const sessions =
-      result?.sessions ??
-      result?.data?.sessions ??
+      result?.session ??
+      result?.data?.session ??
       result ??
       [];
 
@@ -772,6 +952,106 @@ export async function getAlchemySessionsByEmail(
     };
   }
 }
+
+const CLICK_CONVERT_SESSION_STORAGE_KEY = "alchemy-click-convert-session";
+
+export interface ClickConvertSessionState extends AlchemySessionRecord {
+  sessionId: string;
+  email: string;
+  inputAmount: number;
+  createdAt: string;
+  startedAt?: string;
+  completedAt?: string;
+  withdrawalType?: WithdrawalType;
+  withdrawalAddress?: string;
+}
+
+export const saveClickConvertSessionState = (
+  state: ClickConvertSessionState
+) => {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(
+      CLICK_CONVERT_SESSION_STORAGE_KEY,
+      JSON.stringify(state)
+    );
+  } catch (error) {
+    console.warn("Unable to persist click-convert session:", error);
+  }
+};
+
+export const getClickConvertSessionState = (): ClickConvertSessionState | null => {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(CLICK_CONVERT_SESSION_STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw) as ClickConvertSessionState;
+  } catch (error) {
+    console.warn("Unable to read click-convert session:", error);
+    return null;
+  }
+};
+
+export const clearClickConvertSessionState = () => {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.removeItem(CLICK_CONVERT_SESSION_STORAGE_KEY);
+  } catch (error) {
+    console.warn("Unable to clear click-convert session:", error);
+  }
+};
+
+export async function finalizeClickConvertSessionState({
+  forceComplete = false,
+  withdrawalType,
+  withdrawalAddress,
+}: {
+  forceComplete?: boolean;
+  withdrawalType?: WithdrawalType;
+  withdrawalAddress?: string;
+} = {}): Promise<ClickConvertSessionState | null> {
+  const stored = getClickConvertSessionState();
+  if (!stored?.sessionId) return null;
+  if (stored.completedAt && !forceComplete) {
+    return stored;
+  }
+
+  const result: any = await completeAlchemyProcess({
+    sessionId: stored.sessionId,
+    withdrawalType,
+    withdrawalAddress,
+  });
+
+  if (!result.success || !result.session) {
+    throw new Error(result.error || "Missing alchemy session result");
+  }
+
+  const updatedState: ClickConvertSessionState = {
+    ...stored,
+    ...result.session,
+    sessionId: result.session.sessionId ?? stored.sessionId,
+    email: stored.email,
+    inputAmount: stored.inputAmount,
+    createdAt: stored.createdAt,
+    startedAt:
+      result.session.startedAt ??
+      stored.startedAt ??
+      stored.createdAt,
+    completedAt:
+      result.session.completedAt ??
+      stored.completedAt ??
+      new Date().toISOString(),
+    withdrawalType: result.session.withdrawalType ?? stored.withdrawalType ?? withdrawalType,
+    withdrawalAddress:
+      result.session.withdrawalAddress ??
+      stored.withdrawalAddress ??
+      withdrawalAddress,
+  };
+
+  saveClickConvertSessionState(updatedState);
+  return updatedState;
+}
+
 export function isPlanAllowed(plan: string | null, required: string): boolean {
   const planAccessMap: Record<string, string[]> = {
     "free mining": ["free"],

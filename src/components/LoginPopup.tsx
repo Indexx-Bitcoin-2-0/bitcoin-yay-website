@@ -301,11 +301,11 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
             <p className="text-tertiary text-lg mb-4">Welcome To</p>
             <Image
               src={MainLogo}
-              alt="Bitcoin Yay"
+              alt="bitcoin-yay"
               className="w-48 md:w-60 xl:w-80 mx-auto mb-4"
             />
             <h2 className="text-primary text-xl md:text-3xl">
-              Bitcoin Yay Is The Micro Token
+              bitcoin-yay Is The Micro Token
             </h2>
             <p className="text-primary text-xl md:text-3xl">
               And Petty Cash Of Bitcoin

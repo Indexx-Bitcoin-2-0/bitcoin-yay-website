@@ -145,7 +145,7 @@ export default function Ambassador() {
             Become a
           </h2>
           <h1 className="mt-2 text-6xl md:text-8xl lg:text-[140px] font-bold lg:leading-36">
-            Bitcoin Yay <br />
+            bitcoin-yay <br />
             Ambassador
           </h1>
           <p className="mt-16 text-xl md:text-2xl lg:text-4xl max-w-4xl">
@@ -217,7 +217,7 @@ export default function Ambassador() {
                 className={
                   "w-full text-lg p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none  hover:border-primary"
                 }
-                placeholder="Use Bitcoin Yay email"
+                placeholder="Use bitcoin-yay email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -562,7 +562,7 @@ export default function Ambassador() {
             <li>
               <h5>Sign Up & Verify</h5>
               <p className="text-base font-normal mt-6">
-                Click &quot;Apply now&quot;, register on Bitcoin Yay app, and
+                Click &quot;Apply now&quot;, register on bitcoin-yay app, and
                 complete a quick profile
               </p>
             </li>

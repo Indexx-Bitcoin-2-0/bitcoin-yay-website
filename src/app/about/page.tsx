@@ -19,7 +19,7 @@ const statsData = [
   {
     image: StatsIcon1,
     title: "Join 60+ Million Engaged Crypto Enthusiasts",
-    desc: "Connect with a global community of traders, investors, and blockchain innovators. Stay informed with real-time insights, market trends, and expert analysis. Experience the future of crypto with Bitcoin Yay – where knowledge meets opportunity!",
+    desc: "Connect with a global community of traders, investors, and blockchain innovators. Stay informed with real-time insights, market trends, and expert analysis. Experience the future of crypto with bitcoin-yay – where knowledge meets opportunity!",
   },
   {
     image: StatsIcon2,
@@ -29,12 +29,12 @@ const statsData = [
   {
     image: StatsIcon3,
     title: "35+ Core Team Members Driving Innovation Globally",
-    desc: "A dedicated team of blockchain experts, developers, and visionaries. Working across continents to build the future of cryptocurrency. Committed to making Bitcoin Yay the ultimate crypto hub!",
+    desc: "A dedicated team of blockchain experts, developers, and visionaries. Working across continents to build the future of cryptocurrency. Committed to making bitcoin-yay the ultimate crypto hub!",
   },
   {
     image: StatsIcon4,
     title: "Revolutionary Tech – Powering the Future of Crypto",
-    desc: "Built on cutting-edge innovation to enhance security, speed, and efficiency. Designed to redefine how users interact with digital assets. Experience next-level crypto technology with Bitcoin Yay!",
+    desc: "Built on cutting-edge innovation to enhance security, speed, and efficiency. Designed to redefine how users interact with digital assets. Experience next-level crypto technology with bitcoin-yay!",
   },
 ];
 
@@ -59,13 +59,13 @@ const CustomStatsCard = ({
 };
 
 export const metadata = {
-  title: "About Bitcoin Yay - Shaping the Future of Social Cryptocurrency",
+  title: "About bitcoin-yay - Shaping the Future of Social Cryptocurrency",
   description:
-    "Learn about Bitcoin Yay's mission to revolutionize digital finance. Join 60+ million crypto enthusiasts, 35+ core team members, and experience revolutionary tech powering the future of cryptocurrency.",
+    "Learn about bitcoin-yay's mission to revolutionize digital finance. Join 60+ million crypto enthusiasts, 35+ core team members, and experience revolutionary tech powering the future of cryptocurrency.",
   openGraph: {
-    title: "About Bitcoin Yay - Shaping the Future of Social Cryptocurrency",
+    title: "About bitcoin-yay - Shaping the Future of Social Cryptocurrency",
     description:
-      "Learn about Bitcoin Yay's mission to revolutionize digital finance. Join 60+ million crypto enthusiasts, 35+ core team members, and experience revolutionary tech powering the future of cryptocurrency.",
+      "Learn about bitcoin-yay's mission to revolutionize digital finance. Join 60+ million crypto enthusiasts, 35+ core team members, and experience revolutionary tech powering the future of cryptocurrency.",
   },
 };
 
@@ -74,7 +74,7 @@ export default function About() {
     <div className=" mx-auto max-w-[90vw] lg:px-10 py-8 mt-40">
       <CustomStyledConatiner>
         <h1 className="text-2xl md:text-5xl font-bold mt-6 max-w-300  md:leading-16">
-          Bitcoin Yay: Shaping the Future of Social Cryptocurrency in Web3
+          bitcoin-yay: Shaping the Future of Social Cryptocurrency in Web3
         </h1>
         <p className="text-sm md:text-lg font-normal text-tertiary my-4">
           Connecting communities, enabling seamless transactions, and
@@ -105,7 +105,7 @@ export default function About() {
               Empowering the Future of Crypto
             </h3>
             <p className="text-sm font-normal leading-6">
-              At Bitcoin Yay, we are a team of blockchain enthusiasts,
+              At bitcoin-yay, we are a team of blockchain enthusiasts,
               innovators, and tech pioneers dedicated to making cryptocurrency
               accessible to everyone. Our mission is to simplify the crypto
               experience, providing real-time insights, expert guidance, and
@@ -119,7 +119,7 @@ export default function About() {
             </h3>
             <p className="text-sm font-normal leading-6">
               Innovation: Leveraging proprietary & revolutionary tech to enhance
-              the crypto ecosystem.Accessibility: Making Bitcoin Yay and crypto
+              the crypto ecosystem.Accessibility: Making bitcoin-yay and crypto
               insights available to everyone, from beginners to experts.Trust &
               Transparency: Providing accurate market data and unbiased
               analysis.Community-Driven Growth: Uniting 60+ million engaged
@@ -129,12 +129,12 @@ export default function About() {
           <p className="text-sm font-normal mt-8 leading-6">
             Whether you’re here to track prices, diversify your portfolio, or
             stay updated with the latest trends,{" "}
-            <span className="text-primary font-medium">Bitcoin Yay</span> is
+            <span className="text-primary font-medium">bitcoin-yay</span> is
             your ultimate gateway to the future of cryptocurrency.
           </p>
         </div>
         <div className="flex-1 flex items-center justify-center -mt-30">
-          <Image src={ArtImage1} alt="Bitcoin Yay Logo" className="" />
+          <Image src={ArtImage1} alt="bitcoin-yay Logo" className="" />
         </div>
       </div>
 
@@ -156,7 +156,7 @@ export default function About() {
             Our Mission
           </h2>
           <p className="text-sm font-normal text-tertiary leading-6">
-            At Bitcoin Yay, we are dedicated to simplifying crypto for everyone
+            At bitcoin-yay, we are dedicated to simplifying crypto for everyone
             by providing easy-to-understand insights, real-time data, and expert
             analysis. Our commitment to innovation drives us to develop
             cutting-edge technology, delivering proprietary tools and smart
@@ -177,10 +177,10 @@ export default function About() {
             Built for Everyone, By Everyone
           </h2>
           <p className="text-sm font-normal text-tertiary leading-6 my-2">
-            Bitcoin Yay is a dynamic community of crypto enthusiasts, investors,
+            bitcoin-yay is a dynamic community of crypto enthusiasts, investors,
             and innovators dedicated to making Bitcoin and digital assets
             accessible to all. Built on a foundation of decentralization and
-            transparency, Bitcoin Yay empowers users with real-time insights,
+            transparency, bitcoin-yay empowers users with real-time insights,
             cutting-edge tools, and a collaborative ecosystem. By leveraging
             revolutionary technology and a strong global network, we are shaping
             the future of Web3, ensuring a secure, inclusive, and meritocratic
@@ -210,7 +210,7 @@ export default function About() {
       {/* Part 06  */}
       <div className="flex flex-col items-center justify-center mt-40">
         <h2 className="text-2xl md:text-5xl font-bold text-secondary my-6">
-          The Founders – Visionaries Behind Bitcoin Yay
+          The Founders – Visionaries Behind bitcoin-yay
         </h2>
         <div className="flex flex-col lg:flex-row mt-10 md:mt-20 gap-10 lg:gap-20 ">
           <div className="flex-1 bg-bg2 rounded-lg p-4 md:p-6">

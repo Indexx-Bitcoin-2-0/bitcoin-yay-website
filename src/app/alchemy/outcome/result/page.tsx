@@ -12,35 +12,24 @@ import PointingButtonImage from "@/assets/images/buttons/point-button.webp";
 import CustomButton2 from "@/components/CustomButton2";
 import WalletIcon from '@/assets/images/alchemy/home/walletIcon.png'
 import ConvertIcon from '@/assets/images/alchemy/home/tryagain.png'
+import {
+  ClickConvertSessionState,
+  getClickConvertSessionState,
+} from "@/lib/alchemy";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import LoginPopup from "@/components/LoginPopup";
-
-const conversionSummary = {
-    nuggets: "50,000",
-    tokens: "+61",
-    multiplier: "x0.23",
-};
-
-const transactionDetails = {
-    transactionId: "TX-Z9MPC5925",
-    stage: "Fortune Funnel",
-    initialNuggets: "50,000",
-    finalTokens: "61,234 BTCY",
-    multiplierApplied: "x1.23",
-    algorithmFactors: {
-        stage: "Fortune Funnel",
-        miningType: "Power Mining",
-        referralImpact: "+2%"
-    },
-    completed: "Nov 14, 2025, 02:52 AM GMT+5",
-    status: "Completed"
-};
 
 export default function AlchemyOutcomeResultPage() {
     const { user, isLoading } = useAuth();
     const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
     const [showSidebar, setShowSidebar] = useState(false);
     const [showShareMenu, setShowShareMenu] = useState(false);
+    const [sessionState, setSessionState] =
+        useState<ClickConvertSessionState | null>(null);
+    const [isSessionLoading, setIsSessionLoading] = useState(true);
+    const [completionError, setCompletionError] = useState<string | null>(null);
+    const router = useRouter();
 
     useEffect(() => {
         if (!isLoading && !user) {
@@ -51,6 +40,52 @@ export default function AlchemyOutcomeResultPage() {
     const handleLoginSuccess = () => setIsLoginPopupOpen(false);
     const handleCloseLoginPopup = () => setIsLoginPopupOpen(false);
     const handleRegisterClick = () => setIsLoginPopupOpen(false);
+
+    useEffect(() => {
+        let isMounted = true;
+
+        const initializeSession = async () => {
+            setCompletionError(null);
+            setIsSessionLoading(true);
+            const storedSession = getClickConvertSessionState();
+            if (!isMounted) return;
+            setSessionState(storedSession);
+            setIsSessionLoading(false);
+
+            if (!storedSession?.sessionId) {
+                setCompletionError(
+                    "No active Alchemy session found. Start a conversion to see your result."
+                );
+            }
+        };
+
+        initializeSession();
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
+
+    const handleClaimClick = () => {
+        if (!sessionState?.sessionId) {
+            setCompletionError(
+                "No active Alchemy session found. Start a conversion to claim tokens."
+            );
+            return;
+        }
+
+        const resultAmount = sessionState.resultAmount;
+        const hasResultAmount =
+            typeof resultAmount === "number" && !Number.isNaN(resultAmount);
+        const queryAmount = hasResultAmount
+            ? encodeURIComponent(resultAmount.toString())
+            : "";
+        const claimPath = queryAmount
+            ? `/alchemy/claim?amount=${queryAmount}`
+            : "/alchemy/claim";
+
+        router.push(claimPath);
+    };
 
     if (isLoading) {
         return <div className="mt-40 text-center text-3xl">Loading...</div>;
@@ -85,12 +120,118 @@ export default function AlchemyOutcomeResultPage() {
         );
     }
 
+    if (isSessionLoading) {
+        return (
+            <div className="mt-40 text-center text-3xl text-white">
+                Loading your Alchemy session…
+            </div>
+        );
+    }
+
+    if (!sessionState?.sessionId) {
+        return (
+            <div className="min-h-screen bg-bg0 text-white flex flex-col items-center justify-center px-6 py-20">
+                <div className="max-w-xl text-center space-y-4">
+                    <h1 className="text-3xl md:text-4xl font-semibold">
+                        Alchemy Result
+                    </h1>
+                    <p className="text-sm md:text-base text-tertiary">
+                        {completionError ||
+                            "We couldn't find a processed Alchemy session tied to your account."}
+                    </p>
+                    <CustomButton2
+                        text="Start Alchemy"
+                        image={ConvertIcon}
+                        imageStyling="w-20 md:w-30"
+                        link="/alchemy"
+                    />
+                </div>
+            </div>
+        );
+    }
+
+    const formatNumberParts = (value?: number, decimals = 0) => {
+        if (value === undefined || value === null) {
+            return {
+                integer: "—",
+                fractional: "",
+            };
+        }
+        const formatted = value.toLocaleString("en-US", {
+            maximumFractionDigits: decimals,
+            minimumFractionDigits: decimals,
+        });
+        const [integer, fractional] = formatted.split(".");
+        return {
+            integer,
+            fractional: fractional ? `.${fractional}` : "",
+        };
+    };
+
+    const nuggetsParts = formatNumberParts(sessionState.inputAmount, 2);
+    const tokensParts = formatNumberParts(sessionState.resultAmount, 2);
+    const multiplierText =
+        typeof sessionState.multiplier === "number"
+            ? `x${sessionState.multiplier.toFixed(2)}`
+            : "—";
+    const isSessionComplete = Boolean(sessionState.completedAt);
+    const finalTokensLabel =
+        tokensParts.integer === "—" ? "—" : `${tokensParts.integer}${tokensParts.fractional} BTCY`;
+    const completedAtLabel = sessionState.completedAt
+        ? new Date(sessionState.completedAt).toLocaleString("en-US")
+        : "Pending";
+    const statusText =
+        sessionState.status ??
+        (completionError ? "Error" : isSessionComplete ? "Completed" : "Processing");
+    const stageLabel = sessionState.category ?? sessionState.stage ?? "Alchemy";
+    const conversionSummary = {
+        nuggetsLabel:
+            nuggetsParts.integer === "—"
+                ? "—"
+                : `${nuggetsParts.integer}${nuggetsParts.fractional}`,
+        nuggetsInteger: nuggetsParts.integer,
+        nuggetsFractional: nuggetsParts.fractional,
+        tokensLabel:
+            tokensParts.integer === "—"
+                ? "—"
+                : `${tokensParts.integer}${tokensParts.fractional}`,
+        tokensInteger: tokensParts.integer,
+        tokensFractional: tokensParts.fractional,
+        multiplier: multiplierText,
+    };
+    const initialTokensLabel =
+        conversionSummary.nuggetsLabel === "—"
+            ? "—"
+            : `${conversionSummary.nuggetsLabel} BTCY`;
+
+    const transactionDetails = {
+        transactionId: sessionState.sessionId,
+        stage: stageLabel,
+        initialNuggets: initialTokensLabel,
+        finalTokens: finalTokensLabel,
+        multiplierApplied: multiplierText,
+        algorithmFactors: {
+            stage: stageLabel,
+            miningType: sessionState.userType ?? "—",
+            referralImpact: sessionState.notes ?? "—",
+        },
+        completed: completedAtLabel,
+        status: statusText,
+    };
+    const statusDotColor = completionError
+        ? "bg-red-500"
+        : isSessionComplete
+            ? "bg-green-400"
+            : "bg-yellow-400";
+
     const copyTransactionId = () => {
+        if (!transactionDetails.transactionId) return;
+        if (typeof navigator === "undefined" || !navigator.clipboard) return;
         navigator.clipboard.writeText(transactionDetails.transactionId);
     };
 
     const getShareText = () => {
-        return `🎉 Alchemy Complete! I just converted ${conversionSummary.nuggets} Nuggets into ${conversionSummary.tokens} BTCY Tokens with a ${conversionSummary.multiplier} multiplier on Bitcoin Yay! 🚀 #BitcoinYay #BTCY #Alchemy`;
+        return `🎉 Alchemy Complete! I just converted ${conversionSummary.nuggetsLabel} Nuggets into ${conversionSummary.tokensLabel} BTCY Tokens with a ${conversionSummary.multiplier} multiplier on bitcoin-yay! 🚀 #BitcoinYay #BTCY #Alchemy`;
     };
 
     const getShareUrl = () => {
@@ -102,7 +243,7 @@ export default function AlchemyOutcomeResultPage() {
 
     const handleShare = async () => {
         const shareData = {
-            title: 'Bitcoin Yay - Alchemy Result',
+            title: 'bitcoin-yay - Alchemy Result',
             text: getShareText(),
             url: getShareUrl(),
         };
@@ -190,13 +331,13 @@ export default function AlchemyOutcomeResultPage() {
         };
 
         // Title
-        addText("Bitcoin Yay - Alchemy Receipt", 20, true, [255, 135, 40]);
+        addText("bitcoin-yay - Alchemy Receipt", 20, true, [255, 135, 40]);
         yPosition += 10;
 
         // Conversion Summary Section
         addText("Conversion Summary", 16, true);
-        addText(`Nuggets: ${conversionSummary.nuggets}`, 12);
-        addText(`BTCY Tokens: ${conversionSummary.tokens}`, 12);
+        addText(`Nuggets: ${conversionSummary.nuggetsLabel}`, 12);
+        addText(`BTCY Tokens: ${conversionSummary.tokensLabel}`, 12);
         addText(`Multiplier: ${conversionSummary.multiplier}`, 12);
         yPosition += 10;
 
@@ -223,11 +364,15 @@ export default function AlchemyOutcomeResultPage() {
 
         // Footer
         yPosition = pageHeight - 40;
-        addText("This is an automated receipt generated by Bitcoin Yay.", 10, false, [150, 150, 150]);
+        addText("This is an automated receipt generated by bitcoin-yay.", 10, false, [150, 150, 150]);
         addText("For support, contact: support@bitcoinyay.com", 10, false, [150, 150, 150]);
 
         // Generate filename with transaction ID
-        const filename = `Alchemy_Receipt_${transactionDetails.transactionId}.pdf`;
+        const sanitizedId = (transactionDetails.transactionId || "alchemy").replace(
+            /[^a-zA-Z0-9-_]/g,
+            "_"
+        );
+        const filename = `Alchemy_Receipt_${sanitizedId || "alchemy"}.pdf`;
         doc.save(filename);
     };
 
@@ -251,7 +396,14 @@ export default function AlchemyOutcomeResultPage() {
 
                     <div>
                         <p className="text-xl md:text-2xl text-tertiary">
-                            Alchemy Complete — <span className="text-white font-semibold">Congratulations!</span>
+                            {isSessionComplete
+                                ? "Alchemy Complete — "
+                                : "Alchemy is still processing — "}
+                            <span className="text-white font-semibold">
+                                {isSessionComplete
+                                    ? "Congratulations!"
+                                    : "Result will arrive shortly"}
+                            </span>
                         </p>
                     </div>
 
@@ -259,13 +411,21 @@ export default function AlchemyOutcomeResultPage() {
                         <div className="flex flex-col md:flex-row justify-between items-center gap-6 text-xl max-w-lg mx-auto w-full">
                             <div>
                                 <p className="text-tertiary text-base">Nuggets</p>
-                                <p className="text-4xl font-semibold">{conversionSummary.nuggets}</p>
+                                <p className="text-4xl font-semibold">
+                                    {conversionSummary.nuggetsInteger}
+                                    {conversionSummary.nuggetsFractional && (
+                                        <span className="text-2xl font-light">{conversionSummary.nuggetsFractional}</span>
+                                    )}
+                                </p>
                             </div>
                             <div className="text-4xl font-light">→</div>
                             <div>
                                 <p className="text-tertiary text-base">BTCY Tokens</p>
                                 <p className="text-4xl font-semibold text-green-400">
-                                    {conversionSummary.tokens}
+                                    {conversionSummary.tokensInteger}
+                                    {conversionSummary.tokensFractional && (
+                                        <span className="text-2xl font-light">{conversionSummary.tokensFractional}</span>
+                                    )}
                                 </p>
                             </div>
                         </div>
@@ -275,16 +435,22 @@ export default function AlchemyOutcomeResultPage() {
                     </div>
 
                     <p className="text-base md:text-lg text-tertiary max-w-3xl">
-                        Your Nuggets converted successfully through the Alchemy algorithm.
-                        Congratulations — tokens have been credited to your Asset Wallet.
+                        {isSessionComplete
+                            ? "Your Nuggets converted successfully through the Alchemy algorithm. Tokens have been credited to your Asset Wallet."
+                            : "Your Nuggets are currently refining through the Alchemy engine. We'll deliver the final tokens once the computation completes."}
                     </p>
+                    {completionError && (
+                        <p className="text-sm text-red-400 mt-2">
+                            {completionError}
+                        </p>
+                    )}
 
                     <div className="flex flex-col md:flex-row items-center justify-between gap-30 w-full mt-20 max-w-lg">
                         <CustomButton2
                             text="Claim Token"
                             image={WalletIcon}
                             imageStyling="w-20 md:w-30"
-                            link="/alchemy/claim"
+                            onClick={handleClaimClick}
                         />
                         <CustomButton2
                             text="Convert Again"
@@ -393,7 +559,7 @@ export default function AlchemyOutcomeResultPage() {
                             <div className="mb-8">
                                 <p className="text-sm text-tertiary mb-2">Status</p>
                                 <div className="flex items-center gap-2">
-                                    <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                                    <div className={`w-2 h-2 rounded-full ${statusDotColor}`}></div>
                                     <p className="text-sm text-white">{transactionDetails.status}</p>
                                 </div>
                             </div>
@@ -521,4 +687,3 @@ function CTAButton({ href, text }: { href: string; text: string }) {
         </Link>
     );
 }
-

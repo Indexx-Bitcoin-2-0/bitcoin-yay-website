@@ -9,13 +9,13 @@ import ArtImage6 from "@/assets/images/ying-yang-nodes/art-6.webp";
 import ArtImage7 from "@/assets/images/ying-yang-nodes/art-7.webp";
 
 export const metadata = {
-  title: "Bitcoin Yay Nodes - Run Bitcoin Yay Blockchain Nodes on Your PC",
+  title: "bitcoin-yay Nodes - Run bitcoin-yay Blockchain Nodes on Your PC",
   description:
-    "Learn about Bitcoin Yay Nodes for Bitcoin Yay blockchain. Run lightweight nodes on personal computers, participate in consensus, and help secure the decentralized network. Four participation levels: Seeder, Sentinel, Guardian, Validator.",
+    "Learn about bitcoin-yay Nodes for bitcoin-yay blockchain. Run lightweight nodes on personal computers, participate in consensus, and help secure the decentralized network. Four participation levels: Seeder, Sentinel, Guardian, Validator.",
   openGraph: {
-    title: "Bitcoin Yay Nodes - Run Bitcoin Yay Blockchain Nodes on Your PC",
+    title: "bitcoin-yay Nodes - Run bitcoin-yay Blockchain Nodes on Your PC",
     description:
-      "Learn about Bitcoin Yay Nodes for Bitcoin Yay blockchain. Run lightweight nodes on personal computers, participate in consensus, and help secure the decentralized network. Four participation levels: Seeder, Sentinel, Guardian, Validator.",
+      "Learn about bitcoin-yay Nodes for bitcoin-yay blockchain. Run lightweight nodes on personal computers, participate in consensus, and help secure the decentralized network. Four participation levels: Seeder, Sentinel, Guardian, Validator.",
   },
 };
 
@@ -24,7 +24,7 @@ export default function BitcoinYayNodes() {
     <div className="container mx-auto mt-40">
       <div className="mt-20 flex flex-col items-center justify-center text-center px-4">
         <h1 className="mt-10 text-5xl md:text-7xl mb-4 font-semibold">
-          Bitcoin Yay Nodes
+          bitcoin-yay Nodes
         </h1>
         <Image
           src={ArtImage1}
@@ -38,27 +38,27 @@ export default function BitcoinYayNodes() {
           Introduction to
         </h2>
         <h1 className="text-3xl md:text-5xl xl:text-8xl mb-4 font-semibold">
-          Bitcoin Yay Nodes
+          bitcoin-yay Nodes
         </h1>
         <p className="mt-10 text-tertiary text-xl font-light">
-          Bitcoin Yay Nodes represent a foundational part of the Bitcoin Yay
+          bitcoin-yay Nodes represent a foundational part of the bitcoin-yay
           ecosystem. Designed to run on personal computers like laptops and
           desktops, these nodes allow everyday users to participate in
           supporting and expanding the Yay blockchain network.
           <br />
-          Much like other decentralized systems, Bitcoin Yay Nodes validate and
+          Much like other decentralized systems, bitcoin-yay Nodes validate and
           record transactions across a shared ledger. Their primary role is to
           help the network agree on the order and legitimacy of transactions—a
           process known as consensus.
           <br />
           However, unlike traditional mining models such as Bitcoin or Ethereum
-          that rely on energy-intensive Proof of Work, Bitcoin Yay uses a
+          that rely on energy-intensive Proof of Work, bitcoin-yay uses a
           lightweight, trust-based consensus mechanism. This approach is far
           more accessible to regular users. No expensive hardware or deep
           technical skills are required—just install the software on your
           computer and you&apos;re part of the network.
           <br />
-          The Bitcoin Yay Node app is built with simplicity in mind. It&apos;s
+          The bitcoin-yay Node app is built with simplicity in mind. It&apos;s
           easy to install, intuitive to use, and gives users the ability to:
           <br />
           <ul className="list-disc pl-6">
@@ -69,9 +69,9 @@ export default function BitcoinYayNodes() {
           Turning the node on or off is entirely up to you—providing flexibility
           while still promoting decentralized participation.
           <br />
-          This initial phase of Bitcoin Yay Node deployment is part of Bitcoin
+          This initial phase of bitcoin-yay Node deployment is part of Bitcoin
           Yay&apos;s broader vision of progressive decentralization. By
-          empowering more people to get involved from the beginning, Bitcoin Yay
+          empowering more people to get involved from the beginning, bitcoin-yay
           is building a stronger, fairer, and more resilient network rooted in
           community.
           <br />
@@ -94,11 +94,11 @@ export default function BitcoinYayNodes() {
             Node Participation
           </h1>
           <p className="mt-10 text-tertiary text-xl font-light">
-            Bitcoin Yay Nodes offer four flexible levels of participation for
+            bitcoin-yay Nodes offer four flexible levels of participation for
             individuals running the node software on their personal computers.
             Whether you&apos;re just getting started or ready to dive deeper
             into helping secure and grow the network, there&apos;s a role for
-            everyone in the Bitcoin Yay ecosystem.
+            everyone in the bitcoin-yay ecosystem.
             <br />
             <br />
             Each level is designed to match your technical ability,
@@ -109,8 +109,8 @@ export default function BitcoinYayNodes() {
         <div className="mt-10">
           <h2 className="text-3xl md:text-5xl font-bold">1. Seeder</h2>
           <p className="mt-6 text-base md:text-lg text-tertiary">
-            Seeder is the entry-level role in the Bitcoin Yay Node ecosystem.
-            This tier grants users access to the Bitcoin Yay Desktop App,
+            Seeder is the entry-level role in the bitcoin-yay Node ecosystem.
+            This tier grants users access to the bitcoin-yay Desktop App,
             delivering a seamless desktop experience that reflects the core
             features of the mobile app—such as viewing your Yay balance,
             engaging in community chats, streaming media, and exploring Bitcoin
@@ -187,8 +187,8 @@ export default function BitcoinYayNodes() {
       <div className="mt-32 px-4 max-w-6xl mx-auto">
         <h2 className="text-3xl md:text-5xl font-bold mb-4">2. Sentinel</h2>
         <p className="mt-6 text-base md:text-lg text-tertiary">
-          Sentinels actively support the Bitcoin Yay blockchain by running a
-          Bitcoin Yay Node. Once activated, these nodes help validate and relay
+          Sentinels actively support the bitcoin-yay blockchain by running a
+          bitcoin-yay Node. Once activated, these nodes help validate and relay
           transactions, contribute data to the network, and uphold the integrity
           of the distributed ledger—even if they aren&apos;t responsible for
           final consensus decisions.
@@ -198,7 +198,7 @@ export default function BitcoinYayNodes() {
           network without needing deep technical expertise. The setup is
           user-friendly, and in future phases, Sentinels may also contribute
           shared computing power—such as bandwidth, CPU, or storage—to help
-          expand Bitcoin Yay&apos;s decentralized infrastructure.
+          expand bitcoin-yay&apos;s decentralized infrastructure.
         </p>
         <div className="mt-8 w-full overflow-x-auto">
           <table className="w-full border-collapse border border-tertiary">
@@ -244,7 +244,7 @@ export default function BitcoinYayNodes() {
         <div className="">
           <h2 className="text-3xl md:text-5xl font-bold mb-4">3. Oracle</h2>
           <p className="mt-6 text-base md:text-lg text-tertiary">
-            Oracles are Bitcoin Yay&apos;s elite high-performance nodes—always
+            Oracles are bitcoin-yay&apos;s elite high-performance nodes—always
             online and forming the backbone of the network&apos;s consensus
             mechanism. These advanced nodes are responsible for validating
             transactions, finalizing blocks, and keeping the entire network
@@ -252,7 +252,7 @@ export default function BitcoinYayNodes() {
             <br />
             <br />
             Oracles are selected based on consistent uptime, strong hardware
-            performance, and proven reliability. As the Bitcoin Yay ecosystem
+            performance, and proven reliability. As the bitcoin-yay ecosystem
             expands, additional Oracles will help scale the network—driving fast
             consensus, AI-enhanced validation, and global decentralization.
           </p>
@@ -293,7 +293,7 @@ export default function BitcoinYayNodes() {
         <h2 className="text-3xl md:text-5xl font-bold mb-4">4. Council</h2>
         <p className="mt-6 text-base md:text-lg text-tertiary">
           Councils represent the highest tier of responsibility and influence
-          within the Bitcoin Yay Node ecosystem. Acting as the decentralized
+          within the bitcoin-yay Node ecosystem. Acting as the decentralized
           network&apos;s governing body, Councils combine deep commitment,
           technical expertise, and strategic leadership to shape the future of
           the protocol.
@@ -305,7 +305,7 @@ export default function BitcoinYayNodes() {
           <ul className="list-disc pl-8 mt-2 mb-2">
             <li>Finalizing consensus decisions alongside Oracles.</li>
             <li>
-              Hosting and managing governance processes such as Bitcoin Yay
+              Hosting and managing governance processes such as bitcoin-yay
               Improvement Proposals (YYIPs)
             </li>
             <li>
@@ -378,11 +378,11 @@ export default function BitcoinYayNodes() {
             Selection Process for
           </h2>
           <h1 className="text-3xl md:text-5xl xl:text-[90px] font-bold mb-8 text-secondary">
-            Bitcoin Yay Running Nodes
+            bitcoin-yay Running Nodes
           </h1>
           <p className="text-xl mb-12">
-            To support the Bitcoin Yay Testnet, users can apply to operate as
-            either an any of Bitcoin Yay Nodes. Here&apos;s how the process
+            To support the bitcoin-yay Testnet, users can apply to operate as
+            either an any of bitcoin-yay Nodes. Here&apos;s how the process
             works:
           </p>
 
@@ -391,11 +391,11 @@ export default function BitcoinYayNodes() {
           </h3>
           <ul className="list-decimal pl-8 text-xl mb-8 space-y-2">
             <li>
-              Download and install the Bitcoin Yay Node software on your
+              Download and install the bitcoin-yay Node software on your
               personal computer (laptop or desktop).
             </li>
             <li>
-              Complete the node application directly within the Bitcoin Yay Node
+              Complete the node application directly within the bitcoin-yay Node
               interface.
             </li>
             <li>
@@ -408,7 +408,7 @@ export default function BitcoinYayNodes() {
               normally.
             </li>
             <li>
-              The Bitcoin Yay Core Team will review node applications on a
+              The bitcoin-yay Core Team will review node applications on a
               rolling basis and select participants based on performance,
               reliability, and technical readiness.
             </li>
@@ -425,7 +425,7 @@ export default function BitcoinYayNodes() {
             Selection Criteria
           </h3>
           <p className="text-xl mb-6">
-            Bitcoin Yay Nodes will be selected based on the following technical
+            bitcoin-yay Nodes will be selected based on the following technical
             and participation-based standards:
           </p>
           <ul className="list-disc pl-8 text-xl mb-8 max-w-4xl space-y-2">
@@ -451,7 +451,7 @@ export default function BitcoinYayNodes() {
             </li>
             <li>
               Community Contributions
-              <br /> Past engagement with the Bitcoin Yay or Bitcoin Yay
+              <br /> Past engagement with the bitcoin-yay or bitcoin-yay
               community may positively impact your application.
             </li>
             <li>Trust & Performance Metrics</li>
@@ -469,13 +469,13 @@ export default function BitcoinYayNodes() {
       <div className="mt-80 max-w-6xl mx-auto px-4">
         <div className="mx-auto mt-16">
           <h2 className="text-xl md:text-[40px] font-bold text-primary mb-2">
-            Bitcoin Yay Nodes
+            bitcoin-yay Nodes
           </h2>
           <h1 className="text-3xl md:text-5xl xl:text-[90px] font-bold mb-8">
             Testnet Roadmap
           </h1>
           <p className="text-xl mb-16 text-bg3">
-            The rollout of Bitcoin Yay Nodes will follow a carefully structured,
+            The rollout of bitcoin-yay Nodes will follow a carefully structured,
             community-first development path. The Selection Stage is the
             foundational phase in building a resilient decentralized network.
           </p>
@@ -486,8 +486,8 @@ export default function BitcoinYayNodes() {
             1. Selection Stage
           </h3>
           <p className="text-xl mb-6">
-            In this early phase, the Bitcoin Yay team will work with applicants
-            who have installed the Bitcoin Yay Node software to evaluate
+            In this early phase, the bitcoin-yay team will work with applicants
+            who have installed the bitcoin-yay Node software to evaluate
             real-world performance across different environments.
           </p>
 
@@ -527,7 +527,7 @@ export default function BitcoinYayNodes() {
           <p className="mt-10 text-xl mb-16">
             The goal of this phase is simple: maximize inclusion while
             protecting network integrity. Your participation helps shape the
-            future of the Bitcoin Yay ecosystem—starting with Bitcoin Yay Nodes.
+            future of the bitcoin-yay ecosystem—starting with bitcoin-yay Nodes.
           </p>
         </div>
 
@@ -536,7 +536,7 @@ export default function BitcoinYayNodes() {
             2. Revision Stage
           </h3>
           <p className="text-xl mb-6">
-            This phase is all about putting the Bitcoin Yay Node network through
+            This phase is all about putting the bitcoin-yay Node network through
             real-world pressure and edge-case scenarios to fine-tune its
             consensus algorithm and system resilience.
           </p>
@@ -582,7 +582,7 @@ export default function BitcoinYayNodes() {
             This centralized testing scaffold is only temporary and will be
             fully removed prior to the mainnet launch.
             <br />
-            As the Bitcoin Yay team gathers data, the consensus logic will be
+            As the bitcoin-yay team gathers data, the consensus logic will be
             continuously refined to meet the needs of a massively distributed,
             low-barrier, people-powered network.
           </p>
@@ -593,7 +593,7 @@ export default function BitcoinYayNodes() {
             3. Live Testnet
           </h3>
           <p className=" text-xl mb-6">
-            This is where the Bitcoin Yay Node network begins operating under
+            This is where the bitcoin-yay Node network begins operating under
             real-world conditions.
           </p>
 
@@ -603,8 +603,8 @@ export default function BitcoinYayNodes() {
 
           <ul className="list-disc pl-8  text-xl mt-4 space-y-2">
             <li>
-              Bitcoin Yay Nodes start processing live test transactions across
-              the Bitcoin Yay blockchain.
+              bitcoin-yay Nodes start processing live test transactions across
+              the bitcoin-yay blockchain.
             </li>
 
             <li>
@@ -619,7 +619,7 @@ export default function BitcoinYayNodes() {
           </ul>
           <p className="mt-6 text-xl">
             Though it’s still technically a testnet, this phase represents the
-            start of real decentralized activity within the Bitcoin Yay
+            start of real decentralized activity within the bitcoin-yay
             ecosystem. It’s where:
           </p>
           <ul className="list-disc pl-8 text-xl mt-4 space-y-2">
@@ -628,7 +628,7 @@ export default function BitcoinYayNodes() {
             <li>Community members begin shaping how the network evolves.</li>
           </ul>
           <p className="mt-6 text-xl">
-            Bitcoin Yay is building a network for everyone—not just coders or
+            bitcoin-yay is building a network for everyone—not just coders or
             tech elites.Whether you&apos;re running a node quietly from your
             laptop or actively helping validate the system, your contribution
             moves the chain forward.
@@ -645,26 +645,26 @@ export default function BitcoinYayNodes() {
         <Image src={ArtImage7} alt="Art Image 7" className="w-150" />
         <div className="mt-16">
           <h2 className="text-3xl md:text-5xl xl:text-8xl font-bold mt-10 text-secondary">
-            Bitcoin Yay Node FAQ
+            bitcoin-yay Node FAQ
           </h2>
           <h5 className="mt-20 text-xl md:text-2xl xl:text-[40px] font-bold text-secondary">
-            What is the relationship between the Bitcoin Yay Node software and
+            What is the relationship between the bitcoin-yay Node software and
             the mobile application?
           </h5>
           <h5 className="mt-10 text-xl md:text-3xl font-bold text-secondary">
-            The Bitcoin Yay Node and the Bitcoin Yay mobile app work together
+            The bitcoin-yay Node and the bitcoin-yay mobile app work together
             using the same account.
           </h5>
           <ul className="mt-6 list-disc pl-8 text-xl space-y-2">
             <li>You log into the Node using your mobile app login.</li>
-            <li>One person can have only one Bitcoin Yay account.</li>
+            <li>One person can have only one bitcoin-yay account.</li>
             <li>Right now, only one node per account is allowed.</li>
             <li>
               Mining (earning Yay) starts from the mobile app, not the desktop.
             </li>
           </ul>
           <h5 className="mt-20 text-xl md:text-3xl font-bold text-secondary">
-            The Bitcoin Yay Node on your computer lets you:
+            The bitcoin-yay Node on your computer lets you:
           </h5>
           <ul className="list-disc pl-8 text-xl mt-4 space-y-2">
             <li>Check your Yay balance</li>
@@ -677,7 +677,7 @@ export default function BitcoinYayNodes() {
           <p className="mt-6 text-xl">
             Running a Node does not limit or change any features in the mobile
             app. They&apos;re simply two ways to participate more deeply in the
-            Bitcoin Yay ecosystem.
+            bitcoin-yay ecosystem.
           </p>
           <h5 className="mt-20 text-xl md:text-3xl font-bold text-secondary">
             Will running a Node affect my computer’s performance?
@@ -700,7 +700,7 @@ export default function BitcoinYayNodes() {
           <p className="mt-6 text-xl">
             During the test phase, the team is checking how different devices
             perform. <br />
-            You’re always in control—you can turn your Bitcoin Yay Node on or
+            You’re always in control—you can turn your bitcoin-yay Node on or
             off anytime.
           </p>
           <h5 className="mt-20 text-xl md:text-3xl font-bold text-secondary">
@@ -720,7 +720,7 @@ export default function BitcoinYayNodes() {
           </p>
 
           <h5 className="mt-20 text-xl md:text-3xl font-bold text-secondary">
-            Will I Earn Rewards for Running a Bitcoin Yay Node?
+            Will I Earn Rewards for Running a bitcoin-yay Node?
           </h5>
           <p className="mt-6 text-xl">
             <span className="font-bold">
@@ -736,10 +736,10 @@ export default function BitcoinYayNodes() {
           </p>
 
           <h5 className="mt-20 text-xl md:text-3xl font-bold text-secondary">
-            Is the Bitcoin Yay Node Software Open Source?
+            Is the bitcoin-yay Node Software Open Source?
           </h5>
           <p className="mt-6 text-xl">
-            Yes! The blockchain part of the Bitcoin Yay Node software will be
+            Yes! The blockchain part of the bitcoin-yay Node software will be
             open source.
             <br />
             We’re getting the GitHub page ready. Once it’s live, you’ll be able
@@ -757,17 +757,17 @@ export default function BitcoinYayNodes() {
         <div className="mt-80">
           <p className="text-base italic">
             DISCLAIMER <br />
-            This document outlines the early release and vision of Bitcoin Yay
-            Nodes, the foundational infrastructure for the Bitcoin Yay network,
+            This document outlines the early release and vision of bitcoin-yay
+            Nodes, the foundational infrastructure for the bitcoin-yay network,
             along with a preliminary roadmap for their testnet functionality.
             Please note: The information presented here is subject to change as
             new data emerges during the operation of the testnet and through
             ongoing community participation. This release does not reflect the
-            final Bitcoin Yay mainnet infrastructure, which may remain partially
+            final bitcoin-yay mainnet infrastructure, which may remain partially
             restricted during its initial deployment phase. As the network
             evolves and stabilizes, broader access to mainnet nodes will
             gradually open to the community. We encourage all participants to
-            stay informed through official Bitcoin Yay channels, as technical
+            stay informed through official bitcoin-yay channels, as technical
             outcomes and user feedback may guide important refinements along the
             way.
           </p>

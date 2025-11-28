@@ -35,7 +35,7 @@ export default function Bitcoin() {
           Fees rose. Transactions slowed. Accessibility faded.
         </p>
         <p className="text-lg font-light mb-6">
-          That’s where Bitcoin Yay (BTCY) enters the story.
+          That’s where bitcoin-yay (BTCY) enters the story.
         </p>
         <p className="text-lg font-light mb-6">
           Imagine taking the original spirit of Bitcoin — decentralization,
@@ -58,7 +58,7 @@ export default function Bitcoin() {
             Scarcity Meets Scalability
           </h2>
           <p className="text-lg font-light mb-4">
-            We created a direct lineage from Bitcoin to Bitcoin Yay:
+            We created a direct lineage from Bitcoin to bitcoin-yay:
           </p>
           <p className="text-lg font-bold mb-4">1 BTC = 1,000,000 BTCY</p>
           <p className="text-lg font-light mb-4">

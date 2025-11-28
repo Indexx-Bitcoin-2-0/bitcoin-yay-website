@@ -14,7 +14,7 @@ export default function EULA() {
     <div className="container mx-auto px-4 overflow-visible mt-40">
       <CustomStyledConatiner>
         <h1 className="text-2xl md:text-5xl font-bold mt-6 max-w-200  md:leading-16">
-          End-User License Agreement (EULA) for Bitcoin Yay
+          End-User License Agreement (EULA) for bitcoin-yay
         </h1>
         <p className="text-sm md:text-lg font-normal text-tertiary my-4">
           Last Updated: May 19, 2025
@@ -24,14 +24,14 @@ export default function EULA() {
       <div className="flex flex-col items-center justify-center mt-40">
         <div className="flex flex-col items-center justify-center max-w-200 text-center">
           <h2 className="text-2xl md:text-5xl font-bold mt-6 md:leading-16">
-             Bitcoin Yay App Description
+             bitcoin-yay App Description
           </h2>
           <p className="text-lg md:text-2xl font-medium text-tertiary mt-4">
-            Start Your Bitcoin Journey with Bitcoin Yay – Effortless Mining for
+            Start Your Bitcoin Journey with bitcoin-yay – Effortless Mining for
             All!
           </p>
           <p className="text-sm md:text-base font-semibold text-tertiary my-4">
-            Embark on a seamless Bitcoin mining experience with Bitcoin Yay.
+            Embark on a seamless Bitcoin mining experience with bitcoin-yay.
             Designed for both novices and seasoned crypto enthusiasts, our app
             simplifies the mining process, allowing you to earn BTCY tokens with
             just a tap.
@@ -73,7 +73,7 @@ export default function EULA() {
 
         <div className="flex-1 flex flex-col mt-40 lg:mt-0 justify-center items-center">
           <h2 className="text-3xl md:text-5xl font-bold text-center">
-            Download The Bitcoin Yay App
+            Download The bitcoin-yay App
           </h2>
           <Image
             src={PhoneImage2}
@@ -102,20 +102,20 @@ export default function EULA() {
 
       <div className="flex items-center justify-center mt-80 text-center">
         <h2 className="text-3xl md:text-5xl font-semibold">
-          Experience the future of cryptocurrency with Bitcoin Yay – where
+          Experience the future of cryptocurrency with bitcoin-yay – where
           mining is made simple, secure, and accessible.
         </h2>
       </div>
 
       <div className="mt-80">
         <h2 className="text-3xl md:text-5xl font-bold">
-          End-User License Agreement (EULA) for Bitcoin Yay
+          End-User License Agreement (EULA) for bitcoin-yay
         </h2>
         <p className="text-2xl font-medium mt-10 text-primary">
           Effective Date: May 19, 2025
         </p>
         <p className="text-base font-semibold mt-2">
-          Embark on a seamless Bitcoin mining experience with Bitcoin Yay.
+          Embark on a seamless Bitcoin mining experience with bitcoin-yay.
           Designed for both novices and seasoned crypto enthusiasts, our app
           simplifies the mining process, allowing you to earn BTCY tokens with
           just a tap.
@@ -125,14 +125,14 @@ export default function EULA() {
             1. Acceptance of Terms
           </h3>
           <p className="text-base font-semibold mt-2">
-            By downloading, installing, or using the Bitcoin Yay application
+            By downloading, installing, or using the bitcoin-yay application
             (&quot;App&quot;), you agree to be bound by this End-User License
             Agreement (&quot;Agreement&quot;). If you do not agree to this
             Agreement, do not use the App.
           </p>
           <h3 className="text-2xl font-semibold mt-10">2. License Grant</h3>
           <p className="text-base font-semibold mt-2">
-            Bitcoin Yay grants you a non-exclusive, non-transferable, revocable
+            bitcoin-yay grants you a non-exclusive, non-transferable, revocable
             license to use the App for personal, non-commercial purposes,
             subject to the terms outlined herein.
           </p>
@@ -156,7 +156,7 @@ export default function EULA() {
           <p className="text-base font-semibold mt-2">
             All rights, titles, and interests in and to the App, including all
             intellectual property rights, are and will remain the exclusive
-            property of Bitcoin Yay.
+            property of bitcoin-yay.
           </p>
           <h3 className="text-2xl font-semibold mt-10">5. Privacy</h3>
           <p className="text-base font-semibold mt-2">
@@ -175,7 +175,7 @@ export default function EULA() {
           </h3>
           <p className="text-base font-semibold mt-2">
             The App is provided &quot;as is&quot; without warranty of any kind.
-            Bitcoin Yay disclaims all warranties, express or implied, including,
+            bitcoin-yay disclaims all warranties, express or implied, including,
             but not limited to, implied warranties of merchantability and
             fitness for a particular purpose.
           </p>
@@ -183,13 +183,13 @@ export default function EULA() {
             8. Limitation of Liability
           </h3>
           <p className="text-base font-semibold mt-2">
-            In no event shall Bitcoin Yay be liable for any damages arising out
+            In no event shall bitcoin-yay be liable for any damages arising out
             of or in connection with your use or inability to use the App.
           </p>
           <h3 className="text-2xl font-semibold mt-10">9. Governing Law</h3>
           <p className="text-base font-semibold mt-2">
             This Agreement shall be governed by and construed in accordance with
-            the laws of the jurisdiction in which Bitcoin Yay operates, without
+            the laws of the jurisdiction in which bitcoin-yay operates, without
             regard to its conflict of law provisions.
           </p>
           <h3 className="text-2xl font-semibold mt-10">
@@ -210,7 +210,7 @@ export default function EULA() {
             </span>
           </p>
           <p className="text-base font-semibold mt-2 text-primary">
-            Address: Bitcoin Yay, San Francisco, California, USA
+            Address: bitcoin-yay, San Francisco, California, USA
           </p>
         </div>
       </div>
