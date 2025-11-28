@@ -1,13 +1,72 @@
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
 import CustomButton2 from "@/components/CustomButton2";
+// import PaymentMethodPopup from "@/components/PaymentMethodPopup";
+// import SubscriptionConfirmPopup from "@/components/SubscriptionConfirmPopup";
+// import PaymentSuccessPopup from "@/components/PaymentSuccessPopup";
+// import PaymentFailedPopup from "@/components/PaymentFailedPopup";
 
 import ElectricMiningButtonImage from "@/assets/images/mining/electric-icon.webp";
 import ElectricMiningArtImage1 from "@/assets/images/mining/electric-mining-art-1.webp";
 import BellButtonImage from "@/assets/images/buttons/bell-button.webp";
 
 const ElectricMiningPage = () => {
+  const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
+  const [isConfirmPopupOpen, setIsConfirmPopupOpen] = useState(false);
+  const [isSuccessPopupOpen, setIsSuccessPopupOpen] = useState(false);
+  const [isFailedPopupOpen, setIsFailedPopupOpen] = useState(false);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<"paypal" | "stripe" | null>(null);
+  const subscriptionAmount = 100; // $100/m for Electric Mining
+
+  const handleSubscribeClick = () => {
+    setIsPaymentPopupOpen(true);
+  };
+
+  const handlePaymentMethodSelect = (method: "paypal" | "stripe") => {
+    setSelectedPaymentMethod(method);
+    setIsPaymentPopupOpen(false);
+    setIsConfirmPopupOpen(true);
+  };
+
+  const handleBackToPaymentMethod = () => {
+    setIsConfirmPopupOpen(false);
+    setIsPaymentPopupOpen(true);
+  };
+
+  const handleSubscribe = async () => {
+    // TODO: Implement payment processing based on selected method
+    console.log(`Subscribing to Electric Mining with ${selectedPaymentMethod} for $${subscriptionAmount}`);
+
+    try {
+      // You can add your payment processing logic here
+      // Example: const result = await processPayment(selectedPaymentMethod, subscriptionAmount);
+
+      // For now, simulate success - replace with actual payment processing
+      const paymentSuccess = true; // Replace with actual payment result
+
+      setIsConfirmPopupOpen(false);
+
+      if (paymentSuccess) {
+        setIsSuccessPopupOpen(true);
+      } else {
+        setIsFailedPopupOpen(true);
+      }
+    } catch (error) {
+      console.error("Payment error:", error);
+      setIsConfirmPopupOpen(false);
+      setIsFailedPopupOpen(true);
+    }
+  };
+
+  const handleTryAgain = () => {
+    setIsFailedPopupOpen(false);
+    setIsPaymentPopupOpen(true);
+  };
+
   return (
     <div className="mx-auto mt-40 md:mt-60 px-4 md:px-20 xl:px-40 relative max-w-[2000px]">
       <div className="flex flex-col items-center justify-center gap-20">
@@ -32,7 +91,9 @@ const ElectricMiningPage = () => {
             9 BTCY/<span className="text-3xl md:text-6xl font-bold">Hr</span>
           </p>
           <ul className="mt-20 list-disc list-inside text-xl flex flex-col gap-6">
-            <li>$ 30/m subscription fee</li>
+            <li><span className="font-bold line-through">
+              $100
+            </span> $ 30/m subscription fee</li>
             <li>1 BTCY ~ $ 0.10</li>
             <li>~9 BTCY/hour ~ $ 0.90</li>
             <li className="text-primary">Referral Bonuses</li>
@@ -42,10 +103,43 @@ const ElectricMiningPage = () => {
         <CustomButton2
           text="Subscribe"
           image={BellButtonImage}
-          link="/#apple-store-download"
+          onClick={handleSubscribeClick}
           imageStyling="w-34"
         />
       </div>
+
+      {/* <PaymentMethodPopup
+        isOpen={isPaymentPopupOpen}
+        onClose={() => setIsPaymentPopupOpen(false)}
+        onSelectPaymentMethod={handlePaymentMethodSelect}
+        planName="Electric Mining"
+        subscriptionAmount={subscriptionAmount}
+      /> */}
+
+      {/* {selectedPaymentMethod && (
+        <SubscriptionConfirmPopup
+          isOpen={isConfirmPopupOpen}
+          onClose={() => setIsConfirmPopupOpen(false)}
+          onBack={handleBackToPaymentMethod}
+          onSubscribe={handleSubscribe}
+          paymentMethod={selectedPaymentMethod}
+          subscriptionAmount={subscriptionAmount}
+          planName="Electric Mining"
+        />
+      )}
+
+      <PaymentSuccessPopup
+        isOpen={isSuccessPopupOpen}
+        onClose={() => setIsSuccessPopupOpen(false)}
+        planName="Electric Mining"
+      />
+
+      <PaymentFailedPopup
+        isOpen={isFailedPopupOpen}
+        onClose={() => setIsFailedPopupOpen(false)}
+        onTryAgain={handleTryAgain}
+        planName="Electric Mining"
+      /> */}
 
       <div className="text-base mt-40 flex flex-col gap-20 max-w-5xl leading-8 mb-40">
         <div>
