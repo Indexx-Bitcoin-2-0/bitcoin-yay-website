@@ -29,10 +29,13 @@ const TurboMiningPage = () => {
         <div className="mt-20 flex flex-col items-center justify-center gap-4">
           <p className="text-3xl font-bold text-center">Generate</p>
           <p className="text-6xl md:text-9xl font-bold text-center">
+
             18 BTCY/<span className="text-3xl md:text-6xl font-bold">Hr</span>
           </p>
           <ul className="mt-20 list-disc list-inside text-xl flex flex-col gap-6">
-            <li>$ 90/m subscription fee</li>
+            <li>  <span className="font-bold line-through">
+              $300
+            </span> $ 90/m subscription fee</li>
             <li>1 BTCY ~ $ 0.10</li>
             <li>~18 BTCY/hour ~ $ 1.80</li>
             <li className="text-primary">Referral Bonuses</li>

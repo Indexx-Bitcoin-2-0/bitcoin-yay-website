@@ -212,7 +212,7 @@ export default function HeroSection() {
 
   return (
     <div
-      className="mt-20 relative w-full h-[400px] md:h-[500px] lg:h-[600px] xl:h-[650px] overflow-hidden"
+      className="mt-20 relative w-full h-[450px] md:h-[550px] lg:h-[650px] xl:h-[700px] overflow-hidden"
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
     >

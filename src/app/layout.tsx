@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import SignInTokenHandler from "@/components/SignInTokenHandler";
+import BlackFridayPopupHandler from "@/components/BlackFridayPopupHandler";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { GoogleOAuthProvider } from "@react-oauth/google"; // ✅ Import this
 
@@ -63,6 +64,7 @@ export default function RootLayout({
             <Suspense fallback={null}>
               <SignInTokenHandler />
             </Suspense>
+            <BlackFridayPopupHandler />
             <Navbar />
             <main>{children}</main>
             <Footer />
