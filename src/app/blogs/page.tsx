@@ -70,7 +70,7 @@ export const blogPosts: BlogPost[] = [
     id: 5,
     title: "How Much Is Your Bank Actually Costing You?",
     description:
-      "Most people believe that paying high fees is necessary to keep an account in the market. Learn more about how Bitcoin-Yay is changing this dynamic right now.",
+      "Most people believe that paying high fees is necessary to keep an account in the market. Learn more about how bitcoin-yay is changing this dynamic right now.",
     date: "March 14, 2025",
     image: Blog5,
     category: "Announcement",
@@ -131,7 +131,7 @@ export const blogPosts: BlogPost[] = [
     id: 11,
     title: "How Much Is Your Bank Actually Costing You?",
     description:
-      "Most people believe that paying high fees is necessary to keep an account in the market. Learn more about how Bitcoin-Yay is changing this dynamic right now.",
+      "Most people believe that paying high fees is necessary to keep an account in the market. Learn more about how bitcoin-yay is changing this dynamic right now.",
     date: "March 14, 2025",
     image: Blog11,
     category: "Announcement",
@@ -198,12 +198,12 @@ export default function Blogs() {
 }
 
 export const metadata = {
-  title: "Bitcoin-Yay News & Blogs - Crypto Insights & Investment Tips",
+  title: "bitcoin-yay News & Blogs - Crypto Insights & Investment Tips",
   description:
-    "Stay updated with the latest Bitcoin-Yay news, crypto market insights, and smart investment strategies. Read expert analysis on cryptocurrency trends, market volatility, and financial opportunities.",
+    "Stay updated with the latest bitcoin-yay news, crypto market insights, and smart investment strategies. Read expert analysis on cryptocurrency trends, market volatility, and financial opportunities.",
   openGraph: {
-    title: "Bitcoin-Yay News & Blogs - Crypto Insights & Investment Tips",
+    title: "bitcoin-yay News & Blogs - Crypto Insights & Investment Tips",
     description:
-      "Stay updated with the latest Bitcoin-Yay news, crypto market insights, and smart investment strategies. Read expert analysis on cryptocurrency trends, market volatility, and financial opportunities.",
+      "Stay updated with the latest bitcoin-yay news, crypto market insights, and smart investment strategies. Read expert analysis on cryptocurrency trends, market volatility, and financial opportunities.",
   },
 };

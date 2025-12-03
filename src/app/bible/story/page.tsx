@@ -12,13 +12,13 @@ import ArtImage5 from "@/assets/images/bible/story/art-5.webp";
 import ArtImage6 from "@/assets/images/bible/story/art-6.webp";
 
 // export const metadata = {
-//   title: "Bitcoin-Yay Story - The Hidden Genesis & Nakamoto Legacy",
+//   title: "bitcoin-yay Story - The Hidden Genesis & Nakamoto Legacy",
 //   description:
-//     "Discover the origin story of Bitcoin-Yay (BTCY) and its connection to Satoshi Nakamoto's vision. Learn how the forgotten code patterns led to the creation of a sustainable, AI-powered cryptocurrency alternative.",
+//     "Discover the origin story of bitcoin-yay (BTCY) and its connection to Satoshi Nakamoto's vision. Learn how the forgotten code patterns led to the creation of a sustainable, AI-powered cryptocurrency alternative.",
 //   openGraph: {
-//     title: "Bitcoin-Yay Story - The Hidden Genesis & Nakamoto Legacy",
+//     title: "bitcoin-yay Story - The Hidden Genesis & Nakamoto Legacy",
 //     description:
-//       "Discover the origin story of Bitcoin-Yay (BTCY) and its connection to Satoshi Nakamoto's vision. Learn how the forgotten code patterns led to the creation of a sustainable, AI-powered cryptocurrency alternative.",
+//       "Discover the origin story of bitcoin-yay (BTCY) and its connection to Satoshi Nakamoto's vision. Learn how the forgotten code patterns led to the creation of a sustainable, AI-powered cryptocurrency alternative.",
 //   },
 // };
 

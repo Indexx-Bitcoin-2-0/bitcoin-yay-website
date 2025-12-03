@@ -20,7 +20,7 @@ const Footer = ({ }) => {
     {
       title: "Quick Links",
       links: [
-        { text: "Bitcoin-Yay Blockchain", url: "#" },
+        { text: "bitcoin-yay Blockchain", url: "#" },
         { text: "Community", url: "#" },
         { text: "Developers", url: "#" },
         { text: "About us", url: "/about" },
@@ -52,7 +52,7 @@ const Footer = ({ }) => {
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-6">
           <div className="col-span-2 mb-8 lg:mb-0">
             <div className="flex items-center gap-2 lg:justify-start">
-              <Image src={BitcoinYayaIcon} alt="Bitcoin-Yay Icon" />
+              <Image src={BitcoinYayaIcon} alt="bitcoin-yay Icon" />
             </div>
             <p className="mt-12 w-80 ">
               Elevate your bitcoin trading experience to new heights with our
@@ -123,7 +123,7 @@ const Footer = ({ }) => {
           </div>
         </div>
         <div className="mt-10 flex flex-col justify-between items-center gap-4 border-t border-bg3 pt-8 text-sm font-medium text-muted-foreground md:flex-row md:items-center">
-          <p className="hidden md:flex">© 2025 | Bitcoin-Yay</p>
+          <p className="hidden md:flex">© 2025 | bitcoin-yay</p>
           <ul className="flex gap-4">
             {bottomLinks.map((link, linkIdx) => (
               <li

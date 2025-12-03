@@ -16,13 +16,13 @@ import PricingCardImage5 from "@/assets/images/pricing/pricing-card-5.svg";
 import PricingCardImage6 from "@/assets/images/pricing/pricing-card-6.svg";
 
 export const metadata = {
-  title: "Bitcoin-Yay Pricing - Mining Plans & Gopher Packages",
+  title: "bitcoin-yay Pricing - Mining Plans & Gopher Packages",
   description:
-    "Choose the perfect Bitcoin-Yay mining plan. From Free Snatch Gopher to Nuclear Plan with 9x speed boost. Earn up to 13.5 BTCY/hour with our premium mining packages. Compare pricing and features.",
+    "Choose the perfect bitcoin-yay mining plan. From Free Snatch Gopher to Nuclear Plan with 9x speed boost. Earn up to 27 BTCY/hour with our premium mining packages. Compare pricing and features.",
   openGraph: {
-    title: "Bitcoin-Yay Pricing - Mining Plans & Gopher Packages",
+    title: "bitcoin-yay Pricing - Mining Plans & Gopher Packages",
     description:
-      "Choose the perfect Bitcoin-Yay mining plan. From Free Snatch Gopher to Nuclear Plan with 9x speed boost. Earn up to 13.5 BTCY/hour with our premium mining packages. Compare pricing and features.",
+      "Choose the perfect bitcoin-yay mining plan. From Free Snatch Gopher to Nuclear Plan with 9x speed boost. Earn up to 27 BTCY/hour with our premium mining packages. Compare pricing and features.",
   },
 };
 
@@ -94,7 +94,7 @@ export default function PricingPage() {
     <div className=" mx-auto max-w-[90vw] lg:px-10 py-8 mt-40">
       <CustomStyledConatiner>
         <h1 className="text-2xl md:text-5xl font-bold mt-8 max-w-300  md:leading-16">
-          Bitcoin-Yay Pricing
+          bitcoin-yay Pricing
         </h1>
         <p className="text-sm md:text-lg font-normal text-tertiary my-4">
           Last Updated: May 10, 2025

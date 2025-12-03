@@ -20,7 +20,11 @@ export const ALCHEMY_COMPLETE_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/ap
 
 export const ALCHEMY_CONFIG_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/alchemy/config`;
 
-export const ALCHEMY_SESSIONS_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v2/bitcoinyay/alchemy/sessions`;
+const ALCHEMY_V2_BASE_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v2/bitcoinyay/alchemy`;
+
+export const ALCHEMY_SESSIONS_API_ROUTE = `${ALCHEMY_V2_BASE_ROUTE}/sessions`;
+export const ALCHEMY_PROCESS_API_ROUTE = `${ALCHEMY_V2_BASE_ROUTE}/process`;
+export const ALCHEMY_COMPLETE_V2_API_ROUTE = `${ALCHEMY_V2_BASE_ROUTE}/complete`;
 
 export const ALCHEMY_GET_USER_SUBSCRIPTION = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/mining/getUserSubscriptionPlan/BTCY`;
 

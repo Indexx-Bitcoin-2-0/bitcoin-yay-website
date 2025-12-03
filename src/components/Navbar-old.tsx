@@ -112,9 +112,8 @@ export default function Navbar() {
           </Link>
         </div>
         <div
-          className={`absolute left-0 top-24 w-full p-8 bg-bg shadow-lg transform z-20  ${
-            isOpen ? "translate-y-0 " : "-translate-y-[130%]"
-          }`}
+          className={`absolute left-0 top-24 w-full p-8 bg-bg shadow-lg transform z-20  ${isOpen ? "translate-y-0 " : "-translate-y-[130%]"
+            }`}
         >
           <div className="">
             <form
@@ -149,7 +148,7 @@ export default function Navbar() {
           >
             <AccordionItem value="item-1" className="border-0">
               <AccordionTrigger className="py-2 text-xl font-normal data-[state=open]:text-primary">
-                Bitcoin-Yay Blockchain
+                bitcoin-yay Blockchain
               </AccordionTrigger>
               <AccordionContent className="p-2">
                 <Link
@@ -157,7 +156,7 @@ export default function Navbar() {
                   className="block text-lg my-2 hover:text-primary"
                   onClick={closeMobileMenu}
                 >
-                  Bitcoin-Yay Blockchain
+                  bitcoin-yay Blockchain
                 </Link>
                 <Link
                   href="/coming-soon"
@@ -253,11 +252,10 @@ export default function Navbar() {
               onMouseLeave={handleBitcoinMouseLeave}
             >
               <button
-                className={`flex cursor-pointer font-normal text-sm p-0 hover:text-primary ${
-                  bitcoinDropdownOpen ? "text-primary" : "text-tertiary"
-                }`}
+                className={`flex cursor-pointer font-normal text-sm p-0 hover:text-primary ${bitcoinDropdownOpen ? "text-primary" : "text-tertiary"
+                  }`}
               >
-                Bitcoin-Yay Blockchain
+                bitcoin-yay Blockchain
                 <Image src={DownMenuIcon} alt="" width={20} />
               </button>
               {bitcoinDropdownOpen && (
@@ -271,7 +269,7 @@ export default function Navbar() {
                       href="/blockchain"
                       className="block hover:text-primary focus:text-primary focus:bg-transparent text-xl"
                     >
-                      Bitcoin-Yay Blockchain
+                      bitcoin-yay Blockchain
                     </Link>
                     <Link
                       href="/coming-soon"
@@ -301,9 +299,8 @@ export default function Navbar() {
               onMouseLeave={handleCommunityMouseLeave}
             >
               <button
-                className={`flex cursor-pointer font-normal text-sm p-0 hover:text-primary ${
-                  communityDropdownOpen ? "text-primary" : "text-tertiary"
-                }`}
+                className={`flex cursor-pointer font-normal text-sm p-0 hover:text-primary ${communityDropdownOpen ? "text-primary" : "text-tertiary"
+                  }`}
               >
                 Community <Image src={DownMenuIcon} alt="" width={20} />
               </button>
@@ -332,24 +329,21 @@ export default function Navbar() {
             </div>
             <Link
               href="/about"
-              className={`cursor-pointer font-normal text-sm p-0 hover:text-primary ${
-                pathname === "/about" ? "text-primary" : "text-tertiary"
-              }`}
+              className={`cursor-pointer font-normal text-sm p-0 hover:text-primary ${pathname === "/about" ? "text-primary" : "text-tertiary"
+                }`}
             >
               About
             </Link>
             <Link
-              className={`cursor-pointer font-normal text-sm p-0 hover:text-primary ${
-                pathname === "/support" ? "text-primary" : "text-tertiary"
-              }`}
+              className={`cursor-pointer font-normal text-sm p-0 hover:text-primary ${pathname === "/support" ? "text-primary" : "text-tertiary"
+                }`}
               href="/support"
             >
               Support
             </Link>
             <Link
-              className={`cursor-pointer font-normal text-sm p-0 hover:text-primary ${
-                pathname === "/pricing" ? "text-primary" : "text-tertiary"
-              }`}
+              className={`cursor-pointer font-normal text-sm p-0 hover:text-primary ${pathname === "/pricing" ? "text-primary" : "text-tertiary"
+                }`}
               href="/pricing"
             >
               Pricing

@@ -5,13 +5,13 @@ import ArtImage2 from "@/assets/images/bible/wallet/art-2.webp";
 import ArtImage3 from "@/assets/images/bible/wallet/art-3.webp";
 
 export const metadata = {
-  title: "Bitcoin-Yay Wallet - Next-Generation Digital Crypto Wallet",
+  title: "bitcoin-yay Wallet - Next-Generation Digital Crypto Wallet",
   description:
-    "Discover Bitcoin-Yay Wallet, the secure digital wallet for Bitcoin-Yay (BTCY) and crypto assets. Features include local private key storage, multi-asset support, cross-chain bridging, and real-time notifications.",
+    "Discover bitcoin-yay Wallet, the secure digital wallet for bitcoin-yay (BTCY) and crypto assets. Features include local private key storage, multi-asset support, cross-chain bridging, and real-time notifications.",
   openGraph: {
-    title: "Bitcoin-Yay Wallet - Next-Generation Digital Crypto Wallet",
+    title: "bitcoin-yay Wallet - Next-Generation Digital Crypto Wallet",
     description:
-      "Discover Bitcoin-Yay Wallet, the secure digital wallet for Bitcoin-Yay (BTCY) and crypto assets. Features include local private key storage, multi-asset support, cross-chain bridging, and real-time notifications.",
+      "Discover bitcoin-yay Wallet, the secure digital wallet for bitcoin-yay (BTCY) and crypto assets. Features include local private key storage, multi-asset support, cross-chain bridging, and real-time notifications.",
   },
 };
 
@@ -23,7 +23,7 @@ export default function BitcoinYayWalletPage() {
           Bitcoin-YAY
         </h2>
         <h1 className="text-5xl md:text-7xl mb-4 font-semibold">
-          Bitcoin-Yay Wallet
+          bitcoin-yay Wallet
         </h1>
         <Image
           src={ArtImage1}
@@ -34,18 +34,18 @@ export default function BitcoinYayWalletPage() {
 
       <div className="mt-80 px-4 md:px-20 xl:px-40">
         <h2 className="text-lg md:text-2xl mb-4 font-bold text-primary">
-          Bitcoin-Yay Wallet
+          bitcoin-yay Wallet
         </h2>
         <h3 className="mt-2 text-5xl md:text-7xl mb-4 font-semibold">
           The next-generation digital wallet
         </h3>
         <p className="mt-10 text-lg">
-          that empowers users to manage their BTCY (Bitcoin-Yay) tokens and
-          other crypto assets built on the Bitcoin-Yay blockchain. Designed for
+          that empowers users to manage their BTCY (bitcoin-yay) tokens and
+          other crypto assets built on the bitcoin-yay blockchain. Designed for
           simplicity, security, and real-world utility, it provides users with a
           seamless way to send, receive, mine, stake, and bridge their assets —
           all from a single app. Whether you&apos;re new to crypto or an
-          experienced user, Bitcoin-Yay Wallet ensures an intuitive experience
+          experienced user, bitcoin-yay Wallet ensures an intuitive experience
           backed by robust technology.
         </p>
       </div>
@@ -59,12 +59,12 @@ export default function BitcoinYayWalletPage() {
 
       <div className="mt-80 px-4 md:px-20 xl:px-40">
         <h2 className="mt-2 text-5xl md:text-7xl mb-4 font-semibold">
-          Key Benefits of Bitcoin-Yay Wallet
+          Key Benefits of bitcoin-yay Wallet
         </h2>
 
         <h3 className="mt-10 text-[40px] font-bold">1. Secure and Private</h3>
         <p className="mt-4 text-lg">
-          Security is the core of Bitcoin-Yay Wallet. Your private keys — the
+          Security is the core of bitcoin-yay Wallet. Your private keys — the
           digital credentials that give you control over your funds — are stored
           locally on your device, never uploaded to the cloud or centralized
           servers. This ensures that only you can access your wallet. The app
@@ -74,8 +74,8 @@ export default function BitcoinYayWalletPage() {
         </p>
         <h3 className="mt-10 text-[40px] font-bold">2. Multi-Asset Support</h3>
         <p className="mt-4 text-lg">
-          Bitcoin-Yay Wallet allows you to hold more than just BTCY. You can store,
-          manage, and transact with various tokens from the Bitcoin-Yay blockchain
+          bitcoin-yay Wallet allows you to hold more than just BTCY. You can store,
+          manage, and transact with various tokens from the bitcoin-yay blockchain
           as well as those based on Stellar. The app displays your token
           balances in real time and provides a clear history of transactions,
           giving you full control and transparency over your portfolio.
@@ -83,11 +83,11 @@ export default function BitcoinYayWalletPage() {
 
         <h3 className="mt-10 text-[40px] font-bold">3. Bridging Made Easy</h3>
         <p className="mt-4 text-lg">
-          With Bitcoin-Yay Wallet, you can easily bring tokens from other popular
+          With bitcoin-yay Wallet, you can easily bring tokens from other popular
           blockchains — such as Ethereum and Binance Smart Chain — into your
           wallet. This is achieved through a seamless bridge system, which locks
           your original tokens on their native chain and provides an equivalent
-          token inside Bitcoin-Yay. Similarly, you can bridge tokens out, allowing
+          token inside bitcoin-yay. Similarly, you can bridge tokens out, allowing
           full interoperability across chains.
         </p>
 
@@ -109,7 +109,7 @@ export default function BitcoinYayWalletPage() {
         <div className="flex flex-col items-start justify-center gap-4 mt-10 flex-1 px-4 md:px-20 xl:px-0">
           <h3 className="text-5xl md:text-7xl font-semibold">Who it is for</h3>
           <p className="mt-10 text-[40px] font-bold max-w-164">
-            Bitcoin-Yay Wallet is designed for a wide range of users:
+            bitcoin-yay Wallet is designed for a wide range of users:
           </p>
           <ul className="mt-4 list-disc text-lg list-inside">
             <li>

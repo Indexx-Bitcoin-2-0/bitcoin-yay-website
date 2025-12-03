@@ -116,15 +116,15 @@ export default function Whitepaper() {
 
       <SectionDiv id="introduction">
         <CustomHeading content="1. Introduction" />
-        <CustomPWithTitle2 content="Bitcoin-Yay (BTCY) is a decentralized cryptocurrency designed as the foundation of a next-generation blockchain ecosystem. Bitcoin-Yay is a new and smarter version of Bitcoin, tailored for everyday use, and serves as a “Micro Token of Bitcoin.” Built on a high-performance Stellar-based blockchain, Bitcoin-Yay enables fast, low-cost transactions while incorporating features like AI-driven mobile mining, smart contracts, and decentralized governance. This whitepaper details the design, implementation, tokenomics, security, and governance of Bitcoin-Yay, aiming to create a sustainable, community-driven financial network." />
-        <CustomPWithTitle2 content="Inspired by the revolutionary vision of Bitcoin and the legacy of Satoshi Nakamoto, Bitcoin-Yay is not merely a cryptocurrency — it is the continuation of an idea. While Bitcoin laid the foundation as digital gold, Bitcoin-Yay evolves that foundation into a mobile-first, energy-efficient, and utility-rich ecosystem for real-world use. By lowering entry barriers and fostering inclusivity, Bitcoin-Yay aspires to bring practical crypto usage to everyday people – from shopping and gaming to savings and micro-investments." />
+        <CustomPWithTitle2 content="bitcoin-yay (BTCY) is a decentralized cryptocurrency designed as the foundation of a next-generation blockchain ecosystem. bitcoin-yay is a new and smarter version of Bitcoin, tailored for everyday use, and serves as a “Micro Token of Bitcoin.” Built on a high-performance Stellar-based blockchain, bitcoin-yay enables fast, low-cost transactions while incorporating features like AI-driven mobile mining, smart contracts, and decentralized governance. This whitepaper details the design, implementation, tokenomics, security, and governance of bitcoin-yay, aiming to create a sustainable, community-driven financial network." />
+        <CustomPWithTitle2 content="Inspired by the revolutionary vision of Bitcoin and the legacy of Satoshi Nakamoto, bitcoin-yay is not merely a cryptocurrency — it is the continuation of an idea. While Bitcoin laid the foundation as digital gold, bitcoin-yay evolves that foundation into a mobile-first, energy-efficient, and utility-rich ecosystem for real-world use. By lowering entry barriers and fostering inclusivity, bitcoin-yay aspires to bring practical crypto usage to everyday people – from shopping and gaming to savings and micro-investments." />
       </SectionDiv>
 
       <SectionDiv id="vision-mission">
         <CustomHeading content="2. Vision & Mission" />
         <CustomPWithTitle2
           title="Vision:"
-          content="To create a seamless, user-friendly, and sustainable Bitcoin alternative that integrates novel financial incentives and mining structures while fostering mass adoption. Bitcoin-Yay envisions a world where participating in the crypto economy is as simple as using a mobile app, and where digital currency truly becomes a part of everyday life across the globe."
+          content="To create a seamless, user-friendly, and sustainable Bitcoin alternative that integrates novel financial incentives and mining structures while fostering mass adoption. bitcoin-yay envisions a world where participating in the crypto economy is as simple as using a mobile app, and where digital currency truly becomes a part of everyday life across the globe."
         />
         <CustomPWithTitle2
           title="Mission:"
@@ -157,7 +157,7 @@ export default function Whitepaper() {
           />
         </CustomUnorderedList>
         <CustomHeading2 content="3.2 Security & Privacy" />
-        <CustomPWithTitle2 content="ecurity is paramount in Bitcoin-Yay’s design, especially given its novel elements. Multiple layers of security and privacy are implemented:" />
+        <CustomPWithTitle2 content="ecurity is paramount in bitcoin-yay’s design, especially given its novel elements. Multiple layers of security and privacy are implemented:" />
         <CustomUnorderedList>
           <CustomListItem2
             title="Multi-Layered Encryption:"
@@ -180,7 +180,7 @@ export default function Whitepaper() {
             content=" The team commits to regular third-party security audits of smart contracts, wallet code, and infrastructure. Findings are transparently published. A bug bounty program incentivizes independent security researchers to report vulnerabilities, adding an extra layer of defense."
           />
         </CustomUnorderedList>
-        <CustomPWithTitle2 content="Through encryption, AI oversight, robust consensus, and a clear decentralization roadmap, Bitcoin-Yay aims for high security and trust from day one while progressively handing control to the community." />
+        <CustomPWithTitle2 content="Through encryption, AI oversight, robust consensus, and a clear decentralization roadmap, bitcoin-yay aims for high security and trust from day one while progressively handing control to the community." />
       </SectionDiv>
 
       <div className="mt-20 overflow-hidden">
@@ -199,7 +199,7 @@ export default function Whitepaper() {
           content="Hard-capped at 21 trillion BTCY tokens, mirroring Bitcoin’s 21 million cap via micro-token conversion (1 BTC → 1,000,000 BTCY). This ensures BTCY remains scarce in the long run, creating incentive for holding and naturally limiting inflation."
         />
         <CustomUnorderedList>
-          <CustomListItem2 content="Bitcoin Conversion Ratio: At launch, 1 BTC is set to equal 1,000,000 BTCY. Hypothetically, converting all 21 million BTC would yield 21 trillion BTCY. If you own 1 BTC, you can claim 1,000,000 BTCY; 0.01 BTC equates to 10,000 BTCY, and so forth. This ties Bitcoin-Yay’s value conceptually to Bitcoin’s, and a reserve mechanism backs this by holding actual BTC." />
+          <CustomListItem2 content="Bitcoin Conversion Ratio: At launch, 1 BTC is set to equal 1,000,000 BTCY. Hypothetically, converting all 21 million BTC would yield 21 trillion BTCY. If you own 1 BTC, you can claim 1,000,000 BTCY; 0.01 BTC equates to 10,000 BTCY, and so forth. This ties bitcoin-yay’s value conceptually to Bitcoin’s, and a reserve mechanism backs this by holding actual BTC." />
         </CustomUnorderedList>
         <CustomPWithTitle2
           title="Initial Distribution Breakdown:"
@@ -208,9 +208,9 @@ export default function Whitepaper() {
         <CustomUnorderedList>
           <CustomListItem2 content="40% (8.4 Trillion) – Mining Rewards & Ecosystem Incentives. Reserved for distribution via the mining programs (Snatch Gopher free mining, Nugget Gopher paid plans, etc.) and other user participation incentives. This large allocation ensures the community can earn a significant share of the supply over time, fueling user growth and engagement." />
           <CustomListItem2 content="10% (2.1 Trillion) – Satoshi Nakamoto Legacy Allocation. In tribute to Bitcoin’s creator, earmarked for Satoshi. Practically, these tokens could be locked or even burned to symbolize transfer to Satoshi’s inaccessible wallet. It serves as a narrative bridge between BTC and BTCY, a thoughtful nod to the origins of the project." />
-          <CustomListItem2 content="20% (4.2 Trillion) – Developer & Infrastructure Fund. Held by the project team/Indexx and vested over ~4 years. Funds ongoing development, infrastructure (servers, support), and rewards for core contributors. A vesting schedule prevents the team from flooding the market and aligns their incentives with Bitcoin-Yay’s long-term success." />
+          <CustomListItem2 content="20% (4.2 Trillion) – Developer & Infrastructure Fund. Held by the project team/Indexx and vested over ~4 years. Funds ongoing development, infrastructure (servers, support), and rewards for core contributors. A vesting schedule prevents the team from flooding the market and aligns their incentives with bitcoin-yay’s long-term success." />
           <CustomListItem2 content="15% (3.15 Trillion) – Indexx Treasury (Liquidity & Stability). Managed by Indexx to provide liquidity on exchanges, perform market-making, and support token stability. This treasury will also help back the BTC reserve mechanism (swapping some BTCY for BTC over time to fill reserves). It acts as a buffer to stabilize price and ensure convertibility." />
-          <CustomListItem2 content="10% (2.1 Trillion) – Community & Influencer Incentives. Dedicated to airdrops, rewards, community events, and influencer partnerships. This allocation seeds the initial user base and creates buzz (e.g., free BTCY drops to early adopters, bonuses for social media promotions, etc.). By distributing tokens through community engagement campaigns, Bitcoin-Yay kickstarts network effects and public awareness." />
+          <CustomListItem2 content="10% (2.1 Trillion) – Community & Influencer Incentives. Dedicated to airdrops, rewards, community events, and influencer partnerships. This allocation seeds the initial user base and creates buzz (e.g., free BTCY drops to early adopters, bonuses for social media promotions, etc.). By distributing tokens through community engagement campaigns, bitcoin-yay kickstarts network effects and public awareness." />
           <CustomListItem2 content="5% (1.05 Trillion) – Strategic Partnerships & Institutional Adoption. Reserved for key partners or institutional participants. These tokens incentivize collaborations with payment providers, merchants, fintech companies or even NGOs to integrate BTCY. Having a reserve for strategic outreach provides flexibility to foster adoption in larger contexts (for example, rewarding a popular app for accepting BTCY, or encouraging a financial institution to pilot BTCY-based services)." />
         </CustomUnorderedList>
         <CustomPWithTitle2 content="This distribution ensures that a majority of tokens (50% from mining + community programs) end up in the hands of the community. A substantial portion (35%) is initially held by the team/Indexx for development and liquidity but with clear purpose and vesting to mitigate centralization risk. The Satoshi tribute and partnership allocations further align BTCY with the broader crypto narrative and future expansion." />
@@ -257,7 +257,7 @@ export default function Whitepaper() {
       <SectionDiv id="mining-participation-model">
         <CustomHeading content="5. Mining & Participation Model" />
         <CustomPWithTitle2 content="BTCY introduces an innovative mining model inspired by gopher-themed tiers to encourage broad participation in the network." />
-        <CustomHeading2 content="5.1 Bitcoin-Yay Gopher Mining System" />
+        <CustomHeading2 content="5.1 bitcoin-yay Gopher Mining System" />
         <CustomPWithTitle2
           title="Snatch Gopher (Free Mining Program):"
           content="Entry-level free mining with minimal commitment, allowing anyone to start earning BTCY at no cost. Base speed is 1× (earning ~1.5 BTCY/hour initially). While free, users may need to perform small in-app tasks like viewing ads or providing feedback to maintain rewards. This onboards anyone at zero cost and ensures engagement."
@@ -277,7 +277,7 @@ export default function Whitepaper() {
           />
           <CustomListItem2
             title="Turbo Power (Mid Paid):"
-            content="6× speed (~9 BTCY/hour) for $300/month. Comes with "super-speed" mining and priority withdrawals – if there's ever a queue or limit on withdrawals, Turbo users are first in line."
+            content="6× speed (~9 BTCY/hour) for $300/month. Comes with " super-speed" mining and priority withdrawals – if there's ever a queue or limit on withdrawals, Turbo users are first in line."
           />
         </CustomUnorderedList>
         <CustomPWithTitle2
@@ -366,11 +366,11 @@ export default function Whitepaper() {
         </CustomUnorderedList>
         <CustomHeading2 content="5.3 AI Mobile Mining Architecture" />
 
-        <CustomPWithTitle2 content="Bitcoin-Yay’s mining mechanism is powered by an AI-driven system that ensures mining is efficient, engaging, and fair. As mentioned, it follows a teacher-student model using knowledge distillation:" />
+        <CustomPWithTitle2 content="bitcoin-yay’s mining mechanism is powered by an AI-driven system that ensures mining is efficient, engaging, and fair. As mentioned, it follows a teacher-student model using knowledge distillation:" />
 
         <CustomHeading2 content="5.3.1 Knowledge Distillation Model" />
 
-        <CustomPWithTitle2 content="A central “Master” AI (the Teacher) analyzes user activity patterns across the network – looking at engagement, task completion, referrals, transaction frequency, and other behaviors beneficial to the ecosystem. It learns which behaviors contribute most to Bitcoin-Yay’s growth and security." />
+        <CustomPWithTitle2 content="A central “Master” AI (the Teacher) analyzes user activity patterns across the network – looking at engagement, task completion, referrals, transaction frequency, and other behaviors beneficial to the ecosystem. It learns which behaviors contribute most to bitcoin-yay’s growth and security." />
         <CustomPWithTitle2 content="This knowledge is distilled into lightweight “mining tasks” sent to each user’s mobile app (the Student). Each user’s app gets tasks tailored to their device capabilities and past engagement level:" />
 
         <CustomUnorderedList>
@@ -411,7 +411,7 @@ export default function Whitepaper() {
           <CustomListItem2 content="Referral Network Strength: Bringing new users and keeping them active raises the score (the network effect is rewarded)." />
           <CustomListItem2 content="Staking Participation: Users who stake BTCY or otherwise lock in their commitment to the network may receive a higher score." />
         </CustomUnorderedList>
-        <CustomPWithTitle2 content="The AI Mining Score ranges through levels that correspond roughly to multipliers from 1× up to a maximum (e.g., 10× for extremely engaged users). For example, a Free Plan user (base 1×) who is very active might achieve a 2× or 3× AMS multiplier, effectively earning 2–3 times the base 1.5 BTCY/hour rate. By rewarding smarter and more helpful engagement rather than raw computing power, Bitcoin-Yay turns mining into a participatory, gamified, and merit-based experience." />
+        <CustomPWithTitle2 content="The AI Mining Score ranges through levels that correspond roughly to multipliers from 1× up to a maximum (e.g., 10× for extremely engaged users). For example, a Free Plan user (base 1×) who is very active might achieve a 2× or 3× AMS multiplier, effectively earning 2–3 times the base 3 BTCY/hour rate. By rewarding smarter and more helpful engagement rather than raw computing power, bitcoin-yay turns mining into a participatory, gamified, and merit-based experience." />
       </SectionDiv>
 
       <div className="w-screen flex items-center justify-center mt-40">
@@ -440,7 +440,7 @@ export default function Whitepaper() {
             content="A community membership and rewards hub tied to BTCY staking. Users who stake certain amounts of BTCY gain membership in the “Hive,” unlocking perks like higher referral bonuses, voting rights in project governance (as BTCY transitions to a DAO), and access to exclusive content or events. This fosters a loyal community and incentivizes holding and staking BTCY."
           />
         </CustomUnorderedList>
-        <CustomPWithTitle2 content="From day one, Bitcoin-Yay benefits from being born into Indexx’s ecosystem. Instead of having to create demand from scratch, BTCY plugs into existing platforms where it has immediate usefulness — trading, shopping, gaming, and more. This comprehensive integration means a user can earn BTCY by mining in the morning, trade some for stablecoin in the afternoon, stake some for interest by evening, and spend a little at night for entertainment, all within one connected crypto environment." />
+        <CustomPWithTitle2 content="From day one, bitcoin-yay benefits from being born into Indexx’s ecosystem. Instead of having to create demand from scratch, BTCY plugs into existing platforms where it has immediate usefulness — trading, shopping, gaming, and more. This comprehensive integration means a user can earn BTCY by mining in the morning, trade some for stablecoin in the afternoon, stake some for interest by evening, and spend a little at night for entertainment, all within one connected crypto environment." />
       </SectionDiv>
 
       <div className="mt-20 overflow-hidden">
@@ -450,23 +450,23 @@ export default function Whitepaper() {
       <SectionDiv id="roadmap-development">
         <CustomHeading content="7. Roadmap & Development Phases" />
 
-        <CustomPWithTitle2 content="Bitcoin-Yay’s development is planned in clear phases from 2025 onward, with each phase building on the last to gradually decentralize the project and expand its reach:" />
+        <CustomPWithTitle2 content="bitcoin-yay’s development is planned in clear phases from 2025 onward, with each phase building on the last to gradually decentralize the project and expand its reach:" />
         <CustomUnorderedList>
           <CustomListItem2
             title="Phase 1:"
-            content="Foundation & Launch (Q2 2025 – Q3 2025) – Core infrastructure set up, BTCY token generation event (launching BTCY on Indexx Exchange and initial DEXs). Launch of the Bitcoin-Yay mobile wallet (alpha/beta) allowing wallet creation, basic BTC/BTCY swaps, and Free Plan mining (Snatch Gopher). Early adopter incentives like airdrops and referral bonuses kick in. Paid mining subscriptions (Electric, Turbo, Nuclear) roll out to initial users. Community channels (Telegram, Discord) are opened and the first marketing campaigns and influencer partnerships begin to create buzz."
+            content="Foundation & Launch (Q2 2025 – Q3 2025) – Core infrastructure set up, BTCY token generation event (launching BTCY on Indexx Exchange and initial DEXs). Launch of the bitcoin-yay mobile wallet (alpha/beta) allowing wallet creation, basic BTC/BTCY swaps, and Free Plan mining (Snatch Gopher). Early adopter incentives like airdrops and referral bonuses kick in. Paid mining subscriptions (Electric, Turbo, Nuclear) roll out to initial users. Community channels (Telegram, Discord) are opened and the first marketing campaigns and influencer partnerships begin to create buzz."
           />
           <CustomListItem2
             title="Phase 2:"
-            content="Expansion & Utility (Q4 2025 – Q2 2026) – Focus on expanding use-cases for BTCY. BTCY Staking & Governance features launch (users can stake BTCY for yield and preliminary voting rights). Full integration with Indexx Shop and Lotto is achieved (BTCY widely spendable for gift cards, lottery tickets). Smart contract functionality is deployed on Bitcoin-Yay’s network, enabling third-party dApps. The Nerdy Gopher developer bounty program starts to encourage developers to build on BTCY (with hackathons and bug bounties). Listings on additional exchanges and liquidity pools on DeFi platforms (Ethereum/BSC) broaden BTCY’s availability. Strategic partnerships are pursued using the 5% allocation to bring in fintech or gaming platforms. By the end of Phase 2, hundreds of thousands of users are actively mining or using BTCY, and BTCY is transitioning from something people only earn to something they actively spend and utilize."
+            content="Expansion & Utility (Q4 2025 – Q2 2026) – Focus on expanding use-cases for BTCY. BTCY Staking & Governance features launch (users can stake BTCY for yield and preliminary voting rights). Full integration with Indexx Shop and Lotto is achieved (BTCY widely spendable for gift cards, lottery tickets). Smart contract functionality is deployed on bitcoin-yay’s network, enabling third-party dApps. The Nerdy Gopher developer bounty program starts to encourage developers to build on BTCY (with hackathons and bug bounties). Listings on additional exchanges and liquidity pools on DeFi platforms (Ethereum/BSC) broaden BTCY’s availability. Strategic partnerships are pursued using the 5% allocation to bring in fintech or gaming platforms. By the end of Phase 2, hundreds of thousands of users are actively mining or using BTCY, and BTCY is transitioning from something people only earn to something they actively spend and utilize."
           />
           <CustomListItem2
             title="Phase 3:"
-            content="Decentralization & Governance (Q3 2026 – Q4 2026) – Emphasis on handing control to the community. Bitcoin-Yay DAO is established with governance smart contracts; BTCY stakers can now vote on proposals (e.g., adjusting fees or mining rates). The team begins transferring critical controls to the DAO (treasury management, protocol parameters). The validator set becomes more decentralized, possibly adding community-run nodes to reduce Indexx’s share. Cross-chain bridges to major networks (Ethereum, BNB Chain) go live, allowing wrapped BTCY to circulate and tap into external DeFi markets. This year also sees global expansion efforts: regional ambassadors, compliance in new jurisdictions, and outreach to institutions (presenting BTCY as a “Bitcoin for everyone” solution). By the end of 2026, the project aims to be operationally independent of the core team – running increasingly as a self-governed network."
+            content="Decentralization & Governance (Q3 2026 – Q4 2026) – Emphasis on handing control to the community. bitcoin-yay DAO is established with governance smart contracts; BTCY stakers can now vote on proposals (e.g., adjusting fees or mining rates). The team begins transferring critical controls to the DAO (treasury management, protocol parameters). The validator set becomes more decentralized, possibly adding community-run nodes to reduce Indexx’s share. Cross-chain bridges to major networks (Ethereum, BNB Chain) go live, allowing wrapped BTCY to circulate and tap into external DeFi markets. This year also sees global expansion efforts: regional ambassadors, compliance in new jurisdictions, and outreach to institutions (presenting BTCY as a “Bitcoin for everyone” solution). By the end of 2026, the project aims to be operationally independent of the core team – running increasingly as a self-governed network."
           />
           <CustomListItem2
             title="Phase 4:"
-            content="Global Adoption & Sustainability (2027 and beyond) – Bitcoin-Yay is fully decentralized and aiming for mainstream recognition. The 21 trillion cap will be nearly reached by this time (due to the rapid halving schedule), meaning new issuance is very low and BTCY’s economy stabilizes on transaction fees and recycling of tokens. The community (via the DAO) controls all key aspects of the network. The project pushes for integration in mainstream finance – e.g., getting BTCY listed on major global exchanges, included in index funds or ETFs, and accepted by additional payment processors. Indexx Pay launches, allowing users to spend BTCY via crypto debit cards or merchant payment gateways, bridging into physical retail. The Bitcoin Gopher Phone (a teased dedicated device for BTCY mining) might be released, further simplifying user acquisition. Throughout, continuous innovations (like exploring quantum-resistant tech or enhanced privacy features) are adopted via governance proposals to keep Bitcoin-Yay technologically relevant. By this stage, Bitcoin-Yay strives to be a ubiquitous “everyday Bitcoin,” secure, self-sustaining, and used by millions worldwide."
+            content="Global Adoption & Sustainability (2027 and beyond) – bitcoin-yay is fully decentralized and aiming for mainstream recognition. The 21 trillion cap will be nearly reached by this time (due to the rapid halving schedule), meaning new issuance is very low and BTCY’s economy stabilizes on transaction fees and recycling of tokens. The community (via the DAO) controls all key aspects of the network. The project pushes for integration in mainstream finance – e.g., getting BTCY listed on major global exchanges, included in index funds or ETFs, and accepted by additional payment processors. Indexx Pay launches, allowing users to spend BTCY via crypto debit cards or merchant payment gateways, bridging into physical retail. The Bitcoin Gopher Phone (a teased dedicated device for BTCY mining) might be released, further simplifying user acquisition. Throughout, continuous innovations (like exploring quantum-resistant tech or enhanced privacy features) are adopted via governance proposals to keep bitcoin-yay technologically relevant. By this stage, bitcoin-yay strives to be a ubiquitous “everyday Bitcoin,” secure, self-sustaining, and used by millions worldwide."
           />
         </CustomUnorderedList>
       </SectionDiv>
@@ -478,7 +478,7 @@ export default function Whitepaper() {
       <SectionDiv id="withdrawal-rules-vetting-system">
         <CustomHeading content="8. Withdrawal Rules & Vetting System" />
 
-        <CustomPWithTitle2 content="To maintain network stability, prevent abuse, and ensure fair token distribution, Bitcoin-Yay implements a structured withdrawal and usage vetting system. This system discourages immediate dumping of mined coins and aligns with the long-term vision:" />
+        <CustomPWithTitle2 content="To maintain network stability, prevent abuse, and ensure fair token distribution, bitcoin-yay implements a structured withdrawal and usage vetting system. This system discourages immediate dumping of mined coins and aligns with the long-term vision:" />
 
         <CustomUnorderedList>
           <CustomListItem2 content="Minimum Usage/Withdrawal Threshold: Users must accumulate at least 100,000 BTCY before they can initiate external withdrawals or fully access certain conversion features (trading BTCY for other assets, making payments outside the ecosystem, etc.). This threshold ensures that users contribute meaningfully (e.g., roughly a few months of mining on Free plan) before extracting value, reducing the likelihood of users joining just to instantly sell and leave." />
@@ -501,9 +501,9 @@ export default function Whitepaper() {
             <CustomListItem2 content="A much lower 3% fee (or similar small fee) applies to withdrawals that follow the recommended vesting schedule over 6 months." />
           </CustomUnorderedList>
           <CustomListItem2 content="This fee structure strongly incentivizes gradual withdrawals. For example, if someone reaches 100k BTCY and converts it all at once, they’d pay a 10% fee; by contrast, if they withdraw in stages over time, they’d pay only 3% on those withdrawals. Fees collected here either get burned (reducing supply) or added to reserves, benefiting the token economy." />
-          <CustomListItem2 content="Overall, this vetting and withdrawal system ensures Bitcoin-Yay’s early adopters cannot unfairly or destructively dump large amounts of BTCY, which protects the token’s value and the community. It aligns users with the project’s long-term success: those who stick around and withdraw gradually are rewarded with lower fees and potentially more token utility unlocked as they remain engaged." />
+          <CustomListItem2 content="Overall, this vetting and withdrawal system ensures bitcoin-yay’s early adopters cannot unfairly or destructively dump large amounts of BTCY, which protects the token’s value and the community. It aligns users with the project’s long-term success: those who stick around and withdraw gradually are rewarded with lower fees and potentially more token utility unlocked as they remain engaged." />
         </CustomUnorderedList>
-        <CustomPWithTitle2 content="(Note: The updated Bitcoin-Yay framework also introduces tiered utility thresholds for various features, as described in the Tokenomics and Utility sections. Rather than a single high withdrawal threshold, users unlock different features (trading, stable coin conversion, BTC conversion, etc.) at different BTCY levels, some of which are below 100k. The 100k figure mentioned here is a general benchmark for full token liquidity access. The key takeaway is that new users are guided into the ecosystem gradually, and large liquidations are discouraged by design.)" />
+        <CustomPWithTitle2 content="(Note: The updated bitcoin-yay framework also introduces tiered utility thresholds for various features, as described in the Tokenomics and Utility sections. Rather than a single high withdrawal threshold, users unlock different features (trading, stable coin conversion, BTC conversion, etc.) at different BTCY levels, some of which are below 100k. The 100k figure mentioned here is a general benchmark for full token liquidity access. The key takeaway is that new users are guided into the ecosystem gradually, and large liquidations are discouraged by design.)" />
       </SectionDiv>
 
       <SectionDiv id="legal-compliance">
@@ -512,7 +512,7 @@ export default function Whitepaper() {
 
         <CustomHeading2 content="9.1 Disclaimer & Regulatory Compliance" />
 
-        <CustomPWithTitle2 content="Bitcoin-Yay operates within global regulatory frameworks to the greatest extent possible:" />
+        <CustomPWithTitle2 content="bitcoin-yay operates within global regulatory frameworks to the greatest extent possible:" />
         <CustomUnorderedList>
           <CustomListItem2
             title="Legal Disclaimer:"
@@ -532,11 +532,11 @@ export default function Whitepaper() {
         <CustomUnorderedList>
           <CustomListItem2
             title="Utility Token Stance:"
-            content="The Bitcoin-Yay team has structured BTCY to avoid classification as a security. Since BTCY is earned via user actions (mining) and has immediate utility (it can be spent in the ecosystem, converted to stablecoins, used for services), it is presented as a consumer utility token, not a speculative investment. The whitepaper and marketing refrain from using language like “profits” or “investment,” focusing instead on usage and participation. This positioning is intended to follow guidelines (such as the Howey Test in the US) that differentiate utility tokens from securities. However, the team remains vigilant: if regulators provide new guidance or request information, Bitcoin-Yay will cooperate and adjust its compliance approach as needed."
+            content="The bitcoin-yay team has structured BTCY to avoid classification as a security. Since BTCY is earned via user actions (mining) and has immediate utility (it can be spent in the ecosystem, converted to stablecoins, used for services), it is presented as a consumer utility token, not a speculative investment. The whitepaper and marketing refrain from using language like “profits” or “investment,” focusing instead on usage and participation. This positioning is intended to follow guidelines (such as the Howey Test in the US) that differentiate utility tokens from securities. However, the team remains vigilant: if regulators provide new guidance or request information, bitcoin-yay will cooperate and adjust its compliance approach as needed."
           />
           <CustomListItem2
             title="Intellectual Property:"
-            content="The project acknowledges that the name “Bitcoin” is open-source and not trademarked, which is why “Bitcoin-Yay” can be used. The team is taking steps to trademark “Bitcoin-Yay,” the logo, and other ecosystem names like “Bitcoin YeeHaw” (the stablecoin) to prevent fraudulent imposters. All official materials include clear trademark and copyright notices. The core blockchain code will be open-sourced under a permissive license to build trust and encourage community contributions, but certain proprietary elements (for example, specific AI algorithms or branding assets) may be protected."
+            content="The project acknowledges that the name “Bitcoin” is open-source and not trademarked, which is why “bitcoin-yay” can be used. The team is taking steps to trademark “bitcoin-yay,” the logo, and other ecosystem names like “Bitcoin YeeHaw” (the stablecoin) to prevent fraudulent imposters. All official materials include clear trademark and copyright notices. The core blockchain code will be open-sourced under a permissive license to build trust and encourage community contributions, but certain proprietary elements (for example, specific AI algorithms or branding assets) may be protected."
           />
           <CustomListItem2
             title="User Agreement & Policies:"
@@ -544,7 +544,7 @@ export default function Whitepaper() {
           />
           <CustomListItem2
             title="Compliance Infrastructure:"
-            content="Indexx’s involvement means there is likely a compliance team or officer overseeing these aspects. Regular compliance audits are planned. Since part of Bitcoin-Yay’s model involves holding reserves of BTC on behalf of users (to back conversions), the project may voluntarily publish periodic attestations of these reserves (similar to how stablecoin issuers do) to prove transparency and solvency."
+            content="Indexx’s involvement means there is likely a compliance team or officer overseeing these aspects. Regular compliance audits are planned. Since part of bitcoin-yay’s model involves holding reserves of BTC on behalf of users (to back conversions), the project may voluntarily publish periodic attestations of these reserves (similar to how stablecoin issuers do) to prove transparency and solvency."
           />
         </CustomUnorderedList>
 
@@ -552,11 +552,11 @@ export default function Whitepaper() {
         <CustomUnorderedList>
           <CustomListItem2
             title="Jurisdictional Considerations:"
-            content="Bitcoin-Yay aims to be globally accessible but will respect international sanctions and local regulations. For example, usage may be blocked in sanctioned countries (e.g., North Korea, Iran) and certain features (like paid mining subscriptions or token conversions) might be initially disabled in regions like the United States until there is clearer regulatory guidance, to avoid being misinterpreted as offering unregistered securities or investment products."
+            content="bitcoin-yay aims to be globally accessible but will respect international sanctions and local regulations. For example, usage may be blocked in sanctioned countries (e.g., North Korea, Iran) and certain features (like paid mining subscriptions or token conversions) might be initially disabled in regions like the United States until there is clearer regulatory guidance, to avoid being misinterpreted as offering unregistered securities or investment products."
           />
           <CustomListItem2
             title="Adapting to Law Changes:"
-            content="The compliance strategy is dynamic. As laws evolve, Bitcoin-Yay will adapt (e.g., implementing new reporting requirements or registration if needed). By planning for compliance from the start, the project can adjust rather than be caught off-guard. In an extreme scenario, the DAO governance model provides flexibility: the community could vote on changes to tokenomics or operations to comply with new regulations if absolutely required."
+            content="The compliance strategy is dynamic. As laws evolve, bitcoin-yay will adapt (e.g., implementing new reporting requirements or registration if needed). By planning for compliance from the start, the project can adjust rather than be caught off-guard. In an extreme scenario, the DAO governance model provides flexibility: the community could vote on changes to tokenomics or operations to comply with new regulations if absolutely required."
           />
         </CustomUnorderedList>
 
@@ -564,15 +564,15 @@ export default function Whitepaper() {
         <CustomUnorderedList>
           <CustomListItem2
             title="Risk Warnings:"
-            content="The app and documents prominently warn about crypto risks (volatility, potential loss of value, technological uncertainties). Users are explicitly told that BTCY is not a government-backed legal tender. By educating users on risks up front, Bitcoin-Yay avoids the pitfalls of users claiming they were unaware of dangers, thereby attracting a user base that is informed and consents to the risk of participation."
+            content="The app and documents prominently warn about crypto risks (volatility, potential loss of value, technological uncertainties). Users are explicitly told that BTCY is not a government-backed legal tender. By educating users on risks up front, bitcoin-yay avoids the pitfalls of users claiming they were unaware of dangers, thereby attracting a user base that is informed and consents to the risk of participation."
           />
           <CustomListItem2
             title="Transition to Decentralized Governance:"
-            content="As Bitcoin-Yay decentralizes, a unique aspect will be how the DAO interfaces with legal compliance. One possibility is the formation of a non-profit foundation that can represent the network’s interests legally, sign contracts, or hold assets (like reserve funds) on behalf of the community. This foundation could ensure ongoing compliance (filing reports, handling KYC infrastructure, etc.) even when the core team steps back, bridging the gap between a decentralized network and real-world legal systems."
+            content="As bitcoin-yay decentralizes, a unique aspect will be how the DAO interfaces with legal compliance. One possibility is the formation of a non-profit foundation that can represent the network’s interests legally, sign contracts, or hold assets (like reserve funds) on behalf of the community. This foundation could ensure ongoing compliance (filing reports, handling KYC infrastructure, etc.) even when the core team steps back, bridging the gap between a decentralized network and real-world legal systems."
           />
           <CustomListItem2
             title="Transparency:"
-            content="All legal and compliance efforts (like the creation of a Regulatory & Compliance Report or a Disclaimer & Legal Notice document) are made transparent to the community. The project’s stance is that compliance is not an afterthought but a fundamental part of building trust. By openly sharing how it operates within the law, Bitcoin-Yay aims to avoid legal interruptions and foster an image of a responsible, user-conscious crypto project. This proactive and transparent approach to compliance is expected to give Bitcoin-Yay a competitive edge in longevity, as projects that take regulations seriously are more likely to survive and thrive as the crypto industry matures under the rule of law."
+            content="All legal and compliance efforts (like the creation of a Regulatory & Compliance Report or a Disclaimer & Legal Notice document) are made transparent to the community. The project’s stance is that compliance is not an afterthought but a fundamental part of building trust. By openly sharing how it operates within the law, bitcoin-yay aims to avoid legal interruptions and foster an image of a responsible, user-conscious crypto project. This proactive and transparent approach to compliance is expected to give bitcoin-yay a competitive edge in longevity, as projects that take regulations seriously are more likely to survive and thrive as the crypto industry matures under the rule of law."
           />
         </CustomUnorderedList>
       </SectionDiv>
@@ -596,7 +596,7 @@ export default function Whitepaper() {
           />
           <CustomListItem2
             title="Influencer Partnerships:"
-            content="Bitcoin-Yay actively partners with crypto influencers on YouTube, Twitter (X), TikTok, etc. Early in the launch, selected influencers are given beta access or exclusive content to share. By leveraging personalities who already have trust within the crypto community, Bitcoin-Yay positions itself as the next big thing (“mobile mining is back, now tied to Bitcoin – don’t miss out!”). The community content rewards (section F of utility use cases) further mobilize micro-influencers to create tutorials, reviews, and memes in exchange for BTCY rewards."
+            content="bitcoin-yay actively partners with crypto influencers on YouTube, Twitter (X), TikTok, etc. Early in the launch, selected influencers are given beta access or exclusive content to share. By leveraging personalities who already have trust within the crypto community, bitcoin-yay positions itself as the next big thing (“mobile mining is back, now tied to Bitcoin – don’t miss out!”). The community content rewards (section F of utility use cases) further mobilize micro-influencers to create tutorials, reviews, and memes in exchange for BTCY rewards."
           />
           <CustomListItem2
             title="Social Media Campaigns:"
@@ -605,22 +605,22 @@ export default function Whitepaper() {
           <CustomUnorderedList>
             <CustomListItem2 content="Official accounts post regular updates, milestones (e.g., “100k users in the first month!”), and educational content explaining BTCY features." />
             <CustomListItem2 content="Hashtag campaigns (e.g., #BitcoinYay and #BTCYay) are used to spread catchy slogans. The branding allows playful meme potential — for instance, phrases like “Yay or Nay? Always Yay!” or combining BTCY’s stablecoin (“YeeHaw”) with Yay in slogans to spark curiosity." />
-            <CustomListItem2 content="Meme contests and community challenges are frequently held, where users create Bitcoin-Yay memes or short videos. The best entries are amplified on official channels and rewarded with BTCY. This grassroots content creates a fun culture around the project." />
+            <CustomListItem2 content="Meme contests and community challenges are frequently held, where users create bitcoin-yay memes or short videos. The best entries are amplified on official channels and rewarded with BTCY. This grassroots content creates a fun culture around the project." />
           </CustomUnorderedList>
           <CustomListItem2
             title="Educational Outreach:"
-            content="The team publishes blog posts and hosts AMA (Ask Me Anything) sessions to educate and build credibility. Topics include “How is Bitcoin-Yay different from Bitcoin?” and “Tutorial: Earning BTCY on your phone.” By addressing questions transparently and explaining the threshold/vesting model as a protective feature (not a deterrent), the team converts skeptics and fosters an informed community."
+            content="The team publishes blog posts and hosts AMA (Ask Me Anything) sessions to educate and build credibility. Topics include “How is bitcoin-yay different from Bitcoin?” and “Tutorial: Earning BTCY on your phone.” By addressing questions transparently and explaining the threshold/vesting model as a protective feature (not a deterrent), the team converts skeptics and fosters an informed community."
           />
           <CustomListItem2
             title="Campus & Local Ambassadors:"
-            content="The project may recruit campus ambassadors at universities or local community leaders to host meetups and workshops about Bitcoin-Yay. These ambassadors are compensated in BTCY and get branded merchandise (T-shirts, stickers with the gopher mascot, etc.). University students, for example, are a prime audience (as seen with Pi Network’s growth); Bitcoin-Yay targets them by offering a tangible valued token and a clearer value proposition than previous mobile mining apps."
+            content="The project may recruit campus ambassadors at universities or local community leaders to host meetups and workshops about bitcoin-yay. These ambassadors are compensated in BTCY and get branded merchandise (T-shirts, stickers with the gopher mascot, etc.). University students, for example, are a prime audience (as seen with Pi Network’s growth); bitcoin-yay targets them by offering a tangible valued token and a clearer value proposition than previous mobile mining apps."
           />
         </CustomUnorderedList>
         <CustomHeading2 content="10.2 Onboarding & Accessibility" />
         <CustomUnorderedList>
           <CustomListItem2
             title="User-Friendly App:"
-            content="The Bitcoin-Yay mobile app (and web portal) is designed for simplicity. It features guided tutorials on how to claim your airdrop, start mining, and use BTCY in the ecosystem. The UI avoids jargon, using friendly language (leveraging the “Yay” positivity in branding)."
+            content="The bitcoin-yay mobile app (and web portal) is designed for simplicity. It features guided tutorials on how to claim your airdrop, start mining, and use BTCY in the ecosystem. The UI avoids jargon, using friendly language (leveraging the “Yay” positivity in branding)."
           />
           <CustomListItem2
             title="Multilingual Support:"
@@ -632,7 +632,7 @@ export default function Whitepaper() {
           />
           <CustomListItem2
             title="Integration with Existing Platforms:"
-            content="The barrier to entry is further lowered by integrating Bitcoin-Yay with familiar platforms. For instance, if Indexx Wallet is already used by some, BTCY mining is built into it so existing Indexx users can start earning with one tap. Also, allowing sign-in via Google/Apple accounts (with non-custodial keys still generated behind the scenes) makes registration frictionless for mainstream users."
+            content="The barrier to entry is further lowered by integrating bitcoin-yay with familiar platforms. For instance, if Indexx Wallet is already used by some, BTCY mining is built into it so existing Indexx users can start earning with one tap. Also, allowing sign-in via Google/Apple accounts (with non-custodial keys still generated behind the scenes) makes registration frictionless for mainstream users."
           />
           <CustomListItem2
             title="Security for New Users:"
@@ -643,22 +643,22 @@ export default function Whitepaper() {
         <CustomUnorderedList>
           <CustomListItem2
             title="Consistent Branding & Messaging:"
-            content="“Bitcoin-Yay” – the very name – gives a friendly, positive spin to Bitcoin. All marketing emphasizes positivity, inclusivity, and excitement (“Yay!”). The gopher mascot adds charm and memorability. This consistent branding helps Bitcoin-Yay stand out in a crowded market and makes it approachable, countering Bitcoin’s sometimes intimidating image."
+            content="“bitcoin-yay” – the very name – gives a friendly, positive spin to Bitcoin. All marketing emphasizes positivity, inclusivity, and excitement (“Yay!”). The gopher mascot adds charm and memorability. This consistent branding helps bitcoin-yay stand out in a crowded market and makes it approachable, countering Bitcoin’s sometimes intimidating image."
           />
           <CustomListItem2
             title="Press & Media Outreach:"
-            content="The team reaches out to crypto media (CoinDesk, CoinTelegraph, etc.) and even mainstream tech media to cover Bitcoin-Yay’s story – highlighting its alliance with Indexx, the innovative AI mining, and its rapid user growth. Getting featured in reputable outlets lends legitimacy and attracts a broader audience beyond the initial crypto enthusiasts."
+            content="The team reaches out to crypto media (CoinDesk, CoinTelegraph, etc.) and even mainstream tech media to cover bitcoin-yay’s story – highlighting its alliance with Indexx, the innovative AI mining, and its rapid user growth. Getting featured in reputable outlets lends legitimacy and attracts a broader audience beyond the initial crypto enthusiasts."
           />
           <CustomListItem2
             title="Offline Events:"
-            content="As the world reopens post-pandemic, Bitcoin-Yay sponsors and attends crypto conferences, hackathons, and community gatherings. Seeing a booth or banner for “Bitcoin-Yay – Redefining Bitcoin with AI & Mobile Mining” in the real world reinforces that it’s a serious project. Swag like t-shirts (“Yay or Nay? It’s Always Yay!”) and live demos of the mining app at events help capture interest from those who might not encounter the app online."
+            content="As the world reopens post-pandemic, bitcoin-yay sponsors and attends crypto conferences, hackathons, and community gatherings. Seeing a booth or banner for “bitcoin-yay – Redefining Bitcoin with AI & Mobile Mining” in the real world reinforces that it’s a serious project. Swag like t-shirts (“Yay or Nay? It’s Always Yay!”) and live demos of the mining app at events help capture interest from those who might not encounter the app online."
           />
           <CustomListItem2
             title="Adaptability:"
-            content="The strategy remains flexible. If certain campaigns work exceptionally (e.g., a TikTok trend around Bitcoin-Yay dances or memes), the team doubles down. If some regions show unexpected traction, marketing spend shifts to support those locales. The project’s community-driven nature means it listens to feedback – if the community suggests a particular outreach (like targeting a specific online community or game), the team considers it. By Phase 3, the community itself (via the DAO) might even allocate funds for marketing initiatives they vote on."
+            content="The strategy remains flexible. If certain campaigns work exceptionally (e.g., a TikTok trend around bitcoin-yay dances or memes), the team doubles down. If some regions show unexpected traction, marketing spend shifts to support those locales. The project’s community-driven nature means it listens to feedback – if the community suggests a particular outreach (like targeting a specific online community or game), the team considers it. By Phase 3, the community itself (via the DAO) might even allocate funds for marketing initiatives they vote on."
           />
         </CustomUnorderedList>
-        <CustomPWithTitle2 content="In summary, Bitcoin-Yay’s marketing and adoption plan is holistic: it combines viral growth tactics (airdrops, referrals), community engagement (rewards for content creation, strong social presence), influencer and media amplification, and a user-friendly experience. The goal is to rapidly build a large, engaged user base that not only mines BTCY but actively uses it, thereby creating a self-sustaining, growing economy around Bitcoin-Yay." />
+        <CustomPWithTitle2 content="In summary, bitcoin-yay’s marketing and adoption plan is holistic: it combines viral growth tactics (airdrops, referrals), community engagement (rewards for content creation, strong social presence), influencer and media amplification, and a user-friendly experience. The goal is to rapidly build a large, engaged user base that not only mines BTCY but actively uses it, thereby creating a self-sustaining, growing economy around bitcoin-yay." />
       </SectionDiv>
 
       <SectionDiv id="conclusion">
@@ -667,9 +667,9 @@ export default function Whitepaper() {
           <div>
             <CustomHeading content="11. Conclusion" />
             <CustomUnorderedList>
-              <CustomListItem2 content="Bitcoin-Yay represents the next evolution of Bitcoin’s vision — scalable, efficient, and accessible to all. By leveraging Indexx’s infrastructure and embracing innovations like AI-guided mobile mining, Bitcoin-Yay seeks to honor Bitcoin’s legacy while overcoming its limitations. BTCY’s design ensures sustainability through a fast halving schedule and robust tokenomics, utility through deep ecosystem integration, and community empowerment through decentralization and rewards." />
-              <CustomListItem2 content="As Bitcoin-Yay gradually transitions into a decentralized, community-governed network, it stays true to the core principles of blockchain technology (decentralization, transparency, security) while adapting to modern needs. The end result is a cryptocurrency that is not just mined and held, but actively used in a vibrant crypto playground — for trading, shopping, gaming, saving, and even giving back to society." />
-              <CustomListItem2 content="Join us in shaping the future of decentralized finance with Bitcoin-Yay. Together, we say “Yay!” to a new era of Bitcoin for everyone." />
+              <CustomListItem2 content="bitcoin-yay represents the next evolution of Bitcoin’s vision — scalable, efficient, and accessible to all. By leveraging Indexx’s infrastructure and embracing innovations like AI-guided mobile mining, bitcoin-yay seeks to honor Bitcoin’s legacy while overcoming its limitations. BTCY’s design ensures sustainability through a fast halving schedule and robust tokenomics, utility through deep ecosystem integration, and community empowerment through decentralization and rewards." />
+              <CustomListItem2 content="As bitcoin-yay gradually transitions into a decentralized, community-governed network, it stays true to the core principles of blockchain technology (decentralization, transparency, security) while adapting to modern needs. The end result is a cryptocurrency that is not just mined and held, but actively used in a vibrant crypto playground — for trading, shopping, gaming, saving, and even giving back to society." />
+              <CustomListItem2 content="Join us in shaping the future of decentralized finance with bitcoin-yay. Together, we say “Yay!” to a new era of Bitcoin for everyone." />
             </CustomUnorderedList>
           </div>
         </div>

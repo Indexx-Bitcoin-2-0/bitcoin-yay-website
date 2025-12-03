@@ -12,6 +12,7 @@ const contractData = [
         explorer: "https://explorer.solana.com/address/7RUbRcqvQ7gXNmfuxsoUoputPXT85fGzoPSu6xXi6U9p",
         explorerName: "View on Solana Explorer",
         isActive: true,
+        logoUrl: "https://cryptologos.cc/logos/solana-sol-logo.png?v=023",
     },
     {
         network: "Tron",
@@ -20,6 +21,25 @@ const contractData = [
         explorer: "https://tronscan.org/#/token20/TJVh7pdziZHNaEwfmBcwZN5JjuEjnN1xzB",
         explorerName: "View on TRONSCAN",
         isActive: true,
+        logoUrl: "https://cryptologos.cc/logos/tron-trx-logo.png?v=023",
+    },
+    {
+        network: "Ethereum",
+        standard: "ERC-20",
+        contract: "0x22726F15677F6a569F42ea9a4de6e5e5eEd9B93b",
+        explorer: "https://etherscan.io/token/0x22726F15677F6a569F42ea9a4de6e5e5eEd9B93b",
+        explorerName: "View on Etherscan",
+        isActive: true,
+        logoUrl: "https://cryptologos.cc/logos/ethereum-eth-logo.png?v=023",
+    },
+    {
+        network: "BSC",
+        standard: "BEP-20",
+        contract: "0x22726F15677F6a569F42ea9a4de6e5e5eEd9B93b",
+        explorer: "https://bscscan.com/token/0x22726F15677F6a569F42ea9a4de6e5e5eEd9B93b",
+        explorerName: "View on BSCScan",
+        isActive: true,
+        logoUrl: "https://cryptologos.cc/logos/bnb-bnb-logo.png?v=023",
     },
     {
         network: "Stellar",
@@ -28,30 +48,15 @@ const contractData = [
         explorer: "#",
         explorerName: "Stellar Expert",
         isActive: false,
-    },
-    {
-        network: "Ethereum",
-        standard: "ERC-20",
-        contract: "Coming Soon",
-        explorer: "#",
-        explorerName: "Etherscan",
-        isActive: false,
-    },
-    {
-        network: "BSC",
-        standard: "BEP-20",
-        contract: "Coming Soon",
-        explorer: "#",
-        explorerName: "BSCScan",
-        isActive: false,
+        logoUrl: "https://cryptologos.cc/logos/stellar-xlm-logo.png?v=023",
     },
 ];
 
 const notes = [
-    "Always verify contract addresses through official Bitcoin-Yay channels before integrating into your application.",
+    "Always verify contract addresses through official bitcoin-yay channels before integrating into your application.",
     "These are mainnet contract addresses. For testnet addresses, please contact developer support.",
     "When integrating BTCY, ensure your application supports the specific token standard for each network.",
-    "Future chains (Stellar, Ethereum, BSC) are planned and will be available soon.",
+    "Future chains (Stellar and others) are planned and will be available soon.",
 ];
 
 export default function BTCTokenContractsPage() {
@@ -71,7 +76,7 @@ export default function BTCTokenContractsPage() {
                     BTCY Token Contracts
                 </h1>
                 <p className="text-sm md:text-lg font-normal text-tertiary my-4">
-                    Official BTCY token contract addresses across supported blockchain networks.
+                    Official BTCY token contract addresses across supported blockchains.
                 </p>
             </CustomStyledConatiner>
 
@@ -82,7 +87,7 @@ export default function BTCTokenContractsPage() {
                         <thead>
                             <tr className="border-b border-bg2">
                                 <th className="py-4 px-4 md:py-6 md:px-6 text-left text-sm md:text-base font-semibold text-white whitespace-nowrap">
-                                    NETWORK
+                                    BLOCKCHAIN
                                 </th>
                                 <th className="py-4 px-4 md:py-6 md:px-6 text-left text-sm md:text-base font-semibold text-white whitespace-nowrap">
                                     STANDARD
@@ -99,7 +104,24 @@ export default function BTCTokenContractsPage() {
                             {contractData.map((item, index) => (
                                 <tr key={index} className="border-b border-bg2">
                                     <td className="py-4 px-4 md:py-6 md:px-6 text-sm md:text-base text-white whitespace-nowrap">
-                                        {item.network}
+                                        <div className="flex items-center gap-3">
+                                            <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/20 bg-white/5 p-2">
+                                                {item.logoUrl ? (
+                                                    <img
+                                                        src={item.logoUrl}
+                                                        alt={`${item.network} logo`}
+                                                        className="h-full w-full object-cover rounded-full"
+                                                    />
+                                                ) : (
+                                                    <span className="text-[10px] font-semibold uppercase tracking-wider text-white">
+                                                        {item.network.slice(0, 3)}
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <span className="text-sm md:text-base font-semibold text-white">
+                                                {item.network}
+                                            </span>
+                                        </div>
                                     </td>
                                     <td className="py-4 px-4 md:py-6 md:px-6">
                                         {item.isActive ? (
@@ -220,4 +242,3 @@ export default function BTCTokenContractsPage() {
         </div>
     );
 }
-

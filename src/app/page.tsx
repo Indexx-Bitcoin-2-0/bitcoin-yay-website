@@ -589,7 +589,7 @@ export default function Home() {
             <p className="text-2xl font-medium text-primary">Get to know our</p>
             <h2 className="text-5xl md:text-8xl font-bold mt-2">Gophers</h2>
             <p className="text-lg font-light max-w-176 mt-8">
-              Meet the hardworking Bitcoin-Yay miner gophers behind your BTCY
+              Meet the hardworking bitcoin-yay miner gophers behind your BTCY
               earnings! These tireless miners work quietly in the background of
               your phone helping you mine BTCY anytime, anywhere. Get to know
               their unique powers and choose your mining buddy. Download your

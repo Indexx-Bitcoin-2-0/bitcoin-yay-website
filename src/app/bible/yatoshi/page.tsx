@@ -6,13 +6,13 @@ import ArtImage3 from "@/assets/images/bible/yatoshi/art-3.webp";
 import ArtImage4 from "@/assets/images/bible/yatoshi/art-4.webp";
 
 export const metadata = {
-  title: "Yatoshi Nakamoto - Meet Satoshi's Sibling & Bitcoin-Yay Creator",
+  title: "Yatoshi Nakamoto - Meet Satoshi's Sibling & bitcoin-yay Creator",
   description:
-    "Learn about Yatoshi Nakamoto, the mysterious sibling of Bitcoin creator Satoshi Nakamoto. Discover how Yatoshi created Bitcoin-Yay (BTCY) as a smarter, mobile-first evolution of Bitcoin through partnership with Indexx.ai.",
+    "Learn about Yatoshi Nakamoto, the mysterious sibling of Bitcoin creator Satoshi Nakamoto. Discover how Yatoshi created bitcoin-yay (BTCY) as a smarter, mobile-first evolution of Bitcoin through partnership with Indexx.ai.",
   openGraph: {
-    title: "Yatoshi Nakamoto - Meet Satoshi's Sibling & Bitcoin-Yay Creator",
+    title: "Yatoshi Nakamoto - Meet Satoshi's Sibling & bitcoin-yay Creator",
     description:
-      "Learn about Yatoshi Nakamoto, the mysterious sibling of Bitcoin creator Satoshi Nakamoto. Discover how Yatoshi created Bitcoin-Yay (BTCY) as a smarter, mobile-first evolution of Bitcoin through partnership with Indexx.ai.",
+      "Learn about Yatoshi Nakamoto, the mysterious sibling of Bitcoin creator Satoshi Nakamoto. Discover how Yatoshi created bitcoin-yay (BTCY) as a smarter, mobile-first evolution of Bitcoin through partnership with Indexx.ai.",
   },
 };
 
@@ -49,13 +49,13 @@ export default function YatoshiPage() {
             brother of Bitcoin’s enigmatic creator, Satoshi Nakamoto—foresaw
             Bitcoin’s limitations and even embedded hints for a better
             blockchain in Bitcoin’s earliest code. Whether myth or reality,
-            Bitcoin-Yay (BTCY) picks up where Bitcoin left off—designed as a
+            bitcoin-yay (BTCY) picks up where Bitcoin left off—designed as a
             “Micro Token of Bitcoin” that carries Bitcoin’s legacy into a
             faster, more accessible era. Built on a high-performance
-            Stellar-based blockchain, Bitcoin-Yay combines fast, low-cost
+            Stellar-based blockchain, bitcoin-yay combines fast, low-cost
             transactions with cutting-edge features like AI-driven mobile
             mining, smart contracts, and decentralized governance. In essence,
-            Bitcoin-Yay is positioned as a new and smarter version of Bitcoin
+            bitcoin-yay is positioned as a new and smarter version of Bitcoin
             tailored for everyday use, aiming to create a sustainable,
             community-driven financial network.
           </p>
@@ -72,13 +72,13 @@ export default function YatoshiPage() {
           <p className="text-lg mt-6">
             and executed through a strategic partnership with Indexx.ai—acting
             as the third-party contractor responsible for hosting, developing,
-            and running the Bitcoin-Yay ecosystem—BTCY bridges the gap between
+            and running the bitcoin-yay ecosystem—BTCY bridges the gap between
             Bitcoin’s original philosophy and the demands of the modern era.
-            Yatoshi created Bitcoin-Yay to honor his brother’s legacy as
+            Yatoshi created bitcoin-yay to honor his brother’s legacy as
             “digital gold” while evolving it into a mobile-first,
             energy-efficient, and utility-rich ecosystem accessible to anyone
             with a smartphone. By lowering entry barriers and fostering
-            inclusivity, Bitcoin-Yay aspires to bring practical crypto usage to
+            inclusivity, bitcoin-yay aspires to bring practical crypto usage to
             everyday people—from shopping and gaming to savings and
             micro-investments. To connect with Yatoshi directly, one must
             approach Indexx, the appointed custodian of BTCY’s development and

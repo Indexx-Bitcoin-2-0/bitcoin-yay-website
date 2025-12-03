@@ -23,11 +23,11 @@ export default function PrivacyPolicy() {
         {/* Part 02 */}
         <div className="my-20">
           <p className="text-sm md:text-lg font-normal text-tertiary my-4">
-            Bitcoin-Yay, along with its parent company and affiliates (“Bitcoin
+            bitcoin-yay, along with its parent company and affiliates (“Bitcoin
             Yay,” “we,” “our,” or “us”), values the privacy of our users and is
             committed to protecting their personal information. This Privacy
             Policy (“Policy”) outlines how we collect, use, share, and store
-            data from users of the Bitcoin-Yay website, mobile applications, and
+            data from users of the bitcoin-yay website, mobile applications, and
             services (collectively, the “Services”).
           </p>
           <p className="text-sm md:text-lg font-normal text-tertiary my-4">
@@ -50,7 +50,7 @@ export default function PrivacyPolicy() {
             </span>
             , including the right to request access to your personal
             information, request deletion of your data, and opt out of any data
-            sales. Bitcoin-Yay does not sell user data. To exercise your
+            sales. bitcoin-yay does not sell user data. To exercise your
             California privacy rights, please contact us at{" "}
             <Link
               className="text-primary cursor-pointer hover:underline underline-offset-3"
@@ -104,7 +104,7 @@ export default function PrivacyPolicy() {
                 title="Transaction Data"
                 content="– Records of
                 cryptocurrency transactions sent, received, or processed through
-                Bitcoin-Yay."
+                bitcoin-yay."
               />
               <CustomListItem
                 title="Feedback & Correspondence"
@@ -134,7 +134,7 @@ export default function PrivacyPolicy() {
 
         <InfoSection
           title="B. Know Your Customer (KYC) & Compliance Data"
-          desc="To comply with Anti-Money Laundering (AML), Know-Your-Customer (KYC), and Counter-Terrorist Financing (CTF) regulations, Bitcoin-Yay collects identity verification data, including:"
+          desc="To comply with Anti-Money Laundering (AML), Know-Your-Customer (KYC), and Counter-Terrorist Financing (CTF) regulations, bitcoin-yay collects identity verification data, including:"
           content={
             <>
               <CustomListItem
@@ -196,7 +196,7 @@ export default function PrivacyPolicy() {
                 title="Usage & Activity Data"
                 content="–
                 Mining frequency, transactions, account behavior, and engagement
-                with Bitcoin-Yay tools."
+                with bitcoin-yay tools."
               />
               <CustomListItem
                 title="Location Information"
@@ -215,7 +215,7 @@ export default function PrivacyPolicy() {
 
         <InfoSection
           title="E. Data Security & Protection"
-          desc="Bitcoin-Yay implements robust security measures, including:"
+          desc="bitcoin-yay implements robust security measures, including:"
           content={
             <>
               <CustomListItem
@@ -252,7 +252,7 @@ export default function PrivacyPolicy() {
 
         <InfoSection
           title="G. Auto-Renewable Subscription Information"
-          desc="Bitcoin-Yay’s paid mining plans (Electric, Turbo, and Nuclear) are offered as auto-renewable subscriptions through the Apple App Store and Google Play Store. By subscribing, you agree to the following terms:"
+          desc="bitcoin-yay’s paid mining plans (Electric, Turbo, and Nuclear) are offered as auto-renewable subscriptions through the Apple App Store and Google Play Store. By subscribing, you agree to the following terms:"
           content={
             <>
               <CustomListItem content="Your subscription automatically renews unless auto-renew is turned off at least 24 hours before the current billing period ends." />
@@ -265,7 +265,7 @@ export default function PrivacyPolicy() {
 
         <InfoSection
           title="H. Subscription Grace Period"
-          desc="In the event of a failed payment during renewal, Bitcoin-Yay adheres to Apple and Google Play's grace period policies."
+          desc="In the event of a failed payment during renewal, bitcoin-yay adheres to Apple and Google Play's grace period policies."
           content={
             <>
               <CustomListItem content="Users may retain access to premium features for a limited time while the payment is retried." />
@@ -313,7 +313,7 @@ export default function PrivacyPolicy() {
 
         <InfoSection
           title="3. Data Sharing & Third-Party Disclosures"
-          desc="Bitcoin-Yay does not sell user data. However, we may share information with:"
+          desc="bitcoin-yay does not sell user data. However, we may share information with:"
           content={
             <>
               <CustomListItem
@@ -393,7 +393,7 @@ export default function PrivacyPolicy() {
 
         <InfoSection
           title="6. Policy Updates"
-          endingLine="Bitcoin-Yay may update this Privacy Policy periodically to reflect changes in our practices, legal requirements, or services (including new subscription offerings). Continued use of our Services after such updates constitutes acceptance of the revised terms. We encourage users to review this page regularly to stay informed about how we protect your data."
+          endingLine="bitcoin-yay may update this Privacy Policy periodically to reflect changes in our practices, legal requirements, or services (including new subscription offerings). Continued use of our Services after such updates constitutes acceptance of the revised terms. We encourage users to review this page regularly to stay informed about how we protect your data."
         />
 
         <InfoSection
@@ -458,7 +458,7 @@ export default function PrivacyPolicy() {
 
         <InfoSection
           title="Sharing of Personal Information"
-          desc="Bitcoin-Yay does not sell or share personal information with third parties without user consent, except under the following circumstances:"
+          desc="bitcoin-yay does not sell or share personal information with third parties without user consent, except under the following circumstances:"
           content={
             <>
               <CustomListItem
@@ -516,7 +516,7 @@ export default function PrivacyPolicy() {
 
         <InfoSection
           desc="Advertising Networks"
-          endingLine="While Bitcoin-Yay does not directly share personal data with ad networks, third-party advertising services within our platform may request device identifiers to deliver targeted advertisements."
+          endingLine="While bitcoin-yay does not directly share personal data with ad networks, third-party advertising services within our platform may request device identifiers to deliver targeted advertisements."
         />
 
         <InfoSection
@@ -526,7 +526,7 @@ export default function PrivacyPolicy() {
 
         <InfoSection
           desc="Users Outside the United States"
-          endingLine="Bitcoin-Yay operates globally, and user data may be processed in jurisdictions where data protection laws may differ from those in the user's home country. By using our services, you consent to the transfer and processing of your data in accordance with this policy. EU users should refer to the 'Notice to EU Data Subjects' for details on data transfers outside the European Economic Area (EEA)."
+          endingLine="bitcoin-yay operates globally, and user data may be processed in jurisdictions where data protection laws may differ from those in the user's home country. By using our services, you consent to the transfer and processing of your data in accordance with this policy. EU users should refer to the 'Notice to EU Data Subjects' for details on data transfers outside the European Economic Area (EEA)."
         />
 
         <InfoSection
@@ -589,7 +589,7 @@ export default function PrivacyPolicy() {
 
         <InfoSection
           desc="Changes to This Privacy Policy"
-          endingLine="Bitcoin-Yay reserves the right to modify this Privacy Policy at any time. We encourage you to periodically review this page for updates regarding our privacy practices. Any changes will be reflected in the 'Last Updated' date above. Modifications will become effective upon posting or as otherwise specified at the time of publication. Your continued use of our website and services after any changes indicates your acceptance of the updated Privacy Policy."
+          endingLine="bitcoin-yay reserves the right to modify this Privacy Policy at any time. We encourage you to periodically review this page for updates regarding our privacy practices. Any changes will be reflected in the 'Last Updated' date above. Modifications will become effective upon posting or as otherwise specified at the time of publication. Your continued use of our website and services after any changes indicates your acceptance of the updated Privacy Policy."
         />
 
         <InfoSection
@@ -621,7 +621,7 @@ export default function PrivacyPolicy() {
 
         <InfoSection
           desc="Notice to EU Data Subjects"
-          endingLine="In compliance with the General Data Protection Regulation (GDPR), Bitcoin-Yay recognizes 'personal information' as 'personal data.' Certain information you provide may be classified as 'sensitive data' under the GDPR, including details such as ethnicity recorded on government-issued identification documents."
+          endingLine="In compliance with the General Data Protection Regulation (GDPR), bitcoin-yay recognizes 'personal information' as 'personal data.' Certain information you provide may be classified as 'sensitive data' under the GDPR, including details such as ethnicity recorded on government-issued identification documents."
         />
         <p className="text-sm md:text-base font-semibold">
           Legal Basis for Processing :
@@ -741,7 +741,7 @@ export default function PrivacyPolicy() {
 
         <InfoSection
           desc="COOKIES POLICY"
-          endingLine="Bitcoin-Yay is committed to transparency in the use of cookies and similar tracking technologies."
+          endingLine="bitcoin-yay is committed to transparency in the use of cookies and similar tracking technologies."
         />
         <InfoSection desc="Types of Cookies We Use:" />
 
@@ -752,7 +752,7 @@ export default function PrivacyPolicy() {
                 Cookie Name
               </div>
               <div className="py-3 px-4">Google Analytics</div>
-              <div className="py-3 px-4">Bitcoin-Yay Session</div>
+              <div className="py-3 px-4">bitcoin-yay Session</div>
             </div>
             <div className="border-2 border-bg2 w-full lg:w-1/4, max-w-80 mb-10 lg:border-l-0">
               <div className="py-3 px-4 text-left border-bg2 bg-bg1 ">
@@ -776,7 +776,7 @@ export default function PrivacyPolicy() {
           </div>
         </div>
 
-        <CustomP start="Bitcoin-Yay does not track users across third-party websites or apps for advertising purposes without obtaining explicit user consent, in accordance with Apple's AppTrackingTransparency requirements." />
+        <CustomP start="bitcoin-yay does not track users across third-party websites or apps for advertising purposes without obtaining explicit user consent, in accordance with Apple's AppTrackingTransparency requirements." />
         <InfoSection
           desc="Managing Cookies:"
           endingLine="You can adjust cookie preferences through your browser settings. To learn how to control cookies, visit AboutCookies.org. Note that disabling cookies may impact website functionality."
@@ -785,17 +785,17 @@ export default function PrivacyPolicy() {
         {/* Quantum Mining Sales & Purchase Policy */}
         <div className="my-20">
           <h2 className="text-2xl md:text-5xl font-bold mt-8 max-w-300 md:leading-16 text-secondary">
-            Bitcoin-Yay — Quantum Mining Sales & Purchase Policy
+            bitcoin-yay — Quantum Mining Sales & Purchase Policy
           </h2>
           <p className="text-xl md:text-2xl font-medium my-6 text-tertiary">
-            Issued By: Bitcoin-Yay (Hosted by Indexx.ai)
+            Issued By: bitcoin-yay (Hosted by Indexx.ai)
           </p>
 
           <InfoSection
             title="1. Introduction"
             content={
               <>
-                <CustomListItem content="This Sales & Purchase Policy governs all transactions made through the Bitcoin-Yay Quantum Mining feature. By completing a Quantum Mining purchase, you acknowledge that you have read, understood, and agreed to the terms outlined below." />
+                <CustomListItem content="This Sales & Purchase Policy governs all transactions made through the bitcoin-yay Quantum Mining feature. By completing a Quantum Mining purchase, you acknowledge that you have read, understood, and agreed to the terms outlined below." />
                 <CustomListItem content="Quantum Mining allows users to acquire BTCY tokens instantly, without having to mine 100,000 BTCY through the app. It is designed for users who wish to gain early exposure to BTCY before official exchange listings." />
               </>
             }
@@ -807,7 +807,7 @@ export default function PrivacyPolicy() {
               <>
                 <CustomListItem content="All Quantum Mining purchases are final and non-refundable." />
                 <CustomListItem content="Upon payment confirmation, the purchased BTCY tokens are automatically credited to the user's Indexx Asset Wallet." />
-                <CustomListItem content="Indexx.ai is the official host platform for Bitcoin-Yay and functions as the custodial wallet and exchange infrastructure for BTCY." />
+                <CustomListItem content="Indexx.ai is the official host platform for bitcoin-yay and functions as the custodial wallet and exchange infrastructure for BTCY." />
                 <CustomListItem content="Users are not required to transfer or claim their purchased tokens manually — all assets are secured and viewable within their Indexx account." />
               </>
             }
@@ -842,7 +842,7 @@ export default function PrivacyPolicy() {
             content={
               <>
                 <CustomListItem content="BTCY tokens purchased via Quantum Mining will become tradable on Indexx.ai upon official listing." />
-                <CustomListItem content="Listing timelines and exchange details will be communicated publicly through official Bitcoin-Yay and Indexx.ai channels." />
+                <CustomListItem content="Listing timelines and exchange details will be communicated publicly through official bitcoin-yay and Indexx.ai channels." />
                 <CustomListItem content="Until then, tokens remain visible but locked within the Indexx Asset Wallet, ensuring secure custody." />
               </>
             }
@@ -855,7 +855,7 @@ export default function PrivacyPolicy() {
               <>
                 <CustomListItem content="Ensuring they are logged into the correct Indexx account before completing a purchase." />
                 <CustomListItem content="Reading all Quantum Mining instructions and policies prior to making payment." />
-                <CustomListItem content="Maintaining security of their Indexx and Bitcoin-Yay login credentials." />
+                <CustomListItem content="Maintaining security of their Indexx and bitcoin-yay login credentials." />
                 <CustomListItem content="Staying informed through official communication channels to avoid misinformation or scams." />
               </>
             }
@@ -863,7 +863,7 @@ export default function PrivacyPolicy() {
 
           <InfoSection
             title="7. Disclaimer"
-            endingLine="Bitcoin-Yay and Indexx.ai do not provide investment or financial advice. All token purchases carry inherent digital asset risks. Prices, token supply, and rewards may vary as outlined in official tokenomics documentation."
+            endingLine="bitcoin-yay and Indexx.ai do not provide investment or financial advice. All token purchases carry inherent digital asset risks. Prices, token supply, and rewards may vary as outlined in official tokenomics documentation."
           />
 
           <InfoSection
@@ -901,17 +901,17 @@ export default function PrivacyPolicy() {
         {/* Power Mining Subscription Purchase Policy */}
         <div className="my-20">
           <h2 className="text-2xl md:text-5xl font-bold mt-8 max-w-300 md:leading-16 text-secondary">
-            Bitcoin-Yay — Power Mining Subscription Purchase Policy
+            bitcoin-yay — Power Mining Subscription Purchase Policy
           </h2>
           <p className="text-xl md:text-2xl font-medium my-6 text-tertiary">
-            Issued By: Bitcoin-Yay
+            Issued By: bitcoin-yay
           </p>
 
           <InfoSection
             title="1. Introduction"
             content={
               <>
-                <CustomListItem content="This policy outlines the terms governing all purchases of Power Mining Subscriptions within the Bitcoin-Yay app." />
+                <CustomListItem content="This policy outlines the terms governing all purchases of Power Mining Subscriptions within the bitcoin-yay app." />
                 <CustomListItem content="Power Mining subscriptions allow users to enhance their mining performance by increasing mining power and duration for a set period." />
               </>
             }
@@ -933,7 +933,7 @@ export default function PrivacyPolicy() {
             content={
               <>
                 <CustomListItem content="All Power Mining subscription purchases are final and non-refundable." />
-                <CustomListItem content="Since the benefits are delivered instantly upon activation, Bitcoin-Yay cannot issue refunds, exchanges, or partial credits under any circumstances." />
+                <CustomListItem content="Since the benefits are delivered instantly upon activation, bitcoin-yay cannot issue refunds, exchanges, or partial credits under any circumstances." />
                 <CustomListItem content="Users acknowledge this policy before completing any Power Mining purchase." />
                 <CustomListItem content="Attempted chargebacks or refund disputes may result in suspension of account privileges." />
               </>
@@ -967,8 +967,8 @@ export default function PrivacyPolicy() {
             title="6. System Availability"
             content={
               <>
-                <CustomListItem content="Bitcoin-Yay strives to maintain uninterrupted service. However, temporary downtime or maintenance may occur." />
-                <CustomListItem content="In such cases, subscriptions will continue counting in real time; Bitcoin-Yay is not liable for external factors (e.g., user device issues or connectivity)." />
+                <CustomListItem content="bitcoin-yay strives to maintain uninterrupted service. However, temporary downtime or maintenance may occur." />
+                <CustomListItem content="In such cases, subscriptions will continue counting in real time; bitcoin-yay is not liable for external factors (e.g., user device issues or connectivity)." />
               </>
             }
           />

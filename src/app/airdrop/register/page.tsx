@@ -113,7 +113,7 @@ export default function AirdropRegisterPage() {
         walletProvider: "",
         airdropAmount: 0,
         tokenName: "WIBS",
-        eventType: "Bitcoin-Yay WIBS Airdrop",
+        eventType: "bitcoin-yay WIBS Airdrop",
       });
 
       if (res.status === 200 || res.status === 201) {
@@ -343,7 +343,7 @@ export default function AirdropRegisterPage() {
       <div className="text-center flex flex-col items-center justify-center">
         <h4 className="text-3xl font-semibold text-primary">Sign Up for the</h4>
         <h2 className="mt-6 text-5xl md:text-7xl font-bold">
-          Bitcoin-Yay
+          bitcoin-yay
           <br />
           <span className="text-primary">WIBS Airdrop!</span>
         </h2>

@@ -1,22 +1,82 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import AlchemyGatewayIcon1 from "@/assets/images/alchemy/alchemy-gateway-logo.webp";
 import AlchemyLogo from "@/assets/images/alchemy/alchemy-logo.webp";
 import { motion } from "framer-motion";
 import ClickConvertIcon from "@/assets/images/alchemy/home/click&convert.svg";
+import {
+  finalizeClickConvertSessionState,
+  getClickConvertSessionState,
+  ClickConvertSessionState,
+} from "@/lib/alchemy";
 export default function AlchemyOutcomePage() {
     const router = useRouter();
+    const [sessionState, setSessionState] =
+        useState<ClickConvertSessionState | null>(null);
+    const [completionError, setCompletionError] = useState<string | null>(null);
+    const [isCompleting, setIsCompleting] = useState(false);
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            router.push("/alchemy/outcome/result");
-        }, 60 * 60 * 1000);
+        let timer: NodeJS.Timeout | null = null;
+        let isActive = true;
 
-        return () => clearTimeout(timer);
+        const initializeSession = async () => {
+            const storedSession = getClickConvertSessionState();
+            if (!isActive) return;
+            setSessionState(storedSession);
+
+            if (!storedSession?.sessionId) {
+                setCompletionError("Unable to find your active Alchemy session.");
+                return;
+            }
+
+            if (storedSession.completedAt) {
+                router.push("/alchemy/outcome/result");
+                return;
+            }
+
+            const startedAt = storedSession.startedAt ?? storedSession.createdAt;
+            const startTime = startedAt ? Date.parse(startedAt) : NaN;
+            const elapsed = Number.isNaN(startTime) ? 0 : Date.now() - startTime;
+            const remaining = Math.max(0, 60 * 60 * 1000 - elapsed);
+
+            const runCompletion = async () => {
+                setIsCompleting(true);
+                try {
+                    await finalizeClickConvertSessionState();
+                } catch (error) {
+                    if (!isActive) return;
+                    const message =
+                        error instanceof Error
+                            ? error.message
+                            : "Failed to complete your Alchemy session. Please try again later.";
+                    setCompletionError(message);
+                } finally {
+                    if (!isActive) return;
+                    setIsCompleting(false);
+                    router.push("/alchemy/outcome/result");
+                }
+            };
+
+            if (remaining <= 0) {
+                runCompletion();
+            } else {
+                timer = setTimeout(runCompletion, remaining);
+            }
+        };
+
+        initializeSession();
+
+        return () => {
+            isActive = false;
+            if (timer) {
+                clearTimeout(timer);
+            }
+        };
     }, [router]);
 
     return (
@@ -90,6 +150,21 @@ export default function AlchemyOutcomePage() {
                     <p className="mt-2 text-sm text-tertiary">
                         Nuggets are locked during active Alchemy.
                     </p>
+                    {completionError && (
+                        <p className="mt-2 text-sm text-red-400 text-center">
+                            {completionError}
+                        </p>
+                    )}
+                    {isCompleting && !completionError && (
+                        <p className="mt-2 text-sm text-primary text-center">
+                            Finalizing your Alchemy session…
+                        </p>
+                    )}
+                    {sessionState?.sessionId && (
+                        <p className="mt-2 text-xs text-tertiary text-center">
+                            Session ID: {sessionState.sessionId}
+                        </p>
+                    )}
                 </div>
             </div>
 
@@ -109,4 +184,3 @@ export default function AlchemyOutcomePage() {
         </div>
     );
 }
-

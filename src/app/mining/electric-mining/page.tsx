@@ -144,13 +144,13 @@ const ElectricMiningPage = () => {
       <div className="text-base mt-40 flex flex-col gap-20 max-w-5xl leading-8 mb-40">
         <div>
           <p className="text-3xl font-bold mb-4">
-            Bitcoin-Yay Subscription Disclaimer
+            bitcoin-yay Subscription Disclaimer
           </p>
           <p className="font-bold">
             Please Read Carefully Before Purchasing Any Subscription Plan
           </p>
           <p>
-            By purchasing or activating any subscription plan on the Bitcoin-Yay
+            By purchasing or activating any subscription plan on the bitcoin-yay
             platform, you acknowledge and agree to the following:
           </p>
         </div>
@@ -159,7 +159,7 @@ const ElectricMiningPage = () => {
             1. Utility-Only, Not Financial Investment
           </p>
           <p>
-            Bitcoin-Yay (BTCY) and all associated subscription plans—including
+            bitcoin-yay (BTCY) and all associated subscription plans—including
             Snatch Gopher, Electric Gopher, Turbo Gopher, and Nuclear Gopher—are
             designed solely to enhance your participation in the BTCY ecosystem.
             These plans grant access to increased virtual mining speed and other
@@ -207,7 +207,7 @@ const ElectricMiningPage = () => {
           <p>
             All purchases of subscription plans are final and non-refundable.
             Subscription features are app-based and may only be accessed within
-            the official Bitcoin-Yay app (TestFlight or live release, depending
+            the official bitcoin-yay app (TestFlight or live release, depending
             on platform availability).
           </p>
         </div>
@@ -226,7 +226,7 @@ const ElectricMiningPage = () => {
           <p>
             Subscriptions are available to users aged 18+ and residing in
             jurisdictions where virtual crypto mining applications are legally
-            permitted. Bitcoin-Yay reserves the right to suspend accounts or
+            permitted. bitcoin-yay reserves the right to suspend accounts or
             restrict access where illegal, fraudulent, or abusive activity is
             detected.
           </p>

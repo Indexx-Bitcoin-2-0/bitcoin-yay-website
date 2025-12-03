@@ -17,13 +17,13 @@ import Whitepaper08 from "@/assets/images/whitepaper/whitepaper-07.svg";
 import Whitepaper09 from "@/assets/images/whitepaper/whitepaper-08.svg";
 
 export const metadata = {
-  title: "Bitcoin-Yay Whitepaper - A Decentralized Micro-Value Ecosystem",
+  title: "bitcoin-yay Whitepaper - A Decentralized Micro-Value Ecosystem",
   description:
-    "Read the official Bitcoin-Yay whitepaper covering technical architecture, tokenomics, AI-powered mobile mining, and blockchain ecosystem. Learn about BTCY's 21 trillion token supply and Proof-of-Participation mechanism.",
+    "Read the official bitcoin-yay whitepaper covering technical architecture, tokenomics, AI-powered mobile mining, and blockchain ecosystem. Learn about BTCY's 21 trillion token supply and Proof-of-Participation mechanism.",
   openGraph: {
-    title: "Bitcoin-Yay Whitepaper - A Decentralized Micro-Value Ecosystem",
+    title: "bitcoin-yay Whitepaper - A Decentralized Micro-Value Ecosystem",
     description:
-      "Read the official Bitcoin-Yay whitepaper covering technical architecture, tokenomics, AI-powered mobile mining, and blockchain ecosystem. Learn about BTCY's 21 trillion token supply and Proof-of-Participation mechanism.",
+      "Read the official bitcoin-yay whitepaper covering technical architecture, tokenomics, AI-powered mobile mining, and blockchain ecosystem. Learn about BTCY's 21 trillion token supply and Proof-of-Participation mechanism.",
   },
 };
 
@@ -126,7 +126,7 @@ export default function Whitepaper() {
           desc="2.5 Interoperability (Roadmap)"
           content={
             <>
-              <CustomListItem content="Existing bridges between Solana, Tron, and future chains (Stellar/Ethereum/BSC) are planned." />
+              <CustomListItem content="Existing bridges between Solana, Tron, and future chains (Stellar and others) are planned." />
               <CustomListItem content="Separate brand assets (e.g., WiBS meme coin) may interoperate through governed bridges." />
             </>
           }

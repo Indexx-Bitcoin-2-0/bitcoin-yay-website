@@ -19,13 +19,13 @@ import Whitepaper09 from "@/assets/images/whitepaper/whitepaper-08.svg";
 // import Whitepaper11 from "@/assets/images/whitepaper/whitepaper-10.svg";
 
 export const metadata = {
-  title: "Bitcoin-Yay Whitepaper - Technical Documentation & Tokenomics",
+  title: "bitcoin-yay Whitepaper - Technical Documentation & Tokenomics",
   description:
-    "Read the official Bitcoin-Yay whitepaper covering technical architecture, tokenomics, AI-powered mobile mining, and blockchain ecosystem. Learn about BTCY's 21 trillion token supply and Proof-of-Participation mechanism.",
+    "Read the official bitcoin-yay whitepaper covering technical architecture, tokenomics, AI-powered mobile mining, and blockchain ecosystem. Learn about BTCY's 21 trillion token supply and Proof-of-Participation mechanism.",
   openGraph: {
-    title: "Bitcoin-Yay Whitepaper - Technical Documentation & Tokenomics",
+    title: "bitcoin-yay Whitepaper - Technical Documentation & Tokenomics",
     description:
-      "Read the official Bitcoin-Yay whitepaper covering technical architecture, tokenomics, AI-powered mobile mining, and blockchain ecosystem. Learn about BTCY's 21 trillion token supply and Proof-of-Participation mechanism.",
+      "Read the official bitcoin-yay whitepaper covering technical architecture, tokenomics, AI-powered mobile mining, and blockchain ecosystem. Learn about BTCY's 21 trillion token supply and Proof-of-Participation mechanism.",
   },
 };
 
@@ -149,7 +149,7 @@ export default function whitepaper() {
           }
         />
         <InfoSection
-          desc="Indexx Wallet / Bitcoin-Yay Wallet"
+          desc="Indexx Wallet / bitcoin-yay Wallet"
           content={
             <>
               <CustomListItem content="Multi-chain support for BTCY, BTC, ETH, INEX, and more." />

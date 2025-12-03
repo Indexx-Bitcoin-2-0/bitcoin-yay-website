@@ -1,9 +1,9 @@
 export const metadata = {
-    title: "Alchemy History - Bitcoin-Yay",
+    title: "Alchemy History - bitcoin-yay",
     description:
         "View all your Nuggets to Tokens conversion transactions in the Alchemy History.",
     openGraph: {
-        title: "Alchemy History - Bitcoin-Yay",
+        title: "Alchemy History - bitcoin-yay",
         description:
             "View all your Nuggets to Tokens conversion transactions in the Alchemy History.",
     },
