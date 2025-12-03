@@ -149,7 +149,7 @@ export default function Navbar() {
           >
             <AccordionItem value="item-1" className="border-0">
               <AccordionTrigger className="py-2 text-xl font-normal data-[state=open]:text-primary">
-                Bitcoin Yay Blockchain
+                Bitcoin-Yay Blockchain
               </AccordionTrigger>
               <AccordionContent className="p-2">
                 <Link
@@ -157,7 +157,7 @@ export default function Navbar() {
                   className="block text-lg my-2 hover:text-primary"
                   onClick={closeMobileMenu}
                 >
-                  Bitcoin Yay Blockchain
+                  Bitcoin-Yay Blockchain
                 </Link>
                 <Link
                   href="/coming-soon"
@@ -257,7 +257,7 @@ export default function Navbar() {
                   bitcoinDropdownOpen ? "text-primary" : "text-tertiary"
                 }`}
               >
-                Bitcoin Yay Blockchain
+                Bitcoin-Yay Blockchain
                 <Image src={DownMenuIcon} alt="" width={20} />
               </button>
               {bitcoinDropdownOpen && (
@@ -271,7 +271,7 @@ export default function Navbar() {
                       href="/blockchain"
                       className="block hover:text-primary focus:text-primary focus:bg-transparent text-xl"
                     >
-                      Bitcoin Yay Blockchain
+                      Bitcoin-Yay Blockchain
                     </Link>
                     <Link
                       href="/coming-soon"

@@ -10,16 +10,16 @@ import { GoogleOAuthProvider } from "@react-oauth/google"; // ✅ Import this
 export const metadata = {
   metadataBase: new URL("https://bitcoinyay.com"),
   title: {
-    default: "Bitcoin Yay - Mobile Mining App for Bitcoin Micro Tokens",
-    template: "%s | Bitcoin Yay",
+    default: "Bitcoin-Yay - Mobile Mining App for Bitcoin Micro Tokens",
+    template: "%s | Bitcoin-Yay",
   },
   description:
-    "Bitcoin Yay (BTCY) is the micro token and petty cash of Bitcoin. Download our mobile mining app to earn Bitcoin Yay tokens through AI-powered mining on your phone. Free to start, easy to use.",
+    "Bitcoin-Yay (BTCY) is the micro token and petty cash of Bitcoin. Download our mobile mining app to earn Bitcoin-Yay tokens through AI-powered mining on your phone. Free to start, easy to use.",
   keywords:
-    "Bitcoin Yay, BTCY, mobile mining, Bitcoin micro tokens, cryptocurrency app, free crypto mining, Bitcoin alternative, AI mining",
-  authors: [{ name: "Bitcoin Yay Team" }],
-  creator: "Bitcoin Yay",
-  publisher: "Bitcoin Yay",
+    "Bitcoin-Yay, BTCY, mobile mining, Bitcoin micro tokens, cryptocurrency app, free crypto mining, Bitcoin alternative, AI mining",
+  authors: [{ name: "Bitcoin-Yay Team" }],
+  creator: "Bitcoin-Yay",
+  publisher: "Bitcoin-Yay",
   robots: {
     index: true,
     follow: true,
@@ -27,7 +27,7 @@ export const metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    siteName: "Bitcoin Yay",
+    siteName: "Bitcoin-Yay",
     url: "https://bitcoinyay.com",
   },
   twitter: {

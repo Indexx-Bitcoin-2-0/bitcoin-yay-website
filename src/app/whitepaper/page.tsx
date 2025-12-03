@@ -19,13 +19,13 @@ import Whitepaper09 from "@/assets/images/whitepaper/whitepaper-08.svg";
 // import Whitepaper11 from "@/assets/images/whitepaper/whitepaper-10.svg";
 
 export const metadata = {
-  title: "Bitcoin Yay Whitepaper - Technical Documentation & Tokenomics",
+  title: "Bitcoin-Yay Whitepaper - Technical Documentation & Tokenomics",
   description:
-    "Read the official Bitcoin Yay whitepaper covering technical architecture, tokenomics, AI-powered mobile mining, and blockchain ecosystem. Learn about BTCY's 21 trillion token supply and Proof-of-Participation mechanism.",
+    "Read the official Bitcoin-Yay whitepaper covering technical architecture, tokenomics, AI-powered mobile mining, and blockchain ecosystem. Learn about BTCY's 21 trillion token supply and Proof-of-Participation mechanism.",
   openGraph: {
-    title: "Bitcoin Yay Whitepaper - Technical Documentation & Tokenomics",
+    title: "Bitcoin-Yay Whitepaper - Technical Documentation & Tokenomics",
     description:
-      "Read the official Bitcoin Yay whitepaper covering technical architecture, tokenomics, AI-powered mobile mining, and blockchain ecosystem. Learn about BTCY's 21 trillion token supply and Proof-of-Participation mechanism.",
+      "Read the official Bitcoin-Yay whitepaper covering technical architecture, tokenomics, AI-powered mobile mining, and blockchain ecosystem. Learn about BTCY's 21 trillion token supply and Proof-of-Participation mechanism.",
   },
 };
 
@@ -118,7 +118,7 @@ export default function whitepaper() {
           desc="2.6 Interoperability & Cross-Chain Compatibility"
           content={
             <>
-              <CustomListItem content="Seamless asset bridging between Bitcoin-Yay, Bitcoin-YeeHaw (stablecoin), WiBS (meme coin), and Bitcoin YAY NFT." />
+              <CustomListItem content="Seamless asset bridging between Bitcoin-Yay, Bitcoin-YeeHaw (stablecoin), WiBS (meme coin), and Bitcoin-Yay NFT." />
               <CustomListItem content="Integrates with major Ethereum, Binance Smart Chain, and Solana networks." />
             </>
           }
@@ -138,7 +138,7 @@ export default function whitepaper() {
         </div>
         <InfoSection
           title="3. Product Ecosystem"
-          desc="Indexx Mining App / Bitcoin YAY Mining App"
+          desc="Indexx Mining App / Bitcoin-Yay Mining App"
           content={
             <>
               <CustomListItem content="AI-powered mining algorithm with 6-hour mining sessions." />
@@ -149,7 +149,7 @@ export default function whitepaper() {
           }
         />
         <InfoSection
-          desc="Indexx Wallet / Bitcoin Yay Wallet"
+          desc="Indexx Wallet / Bitcoin-Yay Wallet"
           content={
             <>
               <CustomListItem content="Multi-chain support for BTCY, BTC, ETH, INEX, and more." />
@@ -279,7 +279,7 @@ export default function whitepaper() {
                   1x
                 </td>
                 <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal align-top">
-                  ~3 BTCY/hour
+                  ~1.5 BTCY/hour
                 </td>
                 <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal align-top">
                   Every user can join this plan at no cost. To maintain free
@@ -301,7 +301,7 @@ export default function whitepaper() {
                   3x
                 </td>
                 <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal align-top">
-                  ~9 BTCY / hour
+                  ~4.5 BTCY / hour
                 </td>
                 <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal align-top">
                   Triples the free mining output. Subscribers earn tokens faster
@@ -321,7 +321,7 @@ export default function whitepaper() {
                   6x
                 </td>
                 <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal align-top">
-                  ~18 BTCY / hour
+                  ~9 BTCY / hour
                 </td>
                 <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal align-top">
                   Provides six times the free-plan output. Turbo users benefit
@@ -341,7 +341,7 @@ export default function whitepaper() {
                   9x
                 </td>
                 <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal align-top">
-                  ~27 BTCY / hour
+                  ~13.5 BTCY / hour
                 </td>
                 <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/5 lg:whitespace-normal align-top">
                   Offers the highest standard mining rate with nine times the
@@ -356,8 +356,8 @@ export default function whitepaper() {
 
         <p className="text-center text-xl my-10 mx-auto max-w-4xl font-semibold">
           Rates shown are per hour. Over a full 6-hour session, the approximate
-          total mined is 6× the hourly figure (e.g., Free ≈18 BTCY per session,
-          Nuclear ≈162 BTCY per session).
+          total mined is 6× the hourly figure (e.g., Free ≈9 BTCY per session,
+          Nuclear ≈81 BTCY per session).
         </p>
 
         <div className="mt-40"></div>

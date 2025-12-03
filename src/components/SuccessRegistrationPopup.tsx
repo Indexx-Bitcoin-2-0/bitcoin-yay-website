@@ -34,7 +34,7 @@ const SuccessRegistrationPopup: React.FC<SuccessRegistrationPopupProps> = ({
             Congratulations!
           </h2>
           <h3 className="text-tertiary text-2xl md:text-3xl xl:text-4xl font-semibold">
-            You&apos;re now part of Bitcoin Yay
+            You&apos;re now part of Bitcoin-Yay
           </h3>
         </div>
 

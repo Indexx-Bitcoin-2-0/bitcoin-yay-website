@@ -112,14 +112,14 @@ export default function Bible() {
           />
           <CustomCard
             image={CardImage4}
-            title="Bitcoin Yay Blockchain"
+            title="Bitcoin-Yay Blockchain"
             description="Dynamic, AI-optimized ecosystem. "
             buttonText="Read More"
             buttonLink="/blockchain"
           />
           <CustomCard
             image={CardImage5}
-            title="Bitcoin Yay Wallet"
+            title="Bitcoin-Yay Wallet"
             description="A Crypto based lottery where you can earn big rewards"
             buttonText="Read More"
             buttonLink="/bible/bitcoin-yay-wallet"

@@ -17,14 +17,14 @@ import { SectionDiv } from "@/components/utils";
 
 export const metadata = {
   title:
-    "Bitcoin Yay Tokenomics - BTCY Supply, Distribution & Mining Economics",
+    "Bitcoin-Yay Tokenomics - BTCY Supply, Distribution & Mining Economics",
   description:
-    "Comprehensive Bitcoin Yay (BTCY) tokenomics guide. Learn about the 21 trillion token supply, distribution model, semi-annual halving mechanism, mining tiers, and economic design that mirrors Bitcoin's scarcity model.",
+    "Comprehensive Bitcoin-Yay (BTCY) tokenomics guide. Learn about the 21 trillion token supply, distribution model, semi-annual halving mechanism, mining tiers, and economic design that mirrors Bitcoin's scarcity model.",
   openGraph: {
     title:
-      "Bitcoin Yay Tokenomics - BTCY Supply, Distribution & Mining Economics",
+      "Bitcoin-Yay Tokenomics - BTCY Supply, Distribution & Mining Economics",
     description:
-      "Comprehensive Bitcoin Yay (BTCY) tokenomics guide. Learn about the 21 trillion token supply, distribution model, semi-annual halving mechanism, mining tiers, and economic design that mirrors Bitcoin's scarcity model.",
+      "Comprehensive Bitcoin-Yay (BTCY) tokenomics guide. Learn about the 21 trillion token supply, distribution model, semi-annual halving mechanism, mining tiers, and economic design that mirrors Bitcoin's scarcity model.",
   },
 };
 
@@ -42,9 +42,9 @@ export default function Tokenomics() {
           className="w-100 md:w-150 lg:w-200 2xl:w-320"
         />
         <p className="text-lg mt-10 max-w-4xl mx-auto">
-          Tokenomics refers to the economic design of the Bitcoin Yay (BTCY)
+          Tokenomics refers to the economic design of the Bitcoin-Yay (BTCY)
           ecosystem – how the token is created, distributed, used, and managed
-          over time. Bitcoin Yay&apos;s tokenomics balance scarcity and growth,
+          over time. Bitcoin-Yay&apos;s tokenomics balance scarcity and growth,
           mirroring Bitcoin&apos;s fundamental cap and halving model but on an
           accelerated timeline and with additional mechanisms for utility and
           stability.
@@ -56,7 +56,7 @@ export default function Tokenomics() {
         <CustomUnorderedList>
           <CustomListItem2
             title="Fixed Total Supply: "
-            content=" 21 Trillion BTCY (hard cap). This figure mirrors Bitcoin's 21 million supply, using a conversion of 1 BTC → 1,000,000 BTCY to create 21 trillion micro-units. By maintaining a fixed supply, Bitcoin Yay ensures long-term scarcity similar to Bitcoin, which underpins value by preventing unlimited inflation."
+            content=" 21 Trillion BTCY (hard cap). This figure mirrors Bitcoin's 21 million supply, using a conversion of 1 BTC → 1,000,000 BTCY to create 21 trillion micro-units. By maintaining a fixed supply, Bitcoin-Yay ensures long-term scarcity similar to Bitcoin, which underpins value by preventing unlimited inflation."
           />
           <CustomListItem2
             title="Bitcoin Conversion Ratio: "
@@ -68,11 +68,11 @@ export default function Tokenomics() {
           />
           <CustomUnorderedList>
             <CustomListItem2 content="40% (8.4T BTCY) – Mining Rewards & Ecosystem Incentives: Reserved for distribution to users through mining programs (free mining, paid tiers, referral bonuses, etc.) and other participation rewards. This large share ensures the community can earn a significant portion of BTCY over time, driving user growth and engagement." />
-            <CustomListItem2 content="10% (2.1T BTCY) – Satoshi Nakamoto Legacy: Earmarked in honor of Bitcoin's creator, Satoshi. These tokens are set aside (potentially locked or even burned) as a symbolic link between Bitcoin and Bitcoin Yay. It's a gesture acknowledging Bitcoin's origins and keeping BTCY's supply analogous (21 million vs 21 trillion)." />
-            <CustomListItem2 content="20% (4.2T BTCY) – Development & Infrastructure Fund: Controlled by the Bitcoin Yay team (in alliance with Indexx) with a vesting period (~4 years). This funds ongoing development, server infrastructure, customer support, and core contributors. Vesting prevents immediate dumping and aligns the team's incentives with the project's long-term success." />
+            <CustomListItem2 content="10% (2.1T BTCY) – Satoshi Nakamoto Legacy: Earmarked in honor of Bitcoin's creator, Satoshi. These tokens are set aside (potentially locked or even burned) as a symbolic link between Bitcoin and Bitcoin-Yay. It's a gesture acknowledging Bitcoin's origins and keeping BTCY's supply analogous (21 million vs 21 trillion)." />
+            <CustomListItem2 content="20% (4.2T BTCY) – Development & Infrastructure Fund: Controlled by the Bitcoin-Yay team (in alliance with Indexx) with a vesting period (~4 years). This funds ongoing development, server infrastructure, customer support, and core contributors. Vesting prevents immediate dumping and aligns the team's incentives with the project's long-term success." />
             <CustomListItem2 content="15% (3.15T BTCY) – Indexx Treasury (Liquidity & Stability): Managed by Indexx to provide liquidity on exchanges, conduct market-making, and stabilize BTCY's price. This treasury also backs the BTCY-BTC reserve mechanism (some of these tokens can be exchanged for BTC over time to build a reserve). Essentially, this allocation acts as a buffer to ensure convertibility and reduce volatility." />
             <CustomListItem2 content="10% (2.1T BTCY) – Community & Influencer Incentives: Dedicated to marketing and community growth. This includes airdrops to early adopters, referral program rewards, community event giveaways, and influencer partnerships. For example, a portion of this might be used to give new users a starter bonus, or to reward content creators who promote BTCY. By distributing tokens to those who help grow the user base, the project kickstarts network effects." />
-            <CustomListItem2 content="5% (1.05T BTCY) – Strategic Partnerships & Institutional Adoption: Set aside for strategic deals, such as integrating BTCY with other platforms or bringing large partners on board. For instance, some tokens could incentivize a payment app to adopt BTCY, or be granted to a fintech institution that supports BTCY. This fund enables flexibility in expanding Bitcoin Yay's reach through partnerships." />
+            <CustomListItem2 content="5% (1.05T BTCY) – Strategic Partnerships & Institutional Adoption: Set aside for strategic deals, such as integrating BTCY with other platforms or bringing large partners on board. For instance, some tokens could incentivize a payment app to adopt BTCY, or be granted to a fintech institution that supports BTCY. This fund enables flexibility in expanding Bitcoin-Yay's reach through partnerships." />
             <CustomPWithTitle2 content="Summary: 50% of BTCY is aimed directly at the community (40% mining rewards + 10% community incentives), ensuring broad distribution. 35% is retained with the project team/Indexx (development + treasury) but under conditions (vesting, specific use) to avoid centralization risks. The remaining 15% (Satoshi tribute + partnerships) ties BTCY to the wider narrative and future growth opportunities." />
           </CustomUnorderedList>
 
@@ -88,7 +88,7 @@ export default function Tokenomics() {
       </div>
 
       <SectionDiv id="mining-rewards">
-        <CustomPWithTitle2 content="Bitcoin Yay adopts a Bitcoin-like emission schedule but accelerates to reach its supply cap faster and engage users early:" />
+        <CustomPWithTitle2 content="Bitcoin-Yay adopts a Bitcoin-like emission schedule but accelerates to reach its supply cap faster and engage users early:" />
 
         <CustomUnorderedList>
           <CustomListItem2
@@ -102,7 +102,7 @@ export default function Tokenomics() {
           <CustomPWithTitle2 content=" For instance: If in the first 6 months the network distributes 100 billion BTCY, in the next 6 months only ~50 billion BTCY will be distributed, and ~25 billion in the 6 months after that, and so on. This rapid reduction means within just a few years the inflation rate drops to very low levels, reinforcing the scarcity narrative." />
           <CustomListItem2
             title="Rationale for Accelerated Halving: "
-            content='Bitcoin Yay anticipates a high initial emission to attract users (lots of rewards early on to entice sign-ups and participation). The semi-annual halving quickly "clamps down" inflation after these initial growth spurts. Early adopters benefit from higher rewards, but inflation is sharply reduced within a short number of years (as opposed to decades for Bitcoin). This ensures that, not far into the future, BTCY becomes significantly scarcer to mine, protecting long-term holders from prolonged high inflation.'
+            content='Bitcoin-Yay anticipates a high initial emission to attract users (lots of rewards early on to entice sign-ups and participation). The semi-annual halving quickly "clamps down" inflation after these initial growth spurts. Early adopters benefit from higher rewards, but inflation is sharply reduced within a short number of years (as opposed to decades for Bitcoin). This ensures that, not far into the future, BTCY becomes significantly scarcer to mine, protecting long-term holders from prolonged high inflation.'
           />
           <CustomListItem2
             title="Emission Milestones: "
@@ -115,14 +115,14 @@ export default function Tokenomics() {
             <CustomListItem2 content="At 5 Trillion mined, BTCY's inflation is slowing; around this time, major utility integrations (like full Indexx Lotto and Shop acceptance) are in place, reinforcing demand." />
             <CustomListItem2 content="At 10 Trillion mined (half the cap), one could expect roughly 60% of that to have been via mining, 30% might remain in reserves, 10% used for community incentives (hypothetical distribution at that point). Cross-chain bridges and broader adoption efforts are likely fully underway by then." />
             <CustomListItem2 content='At 15 Trillion mined, perhaps 70% from mining, 20% reserve, 10% community – by now, the majority of BTCY is in users&apos; hands. This might trigger advanced features like algorithmic stablecoin integration (Bitcoin "YeeHaw" stablecoin and other exchange programs to bolster value stability).' />
-            <CustomListItem2 content="By 21 Trillion (cap reached), theoretically ~80% will have been distributed via mining, ~10% in reserves, ~10% in community funds. This final stage would be many years out (the tail end of the emission), at which point Bitcoin Yay is fully decentralized and governed by the community (the original team's role minimal beyond perhaps running services like exchanges). Hitting the cap means no new BTCY is mined (similar to Bitcoin post-2140); the network at that point relies on transaction fees and recycling of tokens for rewards." />
+            <CustomListItem2 content="By 21 Trillion (cap reached), theoretically ~80% will have been distributed via mining, ~10% in reserves, ~10% in community funds. This final stage would be many years out (the tail end of the emission), at which point Bitcoin-Yay is fully decentralized and governed by the community (the original team's role minimal beyond perhaps running services like exchanges). Hitting the cap means no new BTCY is mined (similar to Bitcoin post-2140); the network at that point relies on transaction fees and recycling of tokens for rewards." />
           </CustomUnorderedList>
 
           <CustomPWithTitle2 content="These illustrative milestones emphasize that early in the project a larger portion of tokens is not yet circulating (held in reserve or unmined), which grants the project flexibility and stability, whereas later on the vast majority will be circulating and the project should be self-sustaining and community-run." />
 
           <CustomListItem2
             title="Tail Emissions & End-State: "
-            content='Even after many halvings, mining never truly "stops" until the 21T cap is reached, but the rewards become extremely small. Bitcoin Yay&apos;s design anticipates that by the time rewards are negligible, transaction fees and other incentives (like staking yields or DeFi interest) will take over to reward participants (much like Bitcoin expects fees to sustain miners eventually). The project may also consider introducing a minimal continuous reward or a "tail emission" if needed to ensure participation incentives never drop to zero, but if so it would be very tiny. Any such decision would be governed by the community in the later stages.'
+            content='Even after many halvings, mining never truly "stops" until the 21T cap is reached, but the rewards become extremely small. Bitcoin-Yay&apos;s design anticipates that by the time rewards are negligible, transaction fees and other incentives (like staking yields or DeFi interest) will take over to reward participants (much like Bitcoin expects fees to sustain miners eventually). The project may also consider introducing a minimal continuous reward or a "tail emission" if needed to ensure participation incentives never drop to zero, but if so it would be very tiny. Any such decision would be governed by the community in the later stages.'
           />
         </CustomUnorderedList>
       </SectionDiv>
@@ -137,27 +137,27 @@ export default function Tokenomics() {
         <CustomUnorderedList>
           <CustomListItem2
             title="Base Mining Rates: "
-            content="At launch (Month 1), the base mining rate for the Free Plan is approximately 3 BTCY/hour (this equates to ~72 BTCY/day for a free user mining continuously). Higher tiers are multiples of this base rate:"
+            content="At launch (Month 1), the base mining rate for the Free Plan is approximately 1.5 BTCY/hour (this equates to ~36 BTCY/day for a free user mining continuously). Higher tiers are multiples of this base rate:"
           />
           <CustomUnorderedList>
             <CustomListItem2
               title="Electric Plan"
-              content="~3× base &rArr; ~9 BTCY/hour."
+              content="~3× base &rArr; ~4.5 BTCY/hour."
             />
             <CustomListItem2
               title="Turbo Plan"
-              content="~6× base &rArr; ~18 BTCY/hour."
+              content="~6× base &rArr; ~9 BTCY/hour."
             />
             <CustomListItem2
               title="Nuclear Plan"
-              content="~9× base &rArr; ~27 BTCY/hour."
+              content="~9× base &rArr; ~13.5 BTCY/hour."
             />
           </CustomUnorderedList>
-          <CustomListItem2 content='These initial rates mean, for example, if 100,000 users were mining on the Free plan alone, about 7.2 million BTCY would be distributed to free users per day (100k * 72/day each) initially. Adding paid plan users (with higher rates) increases the daily emission accordingly. This is the "significant initial emission" mentioned, which is needed to entice broad participation early on. However, recall that in 6 months, these rates will halve network-wide (to ~1.5 BTCY/hour for Free, ~4.5 for Electric, ~9 for Turbo, ~13.5 for Nuclear, if all else remains equal).' />
+          <CustomListItem2 content='These initial rates mean, for example, if 100,000 users were mining on the Free plan alone, about 3.6 million BTCY would be distributed to free users per day (100k * 36/day each) initially. Adding paid plan users (with higher rates) increases the daily emission accordingly. This is the "significant initial emission" mentioned, which is needed to entice broad participation early on. However, recall that in 6 months, these rates will halve network-wide (to ~0.75 BTCY/hour for Free, ~2.25 for Electric, ~4.5 for Turbo, ~6.75 for Nuclear, if all else remains equal).' />
 
           <CustomListItem2
             title="Halving Impact Example: "
-            content="After the first 6-month halving, a Free user's base rate drops to ~1.5 BTCY/hour; after one year (two halvings), ~0.75 BTCY/hour, and so forth (assuming no change in user behavior or plan). So, a year into the project, new Free users would be earning only a quarter of what the first Free users earned per hour, highlighting the advantage of being early and the natural scarcity increase over time."
+            content="After the first 6-month halving, a Free user's base rate drops to ~0.75 BTCY/hour; after one year (two halvings), ~0.375 BTCY/hour, and so forth (assuming no change in user behavior or plan). So, a year into the project, new Free users would be earning only a quarter of what the first Free users earned per hour, highlighting the advantage of being early and the natural scarcity increase over time."
           />
 
           <CustomListItem2
@@ -210,11 +210,11 @@ export default function Tokenomics() {
           />
           <CustomListItem2
             title="Halving Effect on Plans: "
-            content="Importantly, when a halving occurs every plan's output halves (since it's proportional). After the first halving, for example, the Free plan might drop to ~1.5 BTCY/hour, Electric to ~4.5, Turbo to ~9, Nuclear to ~13.5. The ratios (1:3:6:9) remain the same, so paid tiers always maintain their relative advantage, but the absolute difference in earnings between tiers narrows over time in terms of BTCY/hour. However, if BTCY's value increases over time (due to increasing scarcity and adoption), even the reduced rates can be worthwhile. The subscription prices themselves could potentially be adjusted via governance in the future (for instance, they might introduce an option to pay for plans in BTCY or tweak pricing if $600 becomes too high or too low relative to BTCY's value)."
+            content="Importantly, when a halving occurs every plan's output halves (since it's proportional). After the first halving, for example, the Free plan might drop to ~0.75 BTCY/hour, Electric to ~2.25, Turbo to ~4.5, Nuclear to ~6.75. The ratios (1:3:6:9) remain the same, so paid tiers always maintain their relative advantage, but the absolute difference in earnings between tiers narrows over time in terms of BTCY/hour. However, if BTCY's value increases over time (due to increasing scarcity and adoption), even the reduced rates can be worthwhile. The subscription prices themselves could potentially be adjusted via governance in the future (for instance, they might introduce an option to pay for plans in BTCY or tweak pricing if $600 becomes too high or too low relative to BTCY's value)."
           />
           <CustomListItem2
             title="Referral and Community Mining Boosts: "
-            content="In addition to these base rates, recall that Bitcoin Yay provides avenues to boost one's mining without upgrading a plan:"
+            content="In addition to these base rates, recall that Bitcoin-Yay provides avenues to boost one's mining without upgrading a plan:"
           />
           <CustomUnorderedList>
             <CustomListItem2 content="Referral bonuses (Pocket Gopher program) can give one-time BTCY rewards that effectively increase a user's total earnings." />
@@ -228,7 +228,7 @@ export default function Tokenomics() {
           />
         </CustomUnorderedList>
 
-        <CustomPWithTitle2 content="In summary, Bitcoin Yay's mining and subscription plan economics are crafted to rapidly distribute tokens to an active user base while preventing oversupply and rewarding the most engaged or invested users. Early on, the token issuance is high to fuel growth, but the built-in halving schedule and fees steadily curb inflation. Paid plans serve not only to generate revenue and reward committed users, but also as a mechanism to control distribution speed and channel value back into the project (through fees and reserve backing). Together, these ensure a fair launch where anyone can participate (for free) but those who contribute more (time, effort, or funds) can earn more, all within an inflation-control framework." />
+        <CustomPWithTitle2 content="In summary, Bitcoin-Yay's mining and subscription plan economics are crafted to rapidly distribute tokens to an active user base while preventing oversupply and rewarding the most engaged or invested users. Early on, the token issuance is high to fuel growth, but the built-in halving schedule and fees steadily curb inflation. Paid plans serve not only to generate revenue and reward committed users, but also as a mechanism to control distribution speed and channel value back into the project (through fees and reserve backing). Together, these ensure a fair launch where anyone can participate (for free) but those who contribute more (time, effort, or funds) can earn more, all within an inflation-control framework." />
       </SectionDiv>
 
       <div className="mt-40 flex items-center justify-start px-4 md:px-20 lg:px-40">
@@ -238,12 +238,12 @@ export default function Tokenomics() {
       <SectionDiv id="value-stability-mechanisms">
         <CustomHeading content="Mining Rewards & Subscription Plans" />
 
-        <CustomPWithTitle2 content="Maintaining a stable and growing value for BTCY is crucial for user confidence and long-term viability. Bitcoin Yay employs several mechanisms to dampen volatility and provide price support, especially in its early phases:" />
+        <CustomPWithTitle2 content="Maintaining a stable and growing value for BTCY is crucial for user confidence and long-term viability. Bitcoin-Yay employs several mechanisms to dampen volatility and provide price support, especially in its early phases:" />
 
         <CustomUnorderedList>
           <CustomListItem2
             title="Initial Peg and Conversion Rate: "
-            content="Bitcoin Yay effectively begins with a target price of $0.10 per BTCY. On the Indexx platform, conversion features allow, for example, 10 BTCY to be swapped for 1 IUSD+ (Indexx's USD stablecoin) by design (minus fees). Similarly, BTCY can be converted to other stablecoins at roughly that rate. This doesn't mean BTCY can't trade above or below $0.10 on the open market, but the Indexx conversion provides a floor price: as long as reserves last, users know they can trade BTCY for about 10¢ worth of stablecoins each (with some fees applied). This floor gives newcomers assurance that the token isn't likely to go to zero because it's backed by real assets at a known rate."
+            content="Bitcoin-Yay effectively begins with a target price of $0.10 per BTCY. On the Indexx platform, conversion features allow, for example, 10 BTCY to be swapped for 1 IUSD+ (Indexx's USD stablecoin) by design (minus fees). Similarly, BTCY can be converted to other stablecoins at roughly that rate. This doesn't mean BTCY can't trade above or below $0.10 on the open market, but the Indexx conversion provides a floor price: as long as reserves last, users know they can trade BTCY for about 10¢ worth of stablecoins each (with some fees applied). This floor gives newcomers assurance that the token isn't likely to go to zero because it's backed by real assets at a known rate."
           />
           <CustomListItem2
             title="Reserve of Stablecoins and BTC: "
@@ -283,7 +283,7 @@ export default function Tokenomics() {
           />
           <CustomListItem2
             title="Deflationary Mechanisms: "
-            content="Aside from halving, Bitcoin Yay has additional deflationary tactics to support the token's value:"
+            content="Aside from halving, Bitcoin-Yay has additional deflationary tactics to support the token's value:"
           />
           <CustomUnorderedList>
             <CustomListItem2
@@ -306,7 +306,7 @@ export default function Tokenomics() {
           />
         </CustomUnorderedList>
 
-        <CustomPWithTitle2 content="In summary, Bitcoin Yay's tokenomics include robust price stability measures to complement its issuance strategy. By pegging BTCY's early value to fiat via reserves, heavily taxing opportunistic conversions, and building up a Bitcoin reserve, the project creates a safety net for the token's value. Simultaneously, by planning token burns and buybacks funded by its own economic activity, it introduces deflationary pressure that combats inflation and supports the price as the supply grows. These strategies are designed to encourage users to hold and use BTCY rather than speculate on short-term price swings, fostering a healthier economic ecosystem. Over time, as adoption solidifies, these mechanisms can be relaxed to allow BTCY to appreciate organically, but in the critical early stages they form a vital backbone of trust in Bitcoin Yay's economy." />
+        <CustomPWithTitle2 content="In summary, Bitcoin-Yay's tokenomics include robust price stability measures to complement its issuance strategy. By pegging BTCY's early value to fiat via reserves, heavily taxing opportunistic conversions, and building up a Bitcoin reserve, the project creates a safety net for the token's value. Simultaneously, by planning token burns and buybacks funded by its own economic activity, it introduces deflationary pressure that combats inflation and supports the price as the supply grows. These strategies are designed to encourage users to hold and use BTCY rather than speculate on short-term price swings, fostering a healthier economic ecosystem. Over time, as adoption solidifies, these mechanisms can be relaxed to allow BTCY to appreciate organically, but in the critical early stages they form a vital backbone of trust in Bitcoin-Yay's economy." />
       </SectionDiv>
     </div>
   );

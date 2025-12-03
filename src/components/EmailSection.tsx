@@ -33,7 +33,7 @@ export default function EmailSection({
     try {
       await axios.post(EMAIL_TO_ADMIN_API_ROUTE, {
         email: email.trim(),
-        website: "Bitcoin Yay",
+        website: "Bitcoin-Yay",
       });
 
       setMessage("Thank you! Your email has been successfully subscribed.");

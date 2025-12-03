@@ -33,11 +33,11 @@ const plans: Plan[] = [
     {
         name: "Electric Mining",
         price: 100,
-        btcPerHour: 9,
-        hourlyEarnings: 0.9,
+        btcPerHour: 4.5,
+        hourlyEarnings: 0.45,
         features: [
             "1 BTCY ~ $0.10",
-            "~9 BTCY/hour ~ $0.90",
+            "~4.5 BTCY/hour ~ $0.45",
             "Referral Bonuses",
             "Priority Mining Support",
         ],
@@ -46,11 +46,11 @@ const plans: Plan[] = [
     {
         name: "Turbo Mining",
         price: 300,
-        btcPerHour: 18,
-        hourlyEarnings: 1.8,
+        btcPerHour: 9,
+        hourlyEarnings: 0.9,
         features: [
             "1 BTCY ~ $0.10",
-            "~18 BTCY/hour ~ $1.80",
+            "~9 BTCY/hour ~ $0.90",
             "Enhanced Referral Bonuses",
             "Priority Mining Support",
             "24/7 Premium Support",
@@ -60,11 +60,11 @@ const plans: Plan[] = [
     {
         name: "Nuclear Mining",
         price: 600,
-        btcPerHour: 27,
-        hourlyEarnings: 2.7,
+        btcPerHour: 13.5,
+        hourlyEarnings: 1.35,
         features: [
             "1 BTCY ~ $0.10",
-            "~27 BTCY/hour ~ $2.70",
+            "~13.5 BTCY/hour ~ $1.35",
             "Maximum Referral Bonuses",
             "VIP Mining Support",
             "24/7 Premium Support",

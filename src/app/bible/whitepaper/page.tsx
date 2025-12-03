@@ -17,13 +17,13 @@ import Whitepaper08 from "@/assets/images/whitepaper/whitepaper-07.svg";
 import Whitepaper09 from "@/assets/images/whitepaper/whitepaper-08.svg";
 
 export const metadata = {
-  title: "Bitcoin Yay Whitepaper - A Decentralized Micro-Value Ecosystem",
+  title: "Bitcoin-Yay Whitepaper - A Decentralized Micro-Value Ecosystem",
   description:
-    "Read the official Bitcoin Yay whitepaper covering technical architecture, tokenomics, AI-powered mobile mining, and blockchain ecosystem. Learn about BTCY's 21 trillion token supply and Proof-of-Participation mechanism.",
+    "Read the official Bitcoin-Yay whitepaper covering technical architecture, tokenomics, AI-powered mobile mining, and blockchain ecosystem. Learn about BTCY's 21 trillion token supply and Proof-of-Participation mechanism.",
   openGraph: {
-    title: "Bitcoin Yay Whitepaper - A Decentralized Micro-Value Ecosystem",
+    title: "Bitcoin-Yay Whitepaper - A Decentralized Micro-Value Ecosystem",
     description:
-      "Read the official Bitcoin Yay whitepaper covering technical architecture, tokenomics, AI-powered mobile mining, and blockchain ecosystem. Learn about BTCY's 21 trillion token supply and Proof-of-Participation mechanism.",
+      "Read the official Bitcoin-Yay whitepaper covering technical architecture, tokenomics, AI-powered mobile mining, and blockchain ecosystem. Learn about BTCY's 21 trillion token supply and Proof-of-Participation mechanism.",
   },
 };
 
@@ -301,7 +301,7 @@ export default function Whitepaper() {
                   $100/mo
                 </td>
                 <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal align-top border-r border-bg2">
-                  ≈ 9 BTCY Nugget/hour
+                  ≈ 4.5 BTCY Nugget/hour
                 </td>
                 <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal align-top">
                   Always-on Electric tier, referral bonuses, priority support
@@ -315,7 +315,7 @@ export default function Whitepaper() {
                   $300/mo
                 </td>
                 <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal align-top border-r border-bg2">
-                  ≈ 18 BTCY Nugget/hour
+                  ≈ 9 BTCY Nugget/hour
                 </td>
                 <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal align-top">
                   Double Electric throughput, automated boosts, priority payouts
@@ -329,7 +329,7 @@ export default function Whitepaper() {
                   $600/mo
                 </td>
                 <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal align-top border-r border-bg2">
-                  ≈ 27 BTCY Nugget/hour
+                  ≈ 13.5 BTCY Nugget/hour
                 </td>
                 <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal align-top">
                   Maximum AI-driven yield, VIP support, exclusive bonus drops

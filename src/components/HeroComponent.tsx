@@ -11,13 +11,14 @@ import Image5 from "@/assets/images/home/hero-section/5.webp";
 import Image6a from "@/assets/images/home/hero-section/6-1.webp";
 import Image6b from "@/assets/images/home/hero-section/6-2.webp";
 import Image7 from "@/assets/images/home/hero-section/7.webp";
+import HandImage from "@/assets/images/btcy-index-relationship/hands.webp";
 
 const CarouselFrame1 = () => {
   return (
     <div className="h-full relative flex flex-col md:flex-row justify-between items-center text-center md:text-left md:px-20 lg:px-40">
       <div className="w-full z-10">
         <h2 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold my-2 md:my-4">
-          Bitcoin Yay
+          Bitcoin-Yay
         </h2>
         <h3 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold my-2 md:my-4 max-w-2/3">
           The Micro Token of Bitcoin
@@ -46,7 +47,7 @@ const CarouselFrame2 = () => {
         <h3 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold my-2 md:my-4">is Here!</h3>
         <p className="text-lg md:text-xl xl:text-2xl hidden md:block max-w-1/2 mt-4">
           AI-Powered Mobile Mining. No Expensive Rigs. Just You, Your Phone, and
-          BTCY. Earn Bitcoin Yay effortlessly by participating daily. Fully
+          BTCY. Earn Bitcoin-Yay effortlessly by participating daily. Fully
           decentralized, mobile-first.
         </p>
       </div>
@@ -193,15 +194,40 @@ const CarouselFrame7 = () => {
   );
 };
 
+const CarouselFrame8 = () => {
+  return (
+    <div className="h-full relative flex flex-col md:flex-row justify-between items-center text-center md:text-left md:px-20 lg:px-40 gap-6 md:gap-10">
+      <div className="w-full md:w-1/2 z-10">
+        <h2 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold my-2 md:my-4">
+          Bitcoin-Yay
+        </h2>
+        <h3 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold my-2 md:my-4">
+          is Powered by indexx.ai
+        </h3>
+        <p className="text-base md:text-lg lg:text-xl xl:text-2xl hidden md:block max-w-2xl mt-4 leading-relaxed">
+          Indexx.ai is the official host of Bitcoin-Yay (BTCY) — powering its blockchain wallet, ecosystem, and utilities like Alchemy and Quantum Mining. It's where BTCY becomes real, secure, and trade-ready.
+        </p>
+      </div>
+      <div className="w-full md:w-1/2 flex justify-center md:justify-end items-center">
+        <Image
+          src={HandImage}
+          alt="Hands Illustration"
+          className="w-40 md:w-60 lg:w-80 xl:w-100 2xl:w-100 h-auto object-contain opacity-80 md:opacity-100"
+        />
+      </div>
+    </div>
+  );
+};
+
 export default function HeroSection() {
-  const [currentIndex, setCurrentIndex] = useState(6);
+  const [currentIndex, setCurrentIndex] = useState(7);
   const [paused, setPaused] = useState(false);
 
   useEffect(() => {
     if (paused) return;
 
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % 7);
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % 8);
     }, 5000);
 
     return () => clearInterval(interval);
@@ -216,6 +242,13 @@ export default function HeroSection() {
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
     >
+      <div
+        className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${currentIndex === 7 ? "opacity-100 z-10" : "opacity-0 z-0"
+          }`}
+      >
+        <CarouselFrame8 />
+      </div>
+
       <div
         className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${currentIndex === 0 ? "opacity-100 z-10" : "opacity-0 z-0"
           }`}
@@ -258,6 +291,7 @@ export default function HeroSection() {
       >
         <CarouselFrame7 />
       </div>
+
     </div>
   );
 }

@@ -41,8 +41,8 @@ const PopupComponent: React.FC<PopupProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start md:items-center justify-center bg-[#68676763] overflow-y-auto">
-      <div ref={popupRef} className="relative shadow-lg bg-bg z-100 mt-50 md:mt-30 ">
+    <div className="fixed inset-0 z-50 flex items-start justify-center bg-[#68676763] overflow-y-auto">
+      <div ref={popupRef} className="relative shadow-lg bg-bg z-100 mt-50 md:mt-50 ">
         <button
           onClick={onClose}
           className="absolute -top-10 right-0 md:top-1 md:-right-14 flex items-center justify-center z-100"

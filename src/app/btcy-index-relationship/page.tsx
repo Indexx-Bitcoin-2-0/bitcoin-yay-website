@@ -13,11 +13,11 @@ import AcademyLogo from "@/assets/images/btcy-index-relationship/academy.webp";
 export const metadata = {
   title: "BTCY & Indexx.ai Relationship - Complete Crypto Ecosystem",
   description:
-    "Discover how Bitcoin Yay (BTCY) integrates with the Indexx.ai ecosystem. Mine BTCY, shop with rewards, trade on exchanges, and learn through academy courses in one complete platform.",
+    "Discover how Bitcoin-Yay (BTCY) integrates with the Indexx.ai ecosystem. Mine BTCY, shop with rewards, trade on exchanges, and learn through academy courses in one complete platform.",
   openGraph: {
     title: "BTCY & Indexx.ai Relationship - Complete Crypto Ecosystem",
     description:
-      "Discover how Bitcoin Yay (BTCY) integrates with the Indexx.ai ecosystem. Mine BTCY, shop with rewards, trade on exchanges, and learn through academy courses in one complete platform.",
+      "Discover how Bitcoin-Yay (BTCY) integrates with the Indexx.ai ecosystem. Mine BTCY, shop with rewards, trade on exchanges, and learn through academy courses in one complete platform.",
   },
 };
 
@@ -39,7 +39,7 @@ export default function BtcyIndexRelationship() {
         <Link href="/">
           <Image
             src={BitcoinYayLogo}
-            alt="Bitcoin Yay Logo"
+            alt="Bitcoin-Yay Logo"
             className="w-80 hover:scale-105 transition-transform duration-300"
           />
         </Link>
@@ -95,10 +95,10 @@ export default function BtcyIndexRelationship() {
       <div className="mt-20 lg:mt-0 mb-40 mx-auto justify-center text-center max-w-160">
         <h3 className="text-3xl font-bold">BTCY on indexx ecosystem</h3>
         <p className="mt-6 text-base">
-          Bitcoin Yay, Indexx Shop, and Indexx Exchange create a complete crypto
-          experience. The Indexx Ecosystem fully supports Bitcoin Yay, making it
-          more than just a mining app. Mine BTCY daily with Bitcoin Yay while
-          learning through the Bitcoin Yay Academy — offering guided courses on
+          Bitcoin-Yay, Indexx Shop, and Indexx Exchange create a complete crypto
+          experience. The Indexx Ecosystem fully supports Bitcoin-Yay, making it
+          more than just a mining app. Mine BTCY daily with Bitcoin-Yay while
+          learning through the Bitcoin-Yay Academy — offering guided courses on
           mining, the BTCY Bible, and expanding your crypto knowledge. Use your
           BTCY earnings at the Indexx Shop for gift cards and exclusive rewards,
           then invest or trade securely on the Indexx Exchange. Together, these

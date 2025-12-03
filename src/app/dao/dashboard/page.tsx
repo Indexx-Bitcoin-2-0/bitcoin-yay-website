@@ -110,7 +110,7 @@ export default function Dashboard() {
           <div className="mx-auto">
             <div className="mt-20 flex flex-col items-center justify-center text-center px-4">
               <h2 className="text-lg md:text-2xl mb-4 font-bold ">
-                Bitcoin Yay DAO
+                Bitcoin-Yay DAO
               </h2>
               <h1 className="text-3xl md:text-5xl xl:text-[82px] mb-4 font-semibold text-primary">
                 Dashboard
@@ -155,7 +155,7 @@ export default function Dashboard() {
       <div className="mx-auto">
         <div className="mt-20 flex flex-col items-center justify-center text-center px-4">
           <h2 className="text-lg md:text-2xl mb-4 font-bold ">
-            Bitcoin Yay DAO
+            Bitcoin-Yay DAO
           </h2>
 
           <h1 className="text-3xl md:text-5xl xl:text-[82px] mb-4 font-semibold text-primary">

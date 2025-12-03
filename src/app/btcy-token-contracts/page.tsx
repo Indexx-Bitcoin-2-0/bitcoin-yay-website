@@ -48,7 +48,7 @@ const contractData = [
 ];
 
 const notes = [
-    "Always verify contract addresses through official Bitcoin Yay channels before integrating into your application.",
+    "Always verify contract addresses through official Bitcoin-Yay channels before integrating into your application.",
     "These are mainnet contract addresses. For testnet addresses, please contact developer support.",
     "When integrating BTCY, ensure your application supports the specific token standard for each network.",
     "Future chains (Stellar, Ethereum, BSC) are planned and will be available soon.",

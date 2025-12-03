@@ -194,9 +194,9 @@ export default function DAO() {
   return (
     <div className="mx-auto mt-40">
       <div className="mt-20 flex flex-col items-center justify-center text-center px-4">
-        <h2 className="text-lg md:text-2xl mb-4 font-bold ">Bitcoin Yay DAO</h2>
+        <h2 className="text-lg md:text-2xl mb-4 font-bold ">Bitcoin-Yay DAO</h2>
         <h1 className="text-3xl md:text-5xl xl:text-[82px] mb-4 font-semibold max-w-5xl text-primary">
-          Welcome to Bitcoin Yay DAO – Powered by Reputation
+          Welcome to Bitcoin-Yay DAO – Powered by Reputation
         </h1>
         <p className="text-xl md:text-2xl mt-4">
           Your contributions shape the future
@@ -204,10 +204,10 @@ export default function DAO() {
         <Image src={ArtImage1} alt="Art Image 1" className="w-full md:mt-10" />
         <div className="mt-20">
           <h3 className="text-2xl md:text-3xl font-bold">
-            What is Bitcoin Yay DAO?
+            What is Bitcoin-Yay DAO?
           </h3>
           <p className="text-base max-w-5xl mt-2">
-            Bitcoin Yay DAO is a decentralized governance platform where your
+            Bitcoin-Yay DAO is a decentralized governance platform where your
             contributions, actions, and community engagement earn you reputation
             and influence. It’s built on a fair, transparent system that rewards
             dedication and empowers every role—from leaders to creators—to
@@ -219,14 +219,14 @@ export default function DAO() {
       <div className="mt-80 mx-auto">
         <div className="px-4 md:px-20 lg:px-40">
           <h3 className="text-2xl md:text-3xl font-bold text-primary">
-            Bitcoin Yay DAO Roles
+            Bitcoin-Yay DAO Roles
           </h3>
           <h2 className="text-4xl md:text-6xl font-bold mt-4">
             Your Role, Your Power.
           </h2>
           <p className="text-lg mt-4">
             Step into a world where your actions, ideas, and commitment define
-            your reputation. At Bitcoin Yay DAO, every member counts. Whether
+            your reputation. At Bitcoin-Yay DAO, every member counts. Whether
             you&apos;re a Royal, Guardian, Captain, Visionary, or Worker—your
             voice powers real change. Earn recognition, influence decisions, and
             help govern a decentralized future built on balance and purpose.

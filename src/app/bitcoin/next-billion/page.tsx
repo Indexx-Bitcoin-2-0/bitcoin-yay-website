@@ -5,11 +5,11 @@ import ArtImage5 from "@/assets/images/bitcoin/art-5.webp";
 export const metadata = {
   title: "BTCY - Bitcoin for the Next Billion People | Mobile-Native Crypto",
   description:
-    "Discover why Bitcoin Yay (BTCY) is Bitcoin for the next billion users. Mobile-native design, human-centered mining, Bitcoin legacy, and globally accessible with 21 trillion tokens for micro-ownership.",
+    "Discover why Bitcoin-Yay (BTCY) is Bitcoin for the next billion users. Mobile-native design, human-centered mining, Bitcoin legacy, and globally accessible with 21 trillion tokens for micro-ownership.",
   openGraph: {
     title: "BTCY - Bitcoin for the Next Billion People | Mobile-Native Crypto",
     description:
-      "Discover why Bitcoin Yay (BTCY) is Bitcoin for the next billion users. Mobile-native design, human-centered mining, Bitcoin legacy, and globally accessible with 21 trillion tokens for micro-ownership.",
+      "Discover why Bitcoin-Yay (BTCY) is Bitcoin for the next billion users. Mobile-native design, human-centered mining, Bitcoin legacy, and globally accessible with 21 trillion tokens for micro-ownership.",
   },
 };
 

@@ -8,6 +8,7 @@ type CustomButton2Props = {
   imageStyling?: string;
   _blank?: boolean;
   ariaLabel?: string;
+  disabled?: boolean;
 } & (
   | {
       link: string;
@@ -15,7 +16,7 @@ type CustomButton2Props = {
     }
   | {
       link?: never;
-      onClick: MouseEventHandler<HTMLDivElement>;
+      onClick?: MouseEventHandler<HTMLDivElement>;
     }
 );
 
@@ -27,24 +28,34 @@ export default function CustomButton2({
   imageStyling = "w-36 mt-8",
   _blank = false,
   ariaLabel,
+  disabled = false,
 }: CustomButton2Props) {
-  const commonClasses =
-    "cursor-pointer text-tertiary group flex flex-col items-center justify-center w-fit";
+  const commonClasses = disabled
+    ? "cursor-not-allowed opacity-50 text-tertiary group flex flex-col items-center justify-center w-fit"
+    : "cursor-pointer text-tertiary group flex flex-col items-center justify-center w-fit";
 
   const content = (
     <>
       <Image
         src={image}
         alt="Logo"
-        className={`group-hover:scale-110 transition-transform duration-300 ${imageStyling}`}
+        className={`${disabled ? "" : "group-hover:scale-110"} transition-transform duration-300 ${imageStyling}`}
       />
       {text && (
         <div className="flex justify-center mt-4 text-center">
-          <p className="text-lg group-hover:text-primary">{text}</p>
+          <p className={`text-lg ${disabled ? "" : "group-hover:text-primary"}`}>{text}</p>
         </div>
       )}
     </>
   );
+
+  if (disabled) {
+    return (
+      <div className={commonClasses} aria-label={ariaLabel} aria-disabled="true">
+        {content}
+      </div>
+    );
+  }
 
   if (link) {
     return (

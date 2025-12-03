@@ -6,13 +6,13 @@ import {
 } from "@/components/CustomTypography";
 
 export const metadata = {
-  title: "Bitcoin Yay Terms of Service - Legal Terms & Conditions",
+  title: "Bitcoin-Yay Terms of Service - Legal Terms & Conditions",
   description:
-    "Read Bitcoin Yay's official Terms of Service covering user agreements, acceptable use policy, intellectual property rights, and legal obligations for using our cryptocurrency platform.",
+    "Read Bitcoin-Yay's official Terms of Service covering user agreements, acceptable use policy, intellectual property rights, and legal obligations for using our cryptocurrency platform.",
   openGraph: {
-    title: "Bitcoin Yay Terms of Service - Legal Terms & Conditions",
+    title: "Bitcoin-Yay Terms of Service - Legal Terms & Conditions",
     description:
-      "Read Bitcoin Yay's official Terms of Service covering user agreements, acceptable use policy, intellectual property rights, and legal obligations for using our cryptocurrency platform.",
+      "Read Bitcoin-Yay's official Terms of Service covering user agreements, acceptable use policy, intellectual property rights, and legal obligations for using our cryptocurrency platform.",
   },
 };
 
@@ -38,7 +38,7 @@ export default function TermsOfService() {
 
         <InfoSection
           title="1. Acceptance of Terms"
-          endingLine="Welcome to Bitcoin Yay (Company, we, us, our). These Terms of Service (Terms) govern your access to and use of Bitcoin Yay's website, platform, mobile applications, and all related services (collectively, the Service)."
+          endingLine="Welcome to Bitcoin-Yay (Company, we, us, our). These Terms of Service (Terms) govern your access to and use of Bitcoin-Yay's website, platform, mobile applications, and all related services (collectively, the Service)."
         />
         <CustomP start="By using or accessing the Service, you agree to these Terms and our Privacy Policy. If you do not agree, you may not use the Service. Your continued use of the Service constitutes acceptance of any updates to these Terms." />
 
@@ -49,7 +49,7 @@ export default function TermsOfService() {
 
         <InfoSection
           title="3. Eligibility"
-          endingLine="You must be at least 18 years old and legally capable of entering into a binding agreement to use the Service. By using Bitcoin Yay, you represent that you comply with all applicable laws and regulations in your jurisdiction."
+          endingLine="You must be at least 18 years old and legally capable of entering into a binding agreement to use the Service. By using Bitcoin-Yay, you represent that you comply with all applicable laws and regulations in your jurisdiction."
         />
 
         <InfoSection
@@ -59,7 +59,7 @@ export default function TermsOfService() {
 
         <InfoSection
           title="5. User Content"
-          endingLine="By submitting content (User Content) to Bitcoin Yay, you grant us a worldwide, non-exclusive, royalty-free license to use, reproduce, modify, and display it as part of the Service. You warrant that you own or have the necessary rights to submit such content and that it does not infringe any third-party rights."
+          endingLine="By submitting content (User Content) to Bitcoin-Yay, you grant us a worldwide, non-exclusive, royalty-free license to use, reproduce, modify, and display it as part of the Service. You warrant that you own or have the necessary rights to submit such content and that it does not infringe any third-party rights."
         />
 
         <InfoSection
@@ -77,12 +77,12 @@ export default function TermsOfService() {
 
         <InfoSection
           title="7. Intellectual Property"
-          endingLine="All content provided by Bitcoin Yay, including but not limited to logos, designs, and software, is owned by us or our licensors and protected by intellectual property laws. You may not use, copy, or distribute our content without permission."
+          endingLine="All content provided by Bitcoin-Yay, including but not limited to logos, designs, and software, is owned by us or our licensors and protected by intellectual property laws. You may not use, copy, or distribute our content without permission."
         />
 
         <InfoSection
           title="8. Third-Party Services"
-          endingLine="Bitcoin Yay may include links to third-party services. We do not endorse or control these third parties and are not responsible for their practices. Use them at your own risk."
+          endingLine="Bitcoin-Yay may include links to third-party services. We do not endorse or control these third parties and are not responsible for their practices. Use them at your own risk."
         />
 
         <InfoSection
@@ -92,12 +92,12 @@ export default function TermsOfService() {
 
         <InfoSection
           title="10. Limitation of Liability"
-          endingLine="Bitcoin Yay is not liable for any direct, indirect, incidental, or consequential damages resulting from your use of the Service, except where prohibited by law."
+          endingLine="Bitcoin-Yay is not liable for any direct, indirect, incidental, or consequential damages resulting from your use of the Service, except where prohibited by law."
         />
 
         <InfoSection
           title="11. Indemnification"
-          endingLine="You agree to indemnify and hold Bitcoin Yay harmless from any claims, damages, or expenses arising from your use of the Service or violation of these Terms."
+          endingLine="You agree to indemnify and hold Bitcoin-Yay harmless from any claims, damages, or expenses arising from your use of the Service or violation of these Terms."
         />
 
         <InfoSection
@@ -121,25 +121,25 @@ export default function TermsOfService() {
           start="For any questions about these Terms, contact us at "
           link="[Support Email]."
         />
-        <CustomP start="By using Bitcoin Yay, you agree to these Terms of Service." />
+        <CustomP start="By using Bitcoin-Yay, you agree to these Terms of Service." />
         <InfoSection
           title="Acceptable Use"
-          endingLine="By using Bitcoin Yay, you agree to abide by the following rules.
+          endingLine="By using Bitcoin-Yay, you agree to abide by the following rules.
               You must not:"
         />
         <InfoSection
           content={
             <>
-              <CustomListItem content="Copy, reproduce, distribute, modify, adapt, translate, reverse-engineer, decompile, disassemble, create derivative works based on, or attempt to discover the source code of any part of the Bitcoin Yay website, services, or content." />
+              <CustomListItem content="Copy, reproduce, distribute, modify, adapt, translate, reverse-engineer, decompile, disassemble, create derivative works based on, or attempt to discover the source code of any part of the Bitcoin-Yay website, services, or content." />
               <CustomListItem content="Use the platform to send, store, or share unlawful, infringing, obscene, defamatory, or threatening material, including content that violates third-party rights." />
-              <CustomListItem content="Introduce viruses, worms, Trojan horses, or any other malicious code that disrupts the security, integrity, or functionality of Bitcoin Yay or its users." />
+              <CustomListItem content="Introduce viruses, worms, Trojan horses, or any other malicious code that disrupts the security, integrity, or functionality of Bitcoin-Yay or its users." />
               <CustomListItem content="Use the platform in violation of any applicable local, state, national, or international laws, rules, or regulations." />
               <CustomListItem content="Engage in fraudulent activities, including but not limited to the creation of fake accounts, using automated scripts or bots, or engaging in deceptive practices." />
               <CustomListItem content="Sell, transfer, or acquire user accounts in an unauthorized manner." />
-              <CustomListItem content="Participate in unauthorized sales, transfers, or trading of digital assets through Bitcoin Yay." />
+              <CustomListItem content="Participate in unauthorized sales, transfers, or trading of digital assets through Bitcoin-Yay." />
             </>
           }
-          endingLine="Failure to adhere to these terms may result in account suspension, termination of access, or the reversal of transactions at Bitcoin Yay's discretion."
+          endingLine="Failure to adhere to these terms may result in account suspension, termination of access, or the reversal of transactions at Bitcoin-Yay's discretion."
         />
 
         {/* /////////////////////// */}
@@ -148,57 +148,57 @@ export default function TermsOfService() {
 
         <InfoSection
           desc="Warranty Disclaimer"
-          endingLine='Bitcoin Yay provides its website, services, and content on an "AS IS" and "AS AVAILABLE" basis. We make no warranties, express or implied, including but not limited to merchantability, fitness for a particular purpose, or non-infringement. We do not guarantee uninterrupted or error-free access to the platform.'
+          endingLine='Bitcoin-Yay provides its website, services, and content on an "AS IS" and "AS AVAILABLE" basis. We make no warranties, express or implied, including but not limited to merchantability, fitness for a particular purpose, or non-infringement. We do not guarantee uninterrupted or error-free access to the platform.'
         />
 
         <InfoSection
           desc="Risks Associated with Cryptographic Systems"
-          endingLine="By using Bitcoin Yay, you acknowledge that you understand the inherent risks associated with blockchain technology and digital assets. You confirm that you have experience with cryptographic tokens, smart contracts, and decentralized technologies."
+          endingLine="By using Bitcoin-Yay, you acknowledge that you understand the inherent risks associated with blockchain technology and digital assets. You confirm that you have experience with cryptographic tokens, smart contracts, and decentralized technologies."
         />
 
         <InfoSection
           desc="Regulatory Risks"
-          endingLine="Regulatory changes in various jurisdictions may impact the availability, accessibility, or functionality of Bitcoin Yay. You acknowledge that legal developments may affect the platform and accept all associated risks."
+          endingLine="Regulatory changes in various jurisdictions may impact the availability, accessibility, or functionality of Bitcoin-Yay. You acknowledge that legal developments may affect the platform and accept all associated risks."
         />
 
         <InfoSection
           desc="Security Risks"
-          endingLine="Cryptographic systems are subject to vulnerabilities. Advances in computing, including quantum technology, may pose risks to blockchain security. While Bitcoin Yay takes reasonable security measures, we do not guarantee protection against all potential threats."
+          endingLine="Cryptographic systems are subject to vulnerabilities. Advances in computing, including quantum technology, may pose risks to blockchain security. While Bitcoin-Yay takes reasonable security measures, we do not guarantee protection against all potential threats."
         />
 
         <InfoSection
           desc="Volatility of Digital Assets"
-          endingLine="You understand that cryptocurrencies are highly volatile due to market factors, adoption rates, speculation, and regulatory changes. Bitcoin Yay is not responsible for any financial losses resulting from price fluctuations."
+          endingLine="You understand that cryptocurrencies are highly volatile due to market factors, adoption rates, speculation, and regulatory changes. Bitcoin-Yay is not responsible for any financial losses resulting from price fluctuations."
         />
 
         <InfoSection
           desc="Volatility of Digital Assets"
-          endingLine="You acknowledge that blockchain applications, including Bitcoin Yay, may have coding vulnerabilities. You are responsible for evaluating any third-party tools, services, or smart contracts you interact with through our platform."
+          endingLine="You acknowledge that blockchain applications, including Bitcoin-Yay, may have coding vulnerabilities. You are responsible for evaluating any third-party tools, services, or smart contracts you interact with through our platform."
         />
 
         <InfoSection
           title="Waiver, Release, and Indemnity"
-          endingLine="By using Bitcoin Yay, you agree to release and waive any claims against Bitcoin Yay, its affiliates, officers, employees, and agents for any losses or damages arising from your use of the platform. You further agree to indemnify and hold Bitcoin Yay harmless from any claims, damages, or expenses resulting from your violation of these terms or your misuse of the services."
+          endingLine="By using Bitcoin-Yay, you agree to release and waive any claims against Bitcoin-Yay, its affiliates, officers, employees, and agents for any losses or damages arising from your use of the platform. You further agree to indemnify and hold Bitcoin-Yay harmless from any claims, damages, or expenses resulting from your violation of these terms or your misuse of the services."
         />
 
         <InfoSection
           title="Limitation of Liability"
-          endingLine="Bitcoin Yay is not liable for any direct, indirect, incidental, special, or consequential damages arising from your use of the platform, including but not limited to loss of profits, data, or digital assets. Some jurisdictions may not allow the exclusion of certain liabilities, so some of these limitations may not apply to you."
+          endingLine="Bitcoin-Yay is not liable for any direct, indirect, incidental, special, or consequential damages arising from your use of the platform, including but not limited to loss of profits, data, or digital assets. Some jurisdictions may not allow the exclusion of certain liabilities, so some of these limitations may not apply to you."
         />
 
         <InfoSection
           title="Intellectual Property Rights"
-          endingLine="All content, trademarks, logos, and intellectual property associated with Bitcoin Yay are owned by Bitcoin Yay or its licensors. You may not use, copy, or distribute any of these materials without prior written consent."
+          endingLine="All content, trademarks, logos, and intellectual property associated with Bitcoin-Yay are owned by Bitcoin-Yay or its licensors. You may not use, copy, or distribute any of these materials without prior written consent."
         />
 
         <InfoSection
           title="Third-Party Links"
-          endingLine="Bitcoin Yay may provide links to third-party websites or services. We do not endorse, control, or assume responsibility for any content or practices of these external platforms. Your use of third-party resources is at your own risk."
+          endingLine="Bitcoin-Yay may provide links to third-party websites or services. We do not endorse, control, or assume responsibility for any content or practices of these external platforms. Your use of third-party resources is at your own risk."
         />
 
         <InfoSection
           title="Account Termination and Suspension"
-          endingLine="Bitcoin Yay reserves the right to suspend or terminate your account at its sole discretion, with or without notice, if you violate these terms or engage in activities deemed harmful to the platform or its users. In the event of termination, you agree to forfeit access to any associated services or features."
+          endingLine="Bitcoin-Yay reserves the right to suspend or terminate your account at its sole discretion, with or without notice, if you violate these terms or engage in activities deemed harmful to the platform or its users. In the event of termination, you agree to forfeit access to any associated services or features."
         />
         <CustomP
           start="Certain provisions, including but not limited to warranty disclaimers,
@@ -213,7 +213,7 @@ export default function TermsOfService() {
         <InfoSection
           title="Copyright Infringement Claims"
           endingLine="If you believe your copyright, or that of an individual or entity
-            you represent, has been infringed on the Bitcoin Yay platform,
+            you represent, has been infringed on the Bitcoin-Yay platform,
             please submit a written notice (Notice) to our Copyright Agent
             containing the following details:"
         />
@@ -222,7 +222,7 @@ export default function TermsOfService() {
           content={
             <>
               <CustomListItem content="A description of the copyrighted work or intellectual property allegedly infringed, along with the requested action." />
-              <CustomListItem content="A description of where the infringing material is located on the Bitcoin Yay platform." />
+              <CustomListItem content="A description of where the infringing material is located on the Bitcoin-Yay platform." />
               <CustomListItem content="Your name, address, telephone number, and email address." />
               <CustomListItem content="Documentation verifying ownership of the copyrighted material issued by the relevant authority." />
               <CustomListItem content="A statement affirming your good faith belief that the disputed use is unauthorized by the copyright owner, agent, or law." />
@@ -232,7 +232,7 @@ export default function TermsOfService() {
           }
         />
         <CustomP start="Copyright Agent Contact:" />
-        <CustomP link="[Bitcoin Yay Copyright Agent]" />
+        <CustomP link="[Bitcoin-Yay Copyright Agent]" />
         <CustomP link="[support@bitcoinyay.com]" />
 
         {/* ///////////////////////////// */}
@@ -242,7 +242,7 @@ export default function TermsOfService() {
           desc="PLEASE READ THIS SECTION CAREFULLY – IT AFFECTS YOUR LEGAL RIGHTS,
           INCLUDING YOUR RIGHT TO FILE A LAWSUIT IN COURT."
           endingLine="If you believe your copyright, or that of an individual or entity you
-          represent, has been infringed on the Bitcoin Yay platform, please
+          represent, has been infringed on the Bitcoin-Yay platform, please
           submit a written notice (Notice) to our Copyright Agent containing
           the following details:"
         />
@@ -250,7 +250,7 @@ export default function TermsOfService() {
           content={
             <>
               <CustomListItem content="A description of the copyrighted work or intellectual property allegedly infringed, along with the requested action." />
-              <CustomListItem content="A description of where the infringing material is located on the Bitcoin Yay platform." />
+              <CustomListItem content="A description of where the infringing material is located on the Bitcoin-Yay platform." />
               <CustomListItem content="Your name, address, telephone number, and email address." />
               <CustomListItem content="Documentation verifying ownership of the copyrighted material issued by the relevant authority." />
               <CustomListItem content="A statement affirming your good faith belief that the disputed use is unauthorized by the copyright owner, agent, or law." />
@@ -260,7 +260,7 @@ export default function TermsOfService() {
           }
         />
         <CustomP start="Copyright Agent Contact:" />
-        <CustomP link="[Bitcoin Yay Copyright Agent]" />
+        <CustomP link="[Bitcoin-Yay Copyright Agent]" />
         <CustomP link="[support@bitcoinyay.com]" />
 
         <InfoSection
@@ -302,12 +302,12 @@ export default function TermsOfService() {
         <CustomP
           start="You may opt out of arbitration by submitting written notice to "
           link="[support@bitcoinyay.com]"
-          end=" within 30 days of your first use of Bitcoin Yay. Opting out does not affect other Terms provisions."
+          end=" within 30 days of your first use of Bitcoin-Yay. Opting out does not affect other Terms provisions."
         />
 
         <InfoSection
           desc="Amendments to Arbitration Terms"
-          endingLine="Bitcoin Yay may modify this section with 30 days’ notice. Changes will apply prospectively to new claims only."
+          endingLine="Bitcoin-Yay may modify this section with 30 days’ notice. Changes will apply prospectively to new claims only."
         />
         <CustomP start="For disputes not subject to arbitration, the exclusive jurisdiction shall be federal and state courts in San Francisco, California." />
 
@@ -317,7 +317,7 @@ export default function TermsOfService() {
 
         <InfoSection
           desc="Entire Agreement"
-          endingLine="These Terms, along with any additional policies on the site, constitute the complete agreement between you and Bitcoin Yay."
+          endingLine="These Terms, along with any additional policies on the site, constitute the complete agreement between you and Bitcoin-Yay."
         />
 
         <InfoSection
@@ -337,7 +337,7 @@ export default function TermsOfService() {
 
         <InfoSection desc="Communications" />
         <CustomP
-          start="For questions or concerns regarding Bitcoin Yay, contact "
+          start="For questions or concerns regarding Bitcoin-Yay, contact "
           link="[support@bitcoinyay.com]."
         />
 
@@ -348,29 +348,29 @@ export default function TermsOfService() {
 
         <InfoSection
           desc="Restrictions on Transfers During Enclosed Period"
-          endingLine="If you have passed KYC and migrated Bitcoin Yay tokens during the enclosed period, you agree to the following:"
+          endingLine="If you have passed KYC and migrated Bitcoin-Yay tokens during the enclosed period, you agree to the following:"
         />
         <InfoSection
           content={
             <>
-              <CustomListItem content="You will not sell Bitcoin Yay tokens for fiat or cryptocurrencies before the Open Network launch." />
+              <CustomListItem content="You will not sell Bitcoin-Yay tokens for fiat or cryptocurrencies before the Open Network launch." />
               <CustomListItem content="You are the sole holder of your account and wallet and will not transfer or share access during the enclosed period." />
-              <CustomListItem content="You will not engage in illegal or unauthorized transactions using Bitcoin Yay tokens." />
+              <CustomListItem content="You will not engage in illegal or unauthorized transactions using Bitcoin-Yay tokens." />
             </>
           }
-          endingLine="Violation of these terms may result in account suspension, forfeiture of tokens, and other corrective actions deemed necessary by Bitcoin Yay."
+          endingLine="Violation of these terms may result in account suspension, forfeiture of tokens, and other corrective actions deemed necessary by Bitcoin-Yay."
         />
 
         <InfoSection
           title="Mobile Balance and Token Migration"
-          endingLine="Before KYC, your activity on Bitcoin Yay generates a non-transferable “Mobile Balance,” which has no cash or exchange value. Mobile Balance does not confer ownership rights."
+          endingLine="Before KYC, your activity on Bitcoin-Yay generates a non-transferable “Mobile Balance,” which has no cash or exchange value. Mobile Balance does not confer ownership rights."
         />
-        <CustomP start="Upon successful KYC verification, eligible users may migrate Mobile Balance into Bitcoin Yay tokens. However, the following conditions apply:" />
+        <CustomP start="Upon successful KYC verification, eligible users may migrate Mobile Balance into Bitcoin-Yay tokens. However, the following conditions apply:" />
         <InfoSection
           content={
             <>
               <CustomListItem content="You must complete KYC and comply with anti-money laundering policies." />
-              <CustomListItem content="You must not violate Bitcoin Yay’s Terms." />
+              <CustomListItem content="You must not violate Bitcoin-Yay’s Terms." />
               <CustomListItem content="Your Mobile Balance must be verifiable and free from fraudulent activity." />
               <CustomListItem content="Your jurisdiction must permit cryptocurrency use." />
             </>
@@ -380,7 +380,7 @@ export default function TermsOfService() {
 
         <InfoSection
           title="Grace Period and Forfeiture"
-          endingLine="Bitcoin Yay users must complete KYC and token migration within the announced Grace Period. Failure to meet these requirements will result in forfeiture of Mobile Balance."
+          endingLine="Bitcoin-Yay users must complete KYC and token migration within the announced Grace Period. Failure to meet these requirements will result in forfeiture of Mobile Balance."
         />
         <CustomP start="Additionally, your Mobile Balance will be immediately forfeited if:" />
         <InfoSection
@@ -392,7 +392,7 @@ export default function TermsOfService() {
               <CustomListItem content="You relocate to a jurisdiction that prohibits cryptocurrency use." />
             </>
           }
-          endingLine="By using Bitcoin Yay, you acknowledge and agree to these Terms. Failure to comply may result in the suspension or termination of your account."
+          endingLine="By using Bitcoin-Yay, you acknowledge and agree to these Terms. Failure to comply may result in the suspension or termination of your account."
         />
       </div>
     </div>

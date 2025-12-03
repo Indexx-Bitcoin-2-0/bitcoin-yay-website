@@ -257,7 +257,7 @@ export default function AlchemyPage() {
               Alchemy is a magic algorithm that transforms your mined Bitcoin-Yay Nuggets into real digital tokens, crypto currency on multiple blockchain.Engage Alchemy, and let the magic turn your effort into real value.
             </p>
             <p className="mt-10 text-xl md:text-2xl">
-              This is the beginning of the transformation layer between mined Bitcoin-Yay nuggets and real Bitcoin-Yay tokens on the Bitcoin Yay system. Inspired by the ancient idea of alchemy — turning base metals into gold — this gateway transforms raw mined nuggets into real, liquid assets, ensuring fairness, sustainability, and long-term wealth growth.
+              This is the beginning of the transformation layer between mined Bitcoin-Yay nuggets and real Bitcoin-Yay tokens on the Bitcoin-Yay system. Inspired by the ancient idea of alchemy — turning base metals into gold — this gateway transforms raw mined nuggets into real, liquid assets, ensuring fairness, sustainability, and long-term wealth growth.
             </p>
           </div>
         </div>
@@ -272,7 +272,7 @@ export default function AlchemyPage() {
 
       <div className="mt-100 flex flex-col items-center text-center">
         <div className="px-4 text-2xl font-bold text-primary max-w-250 leading-tight">
-          Bitcoin Yay Is The Micro Token
+          Bitcoin-Yay Is The Micro Token
         </div>
         <div className="px-4 text-2xl font-bold text-primary max-w-250 leading-tight">
           And Petty Cash Of Bitcoin
@@ -281,7 +281,7 @@ export default function AlchemyPage() {
         <div className="px-4 mt-4 text-5xl font-bold text-white max-w-250 leading-snug">
           {btcPrice !== null && btcyPrice !== null ? (
             <>
-              Bitcoin ${btcPrice.toLocaleString()}, Bitcoin Yay $
+              Bitcoin ${btcPrice.toLocaleString()}, Bitcoin-Yay $
               {btcyPrice.toFixed(4)}
             </>
           ) : (
@@ -290,7 +290,7 @@ export default function AlchemyPage() {
         </div>
 
         <div className="px-4 mt-2 text-xs font-bold text-primary max-w-250">
-          1 Bitcoin = 1 Million Bitcoin Yay
+          1 Bitcoin = 1 Million Bitcoin-Yay
         </div>
       </div>
 
@@ -437,7 +437,7 @@ export default function AlchemyPage() {
         </h2>
         <p className="mt-10 text-xl font-light text-center max-w-7xl mx-auto">
           Secure the network, earn rewards, and grow your holdings. Stake your
-          Bitcoin Yay now and let your crypto work for you.
+          Bitcoin-Yay now and let your crypto work for you.
         </p>
         {/* <div className="flex justify-center items-center mt-20">
           <CustomButton2
