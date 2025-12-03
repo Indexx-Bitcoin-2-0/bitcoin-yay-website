@@ -1,71 +1,119 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
 import CustomButton2 from "@/components/CustomButton2";
-// import PaymentMethodPopup from "@/components/PaymentMethodPopup";
-// import SubscriptionConfirmPopup from "@/components/SubscriptionConfirmPopup";
-// import PaymentSuccessPopup from "@/components/PaymentSuccessPopup";
-// import PaymentFailedPopup from "@/components/PaymentFailedPopup";
+import LoginPopup from "@/components/LoginPopup";
+import { useAuth } from "@/contexts/AuthContext";
+import { PAYMENT_PROVIDERS, PROVIDER_LABELS } from "@/constants/paymentProviders";
+import {
+  purchaseSubscription,
+  PaymentProvider,
+  SubscriptionPurchasePayload,
+} from "@/lib/subscriptions";
 
 import ElectricMiningButtonImage from "@/assets/images/mining/electric-icon.webp";
 import ElectricMiningArtImage1 from "@/assets/images/mining/electric-mining-art-1.webp";
 import BellButtonImage from "@/assets/images/buttons/bell-button.webp";
 
 const ElectricMiningPage = () => {
-  const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
-  const [isConfirmPopupOpen, setIsConfirmPopupOpen] = useState(false);
-  const [isSuccessPopupOpen, setIsSuccessPopupOpen] = useState(false);
-  const [isFailedPopupOpen, setIsFailedPopupOpen] = useState(false);
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<"paypal" | "stripe" | null>(null);
-  const subscriptionAmount = 100; // $100/m for Electric Mining
+  const { user, isLoading } = useAuth();
+  const [selectedProvider, setSelectedProvider] =
+    useState<PaymentProvider>("stripe");
+  const [couponCode, setCouponCode] = useState("BTCY10");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [feedback, setFeedback] = useState<{
+    type: "info" | "error";
+    message: string;
+  } | null>(null);
+  const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
 
-  const handleSubscribeClick = () => {
-    setIsPaymentPopupOpen(true);
-  };
-
-  const handlePaymentMethodSelect = (method: "paypal" | "stripe") => {
-    setSelectedPaymentMethod(method);
-    setIsPaymentPopupOpen(false);
-    setIsConfirmPopupOpen(true);
-  };
-
-  const handleBackToPaymentMethod = () => {
-    setIsConfirmPopupOpen(false);
-    setIsPaymentPopupOpen(true);
-  };
+  useEffect(() => {
+    if (!isLoading && !user) {
+      setIsLoginPopupOpen(true);
+    }
+  }, [isLoading, user]);
 
   const handleSubscribe = async () => {
-    // TODO: Implement payment processing based on selected method
-    console.log(`Subscribing to Electric Mining with ${selectedPaymentMethod} for $${subscriptionAmount}`);
+    if (isSubmitting) {
+      return;
+    }
+
+    if (!user?.email) {
+      setFeedback({
+        type: "error",
+        message: "Please log in to start a subscription.",
+      });
+      setIsLoginPopupOpen(true);
+      return;
+    }
+
+    setFeedback(null);
+    setIsSubmitting(true);
 
     try {
-      // You can add your payment processing logic here
-      // Example: const result = await processPayment(selectedPaymentMethod, subscriptionAmount);
+      const payload: SubscriptionPurchasePayload = {
+        email: user.email,
+        provider: selectedProvider,
+        planKey: "electric",
+        metadata: {
+          planName: "Electric Power Mining",
+          speedBoost: "9 BTCY/h",
+          page: "electric-mining",
+        },
+      };
 
-      // For now, simulate success - replace with actual payment processing
-      const paymentSuccess = true; // Replace with actual payment result
+      if (couponCode.trim()) {
+        payload.couponCode = couponCode.trim();
+      }
 
-      setIsConfirmPopupOpen(false);
+      const result = await purchaseSubscription(payload);
 
-      if (paymentSuccess) {
-        setIsSuccessPopupOpen(true);
+      const redirectUrl =
+        (result.sessionUrl as string | undefined) ??
+        (result.approvalUrl as string | undefined) ??
+        (result.checkoutUrl as string | undefined) ??
+        (result.redirectUrl as string | undefined);
+
+      if (redirectUrl && typeof window !== "undefined") {
+        window.open(redirectUrl, "_blank");
+        setFeedback({
+          type: "info",
+          message: `Checkout opened for ${selectedProvider}.`,
+        });
       } else {
-        setIsFailedPopupOpen(true);
+        const fallbackMessageParts: string[] = [];
+        if (result.sessionId) {
+          fallbackMessageParts.push(`Session ID: ${result.sessionId}.`);
+        }
+        fallbackMessageParts.push(
+          "Check your email or the provider dashboard for next steps."
+        );
+        setFeedback({
+          type: "info",
+          message: `Subscription request created. ${fallbackMessageParts.join(
+            " "
+          )}`,
+        });
       }
     } catch (error) {
-      console.error("Payment error:", error);
-      setIsConfirmPopupOpen(false);
-      setIsFailedPopupOpen(true);
+      setFeedback({
+        type: "error",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Unable to start the subscription purchase.",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const handleTryAgain = () => {
-    setIsFailedPopupOpen(false);
-    setIsPaymentPopupOpen(true);
-  };
+  const handleLoginSuccess = () => setIsLoginPopupOpen(false);
+  const handleCloseLoginPopup = () => setIsLoginPopupOpen(false);
+  const handleRegisterClick = () => setIsLoginPopupOpen(false);
 
   return (
     <div className="mx-auto mt-40 md:mt-60 px-4 md:px-20 xl:px-40 relative max-w-[2000px]">
@@ -100,46 +148,70 @@ const ElectricMiningPage = () => {
             <li>Priority Mining Support</li>
           </ul>
         </div>
-        <CustomButton2
-          text="Coming Soon"
-          image={BellButtonImage}
-          disabled={true}
-          imageStyling="w-34"
-        />
+        <div className="flex flex-col items-center gap-6 w-full">
+          <div className="flex flex-wrap justify-center gap-3">
+            {PAYMENT_PROVIDERS.map((provider) => (
+              <button
+                type="button"
+                key={provider.key}
+                onClick={() => setSelectedProvider(provider.key)}
+                className={`rounded-full border px-5 py-2 text-sm font-semibold transition ${
+                  selectedProvider === provider.key
+                    ? "border-primary bg-primary text-black"
+                    : "border-white/50 text-white hover:border-white"
+                }`}
+              >
+                <span className="block">{provider.label}</span>
+                <span className="text-xs text-tertiary">{provider.description}</span>
+              </button>
+            ))}
+          </div>
+          <div className="w-full max-w-md text-left">
+            <label className="text-sm text-tertiary" htmlFor="electric-coupon">
+              Coupon code (optional)
+            </label>
+            <input
+              id="electric-coupon"
+              placeholder="e.g., BTCY10"
+              value={couponCode}
+              onChange={(event) => setCouponCode(event.target.value)}
+              className="mt-2 w-full rounded-lg border border-white/20 bg-transparent px-4 py-2 text-white placeholder:text-tertiary focus:border-primary focus:outline-none"
+            />
+          </div>
+          <CustomButton2
+            text={
+              isSubmitting
+                ? `Starting ${PROVIDER_LABELS[selectedProvider]} checkout...`
+                : `Pay with ${PROVIDER_LABELS[selectedProvider]}`
+            }
+            image={BellButtonImage}
+            onClick={handleSubscribe}
+            imageStyling="w-34"
+            ariaLabel="Start Electric Mining subscription checkout"
+          />
+          {feedback && (
+            <p
+              className={`text-center text-sm ${
+                feedback.type === "error" ? "text-red-500" : "text-green-400"
+              }`}
+            >
+              {feedback.message}
+            </p>
+          )}
+          {!user && !isLoading && (
+            <p className="text-sm text-tertiary">
+              You will need to log in or register before purchasing a subscription.
+            </p>
+          )}
+        </div>
       </div>
 
-      {/* <PaymentMethodPopup
-        isOpen={isPaymentPopupOpen}
-        onClose={() => setIsPaymentPopupOpen(false)}
-        onSelectPaymentMethod={handlePaymentMethodSelect}
-        planName="Electric Mining"
-        subscriptionAmount={subscriptionAmount}
-      /> */}
-
-      {/* {selectedPaymentMethod && (
-        <SubscriptionConfirmPopup
-          isOpen={isConfirmPopupOpen}
-          onClose={() => setIsConfirmPopupOpen(false)}
-          onBack={handleBackToPaymentMethod}
-          onSubscribe={handleSubscribe}
-          paymentMethod={selectedPaymentMethod}
-          subscriptionAmount={subscriptionAmount}
-          planName="Electric Mining"
-        />
-      )}
-
-      <PaymentSuccessPopup
-        isOpen={isSuccessPopupOpen}
-        onClose={() => setIsSuccessPopupOpen(false)}
-        planName="Electric Mining"
+      <LoginPopup
+        isOpen={isLoginPopupOpen}
+        onClose={handleCloseLoginPopup}
+        onLoginSuccess={handleLoginSuccess}
+        onRegisterClick={handleRegisterClick}
       />
-
-      <PaymentFailedPopup
-        isOpen={isFailedPopupOpen}
-        onClose={() => setIsFailedPopupOpen(false)}
-        onTryAgain={handleTryAgain}
-        planName="Electric Mining"
-      /> */}
 
       <div className="text-base mt-40 flex flex-col gap-20 max-w-5xl leading-8 mb-40">
         <div>
