@@ -15,6 +15,7 @@ import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import logo from "@/assets/images/main-logo.svg";
+import mobLogo from "@/assets/images/logo.webp";
 import ProfileIcon from "@/assets/images/profile-icon.webp";
 import Data from "./data";
 import { useAuth } from "@/contexts/AuthContext";
@@ -90,6 +91,17 @@ const Logo = () => (
   </div>
 );
 
+const MobileLogo = () => (
+  <div className="">
+    <Link href="/" className="">
+      <Image
+        src={mobLogo}
+        alt="logo"
+        className="w-[80px] hover:scale-105 transition-transform duration-300"
+      />
+    </Link>
+  </div>
+);
 // Extract dropdown link component
 const DropdownLink = memo(
   ({ link, isMainList }: { link: LinkItem; isMainList?: boolean }) => (
@@ -524,15 +536,18 @@ const Navbar: React.FC = () => {
   // Optimized resize handler with debounce
   useEffect(() => {
     const handleResize = () => {
-      const mobileView = window.innerWidth < 1536; // Changed from 1024 to 1536 (2xl breakpoint)
+      // Match Tailwind's xl breakpoint (1280px) used in className="xl:hidden" and "xl:flex"
+      const mobileView = window.innerWidth < 1280;
       setIsMobile(mobileView);
       if (!mobileView && menuOpen) {
         setMenuOpen(false);
       }
     };
 
-    // Initial check
-    handleResize();
+    // Initial check - run immediately to set correct initial state
+    if (typeof window !== "undefined") {
+      handleResize();
+    }
 
     // Debounced resize handler
     let resizeTimer: NodeJS.Timeout;
@@ -978,12 +993,28 @@ const Navbar: React.FC = () => {
         {/* {!isMobile && <Backdrop visible={backdropVisibility} />}
         {isMobile && <Backdrop visible={menuOpen} />} */}
 
-        <div className="flex items-center justify-between w-full xl:justify-start xl:w-auto">
-          <Logo />
+        <div className="flex items-center w-full xl:justify-start xl:w-auto">
+          {isMobile ? <MobileLogo /> : <Logo />}
+
+          {/* Mobile Balance Widget - Center */}
+          {(isAuthenticated && user) ? (
+            <div className="flex-1 flex justify-center xl:hidden px-2">
+              <BalanceWidget
+                nuggetBalance={balances.nugget}
+                withdrawnBalance={balances.withdrawn}
+                tokenBalance={balances.token}
+                isLoading={isBalanceLoading}
+                errorMessage={balanceError}
+                onOpenModal={handleOpenBalanceModal}
+                layout="horizontal"
+                className="max-w-[280px]"
+              />
+            </div>
+          ) : ""}
 
           {/* Mobile menu toggle button */}
           <button
-            className="flex xl:hidden text-secondry"
+            className="flex xl:hidden text-secondry ml-auto"
             onClick={toggleMobileMenu}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
           >
@@ -1146,16 +1177,6 @@ const Navbar: React.FC = () => {
           <div className="mb-6">
             {isAuthenticated && user ? (
               <div className="text-xl lg:text-sm font-normal transition-all duration-300 flex flex-col items-center justify-center w-full gap-6">
-                <BalanceWidget
-                  nuggetBalance={balances.nugget}
-                  withdrawnBalance={balances.withdrawn}
-                  tokenBalance={balances.token}
-                  isLoading={isBalanceLoading}
-                  errorMessage={balanceError}
-                  onOpenModal={handleOpenBalanceModal}
-                  layout="vertical"
-                  className="w-full"
-                />
                 <div className="flex items-center gap-2">
                   <Image
                     src={ProfileIcon}
@@ -1164,6 +1185,13 @@ const Navbar: React.FC = () => {
                   />
                   <span className="text-tertiary">{user.email}</span>
                 </div>
+                <Link
+                  href="/subscription"
+                  className="hover:text-primary text-tertiary cursor-pointer"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Subscription
+                </Link>
                 <button
                   onClick={handleLogout}
                   className="hover:text-primary text-tertiary cursor-pointer"

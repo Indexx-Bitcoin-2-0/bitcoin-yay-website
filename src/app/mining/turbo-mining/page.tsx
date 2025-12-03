@@ -1,11 +1,10 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 
-import CustomButton2 from "@/components/CustomButton2";
-
 import TurboMiningButtonImage from "@/assets/images/mining/turbo-icon.webp";
 import TurboMiningArtImage1 from "@/assets/images/mining/turbo-mining-art-1.webp";
-import BellButtonImage from "@/assets/images/buttons/bell-button.webp";
 
 const TurboMiningPage = () => {
   return (
@@ -29,119 +28,79 @@ const TurboMiningPage = () => {
         <div className="mt-20 flex flex-col items-center justify-center gap-4">
           <p className="text-3xl font-bold text-center">Generate</p>
           <p className="text-6xl md:text-9xl font-bold text-center">
-
             9 BTCY/<span className="text-3xl md:text-6xl font-bold">Hr</span>
           </p>
           <ul className="mt-20 list-disc list-inside text-xl flex flex-col gap-6">
-            <li>  <span className="font-bold line-through">
-              $300
-            </span> $ 90/m subscription fee</li>
+            <li>
+              <span className="font-bold line-through">$300</span> $ 90/m subscription fee
+            </li>
             <li>1 BTCY ~ $ 0.10</li>
             <li>~9 BTCY/hour ~ $ 0.90</li>
             <li className="text-primary">Referral Bonuses</li>
             <li>Priority Mining Support</li>
           </ul>
         </div>
-        <CustomButton2
-          text="Coming Soon"
-          image={BellButtonImage}
-          disabled={true}
-          imageStyling="w-34"
-        />
+        <div className="flex flex-col items-center gap-6 w-full">
+          <div className="w-full max-w-xl rounded-3xl border border-white/20 bg-white/5 px-8 py-10 text-center">
+            <p className="text-4xl font-bold text-primary">Coming soon</p>
+            <p className="mt-4 text-lg text-tertiary">
+              PayPal and Stripe payment options are coming soon—please stay tuned.
+            </p>
+          </div>
+        </div>
       </div>
 
       <div className="text-base mt-40 flex flex-col gap-20 max-w-5xl leading-8 mb-40">
         <div>
-          <p className="text-3xl font-bold mb-4">
-            bitcoin-yay Subscription Disclaimer
-          </p>
-          <p className="font-bold">
-            Please Read Carefully Before Purchasing Any Subscription Plan
-          </p>
+          <p className="text-3xl font-bold mb-4">bitcoin-yay Subscription Disclaimer</p>
+          <p className="font-bold">Please Read Carefully Before Purchasing Any Subscription Plan</p>
           <p>
-            By purchasing or activating any subscription plan on the bitcoin-yay
-            platform, you acknowledge and agree to the following:
+            By purchasing or activating any subscription plan on the bitcoin-yay platform, you acknowledge and agree to the following:
           </p>
         </div>
         <div>
-          <p className="text-3xl font-bold mb-4">
-            1. Utility-Only, Not Financial Investment
-          </p>
+          <p className="text-3xl font-bold mb-4">1. Utility-Only, Not Financial Investment</p>
           <p>
-            bitcoin-yay (BTCY) and all associated subscription plans—including
-            Snatch Gopher, Electric Gopher, Turbo Gopher, and Nuclear Gopher—are
-            designed solely to enhance your participation in the BTCY ecosystem.
-            These plans grant access to increased virtual mining speed and other
-            in-app utilities. They are not investment contracts, securities, or
-            profit-generating instruments.
+            bitcoin-yay (BTCY) and all associated subscription plans—including Snatch Gopher, Electric Gopher, Turbo Gopher, and Nuclear Gopher—are designed solely to enhance your participation in the BTCY ecosystem. These plans grant access to increased virtual mining speed and other in-app utilities. They are not investment contracts, securities, or profit-generating instruments.
           </p>
         </div>
         <div>
           <p className="text-3xl font-bold mb-4">2. No Guarantee of Value</p>
           <p>
-            BTCY is a utility token earned through daily app interaction (mobile
-            mining). The token’s market price may fluctuate and is not
-            guaranteed. Subscription plans do not promise any fixed return,
-            profit, or appreciation of BTCY.
+            BTCY is a utility token earned through daily app interaction (mobile mining). The token’s market price may fluctuate and is not guaranteed. Subscription plans do not promise any fixed return, profit, or appreciation of BTCY.
           </p>
         </div>
         <div>
-          <p className="text-3xl font-bold mb-4">
-            3. Access to Virtual Mining Only
-          </p>
+          <p className="text-3xl font-bold mb-4">3. Access to Virtual Mining Only</p>
           <p>
-            Each subscription level provides users with enhanced mining power
-            within the app’s virtual AI-based tap-to-mine system. These tiers
-            (e.g., Turbo Gopher, Nuclear Gopher) do not mine real Bitcoin (BTC)
-            and instead increase the user’s in-app BTCY generation capacity.
+            Each subscription level provides users with enhanced mining power within the app’s virtual AI-based tap-to-mine system. These tiers (e.g., Turbo Gopher, Nuclear Gopher) do not mine real Bitcoin (BTC) and instead increase the user’s in-app BTCY generation capacity.
           </p>
         </div>
         <div>
-          <p className="text-3xl font-bold mb-4">
-            4. Limited-Time Bonuses and Referral Mechanics
-          </p>
+          <p className="text-3xl font-bold mb-4">4. Limited-Time Bonuses and Referral Mechanics</p>
           <p>
-            Some plans or features may include free access tiers or reward
-            multipliers through referrals (e.g., earning special mining power
-            when referring 10+ users). These features are promotional and
-            subject to change. Access to higher-tier mining power is based on
-            reaching specific referral milestones and does not imply ownership
-            rights or investment privileges.
+            Some plans or features may include free access tiers or reward multipliers through referrals (e.g., earning special mining power when referring 10+ users). These features are promotional and subject to change. Access to higher-tier mining power is based on reaching specific referral milestones and does not imply ownership rights or investment privileges.
           </p>
         </div>
         <div>
-          <p className="text-3xl font-bold mb-4">
-            5. Non-Refundable, App-Based Subscription
-          </p>
+          <p className="text-3xl font-bold mb-4">5. Non-Refundable, App-Based Subscription</p>
           <p>
-            All purchases of subscription plans are final and non-refundable.
-            Subscription features are app-based and may only be accessed within
-            the official bitcoin-yay app (TestFlight or live release, depending
-            on platform availability).
+            All purchases of subscription plans are final and non-refundable. Subscription features are app-based and may only be accessed within the official bitcoin-yay app (TestFlight or live release, depending on platform availability).
           </p>
         </div>
         <div>
           <p className="text-3xl font-bold mb-4">6. Ecosystem Integration</p>
           <p>
-            BTCY earned via subscriptions can be used in the broader Indexx
-            ecosystem (e.g., Indexx Lotto, Indexx Shop), where tokens may be
-            burned or redeemed for products, upgrades, or bonus entries. These
-            features are utility-based and subject to ecosystem availability and
-            terms.
+            BTCY earned via subscriptions can be used in the broader Indexx ecosystem (e.g., Indexx Lotto, Indexx Shop), where tokens may be burned or redeemed for products, upgrades, or bonus entries. These features are utility-based and subject to ecosystem availability and terms.
           </p>
         </div>
         <div>
           <p className="text-3xl font-bold mb-4">7. Eligibility & Access</p>
           <p>
-            Subscriptions are available to users aged 18+ and residing in
-            jurisdictions where virtual crypto mining applications are legally
-            permitted. bitcoin-yay reserves the right to suspend accounts or
-            restrict access where illegal, fraudulent, or abusive activity is
-            detected.
+            Subscriptions are available to users aged 18+ and residing in jurisdictions where virtual crypto mining applications are legally permitted. bitcoin-yay reserves the right to suspend accounts or restrict access where illegal, fraudulent, or abusive activity is detected.
           </p>
           <p className="font-bold">
-            If you do not agree to these terms, do not proceed with any
-            subscription purchase.
+            If you do not agree to these terms, do not proceed with any subscription purchase.
           </p>
           <div>
             For support or questions, please contact{" "}

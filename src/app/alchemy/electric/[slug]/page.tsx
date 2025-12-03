@@ -105,12 +105,13 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
 
     const fetchBalance = async () => {
       const balance = await getUserBTCYBalance(user?.email || "");
+      const totalBalance = balance.data?.totalBTCYBalance ?? 0;
       setUserPlanData({
-        balance: balance.data?.totalBTCYBalance,
-        userType: balance.data?.userType,
-        plan: balance.data?.plan,
+        balance: totalBalance,
+        userType: balance.data?.userType ?? "",
+        plan: balance.data?.plan ?? "",
       });
-      if (balance.data?.totalBTCYBalance < MINIMUM_BTCY_BALANCE_FOR_ALCHEMY) {
+      if (totalBalance < MINIMUM_BTCY_BALANCE_FOR_ALCHEMY) {
         setError(
           `You need at least ${MINIMUM_BTCY_BALANCE_FOR_ALCHEMY.toLocaleString('en-US')} BTCY to start an Alchemy`
         );
@@ -141,6 +142,10 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
   };
 
   const handleCloseLoginPopup = () => {
+    setIsLoginPopupOpen(false);
+  };
+
+  const handleRegisterClick = () => {
     setIsLoginPopupOpen(false);
   };
 
@@ -309,6 +314,7 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
           isOpen={isLoginPopupOpen}
           onClose={handleCloseLoginPopup}
           onLoginSuccess={handleLoginSuccess}
+          onRegisterClick={handleRegisterClick}
         />
       </>
     );

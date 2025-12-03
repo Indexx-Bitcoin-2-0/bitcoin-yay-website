@@ -56,62 +56,68 @@ const BlackFridayPopup: React.FC<BlackFridayPopupProps> = ({
                 </div>
 
                 {/* Pricing Plans */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 mb-4 md:mb-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
                     {plans.map((plan) => {
                         return (
                             <div
                                 key={plan.name}
-                                className="flex flex-col items-center gap-3 mb-10 md:mb-2"
+                                className="flex flex-col items-center gap-3"
                             >
-                                <div>
+                                {/* Plan Illustration */}
+                                <div className="flex justify-center mb-2">
                                     <Image
                                         src={plan.artImage}
                                         alt={plan.name}
-                                        className="w-20 h-20 md:w-24 md:h-24 object-contain"
+                                        className="w-24 h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 object-contain"
                                     />
                                 </div>
 
                                 {/* Plan Name */}
-                                <h3 className="text-lg md:text-xl font-bold text-white">
-                                    {plan.name}
+                                <h3 className="text-base md:text-lg font-bold text-white">
+                                    {plan.name} Plan
                                 </h3>
 
                                 {/* Pricing */}
                                 <div className="flex flex-col items-center gap-1">
-                                    <span className="text-base md:text-lg text-gray-400 line-through">
+                                    <span className="text-sm md:text-base text-gray-400 line-through">
                                         ${plan.originalPrice}
                                     </span>
-                                    <span className="text-xl md:text-2xl font-bold text-primary">
+                                    <span className="text-xl md:text-2xl lg:text-3xl font-bold text-primary">
                                         ${plan.discountedPrice}
                                     </span>
                                 </div>
-
-                                {/* Art Image */}
-
                             </div>
                         );
                     })}
                 </div>
 
-                {/* Deal Information */}
-                <div className="mb-4 md:mb-6">
-                    <p className="text-lg md:text-xl font-bold text-white mb-1 md:mb-2">
-                        Black Friday Deal.
+                {/* Cyber Monday Deal Information */}
+                <div className="mb-6 md:mb-8">
+                    <p className="text-lg md:text-xl font-bold text-white mb-2">
+                        Cyber Monday Deal
                     </p>
-                    <p className="text-sm md:text-base text-gray-400">
+                    <p className="text-sm md:text-base text-white mb-2">
+                        Cyber Monday: 1st December to 11th December.
+                    </p>
+                    <p className="text-sm md:text-base text-white">
                         More mining power for almost no cost.
                     </p>
                 </div>
 
-                {/* Start Mining Button */}
-                <div className="flex flex-col items-center gap-2">
+                {/* Subscribe Now Button */}
+                <div className="flex flex-col items-center gap-2 mb-4">
                     <CustomButton2
                         text="Subscribe Now"
                         link="/mining/power-mining"
                         image={BellButtonImage}
-                        imageStyling="w-25"
+                        imageStyling="w-25 md:w-30"
                     />
                 </div>
+
+                {/* Disclaimer */}
+                <p className="text-xs md:text-sm text-gray-400 mt-4">
+                    This offer is available only on the Android app version.
+                </p>
             </div>
         </PopupComponent>
     );

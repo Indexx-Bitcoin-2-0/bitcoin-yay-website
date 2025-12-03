@@ -31,6 +31,11 @@ import {
 } from "@/lib/alchemy";
 import { MINIMUM_BTCY_BALANCE_FOR_ALCHEMY } from "@/app/alchemy/constants";
 import { getAuthenticatedWalletUrl } from "@/lib/authenticated-wallet";
+import {
+  fetchActiveLiquidityPool,
+  DEFAULT_ACTIVE_LIQUIDITY_POOL,
+  NormalizedActiveLiquidityPool,
+} from "@/services/alchemy.service";
 import axios from "axios";
 
 import FortuneFunnelIcon from "@/assets/images/alchemy/fortuneFunnel.svg";
@@ -64,12 +69,20 @@ export default function AlchemyPage() {
   const popupTimerRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
   const [isProcessingAlchemy, setIsProcessingAlchemy] = useState(false);
-  const [liquidityPoolBalance, setLiquidityPoolBalance] = useState(650_000);
-  const LIQUIDITY_POOL_TARGET = 1_000_000;
+  const [liquidityPoolData, setLiquidityPoolData] = useState<
+    NormalizedActiveLiquidityPool
+  >(DEFAULT_ACTIVE_LIQUIDITY_POOL);
+  const [poolStatusMessage, setPoolStatusMessage] = useState<string | null>(null);
+  const [poolLoading, setPoolLoading] = useState(false);
 
+  const {
+    current: poolCurrent,
+    target: poolTarget,
+    remainingBalanceUsd,
+  } = liquidityPoolData;
   const liquidityProgressPercent = Math.min(
     100,
-    Math.round((liquidityPoolBalance / LIQUIDITY_POOL_TARGET) * 100)
+    Math.round((poolCurrent / Math.max(poolTarget, 1)) * 100)
   );
 
   const handleLoginSuccess = () => setIsLoginPopupOpen(false);
@@ -217,6 +230,45 @@ export default function AlchemyPage() {
       isActive = false;
     };
   }, [user?.email]);
+
+  useEffect(() => {
+    let isActive = true;
+    const controller = new AbortController();
+
+    const loadLiquidityPool = async () => {
+      setPoolLoading(true);
+      setPoolStatusMessage(null);
+
+      try {
+        const data = await fetchActiveLiquidityPool(
+          user?.access_token,
+          controller.signal
+        );
+        if (isActive) {
+          setLiquidityPoolData(data);
+        }
+      } catch (error) {
+        if (!isActive) return;
+        console.error("Failed to load liquidity pool data", error);
+        setPoolStatusMessage(
+          error instanceof Error
+            ? error.message
+            : "Unable to load the liquidity pool."
+        );
+      } finally {
+        if (isActive) {
+          setPoolLoading(false);
+        }
+      }
+    };
+
+    loadLiquidityPool();
+
+    return () => {
+      isActive = false;
+      controller.abort();
+    };
+  }, [user?.access_token]);
 
   const normalizeAlchemyUserType = (raw?: string): string => {
     if (!raw) return "free";
@@ -388,10 +440,24 @@ export default function AlchemyPage() {
             />
           </div>
           <p className="mt-2 text-[11px] text-tertiary">
-            {liquidityPoolBalance.toLocaleString("en-US")} /{" "}
-            {LIQUIDITY_POOL_TARGET.toLocaleString("en-US")} BTCY secured to back
-            the liquidity pool.
+            {poolCurrent.toLocaleString("en-US")} /{" "}
+            {poolTarget.toLocaleString("en-US")} BTCY secured to back the
+            liquidity pool.
           </p>
+          {remainingBalanceUsd !== undefined && (
+            <p className="mt-1 text-[11px] text-tertiary">
+              Remaining balance: ${remainingBalanceUsd.toLocaleString("en-US")}
+            </p>
+          )}
+          {poolLoading ? (
+            <p className="mt-2 text-[11px] text-primary text-center">
+              Refreshing liquidity status…
+            </p>
+          ) : poolStatusMessage ? (
+            <p className="mt-2 text-[11px] text-red-500 text-center">
+              {poolStatusMessage}
+            </p>
+          ) : null}
         </div>
       </div>
 
