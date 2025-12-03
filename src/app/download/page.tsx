@@ -98,7 +98,7 @@ export default function DownloadPage() {
                 {/* Disclaimer */}
                 <div className="w-full max-w-3xl px-4 md:px-6">
                     <p className="text-[10px] md:text-xs text-white text-center leading-relaxed">
-                        Bitcoin Yay (BTCY) is a mobile mining app that allows users to earn
+                        bitcoin-yay (BTCY) is a mobile mining app that allows users to earn
                         BTCY tokens through free mining. The app is not a financial product
                         and does not guarantee any specific returns. Earnings and rewards are
                         based on user activity, such as daily mining and ads watched.{" "}
@@ -106,8 +106,8 @@ export default function DownloadPage() {
                             &quot;Free money&quot; is not a guarantee
                         </span>{" "}
                         and is subject to app terms and conditions. By downloading the
-                        Bitcoin Yay app, you agree to the app&apos;s Terms of Service and
-                        Privacy Policy. Bitcoin Yay is not responsible for any financial
+                        bitcoin-yay app, you agree to the app&apos;s Terms of Service and
+                        Privacy Policy. bitcoin-yay is not responsible for any financial
                         loss or damage related to app use. Please use responsibly and
                         understand that BTCY tokens are non-transferable until official token
                         listing.

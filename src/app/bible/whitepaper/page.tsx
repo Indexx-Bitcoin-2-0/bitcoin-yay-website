@@ -17,13 +17,13 @@ import Whitepaper08 from "@/assets/images/whitepaper/whitepaper-07.svg";
 import Whitepaper09 from "@/assets/images/whitepaper/whitepaper-08.svg";
 
 export const metadata = {
-  title: "Bitcoin Yay Whitepaper - A Decentralized Micro-Value Ecosystem",
+  title: "bitcoin-yay Whitepaper - A Decentralized Micro-Value Ecosystem",
   description:
-    "Read the official Bitcoin Yay whitepaper covering technical architecture, tokenomics, AI-powered mobile mining, and blockchain ecosystem. Learn about BTCY's 21 trillion token supply and Proof-of-Participation mechanism.",
+    "Read the official bitcoin-yay whitepaper covering technical architecture, tokenomics, AI-powered mobile mining, and blockchain ecosystem. Learn about BTCY's 21 trillion token supply and Proof-of-Participation mechanism.",
   openGraph: {
-    title: "Bitcoin Yay Whitepaper - A Decentralized Micro-Value Ecosystem",
+    title: "bitcoin-yay Whitepaper - A Decentralized Micro-Value Ecosystem",
     description:
-      "Read the official Bitcoin Yay whitepaper covering technical architecture, tokenomics, AI-powered mobile mining, and blockchain ecosystem. Learn about BTCY's 21 trillion token supply and Proof-of-Participation mechanism.",
+      "Read the official bitcoin-yay whitepaper covering technical architecture, tokenomics, AI-powered mobile mining, and blockchain ecosystem. Learn about BTCY's 21 trillion token supply and Proof-of-Participation mechanism.",
   },
 };
 
@@ -35,7 +35,7 @@ export default function Whitepaper() {
           Whitepaper Chapter
         </h1>
         <p className="text-sm md:text-lg font-normal text-tertiary my-4">
-          Last Updated: March 10, 2025
+          Last Updated: 18th Nov 2025
         </p>
       </CustomStyledConatiner>
       <div className="md:p-10 lg:p-18">
@@ -46,11 +46,11 @@ export default function Whitepaper() {
         />
         <InfoSection
           desc="Whitepaper"
-          endingLine="Status: Off-chain Beta today. Testnet and mainnet (Stellar-fork + Soroban) are in development. Features/timelines may evolve."
+          endingLine="Status: Off-chain Beta live. BTCY Tokens are now live on Solana and Tron. Testnet and mainnet (Stellar-fork + Soroban) are in development. Features/timelines may evolve."
         />
         <InfoSection
           desc="Abstract"
-          endingLine="Bitcoin-Yay (BTCY) is a micro-value currency designed to move small amounts fast and cheaply, then settle to an on-chain ledger. BTCY will launch on a Stellar-based chain (planned fork) to leverage low fees, fast finality, and Soroban smart contracts. The ecosystem pairs AI-assisted Proof-of-Participation (PoP) mining, on-chain governance, and a dual-balance model (off-chain &quot;BTCY Nugget&quot; → on-chain &quot;BTCY Token&quot;). This preview outlines the design, tokenomics, security posture, and a phased roadmap from today's off-chain beta to mainnet."
+          endingLine="Bitcoin-Yay (BTCY) is a micro-value currency designed to move small amounts fast and cheaply. The BTCY token is now live on Solana and Tron, providing immediate liquidity and transferability. The long-term vision includes a dedicated Stellar-based chain (planned fork) to leverage low fees, fast finality, and Soroban smart contracts. The ecosystem pairs AI-assisted Proof-of-Participation (PoP) mining, on-chain governance, and a dual-balance model (off-chain &quot;BTCY Nugget&quot; → on-chain &quot;BTCY Token&quot;). This preview outlines the design, tokenomics, security posture, and a phased roadmap from today's off-chain beta to a future sovereign mainnet."
         />
 
 
@@ -64,7 +64,8 @@ export default function Whitepaper() {
           content={
             <>
               <CustomListItem content="PoP mining (mobile both iOS and Android) instead of energy-heavy PoW." />
-              <CustomListItem content="Planned Stellar-fork for speed/finality; Soroban for programmability." />
+              <CustomListItem content="Immediate multi-chain access via Solana and Tron for liquidity and utility." />
+              <CustomListItem content="Planned Stellar-fork for sovereign speed/finality; Soroban for programmability." />
               <CustomListItem content="A dual-balance migration: off-chain accruals today; on-chain ownership after compliance and mainnet." />
             </>
           }
@@ -78,10 +79,12 @@ export default function Whitepaper() {
 
         <InfoSection
           title="2. Core Features"
-          desc="2.1 Fast & Low-Cost Settlement (Coming Soon: mainnet)"
+          desc="2.1 Multi-Chain & Fast Settlement"
           content={
             <>
-              <CustomListItem content="Stellar-family consensus with sub-second confirmation targets and low fees." />
+              <CustomListItem content="BTCY is currently deployed on Solana and Tron, enabling fast, low-cost transactions." />
+              <CustomListItem content="Recommended Wallets: Phantom (Solana) and TronLink (Tron) for optimal Alchemy conversion experience." />
+              <CustomListItem content="Long-term plan for a Stellar-family consensus chain with sub-second confirmation targets." />
               <CustomListItem content="Cross-border friendly; built for micro-payments and in-app actions." />
             </>
           }
@@ -98,12 +101,13 @@ export default function Whitepaper() {
         />
 
         <InfoSection
-          desc="2.3 Smart Contracts with Soroban (Coming Soon)"
+          desc="2.3 Smart Contracts & Programmability"
           content={
             <>
-              <CustomListItem content="Programmable assets: staking, rewards, on-chain governance." />
+              <CustomListItem content="Utilizes Solana and Tron smart contracts for basic functionality." />
+              <CustomListItem content="Programmable assets: staking, rewards, on-chain governance (future Soroban integration)." />
               <CustomListItem content="Low execution cost vs. legacy L1s." />
-              <CustomListItem content="(Removed misleading claim) No native ZKPs in v1; privacy features may arrive later through audited contracts or external proofs." />
+              <CustomListItem content="No native ZKPs in v1; privacy features may arrive later through audited contracts or external proofs." />
             </>
           }
         />
@@ -122,7 +126,7 @@ export default function Whitepaper() {
           desc="2.5 Interoperability (Roadmap)"
           content={
             <>
-              <CustomListItem content="Bridges to BTCY other chains (Ethereum/BSC/Solana) are planned after mainnet stability and audits." />
+              <CustomListItem content="Existing bridges between Solana, Tron, and future chains (Stellar and others) are planned." />
               <CustomListItem content="Separate brand assets (e.g., WiBS meme coin) may interoperate through governed bridges." />
             </>
           }
@@ -132,8 +136,8 @@ export default function Whitepaper() {
           desc="2.6 Security & Sustainability"
           content={
             <>
-              <CustomListItem content="Federated Byzantine Agreement (FBA)—quorum slices, fast finality." />
-              <CustomListItem content="Validator onboarding with KYC/attestation in early phases → progressive decentralization." />
+              <CustomListItem content="Relies on the security of Solana (PoH) and Tron (DPoS) networks." />
+              <CustomListItem content="Future Federated Byzantine Agreement (FBA) on Stellar-fork." />
               <CustomListItem content="Continuous monitoring for Sybil/bot activity and fraud." />
             </>
           }
@@ -143,10 +147,12 @@ export default function Whitepaper() {
 
           content={
             <>
-              <CustomP start="Live (Off-chain Beta):" />
+              <CustomP start="Live (Off-chain Beta & Multi-Chain):" />
               <CustomListItem content="BTCY Mining App (PoP sessions, fraud checks, subscription boosts)." />
               <CustomListItem content="Nugget Ledger (off-chain accruals)." />
               <CustomListItem content="Linked Accounts Hub (up to 5 linked accounts; shared checks)." />
+              <CustomListItem content="BTCY Token live on Solana and Tron networks." />
+              <CustomListItem content="Alchemy conversion system with supported wallets." />
             </>
           }
         />
@@ -164,39 +170,23 @@ export default function Whitepaper() {
           endingLine="We’re deliberately staging launches. Utility beats breadth."
         />
 
-
-
-
-
-
-
         <div className="flex justify-center items-center my-30">
           <Image src={Whitepaper04} alt="Whitepaper-04" />
         </div>
 
         <InfoSection
           title="3. Technical Architecture"
-          desc="Consensus"
+          desc="3.1 Consensus"
           content={
             <>
-              <CustomListItem content="Planned Stellar-fork with FBA." />
-              <CustomListItem content="Early validator set curated for reliability → expand to community as observability and economic security grow." />
+              <CustomListItem content="Current: Solana (Proof-of-History) and Tron (Delegated Proof-of-Stake)." />
+              <CustomListItem content="Planned: Stellar-fork with FBA for a sovereign chain." />
             </>
           }
         />
 
         <InfoSection
-          desc="Asset Model & Supply"
-          content={
-            <>
-              <CustomListItem content="Multi-chain support for BTCY, BTC, ETH, INEX, and more." />
-              <CustomListItem content="AI-powered risk analysis and auto-staking features." />
-              <CustomListItem content="Smart spending assistant for optimal buy/sell timing." />
-            </>
-          }
-        />
-        <InfoSection
-          desc="Indexx CEX & DEX"
+          desc="3.2 Asset Model & Supply"
           content={
             <>
               <CustomListItem content="Total Supply (fixed): 21,000,000,000,000 BTCY (21 trillion)" />
@@ -221,22 +211,22 @@ export default function Whitepaper() {
         />
 
         <InfoSection
-          desc="Dual-Balance Flow (Live → Mainnet)"
+          desc="3.3 Dual-Balance Flow (Live → Mainnet)"
           content={
             <>
-              <CustomListItem content="BTCY Nugget: off-chain, non-transferable accrual; records contribution history." />
-              <CustomListItem content="BTCY Token: on-chain asset minted/credited after compliance + conversion events (e.g., Alchemy upgrades, Quantum Mining purchases) post-mainnet." />
+              <CustomListItem content="BTCY Nugget: off-chain, non-transferable accrual; records contribution history. Mined exclusively via the BTCY App." />
+              <CustomListItem content="BTCY Token: on-chain, transferable asset on Solana and Tron. It cannot be mined directly. It is acquired by converting Nuggets through Alchemy (using recommended wallets: Phantom for Solana, TronLink for Tron), purchasing via mining packages (e.g., Quantum Mining), or buying on the open market." />
             </>
           }
         />
 
         <InfoSection
-          desc="Smart Contracts (Soroban)"
+          desc="3.4 Smart Contracts"
           content={
             <>
-              <CustomListItem content="Staking/rewards, vesting/conversions, DAO voting." />
+              <CustomListItem content="Current: Staking/rewards, vesting/conversions on Solana and Tron." />
+              <CustomListItem content="Future: Soroban contracts for advanced governance." />
               <CustomListItem content="Security first: audits, guarded launches, circuit-breakers." />
-              <CustomListItem content="(Removed) &quot;ZKP by default.&quot; If/when privacy is added, it will be explicitly specified and audited." />
             </>
           }
         />
@@ -311,7 +301,7 @@ export default function Whitepaper() {
                   $100/mo
                 </td>
                 <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal align-top border-r border-bg2">
-                  ≈ 9 BTCY/hour (≈ $0.90*)
+                  ≈ 4.5 BTCY Nugget/hour
                 </td>
                 <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal align-top">
                   Always-on Electric tier, referral bonuses, priority support
@@ -325,7 +315,7 @@ export default function Whitepaper() {
                   $300/mo
                 </td>
                 <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal align-top border-r border-bg2">
-                  ≈ 18 BTCY/hour (≈ $1.80*)
+                  ≈ 9 BTCY Nugget/hour
                 </td>
                 <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal align-top">
                   Double Electric throughput, automated boosts, priority payouts
@@ -339,7 +329,7 @@ export default function Whitepaper() {
                   $600/mo
                 </td>
                 <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal align-top border-r border-bg2">
-                  ≈ 27 BTCY/hour (≈ $2.70*)
+                  ≈ 13.5 BTCY Nugget/hour
                 </td>
                 <td className="py-2 px-2 sm:px-2 md:py-3 md:px-4 min-w-32 whitespace-nowrap lg:w-1/4 lg:whitespace-normal align-top">
                   Maximum AI-driven yield, VIP support, exclusive bonus drops
@@ -365,10 +355,11 @@ export default function Whitepaper() {
         />
 
         <InfoSection
-          desc="Dual-Balance Conversion"
+          desc="5.5 Dual-Balance Conversion"
           content={
             <>
-              <CustomListItem content="Earn Nugget → Mine + linked-account checks → convert to BTCY Token through approved flows (Alchemy/Quantum/mining milestones)." />
+              <CustomListItem content="Earn BTCY Nugget → via Mining App + linked-account checks." />
+              <CustomListItem content="Acquire BTCY Token → Convert Nuggets through approved flows (Alchemy/Quantum/mining milestones) using recommended wallets (Phantom/TronLink) or purchase on supported exchanges." />
             </>
           }
         />
@@ -386,13 +377,13 @@ export default function Whitepaper() {
           desc="Rails & Fees (clarified units):"
           content={
             <>
-              <CustomListItem content="To Indexx Wallet/Exchange: Zero fee" />
-              <CustomListItem content="To external chain address: network fee + service fee up to 3% (covers compliance + routing)." />
+              <CustomListItem content="To Indexx Wallet/Exchange: Zero fee." />
+              <CustomListItem content="To external chain address (Solana/Tron): network fee + service fee up to 3% (covers compliance + routing)." />
             </>
           }
         />
 
-        <CustomP start="(Exact fees published per route at withdrawal time. Coming soon once we have live chain)" />
+        <CustomP start="(Exact fees published per route at withdrawal time.)" />
 
         <div className="flex justify-center items-center my-30">
           <Image src={Whitepaper07} alt="Whitepaper-07" />
@@ -400,10 +391,11 @@ export default function Whitepaper() {
 
         <InfoSection
           title="6. Roadmap (Milestone-based, not year-promise)"
-          desc="Phase A — Off-chain Beta (Live)"
+          desc="Phase A — Off-chain Beta & Multi-Chain Launch (Live)"
           content={
             <>
               <CustomListItem content="Mining app (PoP), Nugget ledger, subscription boosts, anti-bot." />
+              <CustomListItem content="BTCY Token live on Solana and Tron." />
               <CustomListItem content="Off-chain DAO voting, proposal hub." />
             </>
           }
@@ -423,7 +415,7 @@ export default function Whitepaper() {
           desc="Phase C — Mainnet (Coming Soon)"
           content={
             <>
-              <CustomListItem content="BTCY Token live, wallet releases, on-chain conversions, initial listings." />
+              <CustomListItem content="Sovereign BTCY chain launch, on-chain conversions, initial listings." />
               <CustomListItem content="DAO on-chain: proposals, quorum, treasury transparency." />
             </>
           }
@@ -434,7 +426,7 @@ export default function Whitepaper() {
           content={
             <>
               <CustomListItem content="CEX/DEX pairs, grants, builders program." />
-              <CustomListItem content="Optional bridges and additional assets (e.g., WiBS) after audits." />
+              <CustomListItem content="Optional bridges between Solana, Tron, and the sovereign BTCY chain." />
             </>
           }
         />
@@ -462,7 +454,7 @@ export default function Whitepaper() {
 
         <InfoSection
           title="8. Conclusion"
-          endingLine="BTCY focuses on everyday, micro-value activity with a practical path from off-chain beta to a performant, audited mainnet. The dual-balance model, PoP mining, and Soroban programmability aim to make crypto usable first—and decentralized over time with transparent governance."
+          endingLine="BTCY focuses on everyday, micro-value activity with a practical, multi-chain approach today and a path to a performant, audited sovereign mainnet. The dual-balance model, PoP mining, and current Solana/Tron deployment aim to make crypto usable first—and decentralized over time with transparent governance."
         />
 
         <InfoSection
@@ -472,6 +464,19 @@ export default function Whitepaper() {
               <CustomListItem content="Website: bitcoinyay.com" />
               <CustomListItem content="Telegram: t.me/+pC3IVlPlwSEyODAx" />
               <CustomListItem content="X (Twitter): x.com/bitcoin_YAY" />
+            </>
+          }
+        />
+
+        <InfoSection
+          title="Contract Addresses & Supported Wallets"
+          content={
+            <>
+              <CustomP start="Solana: 7RUbRcqvQ7gXNmfuxsoUoputPXT85fGzoPSu6xXi6U9p" />
+              <CustomListItem content="Recommended Wallet: Phantom" />
+              <CustomP start="Tron: TJVh7pdziZHNaEwfmBcwZN5JjuEjnN1xzB" />
+              <CustomListItem content="Recommended Wallet: TronLink" />
+              <CustomP start="For Alchemy conversions from Nugget to Token, we strongly recommend using the supported wallets above for a seamless experience." />
             </>
           }
         />

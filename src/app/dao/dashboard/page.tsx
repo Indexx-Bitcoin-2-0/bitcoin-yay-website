@@ -110,7 +110,7 @@ export default function Dashboard() {
           <div className="mx-auto">
             <div className="mt-20 flex flex-col items-center justify-center text-center px-4">
               <h2 className="text-lg md:text-2xl mb-4 font-bold ">
-                Bitcoin Yay DAO
+                bitcoin-yay DAO
               </h2>
               <h1 className="text-3xl md:text-5xl xl:text-[82px] mb-4 font-semibold text-primary">
                 Dashboard
@@ -155,7 +155,7 @@ export default function Dashboard() {
       <div className="mx-auto">
         <div className="mt-20 flex flex-col items-center justify-center text-center px-4">
           <h2 className="text-lg md:text-2xl mb-4 font-bold ">
-            Bitcoin Yay DAO
+            bitcoin-yay DAO
           </h2>
 
           <h1 className="text-3xl md:text-5xl xl:text-[82px] mb-4 font-semibold text-primary">
@@ -209,9 +209,8 @@ export default function Dashboard() {
               <div
                 className="bg-primary h-6 rounded-full transition-all duration-300"
                 style={{
-                  width: `${
-                    (userData.reputation / userData.maxReputation) * 100
-                  }%`,
+                  width: `${(userData.reputation / userData.maxReputation) * 100
+                    }%`,
                 }}
               ></div>
             </div>
@@ -262,8 +261,8 @@ export default function Dashboard() {
                         task.status === "completed"
                           ? CorrectIcon
                           : task.status === "failed"
-                          ? CrossIcon
-                          : PendingIcon
+                            ? CrossIcon
+                            : PendingIcon
                       }
                       alt="Status icon"
                       className="w-8 ml-4"

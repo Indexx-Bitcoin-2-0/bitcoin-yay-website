@@ -4,6 +4,9 @@ import {
   ALCHEMY_CONFIG_API_ROUTE,
   ALCHEMY_GET_USER_SUBSCRIPTION,
   GET_MINING_STATUS_API_ROUTE,
+  ALCHEMY_PROCESS_API_ROUTE,
+  ALCHEMY_COMPLETE_V2_API_ROUTE,
+  ALCHEMY_SESSIONS_API_ROUTE,
   GET_USER_BTCY_BALANCE_API_ROUTE,
   GET_USER_MINING_BALANCE_API_ROUTE,
   GET_USER_WALLET_BALANCE_API_ROUTE,
@@ -73,6 +76,30 @@ export interface CompleteAlchemyResponse {
   error?: string;
 }
 
+export interface ProcessAlchemyData {
+  email: string;
+  nuggetTokens: number;
+  userType: string;
+  referralCodeUsed?: string;
+  nftBoostApplied?: boolean;
+}
+
+export type WithdrawalType = "indexx" | "solana" | "tron";
+
+export interface CompleteAlchemyProcessData {
+  sessionId: string;
+  withdrawalType?: WithdrawalType;
+  withdrawalAddress?: string;
+}
+
+export interface AlchemyProcessResponse {
+  success: boolean;
+  message?: string;
+  status?: number;
+  session?: AlchemySessionRecord;
+  error?: string;
+}
+
 export interface AlchemyConfigItem {
   input: number;
   multiplierRange: string;
@@ -102,6 +129,16 @@ function getAccessToken(): string | null {
     .access_token;
 }
 
+async function parseJsonSafe(response: Response) {
+  try {
+    return await response.json();
+  } catch (error) {
+    const fallback =
+      (await response.text().catch(() => "")) || "Unable to parse response body";
+    console.error("parseJsonSafe fallback:", fallback, error);
+    return { error: fallback };
+  }
+}
 /**
  * Creates a new alchemy session
  */
@@ -124,7 +161,7 @@ export async function createAlchemy(
       body: JSON.stringify(data),
     });
 
-    const result = await response.json();
+    const result = await parseJsonSafe(response);
 
     if (!response.ok) {
       throw new Error(result.error || "Failed to start alchemy session");
@@ -170,7 +207,7 @@ export async function completeAlchemy(
       body: JSON.stringify(data),
     });
 
-    const result = await response.json();
+    const result = await parseJsonSafe(response);
 
     if (!response.ok) {
       throw new Error(result.error || "Failed to complete alchemy session");
@@ -184,6 +221,161 @@ export async function completeAlchemy(
     };
   } catch (error) {
     console.error("Complete alchemy error:", error);
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to complete alchemy session",
+    };
+  }
+}
+
+/**
+ * Processes a new click-and-convert Alchemy session using the v2 endpoint.
+ */
+const extractApiErrorMessage = (payload: any): string | null => {
+  if (!payload) return null;
+  if (typeof payload.error === "string" && payload.error.trim()) {
+    return payload.error;
+  }
+  if (typeof payload.message === "string" && payload.message.trim()) {
+    return payload.message;
+  }
+  if (Array.isArray(payload.messages) && payload.messages.length > 0) {
+    return payload.messages.filter(Boolean).join(" ");
+  }
+  return null;
+};
+
+const formatAlchemyCooldownMessage = (message: string): string | null => {
+  const match = message.match(/Next session available on ([\dTZ:\-+.]+)/i);
+  if (!match || !match[1]) {
+    return null;
+  }
+
+  const isoString = match[1].replace(/[.,;:]+$/, "");
+  const nextAttempt = new Date(isoString);
+  if (Number.isNaN(nextAttempt.getTime())) {
+    return null;
+  }
+
+  let formattedDate: string;
+  try {
+    formattedDate = new Intl.DateTimeFormat("en-US", {
+      dateStyle: "long",
+      timeStyle: "short",
+      timeZoneName: "short",
+    }).format(nextAttempt);
+  } catch {
+    formattedDate = nextAttempt.toLocaleString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+  }
+
+  return message.includes("locked")
+    ? `Alchemy sessions are currently locked. You can try again on ${formattedDate}.`
+    : `Next session opens on ${formattedDate}.`;
+};
+
+export async function processAlchemyConversion(
+  data: ProcessAlchemyData
+): Promise<AlchemyProcessResponse> {
+  try {
+    const accessToken = getAccessToken();
+
+    if (!accessToken) {
+      throw new Error("You need to login first to participate in alchemy");
+    }
+
+    const response = await fetch(ALCHEMY_PROCESS_API_ROUTE, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({
+        ...data,
+        referralCodeUsed: data.referralCodeUsed ?? "",
+        nftBoostApplied: data.nftBoostApplied ?? false,
+      }),
+    });
+
+    const result = await parseJsonSafe(response);
+    const sessionPayload = result.session ?? result.data ?? null;
+
+    if (!response.ok) {
+      const apiErrorMessage = extractApiErrorMessage(result);
+      const formattedMessage = apiErrorMessage
+        ? formatAlchemyCooldownMessage(apiErrorMessage) ?? apiErrorMessage
+        : "Failed to process alchemy session";
+      throw new Error(formattedMessage);
+    }
+
+    return {
+      success: true,
+      message: result.message ?? null,
+      status: result.status ?? null,
+      session: sessionPayload,
+    };
+  } catch (error) {
+    console.error("Process alchemy error:", error);
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to process alchemy session",
+    };
+  }
+}
+
+/**
+ * Completes a click-and-convert Alchemy session via the v2 endpoint.
+ */
+export async function completeAlchemyProcess(
+  data: CompleteAlchemyProcessData
+): Promise<AlchemyProcessResponse> {
+  try {
+    const accessToken = getAccessToken();
+
+    if (!accessToken) {
+      throw new Error("You need to login first to participate in alchemy");
+    }
+
+    const response = await fetch(ALCHEMY_COMPLETE_V2_API_ROUTE, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({
+        sessionId: data.sessionId,
+        withdrawalType: data.withdrawalType ?? "indexx",
+        withdrawalAddress: data.withdrawalAddress ?? "",
+      }),
+    });
+
+    const result = await parseJsonSafe(response);
+    const sessionPayload = result.session ?? result.data ?? null;
+
+    if (!response.ok) {
+      throw new Error(result.error || "Failed to complete alchemy session");
+    }
+
+    return {
+      success: true,
+      message: result.message,
+      status: result.status,
+      session: sessionPayload,
+    };
+  } catch (error) {
+    console.error("Complete alchemy process error:", error);
     return {
       success: false,
       error:
@@ -213,7 +405,7 @@ export async function getAlchemyConfig(): Promise<AlchemyConfigResponse> {
       },
     });
 
-    const result = await response.json();
+    const result = await parseJsonSafe(response);
     console.log("result", result)
     if (!response.ok) {
       throw new Error(result.error || "Failed to fetch alchemy config");
@@ -258,7 +450,7 @@ export async function getUserSubscription(email: string): Promise<UserSubscripti
       }
     );
 
-    const result = await response.json();
+    const result = await parseJsonSafe(response);
 
     if (!response.ok) {
       throw new Error(result.error || "Failed to fetch user subscription");
@@ -272,6 +464,66 @@ export async function getUserSubscription(email: string): Promise<UserSubscripti
       data: { email, plan: "", speedBoost: 0, userType: "" },
       error:
         error instanceof Error ? error.message : "Failed to fetch user subscription",
+    };
+  }
+}
+
+export interface MiningStatusData {
+  miningRate?: number | string;
+  sessionStartTime?: string;
+  lastClaimTime?: string;
+  sessionEndTime?: string;
+  isMiningActive?: boolean;
+}
+
+export interface MiningStatusResponse {
+  status: number;
+  data?: MiningStatusData;
+  error?: string;
+}
+
+export async function getMiningStatus(
+  email: string
+): Promise<MiningStatusResponse> {
+  if (!email) {
+    return {
+      status: 400,
+      error: "Email is required",
+    };
+  }
+
+  try {
+    const encodedEmail = encodeURIComponent(email);
+    const url = `${GET_MINING_STATUS_API_ROUTE}/${encodedEmail}`;
+
+    const headers: HeadersInit = {
+      "Content-Type": "application/json",
+    };
+
+    const accessToken = getAccessToken();
+    if (accessToken) {
+      headers.Authorization = `Bearer ${accessToken}`;
+    }
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers,
+    });
+    const result = await parseJsonSafe(response);
+
+    if (!response.ok) {
+      throw new Error(result?.error || "Failed to fetch mining status");
+    }
+
+    return {
+      status: response.status,
+      data: result?.data ?? result,
+    };
+  } catch (error) {
+    console.error("getMiningStatus error:", error);
+    return {
+      status: 500,
+      error: error instanceof Error ? error.message : "Failed to fetch mining status",
     };
   }
 }
@@ -291,8 +543,13 @@ const toFiniteNumber = (value: unknown): number | undefined => {
   return undefined;
 };
 
+const toSafeNumber = (value: unknown): number => {
+  const numeric = Number(value);
+  return Number.isFinite(numeric) ? numeric : 0;
+};
+
 const sumNumbers = (...values: Array<unknown>): number =>
-  values.reduce((total, value) => {
+  values.reduce<number>((total, value) => {
     const numericValue = toFiniteNumber(value);
     return numericValue !== undefined ? total + numericValue : total;
   }, 0);
@@ -320,6 +577,18 @@ interface UserMiningBalanceData {
 export interface UserMiningBalanceResponse {
   status: number;
   data: UserMiningBalanceData;
+  error?: string;
+}
+
+export interface UserWalletBalanceResponse {
+  status: number;
+  data: {
+    email: string;
+    symbol?: string;
+    network?: string;
+    balance: number;
+    [key: string]: unknown;
+  };
   error?: string;
 }
 
@@ -391,7 +660,7 @@ export async function getUserMiningBalance(email: string): Promise<UserMiningBal
       }
     );
 
-    const result = await response.json().catch(() => ({}));
+    const result = await parseJsonSafe(response);
 
     const status =
       typeof result?.status === "number" ? result.status : response.status;
@@ -402,8 +671,8 @@ export async function getUserMiningBalance(email: string): Promise<UserMiningBal
       typeof result?.message === "string"
         ? result.message
         : typeof result?.error === "string"
-        ? result.error
-        : undefined;
+          ? result.error
+          : undefined;
 
     return {
       status,
@@ -422,163 +691,34 @@ export async function getUserMiningBalance(email: string): Promise<UserMiningBal
   }
 }
 
-export async function getMiningStatus(
+export interface UserBTCYBalanceResponse {
+  status: number;
+  data: {
+    email?: string;
+    plan?: string;
+    userType?: string;
+    totalBTCYBalance?: number;
+    balance?: number;
+    [key: string]: unknown;
+  };
+  error?: string;
+}
+
+export async function getUserBTCYBalance(
   email: string
-): Promise<MiningStatusResponse> {
-  const emptyData = normalizeMiningStatus(undefined);
+): Promise<UserBTCYBalanceResponse> {
+  const emptyData: UserBTCYBalanceResponse = {
+    status: 400,
+    data: {
+      email,
+      totalBTCYBalance: 0,
+      balance: 0,
+    },
+    error: "Email is required to fetch BTCY balance",
+  };
 
   if (!email) {
-    return {
-      status: 400,
-      data: emptyData,
-      error: "Email is required to fetch mining status",
-    };
-  }
-
-  try {
-    const response = await fetch(
-      `${GET_MINING_STATUS_API_ROUTE}/${encodeURIComponent(email)}`
-    );
-    const result = await response.json().catch(() => ({}));
-    const status =
-      typeof result?.status === "number" ? result.status : response.status;
-    const normalized = normalizeMiningStatus(result?.data ?? result);
-
-    const rawError =
-      typeof result?.message === "string"
-        ? result.message
-        : typeof result?.error === "string"
-        ? result.error
-        : undefined;
-
-    return {
-      status,
-      data: normalized,
-      error: response.ok ? undefined : rawError,
-    };
-  } catch (error) {
-    return {
-      status: 500,
-      data: emptyData,
-      error:
-        error instanceof Error
-          ? error.message
-          : "Failed to fetch mining status",
-    };
-  }
-}
-
-interface UserWalletBalanceData {
-  email: string;
-  coinSymbol: string;
-  network: string;
-  balance: number;
-}
-
-export interface UserWalletBalanceResponse {
-  status: number;
-  data: UserWalletBalanceData;
-  error?: string;
-}
-
-export interface MiningStatusData {
-  isMiningActive: boolean;
-  lastClaimTime?: string;
-  miningRate: number;
-  sessionStartTime?: string;
-  sessionEndTime?: string;
-}
-
-export interface MiningStatusResponse {
-  status: number;
-  data: MiningStatusData;
-  error?: string;
-}
-
-const normalizeMiningStatus = (raw: unknown): MiningStatusData => {
-  const source =
-    raw && typeof raw === "object" && raw !== null
-      ? (raw as Record<string, unknown>)
-      : {};
-
-  const miningRate =
-    toFiniteNumber(source["miningRate"]) ??
-    toFiniteNumber(source["miningRatePerHour"]) ??
-    0;
-
-  const sessionStartTime =
-    typeof source["sessionStartTime"] === "string"
-      ? (source["sessionStartTime"] as string)
-      : typeof source["startTime"] === "string"
-      ? (source["startTime"] as string)
-      : undefined;
-
-  const sessionEndTime =
-    typeof source["sessionEndTime"] === "string"
-      ? (source["sessionEndTime"] as string)
-      : typeof source["endTime"] === "string"
-      ? (source["endTime"] as string)
-      : undefined;
-
-  return {
-    isMiningActive: Boolean(source["isMiningActive"]),
-    lastClaimTime:
-      typeof source["lastClaimTime"] === "string"
-        ? (source["lastClaimTime"] as string)
-        : undefined,
-    miningRate,
-    sessionStartTime,
-    sessionEndTime,
-  };
-};
-
-const normalizeWalletBalance = (
-  email: string,
-  coin: string,
-  network: string,
-  raw: unknown
-): UserWalletBalanceData => {
-  const source =
-    raw && typeof raw === "object" && raw !== null
-      ? (raw as Record<string, unknown>)
-      : {};
-
-  const balance =
-    toFiniteNumber(source["balance"]) ??
-    toFiniteNumber(source["coinBalance"]) ??
-    0;
-
-  const coinSymbol =
-    typeof source["coinSymbol"] === "string" && source["coinSymbol"]
-      ? (source["coinSymbol"] as string)
-      : coin;
-
-  const coinNetwork =
-    typeof source["coinNetwork"] === "string" && source["coinNetwork"]
-      ? (source["coinNetwork"] as string)
-      : network;
-
-  return {
-    email,
-    coinSymbol,
-    network: coinNetwork,
-    balance,
-  };
-};
-
-export async function getUserWalletBalance(
-  email: string,
-  coin: string,
-  network: string
-): Promise<UserWalletBalanceResponse> {
-  const emptyData = normalizeWalletBalance(email, coin, network, undefined);
-
-  if (!email) {
-    return {
-      status: 400,
-      data: emptyData,
-      error: "Email is required to fetch wallet balance",
-    };
+    return emptyData;
   }
 
   try {
@@ -592,57 +732,147 @@ export async function getUserWalletBalance(
     }
 
     const response = await fetch(
-      `${GET_USER_WALLET_BALANCE_API_ROUTE}/${encodeURIComponent(email)}/${encodeURIComponent(
-        coin
-      )}/${encodeURIComponent(network)}`,
+      `${GET_USER_BTCY_BALANCE_API_ROUTE}/${encodeURIComponent(email)}`,
       {
-        method: "POST",
+        method: "GET",
         headers,
-        body: JSON.stringify({}),
       }
     );
+    const result = await parseJsonSafe(response);
 
-    const result = await response.json().catch(() => ({}));
+    const asRecord = (value: unknown): Record<string, unknown> =>
+      value && typeof value === "object" && !Array.isArray(value)
+        ? (value as Record<string, unknown>)
+        : {};
 
-    const statusFromResponse =
-      typeof result?.status === "number" ? result.status : response.status;
+    const resultRecord = asRecord(result);
+    const dataSource =
+      "data" in resultRecord &&
+        typeof resultRecord["data"] === "object"
+        ? (resultRecord["data"] as Record<string, unknown>)
+        : resultRecord;
 
-    const normalized = normalizeWalletBalance(
-      email,
-      coin,
-      network,
-      result?.data ?? result
+    const totalBTCYBalance = toSafeNumber(
+      pickFirstNumber(
+        dataSource["totalBTCYBalance"],
+        dataSource["totalBalance"],
+        dataSource["balance"],
+        dataSource["transferableBTCYBalance"],
+        dataSource["btcYBalance"],
+        dataSource["availableBalance"]
+      )
     );
 
+    const normalizedData = {
+      ...dataSource,
+      email,
+      totalBTCYBalance,
+      balance: toSafeNumber(
+        pickFirstNumber(
+          dataSource["balance"],
+          dataSource["totalBTCYBalance"],
+          dataSource["totalBalance"],
+          totalBTCYBalance
+        )
+      ),
+    };
+
     const rawError =
-      typeof result?.message === "string"
-        ? result.message
-        : typeof result?.error === "string"
-        ? result.error
-        : typeof result?.data === "string"
-        ? result.data
-        : undefined;
-
-    const isZeroBalanceError =
-      typeof rawError === "string" && /balance\s*zero/i.test(rawError);
-
-    const isCoinNotRegisteredError =
-      typeof rawError === "string" && /coin\s+not\s+registered/i.test(rawError);
-
-    const treatedAsExpected = response.ok || isZeroBalanceError || isCoinNotRegisteredError;
+      typeof resultRecord["message"] === "string"
+        ? (resultRecord["message"] as string)
+        : typeof resultRecord["error"] === "string"
+          ? (resultRecord["error"] as string)
+          : undefined;
 
     return {
-      status: treatedAsExpected ? 200 : statusFromResponse,
-      data: normalized,
-      error:
-        treatedAsExpected
-          ? undefined
-          : rawError,
+      status:
+        typeof resultRecord["status"] === "number"
+          ? (resultRecord["status"] as number)
+          : response.status,
+      data: normalizedData,
+      error: response.ok ? undefined : rawError,
     };
   } catch (error) {
+    console.error("getUserBTCYBalance error:", error);
     return {
       status: 500,
-      data: emptyData,
+      data: {
+        email,
+        totalBTCYBalance: 0,
+        balance: 0,
+      },
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to fetch BTCY balance",
+    };
+  }
+}
+
+export async function getUserWalletBalance(
+  email: string,
+  symbol: string,
+  network: string
+): Promise<UserWalletBalanceResponse> {
+  const emptyData: UserWalletBalanceResponse = {
+    status: 400,
+    data: {
+      email,
+      symbol,
+      network,
+      balance: 0,
+    },
+    error: "Email, symbol, and network are required",
+  };
+
+  if (!email || !symbol || !network) {
+    return emptyData;
+  }
+
+  try {
+    const headers: HeadersInit = {
+      "Content-Type": "application/json",
+    };
+
+    const accessToken = getAccessToken();
+    if (accessToken) {
+      headers.Authorization = `Bearer ${accessToken}`;
+    }
+
+    const endpoint = `${GET_USER_WALLET_BALANCE_API_ROUTE}/${encodeURIComponent(
+      email
+    )}/${encodeURIComponent(symbol)}/${encodeURIComponent(network)}`;
+
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers,
+    });
+    const result = await parseJsonSafe(response);
+
+    if (!response.ok) {
+      throw new Error(result?.error || "Failed to fetch wallet balance");
+    }
+
+    return {
+      status: response.status,
+      data: {
+        email,
+        symbol,
+        network,
+        balance: toSafeNumber(result?.data?.balance ?? result?.balance ?? 0),
+        ...result?.data,
+      },
+    };
+  } catch (error) {
+    console.error("getUserWalletBalance error:", error);
+    return {
+      status: 500,
+      data: {
+        email,
+        symbol,
+        network,
+        balance: 0,
+      },
       error:
         error instanceof Error
           ? error.message
@@ -651,256 +881,177 @@ export async function getUserWalletBalance(
   }
 }
 
-type RawUserBTCYBalance = {
+export interface AlchemySessionRecord {
+  _id?: string;
+  sessionId?: string;
   email?: string;
-  balance?: number | string;
-  totalBTCYBalance?: number | string;
-  totalBalance?: number | string;
   userType?: string;
-  plan?: string;
-  nuggetBalance?: number | string;
-  nuggetBTCY?: number | string;
-  minedBalance?: number | string;
-  minedBTCYBalance?: number | string;
-  tokenBalance?: number | string;
-  tokenBTCY?: number | string;
-  purchasedBalance?: number | string;
-  purchasedBTCYBalance?: number | string;
-  quantumBalance?: number | string;
-  quantumBTCYBalance?: number | string;
-};
-
-export interface UserBTCYBalanceData {
-  email: string;
-  balance: number;
-  totalBTCYBalance: number;
-  userType: string;
-  plan: string;
-  nuggetBalance: number;
-  withdrawnBalance: number;
-  tokenBalance: number;
+  coinName?: string;
+  inputAmount?: number;
+  resultAmount?: number;
+  multiplier?: number;
+  category?: string;
+  stage?: string;
+  status?: string;
+  notes?: string;
+  startedAt?: string;
+  completedAt?: string;
+  durationMinutes?: number;
+  createdAt?: string;
 }
 
-export interface UserBTCYBalanceResponse {
+export interface AlchemySessionsResponse {
   status: number;
-  message?: string;
-  data: UserBTCYBalanceData;
+  sessions: AlchemySessionRecord[];
   error?: string;
 }
 
-const normalizeUserBTCYBalance = (
-  raw: RawUserBTCYBalance | undefined
-): UserBTCYBalanceData => {
-  const nuggetBalance = pickFirstNumber(
-    raw?.nuggetBalance,
-    raw?.nuggetBTCY,
-    raw?.minedBalance,
-    raw?.minedBTCYBalance,
-    raw?.balance
-  );
-
-  const tokenBalance = pickFirstNumber(
-    raw?.tokenBalance,
-    raw?.tokenBTCY,
-    raw?.purchasedBalance,
-    raw?.purchasedBTCYBalance,
-    raw?.quantumBalance,
-    raw?.quantumBTCYBalance
-  );
-
-  const withdrawnBalance = pickFirstNumber(
-    raw?.withdrawnBalance,
-    raw?.withdrawableBalance,
-    raw?.withdrawableBTCY,
-    raw?.walletBalance,
-    raw?.stellarBalance
-  );
-
-  const explicitTotal =
-    toFiniteNumber(raw?.totalBTCYBalance) ??
-    toFiniteNumber(raw?.totalBalance);
-
-  const totalBTCYBalance =
-    explicitTotal !== undefined ? explicitTotal : nuggetBalance + tokenBalance;
-
-  return {
-    email: raw?.email ?? "",
-    balance: nuggetBalance, // maintain backwards compatibility
-    totalBTCYBalance,
-    userType: raw?.userType ?? "",
-    plan: raw?.plan ?? "",
-    nuggetBalance,
-    withdrawnBalance,
-    tokenBalance,
-  };
-};
-
-const createEmptyBalanceData = (email: string): UserBTCYBalanceData => ({
-  email,
-  balance: 0,
-  totalBTCYBalance: 0,
-  userType: "",
-  plan: "",
-  nuggetBalance: 0,
-  withdrawnBalance: 0,
-  tokenBalance: 0,
-});
-
-const joinErrors = (...errors: Array<string | undefined>): string | undefined => {
-  const uniqueMessages = [...new Set(errors.filter((value): value is string => Boolean(value && value.trim())).map((value) => value.trim()))];
-  return uniqueMessages.length > 0 ? uniqueMessages.join(" | ") : undefined;
-};
-
-const fetchLegacyUserBTCYBalance = async (
+export async function getAlchemySessionsByEmail(
   email: string
-): Promise<UserBTCYBalanceResponse | null> => {
+): Promise<AlchemySessionsResponse> {
   try {
-    const response = await fetch(
-      `${GET_USER_BTCY_BALANCE_API_ROUTE}/${encodeURIComponent(email)}`,
-      { method: "GET" }
-    );
+    const accessToken = getAccessToken();
 
-    const result = (await response.json()) as {
-      status?: number;
-      message?: string;
-      error?: string;
-      data?: RawUserBTCYBalance;
-    };
-
-    if (!response.ok) {
-      throw new Error(result.error || result.message || "Failed to fetch user BTCY balance");
+    if (!accessToken) {
+      throw new Error("No access token found. Please login first.");
     }
 
+    const encodedEmail = encodeURIComponent(email);
+    const response = await fetch(
+      `${ALCHEMY_SESSIONS_API_ROUTE}/${encodedEmail}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    const result = await parseJsonSafe(response);
+
+    if (!response.ok) {
+      throw new Error(result?.error || "Failed to fetch alchemy sessions");
+    }
+    console.log("result", result)
+    const sessions =
+      result?.session ??
+      result?.data?.session ??
+      result ??
+      [];
+
     return {
-      status: result.status ?? response.status,
-      message: result.message,
-      data: normalizeUserBTCYBalance(result.data),
-      error: result.error,
+      status: response.status,
+      sessions: Array.isArray(sessions) ? sessions : [],
     };
   } catch (error) {
-    console.error("Legacy BTCY balance fallback failed:", error);
+    console.error("getAlchemySessionsByEmail error:", error);
+    return {
+      status: 500,
+      sessions: [],
+      error: error instanceof Error ? error.message : "Failed to fetch sessions",
+    };
+  }
+}
+
+const CLICK_CONVERT_SESSION_STORAGE_KEY = "alchemy-click-convert-session";
+
+export interface ClickConvertSessionState extends AlchemySessionRecord {
+  sessionId: string;
+  email: string;
+  inputAmount: number;
+  createdAt: string;
+  startedAt?: string;
+  completedAt?: string;
+  withdrawalType?: WithdrawalType;
+  withdrawalAddress?: string;
+}
+
+export const saveClickConvertSessionState = (
+  state: ClickConvertSessionState
+) => {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(
+      CLICK_CONVERT_SESSION_STORAGE_KEY,
+      JSON.stringify(state)
+    );
+  } catch (error) {
+    console.warn("Unable to persist click-convert session:", error);
+  }
+};
+
+export const getClickConvertSessionState = (): ClickConvertSessionState | null => {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(CLICK_CONVERT_SESSION_STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw) as ClickConvertSessionState;
+  } catch (error) {
+    console.warn("Unable to read click-convert session:", error);
     return null;
   }
 };
 
-export async function getUserBTCYBalance(email: string): Promise<UserBTCYBalanceResponse> {
-  const emptyData = createEmptyBalanceData(email);
+export const clearClickConvertSessionState = () => {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.removeItem(CLICK_CONVERT_SESSION_STORAGE_KEY);
+  } catch (error) {
+    console.warn("Unable to clear click-convert session:", error);
+  }
+};
 
-  if (!email) {
-    return {
-      status: 400,
-      data: emptyData,
-      error: "Email is required to fetch BTCY balance",
-    };
+export async function finalizeClickConvertSessionState({
+  forceComplete = false,
+  withdrawalType,
+  withdrawalAddress,
+}: {
+  forceComplete?: boolean;
+  withdrawalType?: WithdrawalType;
+  withdrawalAddress?: string;
+} = {}): Promise<ClickConvertSessionState | null> {
+  const stored = getClickConvertSessionState();
+  if (!stored?.sessionId) return null;
+  if (stored.completedAt && !forceComplete) {
+    return stored;
   }
 
-  const [
-    subscriptionResult,
-    miningResult,
-    yingYangWalletResult,
-    stellarWalletResult,
-  ] = await Promise.all([
-    getUserSubscription(email),
-    getUserMiningBalance(email),
-    getUserWalletBalance(email, "BTCY", "Ying Yang Chain"),
-    getUserWalletBalance(email, "BTCY", "Stellar"),
-  ]);
+  const result: any = await completeAlchemyProcess({
+    sessionId: stored.sessionId,
+    withdrawalType,
+    withdrawalAddress,
+  });
 
-  const shouldFallbackToLegacy =
-    miningResult.status >= 400 && yingYangWalletResult.status >= 400;
-
-  let legacyResponse: UserBTCYBalanceResponse | null = null;
-
-  if (shouldFallbackToLegacy) {
-    legacyResponse = await fetchLegacyUserBTCYBalance(email);
-
-    if (legacyResponse) {
-      const mergedError = joinErrors(
-        legacyResponse.error,
-        subscriptionResult.error,
-        stellarWalletResult.error
-      );
-
-      return {
-        ...legacyResponse,
-        error: mergedError,
-        message: mergedError ? "Balance fetched with partial legacy data" : legacyResponse.message,
-        data: {
-          ...legacyResponse.data,
-          userType: subscriptionResult.data?.userType || legacyResponse.data.userType,
-          plan: subscriptionResult.data?.plan || legacyResponse.data.plan,
-        },
-      };
-    }
+  if (!result.success || !result.session) {
+    throw new Error(result.error || "Missing alchemy session result");
   }
 
-  const subscriptionPlan = {
-    userType: subscriptionResult.data?.userType ?? "",
-    plan: subscriptionResult.data?.plan ?? "",
+  const updatedState: ClickConvertSessionState = {
+    ...stored,
+    ...result.session,
+    sessionId: result.session.sessionId ?? stored.sessionId,
+    email: stored.email,
+    inputAmount: stored.inputAmount,
+    createdAt: stored.createdAt,
+    startedAt:
+      result.session.startedAt ??
+      stored.startedAt ??
+      stored.createdAt,
+    completedAt:
+      result.session.completedAt ??
+      stored.completedAt ??
+      new Date().toISOString(),
+    withdrawalType: result.session.withdrawalType ?? stored.withdrawalType ?? withdrawalType,
+    withdrawalAddress:
+      result.session.withdrawalAddress ??
+      stored.withdrawalAddress ??
+      withdrawalAddress,
   };
 
-  if (
-    subscriptionResult.status >= 400 &&
-    !subscriptionPlan.userType &&
-    !subscriptionPlan.plan
-  ) {
-    legacyResponse = legacyResponse ?? (await fetchLegacyUserBTCYBalance(email));
-    if (legacyResponse) {
-      subscriptionPlan.userType =
-        subscriptionPlan.userType || legacyResponse.data.userType;
-      subscriptionPlan.plan =
-        subscriptionPlan.plan || legacyResponse.data.plan;
-    }
-  }
-
-  const miningTransferable =
-    toFiniteNumber(miningResult.data?.transferableBalance) ?? 0;
-  const miningUnverified =
-    toFiniteNumber(miningResult.data?.unverifiedBalance) ?? 0;
-  const miningMigrated =
-    toFiniteNumber(miningResult.data?.migratedBalance) ?? 0;
-
-  const miningTotal = toFiniteNumber(miningResult.data?.totalBalance);
-  const nuggetBalance =
-    miningTotal !== undefined
-      ? miningTotal
-      : sumNumbers(miningTransferable, miningUnverified, miningMigrated);
-
-  const withdrawnBalance =
-    toFiniteNumber(stellarWalletResult.data?.balance) ?? 0;
-  const tokenBalance = toFiniteNumber(
-    yingYangWalletResult.data?.balance
-  ) ?? 0;
-  const totalBTCYBalance = sumNumbers(
-    nuggetBalance,
-    withdrawnBalance,
-    tokenBalance
-  );
-
-  const aggregatedError = joinErrors(
-    subscriptionResult.error,
-    miningResult.error,
-    yingYangWalletResult.error,
-    stellarWalletResult.error,
-    legacyResponse?.error
-  );
-
-  return {
-    status: aggregatedError ? 206 : 200,
-    message: aggregatedError ? "Balance fetched with partial data" : undefined,
-    error: aggregatedError,
-    data: {
-      email,
-      balance: nuggetBalance,
-      totalBTCYBalance,
-      userType: subscriptionPlan.userType,
-      plan: subscriptionPlan.plan,
-      nuggetBalance,
-      withdrawnBalance,
-      tokenBalance,
-    },
-  };
+  saveClickConvertSessionState(updatedState);
+  return updatedState;
 }
+
 export function isPlanAllowed(plan: string | null, required: string): boolean {
   const planAccessMap: Record<string, string[]> = {
     "free mining": ["free"],

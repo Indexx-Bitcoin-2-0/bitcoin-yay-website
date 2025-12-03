@@ -18,7 +18,7 @@ const TurboMiningPage = () => {
             className="w-20 md:w-40"
           />
           <h1 className="text-4xl md:text-5xl xl:text-8xl font-bold">
-            Turbo Mining Gopher
+            Turbo Mining Plan
           </h1>
         </div>
         <Image
@@ -30,22 +30,22 @@ const TurboMiningPage = () => {
           <p className="text-3xl font-bold text-center">Generate</p>
           <p className="text-6xl md:text-9xl font-bold text-center">
 
-            18 BTCY/<span className="text-3xl md:text-6xl font-bold">Hr</span>
+            9 BTCY/<span className="text-3xl md:text-6xl font-bold">Hr</span>
           </p>
           <ul className="mt-20 list-disc list-inside text-xl flex flex-col gap-6">
             <li>  <span className="font-bold line-through">
               $300
             </span> $ 90/m subscription fee</li>
             <li>1 BTCY ~ $ 0.10</li>
-            <li>~18 BTCY/hour ~ $ 1.80</li>
+            <li>~9 BTCY/hour ~ $ 0.90</li>
             <li className="text-primary">Referral Bonuses</li>
             <li>Priority Mining Support</li>
           </ul>
         </div>
         <CustomButton2
-          text="Subscribe"
+          text="Coming Soon"
           image={BellButtonImage}
-          link="/#apple-store-download"
+          disabled={true}
           imageStyling="w-34"
         />
       </div>
@@ -53,13 +53,13 @@ const TurboMiningPage = () => {
       <div className="text-base mt-40 flex flex-col gap-20 max-w-5xl leading-8 mb-40">
         <div>
           <p className="text-3xl font-bold mb-4">
-            Bitcoin Yay Subscription Disclaimer
+            bitcoin-yay Subscription Disclaimer
           </p>
           <p className="font-bold">
             Please Read Carefully Before Purchasing Any Subscription Plan
           </p>
           <p>
-            By purchasing or activating any subscription plan on the Bitcoin Yay
+            By purchasing or activating any subscription plan on the bitcoin-yay
             platform, you acknowledge and agree to the following:
           </p>
         </div>
@@ -68,7 +68,7 @@ const TurboMiningPage = () => {
             1. Utility-Only, Not Financial Investment
           </p>
           <p>
-            Bitcoin Yay (BTCY) and all associated subscription plans—including
+            bitcoin-yay (BTCY) and all associated subscription plans—including
             Snatch Gopher, Electric Gopher, Turbo Gopher, and Nuclear Gopher—are
             designed solely to enhance your participation in the BTCY ecosystem.
             These plans grant access to increased virtual mining speed and other
@@ -116,7 +116,7 @@ const TurboMiningPage = () => {
           <p>
             All purchases of subscription plans are final and non-refundable.
             Subscription features are app-based and may only be accessed within
-            the official Bitcoin Yay app (TestFlight or live release, depending
+            the official bitcoin-yay app (TestFlight or live release, depending
             on platform availability).
           </p>
         </div>
@@ -135,7 +135,7 @@ const TurboMiningPage = () => {
           <p>
             Subscriptions are available to users aged 18+ and residing in
             jurisdictions where virtual crypto mining applications are legally
-            permitted. Bitcoin Yay reserves the right to suspend accounts or
+            permitted. bitcoin-yay reserves the right to suspend accounts or
             restrict access where illegal, fraudulent, or abusive activity is
             detected.
           </p>

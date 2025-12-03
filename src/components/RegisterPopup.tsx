@@ -8,7 +8,7 @@ import SetPasswordPopup from "@/components/SetPasswordPopup";
 import EmailVerificationPopup from "@/components/EmailVerificationPopup";
 import SuccessRegistrationPopup from "@/components/SuccessRegistrationPopup";
 import { useAuth } from "@/contexts/AuthContext";
-import { extractApiMessage, getGmailAliasInfo, mapNoUserFoundMessage } from "@/lib/utils";
+import { getGmailAliasInfo } from "@/lib/utils";
 import {
   GOOGLE_REGISTER_API_ROUTE,
   REGISTER_API_ROUTE,
@@ -23,6 +23,7 @@ import GoogleRegisterButtonImage from "@/assets/images/buttons/google-button.web
 import CustomButton2 from "@/components/CustomButton2";
 import { ChevronDown, Check, Eye, EyeOff } from "lucide-react";
 import { useGoogleLogin } from "@react-oauth/google";
+// import { extractApiMessage, normalizeErrorMessage } from "@/lib/utils";
 
 interface RegisterPopupProps {
   isOpen: boolean;
@@ -381,21 +382,16 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
           // Always show SetPasswordPopup after Google registration
           setShowSetPassword(true);
         } else {
-          const rawErrorMessage = extractApiMessage(res?.data);
-          const finalMessage =
-            mapNoUserFoundMessage(rawErrorMessage) ??
-            rawErrorMessage ??
-            "Google signup failed.";
-          setErrors({ general: finalMessage });
+          setErrors({
+            general: res?.data?.message || "Google signup failed.",
+          });
         }
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
-          const rawErrorMessage = extractApiMessage(error.response?.data);
-          const finalMessage =
-            mapNoUserFoundMessage(rawErrorMessage) ??
-            rawErrorMessage ??
+          const errorMessage =
+            error.response?.data?.message ||
             "Google signup failed. Please try again.";
-          setErrors({ general: finalMessage });
+          setErrors({ general: errorMessage });
         } else {
           setErrors({
             general: "Unexpected error occurred. Please try again.",
@@ -543,11 +539,11 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
             <p className="text-tertiary text-lg mb-4">Welcome To</p>
             <Image
               src={MainLogo}
-              alt="Bitcoin Yay"
+              alt="bitcoin-yay"
               className="w-40 md:w-48 xl:w-80 mx-auto mb-4"
             />
             <h2 className="text-primary text-xl md:text-3xl">
-              Bitcoin Yay Is The Micro Token
+              bitcoin-yay Is The Micro Token
             </h2>
             <p className="text-primary text-xl md:text-3xl">
               And Petty Cash Of Bitcoin

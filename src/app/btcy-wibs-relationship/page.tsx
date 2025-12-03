@@ -11,11 +11,11 @@ import UpArrow from '@/assets/images/UpArrow.png'
 export const metadata = {
   title: "BTCY & WIBS Relationship - Complete Crypto Ecosystem",
   description:
-    "Discover how Bitcoin Yay (BTCY) integrates with the WIBS ecosystem. ",
+    "Discover how bitcoin-yay (BTCY) integrates with the WIBS ecosystem. ",
   openGraph: {
     title: "BTCY & WIBS Relationship - Complete Crypto Ecosystem",
     description:
-      "Discover how Bitcoin Yay (BTCY) integrates with the WIBS ecosystem.",
+      "Discover how bitcoin-yay (BTCY) integrates with the WIBS ecosystem.",
   },
 };
 
@@ -30,7 +30,7 @@ export default function BtcyIndexRelationship() {
           BTCY Relationship with WIBS
         </h1>
         <p className="mt-6 text-base max-w-2xl">
-          WIBS is the official meme coin of BTCY — the fun, viral side of the Bitcoin Yay movement that turns community energy into real value.
+          WIBS is the official meme coin of BTCY — the fun, viral side of the bitcoin-yay movement that turns community energy into real value.
         </p>
       </div>
 
@@ -40,7 +40,7 @@ export default function BtcyIndexRelationship() {
         <Link href="/">
           <Image
             src={BitcoinYayLogo}
-            alt="Bitcoin Yay Logo"
+            alt="bitcoin-yay Logo"
             className="w-80 hover:scale-105 transition-transform duration-300"
           />
         </Link>

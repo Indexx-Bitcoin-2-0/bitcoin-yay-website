@@ -10,11 +10,11 @@ import IndexxLogo from '@/assets/images/indexx.ai.svg'
 export const metadata = {
   title: "BTCY & Indexx.ai Relationship - Complete Crypto Ecosystem",
   description:
-    "Discover how Bitcoin Yay (BTCY) integrates with the Indexx.ai ecosystem. Mine BTCY, shop with rewards, trade on exchanges, and learn through academy courses in one complete platform.",
+    "Discover how bitcoin-yay (BTCY) integrates with the Indexx.ai ecosystem. Mine BTCY, shop with rewards, trade on exchanges, and learn through academy courses in one complete platform.",
   openGraph: {
     title: "BTCY & Indexx.ai Relationship - Complete Crypto Ecosystem",
     description:
-      "Discover how Bitcoin Yay (BTCY) integrates with the Indexx.ai ecosystem. Mine BTCY, shop with rewards, trade on exchanges, and learn through academy courses in one complete platform.",
+      "Discover how bitcoin-yay (BTCY) integrates with the Indexx.ai ecosystem. Mine BTCY, shop with rewards, trade on exchanges, and learn through academy courses in one complete platform.",
   },
 };
 
@@ -29,7 +29,7 @@ export default function BtcyIndexRelationship() {
           BTCY Relationship with Indexx.ai
         </h1>
         <p className="mt-6 text-base max-w-2xl">
-          Indexx.ai is the official host of Bitcoin Yay (BTCY) — powering its blockchain wallet, ecosystem, and utilities like Alchemy and Quantum Mining. It’s where BTCY becomes real, secure, and trade-ready. </p>
+          Indexx.ai is the official host of bitcoin-yay (BTCY) — powering its blockchain wallet, ecosystem, and utilities like Alchemy and Quantum Mining. It’s where BTCY becomes real, secure, and trade-ready. </p>
       </div>
 
       {/* Part 02 */}
@@ -37,7 +37,7 @@ export default function BtcyIndexRelationship() {
         <Link href="/">
           <Image
             src={BitcoinYayLogo}
-            alt="Bitcoin Yay Logo"
+            alt="bitcoin-yay Logo"
             className="w-80 hover:scale-105 transition-transform duration-300"
           />
         </Link>

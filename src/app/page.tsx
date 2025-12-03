@@ -140,7 +140,7 @@ export default function Home() {
     <div className="overflow-hidden relative mt-40 mx-auto">
       <div className="mt-6 flex flex-col items-center text-center">
         <div className="px-4 text-2xl font-bold text-primary max-w-250 leading-tight">
-          Bitcoin Yay Is The Micro Token
+          Bitcoin-Yay Is The Micro Token
         </div>
         <div className="px-4 text-2xl font-bold text-primary max-w-250 leading-tight">
           And Petty Cash Of Bitcoin
@@ -149,7 +149,7 @@ export default function Home() {
         <div className="px-4 mt-4 text-5xl font-bold text-primary max-w-250 leading-snug">
           {btcPrice !== null && btcyPrice !== null ? (
             <>
-              Bitcoin ${btcPrice.toLocaleString()}, Bitcoin Yay $
+              Bitcoin ${btcPrice.toLocaleString()}, Bitcoin-Yay $
               {btcyPrice.toFixed(4)}
             </>
           ) : (
@@ -158,7 +158,7 @@ export default function Home() {
         </div>
 
         <div className="px-4 mt-2 text-xs font-bold text-primary max-w-250">
-          1 Bitcoin = 1 Million Bitcoin Yay
+          1 Bitcoin = 1 Million Bitcoin-Yay
         </div>
       </div>
 
@@ -251,7 +251,7 @@ export default function Home() {
                   />
                 </div>
                 <p className="mt-2 text-lg font-semibold group-hover:text-primary">
-                  ELECTRIC MINING
+                  ELECTRIC MINING PLAN
                 </p>
                 <p className="mt-2 text-sm text-white max-w-xs text-center">
                   Charge your mining speed with extra power double your earning rate and keep your sessions running stronger, longer.
@@ -269,7 +269,7 @@ export default function Home() {
                   />
                 </div>
                 <p className="mt-2 text-lg font-semibold group-hover:text-primary">
-                  TURBO MINING
+                  TURBO MINING PLAN
                 </p>
                 <p className="mt-2 text-sm text-white max-w-xs text-center">
                   Experience 6x faster mining climb to Alchemy in record time and multiply your BTCY rewards.
@@ -287,7 +287,7 @@ export default function Home() {
                   />
                 </div>
                 <p className="mt-2 text-lg font-semibold group-hover:text-primary">
-                  NUCLEAR MINING
+                  NUCLEAR MINING PLAN
                 </p>
                 <p className="mt-2 text-sm text-white max-w-xs text-center">
                   The ultimate boost maximum power, maximum output. Unlock BTCY's highest earning potential with unstoppable mining energy.
@@ -308,7 +308,7 @@ export default function Home() {
           id="mobile-mining"
         >
           <div className="flex flex-col justify-center ">
-            <p className="text-2xl">Bitcoin Yay</p>
+            <p className="text-2xl">Bitcoin-Yay</p>
             <h2 className="text-4xl md:text-7xl font-bold my-4">
               Your Mobile Mining
             </h2>
@@ -321,7 +321,7 @@ export default function Home() {
               className="w-80 md:w-140 lg:w-240"
             />
             <p className="text-2xl font-bold my-10">
-              Bitcoin Yay is your petty cash for Bitcoin!{" "}
+              Bitcoin-Yay is your petty cash for Bitcoin!{" "}
             </p>
           </div>
           <CustomButton2
@@ -340,7 +340,7 @@ export default function Home() {
               className="w-80 md:w-140 lg:w-240"
             />
             <h2 className="text-4xl md:text-7xl font-bold my-20 text-center">
-              Download The Bitcoin Yay App
+              Download The Bitcoin-Yay App
             </h2>
           </div>
           <div className="flex flex-col items-center justify-center mt-10">
@@ -368,7 +368,7 @@ export default function Home() {
           <CustomCard
             image={CardImage3}
             title="Accessible Investing- Bitcoin for Everyone."
-            desc="Investing in crypto should be simple, secure, and open to all. Start with any amount and grow your portfolio at your own pace. Bitcoin Yay makes crypto investing easy, informative, and accessible."
+            desc="Investing in crypto should be simple, secure, and open to all. Start with any amount and grow your portfolio at your own pace. Bitcoin-Yay makes crypto investing easy, informative, and accessible."
           />
           <CustomCard
             image={CardImage4}
@@ -410,7 +410,7 @@ export default function Home() {
             <BenefitCard
               image={BenefitLogo3}
               title="Transparent fees"
-              description="Farewell unexpected charges! Bitcoin Yay  guarantees transparency through detailed breakdowns."
+              description="Farewell unexpected charges! Bitcoin-Yay  guarantees transparency through detailed breakdowns."
             />
             <BenefitCard
               image={BenefitLogo4}
@@ -429,7 +429,7 @@ export default function Home() {
 
         <div className="mt-40 flex flex-col justify-center text-center items-center">
           <h1 className="px-4 text-4xl md:text-5xl xl:text-6xl font-bold text-primary max-w-250 leading-10 md:leading-18">
-            Bitcoin Yay Is The Micro Token And Petty Cash Of Bitcoin{" "}
+            Bitcoin-Yay Is The Micro Token And Petty Cash Of Bitcoin{" "}
           </h1>
           <h2 className="mt-20 text-3xl md:text-[54px] max-w-250 font-semibold">
             Download the App for Free Mining
@@ -538,7 +538,7 @@ export default function Home() {
               text="Buy Token"
               link="https://cex.indexx.ai/"
               imageStyling="w-30"
-              ariaLabel="Buy Bitcoin Yay tokens on Indexx exchange"
+              ariaLabel="Buy Bitcoin-Yay tokens on Indexx exchange"
             />
             <CustomButton2
               image={InfoButtonImage}
@@ -589,11 +589,11 @@ export default function Home() {
             <p className="text-2xl font-medium text-primary">Get to know our</p>
             <h2 className="text-5xl md:text-8xl font-bold mt-2">Gophers</h2>
             <p className="text-lg font-light max-w-176 mt-8">
-              Meet the hardworking Bitcoin Yay miner gophers behind your BTCY
+              Meet the hardworking bitcoin-yay miner gophers behind your BTCY
               earnings! These tireless miners work quietly in the background of
               your phone helping you mine BTCY anytime, anywhere. Get to know
               their unique powers and choose your mining buddy. Download your
-              favorite gopher and set it as your screen saver. It’s mining time
+              favorite gopher and set it as your screen saver. It's mining time
               in style!
             </p>
           </div>

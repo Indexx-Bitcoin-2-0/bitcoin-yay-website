@@ -18,7 +18,6 @@ import GoogleLoginButtonImage from "@/assets/images/buttons/google-button.webp";
 import CustomButton2 from "@/components/CustomButton2";
 import { Eye, EyeOff } from "lucide-react";
 import { useGoogleLogin } from "@react-oauth/google";
-import { extractApiMessage, mapNoUserFoundMessage } from "@/lib/utils";
 
 interface GoogleTokenResponse {
   access_token: string;
@@ -178,21 +177,22 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
             setShowSetPassword(true);
           }
         } else {
-          const rawErrorMessage = extractApiMessage(res?.data);
-          const finalMessage =
-            mapNoUserFoundMessage(rawErrorMessage) ??
-            rawErrorMessage ??
+          // Any other backend response
+          const errorMessage =
+            res?.data?.data ||
+            res?.data?.data?.message ||
+            res?.data?.message ||
             "Google login failed. Please try again.";
-          setErrors({ general: finalMessage });
+          setErrors({ general: errorMessage });
         }
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
-          const rawErrorMessage = extractApiMessage(error.response?.data);
-          const finalMessage =
-            mapNoUserFoundMessage(rawErrorMessage) ??
-            rawErrorMessage ??
+          const errorMessage =
+            error.response?.data?.data ||
+            error.response?.data?.data?.message ||
+            error.response?.data?.message ||
             "Google login failed. Please try again.";
-          setErrors({ general: finalMessage });
+          setErrors({ general: errorMessage });
         } else {
           setErrors({
             general: "Unexpected error occurred. Please try again.",
@@ -301,11 +301,11 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
             <p className="text-tertiary text-lg mb-4">Welcome To</p>
             <Image
               src={MainLogo}
-              alt="Bitcoin Yay"
+              alt="bitcoin-yay"
               className="w-48 md:w-60 xl:w-80 mx-auto mb-4"
             />
             <h2 className="text-primary text-xl md:text-3xl">
-              Bitcoin Yay Is The Micro Token
+              bitcoin-yay Is The Micro Token
             </h2>
             <p className="text-primary text-xl md:text-3xl">
               And Petty Cash Of Bitcoin

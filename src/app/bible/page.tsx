@@ -39,7 +39,7 @@ const CustomCard = ({
       <Link href={buttonLink} className="mt-6">
         <CustomButton
           text={buttonText}
-          handleButtonClick={() => {}}
+          handleButtonClick={() => { }}
           isActive={false}
           index={0}
         />
@@ -112,14 +112,14 @@ export default function Bible() {
           />
           <CustomCard
             image={CardImage4}
-            title="Bitcoin Yay Blockchain"
+            title="bitcoin-yay Blockchain"
             description="Dynamic, AI-optimized ecosystem. "
             buttonText="Read More"
             buttonLink="/blockchain"
           />
           <CustomCard
             image={CardImage5}
-            title="Bitcoin Yay Wallet"
+            title="bitcoin-yay Wallet"
             description="A Crypto based lottery where you can earn big rewards"
             buttonText="Read More"
             buttonLink="/bible/bitcoin-yay-wallet"

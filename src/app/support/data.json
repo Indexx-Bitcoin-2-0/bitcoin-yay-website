@@ -1,51 +1,51 @@
 {
   "general": [
     {
-      "title": "What is Bitcoin Yay?",
-      "content": "Bitcoin Yay (BTCY) is a next-generation cryptocurrency designed as a “Micro Token of Bitcoin” – a smaller, more accessible unit tied to Bitcoin’s legacy."
+      "title": "What is bitcoin-yay?",
+      "content": "bitcoin-yay (BTCY) is a next-generation cryptocurrency designed as a “Micro Token of Bitcoin” – a smaller, more accessible unit tied to Bitcoin’s legacy."
     },
     {
-      "title": "How is Bitcoin Yay different from Bitcoin?",
-      "content": "Bitcoin Yay uses an AI‑powered Proof‑of‑Participation consensus instead of energy‑intensive Proof‑of‑Work and offers sub‑second settlements with negligible fees making it more suitable for everyday use."
+      "title": "How is bitcoin-yay different from Bitcoin?",
+      "content": "bitcoin-yay uses an AI‑powered Proof‑of‑Participation consensus instead of energy‑intensive Proof‑of‑Work and offers sub‑second settlements with negligible fees making it more suitable for everyday use."
     },
     {
       "title": "What does “Micro Token of Bitcoin” mean?",
-      "content": "It means that Bitcoin Yay units are defined so that one Bitcoin converts to one million BTCY lowering the entry barrier and enabling microtransactions."
+      "content": "It means that bitcoin-yay units are defined so that one Bitcoin converts to one million BTCY lowering the entry barrier and enabling microtransactions."
     },
     {
-      "title": "What is the total supply of Bitcoin Yay?",
-      "content": "The total supply of Bitcoin Yay is capped at 21 trillion BTCY to mirror Bitcoin’s 21 million cap at the micro‑token scale."
+      "title": "What is the total supply of bitcoin-yay?",
+      "content": "The total supply of bitcoin-yay is capped at 21 trillion BTCY to mirror Bitcoin’s 21 million cap at the micro‑token scale."
     },
     {
-      "title": "What is the conversion ratio between Bitcoin and Bitcoin Yay?",
+      "title": "What is the conversion ratio between Bitcoin and bitcoin-yay?",
       "content": "The conversion ratio is set at one Bitcoin equals one million BTCY to preserve a value relationship tied to Bitcoin’s legacy."
     },
     {
-      "title": "How does Bitcoin Yay control inflation?",
-      "content": "Bitcoin Yay controls inflation by cutting mining rewards in half every six months under a semi‑annual halving schedule."
+      "title": "How does bitcoin-yay control inflation?",
+      "content": "bitcoin-yay controls inflation by cutting mining rewards in half every six months under a semi‑annual halving schedule."
     },
     {
-      "title": "What consensus mechanism does Bitcoin Yay use?",
-      "content": "Bitcoin Yay uses a novel AI‑powered Proof‑of‑Participation consensus that rewards user engagement and network contribution instead of raw computing power."
+      "title": "What consensus mechanism does bitcoin-yay use?",
+      "content": "bitcoin-yay uses a novel AI‑powered Proof‑of‑Participation consensus that rewards user engagement and network contribution instead of raw computing power."
     },
     {
-      "title": "What blockchain framework does Bitcoin Yay operate on?",
-      "content": "Bitcoin Yay operates on a customized Stellar‑based blockchain framework augmented with smart contract support via Soroban and AI integration."
+      "title": "What blockchain framework does bitcoin-yay operate on?",
+      "content": "bitcoin-yay operates on a customized Stellar‑based blockchain framework augmented with smart contract support via Soroban and AI integration."
     },
     {
-      "title": "How does Bitcoin Yay ensure fair distribution of tokens?",
+      "title": "How does bitcoin-yay ensure fair distribution of tokens?",
       "content": "Fair distribution is achieved by rewarding both on‑chain engagement and in‑app participation rather than favoring those with specialized mining hardware."
     },
     {
-      "title": "What security measures protect the Bitcoin Yay network?",
+      "title": "What security measures protect the bitcoin-yay network?",
       "content": "Security measures include multi‑layer encryption AI‑powered threat detection a BFT validator model with slashing and support for light nodes in the mobile app."
     },
     {
-      "title": "Will Bitcoin Yay become fully decentralized?",
-      "content": "Yes Bitcoin Yay plans to transition governance to a community‑run DAO over four development phases reaching full decentralization by around 2027."
+      "title": "Will bitcoin-yay become fully decentralized?",
+      "content": "Yes bitcoin-yay plans to transition governance to a community‑run DAO over four development phases reaching full decentralization by around 2027."
     },
     {
-      "title": "What is the main goal of Bitcoin Yay?",
+      "title": "What is the main goal of bitcoin-yay?",
       "content": "The main goal is to create a seamless user‑friendly and sustainable Bitcoin alternative that promotes wider everyday use of digital currency."
     }
   ],
@@ -87,7 +87,7 @@
       "content": "Mining rewards are halved every six months to manage inflation and preserve the token’s scarcity narrative."
     },
     {
-      "title": "Why does Bitcoin Yay use AI in mining?",
+      "title": "Why does bitcoin-yay use AI in mining?",
       "content": "AI is used to optimize task difficulty prevent abuse personalize user experience and ensure fair reward distribution based on engagement."
     },
     {
@@ -95,8 +95,8 @@
       "content": "A higher AI Mining Score multiplies a user’s base mining rate so active participants can earn two to three times more BTCY than their base plan."
     },
     {
-      "title": "How does Bitcoin Yay’s mining differ from Bitcoin’s mining?",
-      "content": "Bitcoin Yay mining replaces energy‑intensive hashing with AI‑driven participation tasks to democratize access and reduce environmental impact."
+      "title": "How does bitcoin-yay’s mining differ from Bitcoin’s mining?",
+      "content": "bitcoin-yay mining replaces energy‑intensive hashing with AI‑driven participation tasks to democratize access and reduce environmental impact."
     },
     {
       "title": "What benefits do paid mining plans offer?",
@@ -105,7 +105,7 @@
   ],
   "pricing": [
     {
-      "title": "How much does it cost to start mining Bitcoin Yay?",
+      "title": "How much does it cost to start mining bitcoin-yay?",
       "content": "It is free to start mining with the Snatch Gopher plan requiring only minimal daily engagement tasks."
     },
     {
@@ -133,8 +133,8 @@
       "content": "Paid plans include faster transaction priority in the network and priority withdrawal processing during high demand."
     },
     {
-      "title": "How can users earn Bitcoin Yay for free?",
-      "content": "Users earn Bitcoin Yay for free through the Snatch Gopher plan referrals under the Pocket Gopher program and community contributions."
+      "title": "How can users earn bitcoin-yay for free?",
+      "content": "Users earn bitcoin-yay for free through the Snatch Gopher plan referrals under the Pocket Gopher program and community contributions."
     },
     {
       "title": "Are there any costs associated with referring friends?",
@@ -147,15 +147,15 @@
   ],
   "app": [
     {
-      "title": "What can I do with the Bitcoin Yay app?",
+      "title": "What can I do with the bitcoin-yay app?",
       "content": "You can mine BTCY view your mining rate and AI multiplier send and receive BTCY and Bitcoin and access staking and swaps."
     },
     {
-      "title": "Is the Bitcoin Yay app easy to use?",
+      "title": "Is the bitcoin-yay app easy to use?",
       "content": "The app is designed to be user‑friendly with guided tutorials for wallet setup mining and token conversions."
     },
     {
-      "title": "Can I use the Bitcoin Yay app to send money?",
+      "title": "Can I use the bitcoin-yay app to send money?",
       "content": "Yes the app supports sending and receiving BTCY and Bitcoin to any valid address with minimal fees."
     },
     {
@@ -163,7 +163,7 @@
       "content": "The app supports biometric authentication for secure and convenient login using fingerprint or facial recognition."
     },
     {
-      "title": "How do I know how much Bitcoin Yay I am earning?",
+      "title": "How do I know how much bitcoin-yay I am earning?",
       "content": "The app dashboard displays your current base mining rate AI multiplier and total BTCY earned."
     },
     {
@@ -175,7 +175,7 @@
       "content": "The app includes a fully non‑custodial wallet for BTCY and Bitcoin with secure key storage and backup options."
     },
     {
-      "title": "Can I buy Bitcoin Yay in the app?",
+      "title": "Can I buy bitcoin-yay in the app?",
       "content": "The app provides a fiat on‑ramp to purchase BTCY via credit card or other supported payment methods."
     },
     {

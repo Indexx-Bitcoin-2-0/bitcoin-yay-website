@@ -33,7 +33,7 @@ export default function EmailSection({
     try {
       await axios.post(EMAIL_TO_ADMIN_API_ROUTE, {
         email: email.trim(),
-        website: "Bitcoin Yay",
+        website: "bitcoin-yay",
       });
 
       setMessage("Thank you! Your email has been successfully subscribed.");
@@ -94,11 +94,10 @@ export default function EmailSection({
               />
               {message && (
                 <p
-                  className={`text-center text-sm md:text-base ${
-                    messageType === "success"
+                  className={`text-center text-sm md:text-base ${messageType === "success"
                       ? "text-green-500"
                       : "text-red-500"
-                  }`}
+                    }`}
                 >
                   {message}
                 </p>
@@ -113,7 +112,7 @@ export default function EmailSection({
               >
                 <CustomButton2
                   text=""
-                  onClick={() => {}}
+                  onClick={() => { }}
                   image={buttonImage}
                   imageStyling="w-30 mt-2"
                 />

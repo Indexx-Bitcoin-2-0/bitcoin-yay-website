@@ -85,7 +85,7 @@ export default function Roadmap() {
     <div className=" mx-auto max-w-[90vw] lg:px-10 py-8 mt-40">
       <CustomStyledConatiner>
         <h1 className="text-2xl md:text-5xl font-bold mt-8 max-w-300  md:leading-16">
-          Bitcoin Yay Roadmap
+          bitcoin-yay Roadmap
         </h1>
         <p className="text-sm md:text-lg font-normal text-tertiary my-4">
           Last Updated: March 10, 2025
@@ -165,19 +165,19 @@ export default function Roadmap() {
               Product Roadmap Progress
             </h2>
             <p className="text-base mt-10">
-              Bitcoin Yay is designed as a comprehensive ecosystem where apps
+              bitcoin-yay is designed as a comprehensive ecosystem where apps
               and utilities cater to real-world needs, a powerful platform
               fosters decentralized innovation, a secure blockchain ensures
               seamless transactions and transparency, and an active community
               drives engagement and adoption. All of these elements work
-              together to achieve Bitcoin Yay’s ultimate mission: to create the
+              together to achieve bitcoin-yay’s ultimate mission: to create the
               most inclusive peer-to-peer ecosystem and online experience,
-              powered by Bitcoin Yay, a groundbreaking digital currency.
+              powered by bitcoin-yay, a groundbreaking digital currency.
             </p>
             <p className="text-base mt-6">
               The milestones outlined in the roadmap reflect the ongoing
-              progress toward Bitcoin Yay’s full-scale launch. Interested in the
-              products and initiatives shaping the future of Bitcoin Yay? Scroll
+              progress toward bitcoin-yay’s full-scale launch. Interested in the
+              products and initiatives shaping the future of bitcoin-yay? Scroll
               down or explore specific sections to discover over 20 active
               projects, each showcasing key developments and upcoming
               milestones.
@@ -193,39 +193,39 @@ export default function Roadmap() {
         </h2>
         <div className="mt-20">
           <CustomCard
-            title="Bitcoin Yay App"
+            title="bitcoin-yay App"
             desc={
               <p>
-                Bitcoin Yay is a next-generation cryptocurrency platform
+                bitcoin-yay is a next-generation cryptocurrency platform
                 designed to simplify digital transactions, trading, and
                 decentralized finance. It offers a secure blockchain network, a
                 user-friendly wallet, seamless trading, staking rewards, and
                 integration with decentralized applications (dApps). With fast,
                 low-cost transactions and a strong community-driven ecosystem,
-                Bitcoin Yay empowers users to participate in the digital economy
+                bitcoin-yay empowers users to participate in the digital economy
                 efficiently. The app also provides educational resources and
                 market insights to help users navigate the crypto space. With
-                top-tier security and compliance, Bitcoin Yay is shaping the
+                top-tier security and compliance, bitcoin-yay is shaping the
                 future of decentralized finance.
               </p>
             }
             image={BitcoinYayLogo}
           />
           <CustomCard
-            title="Bitcoin Yay Browser"
+            title="bitcoin-yay Browser"
             desc={
               <p>
-                Bitcoin Yay Browser is a next-generation web browser designed
+                bitcoin-yay Browser is a next-generation web browser designed
                 for seamless integration with blockchain technology, providing a
                 fast, secure, and decentralized browsing experience. Built for
                 the future of Web3, it allows users to access decentralized
-                applications (dApps), manage Bitcoin Yay transactions, and
+                applications (dApps), manage bitcoin-yay transactions, and
                 explore the internet with enhanced privacy and security. Unlike
-                traditional browsers, Bitcoin Yay Browser prioritizes user
+                traditional browsers, bitcoin-yay Browser prioritizes user
                 control by eliminating third-party tracking, ensuring data
                 privacy, and enabling smooth crypto interactions. With built-in
                 wallet connectivity, lightning-fast performance, and optimized
-                access to blockchain-powered services, Bitcoin Yay Browser
+                access to blockchain-powered services, bitcoin-yay Browser
                 redefines the way users engage with the digital world, making
                 decentralized browsing more accessible and efficient than ever.
               </p>
@@ -233,10 +233,10 @@ export default function Roadmap() {
             image={BitcoinYayLogo}
           />
           <CustomCard
-            title="Bitcoin Yay Chat connect"
+            title="bitcoin-yay Chat connect"
             desc={
               <p>
-                The Bitcoin Yay Chat feature is an integrated messaging system
+                The bitcoin-yay Chat feature is an integrated messaging system
                 designed for secure and instant communication within the
                 platform. Users can connect with traders, developers, and
                 community members without leaving the app. The chat is
@@ -245,22 +245,22 @@ export default function Roadmap() {
                 chats, media sharing, and smart notifications, allowing users to
                 discuss market trends, share insights, and collaborate
                 efficiently. Whether you&apos;re engaging in peer-to-peer
-                transactions or networking with crypto enthusiasts, Bitcoin Yay
+                transactions or networking with crypto enthusiasts, bitcoin-yay
                 Chat makes communication seamless and intuitive.
               </p>
             }
             image={ChatLogo}
           />
           <CustomCard
-            title="Bitcoin Yay Mining"
+            title="bitcoin-yay Mining"
             desc={
               <>
                 <p>
-                  The Bitcoin Yay Mining feature allows users to mine Bitcoin in
+                  The bitcoin-yay Mining feature allows users to mine Bitcoin in
                   a simple and energy-efficient way, making crypto mining
                   accessible to everyone. Unlike traditional mining, which
                   requires expensive hardware and high electricity consumption,
-                  Bitcoin Yay utilizes a lightweight, user-friendly mining
+                  bitcoin-yay utilizes a lightweight, user-friendly mining
                   system that enables users to earn rewards with minimal effort.
                 </p>
                 <p>
@@ -268,7 +268,7 @@ export default function Roadmap() {
                   through a fair and transparent process, ensuring widespread
                   participation. The system is designed to be secure,
                   decentralized, and scalable, allowing both beginners and
-                  experienced miners to benefit from Bitcoin Yay’s mining
+                  experienced miners to benefit from bitcoin-yay’s mining
                   rewards.
                 </p>
               </>
@@ -276,11 +276,11 @@ export default function Roadmap() {
             image={BitcoinYayCartLogo}
           />
           <CustomCard
-            title="Bitcoin Yay Support"
+            title="bitcoin-yay Support"
             desc={
               <>
                 <p>
-                  The Bitcoin Yay Support feature ensures that users receive
+                  The bitcoin-yay Support feature ensures that users receive
                   quick and reliable assistance whenever they need help. Whether
                   it’s technical issues, account inquiries, or general questions
                   about mining and transactions, the support team is available
@@ -289,10 +289,10 @@ export default function Roadmap() {
                 <p>
                   Users can access support through multiple channels, including
                   live chat, email, and a dedicated help center with FAQs and
-                  troubleshooting guides. Bitcoin Yay prioritizes user
+                  troubleshooting guides. bitcoin-yay prioritizes user
                   satisfaction and security, ensuring that every query is
                   resolved efficiently. With 24/7 assistance and a
-                  community-driven support system, Bitcoin Yay ensures a
+                  community-driven support system, bitcoin-yay ensures a
                   seamless experience for all users.
                 </p>
               </>
