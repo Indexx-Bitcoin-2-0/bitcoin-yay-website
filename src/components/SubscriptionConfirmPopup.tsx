@@ -97,8 +97,8 @@ const SubscriptionConfirmPopup: React.FC<SubscriptionConfirmPopupProps> = ({
                     {/* <CustomButton2 text="Back" image={BackButton} onClick={onBack} /> */}
 
 
-                    < CustomButton2 text="Back" onClick={onSubscribe} image={BellButtonImage} imageStyling=" w-25" />
-                    < CustomButton2 text="Subscribe Now" onClick={onSubscribe} image={BellButtonImage} imageStyling=" w-25" />
+                    <CustomButton2 text="Back" onClick={onBack} image={BellButtonImage} imageStyling=" w-25" />
+                    <CustomButton2 text="Subscribe Now" onClick={onSubscribe} image={BellButtonImage} imageStyling=" w-25" />
                 </div>
             </div>
         </PopupComponent>
@@ -106,4 +106,3 @@ const SubscriptionConfirmPopup: React.FC<SubscriptionConfirmPopupProps> = ({
 };
 
 export default SubscriptionConfirmPopup;
-
