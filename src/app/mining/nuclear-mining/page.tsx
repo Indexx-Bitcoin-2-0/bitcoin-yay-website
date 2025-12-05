@@ -6,8 +6,9 @@ import Link from "next/link";
 
 import CustomButton2 from "@/components/CustomButton2";
 import LoginPopup from "@/components/LoginPopup";
+import PaymentMethodPopup from "@/components/PaymentMethodPopup";
 import { useAuth } from "@/contexts/AuthContext";
-import { PAYMENT_PROVIDERS, PROVIDER_LABELS } from "@/constants/paymentProviders";
+import { PROVIDER_LABELS } from "@/constants/paymentProviders";
 import {
   purchaseSubscription,
   validateCoupon,
@@ -25,11 +26,12 @@ const formatUsd = (value: number) =>
     currency: "USD",
   });
 
+const PLAN_KEY = "nuclear";
+const PLAN_NAME = "Nuclear Power Mining";
+const PLAN_PRICE = 180;
+
 const NuclearMiningPage = () => {
-  const PLAN_KEY = "nuclear";
   const { user, isLoading } = useAuth();
-  const [selectedProvider, setSelectedProvider] =
-    useState<PaymentProvider>("stripe");
   const [couponCode, setCouponCode] = useState("BTCY10");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [feedback, setFeedback] = useState<{
@@ -37,6 +39,7 @@ const NuclearMiningPage = () => {
     message: string;
   } | null>(null);
   const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
+  const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
   const [couponValidationStatus, setCouponValidationStatus] =
     useState<"idle" | "valid" | "error">("idle");
   const [couponValidationMessage, setCouponValidationMessage] =
@@ -92,7 +95,7 @@ const NuclearMiningPage = () => {
     }
   }, [isLoading, user]);
 
-  const handleSubscribe = async () => {
+  const startSubscription = async (provider: PaymentProvider) => {
     if (isSubmitting) {
       return;
     }
@@ -106,16 +109,17 @@ const NuclearMiningPage = () => {
       return;
     }
 
-    setFeedback(null);
+    setIsPaymentPopupOpen(false);
     setIsSubmitting(true);
+    setFeedback(null);
 
     try {
       const payload: SubscriptionPurchasePayload = {
         email: user.email,
-        provider: selectedProvider,
-        planKey: "nuclear",
+        provider,
+        planKey: PLAN_KEY,
         metadata: {
-          planName: "Nuclear Power Mining",
+          planName: PLAN_NAME,
           speedBoost: "27 BTCY/h",
           page: "nuclear-mining",
         },
@@ -145,7 +149,7 @@ const NuclearMiningPage = () => {
         window.location.href = redirectUrl;
         setFeedback({
           type: "info",
-          message: `Redirecting to ${PROVIDER_LABELS[selectedProvider]} checkout.`,
+          message: `Redirecting to ${PROVIDER_LABELS[provider]} checkout.`,
         });
       } else {
         const fallbackMessageParts: string[] = [];
@@ -173,6 +177,28 @@ const NuclearMiningPage = () => {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleSubscribeClick = () => {
+    if (isSubmitting) {
+      return;
+    }
+
+    if (!user?.email) {
+      setFeedback({
+        type: "error",
+        message: "Please log in to start a subscription.",
+      });
+      setIsLoginPopupOpen(true);
+      return;
+    }
+
+    setFeedback(null);
+    setIsPaymentPopupOpen(true);
+  };
+
+  const handlePaymentMethodSelect = (method: PaymentProvider) => {
+    void startSubscription(method);
   };
 
   const handleLoginSuccess = () => setIsLoginPopupOpen(false);
@@ -213,33 +239,6 @@ const NuclearMiningPage = () => {
           </ul>
         </div>
         <div className="flex flex-col items-center gap-6 w-full">
-          <div className="flex flex-col md:flex-row gap-4 w-full justify-center">
-            {PAYMENT_PROVIDERS.map((provider) => (
-              <button
-                type="button"
-                key={provider.key}
-                onClick={() => setSelectedProvider(provider.key)}
-                className={`flex-1 max-w-[390px] rounded-2xl border border-bg2 bg-[#161618]/70 px-4 py-3 text-left transition hover:border-primary/50 ${
-                  selectedProvider === provider.key
-                    ? "border-primary bg-bg3 text-white shadow-[0_0_20px_rgba(255,255,255,0.2)]"
-                    : "text-tertiary/80"
-                }`}
-              >
-                <div className="flex items-center gap-4">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10">
-                    <Image
-                      src={provider.icon}
-                      alt={`${provider.label} logo`}
-                      className="h-8 w-8 object-contain"
-                    />
-                  </div>
-                  <div>
-                    <p className="text-lg font-semibold">{provider.label}</p>
-                  </div>
-                </div>
-              </button>
-            ))}
-          </div>
           <div className="w-full max-w-md text-left">
             <label className="text-sm text-tertiary" htmlFor="nuclear-coupon">
               Coupon code (optional)
@@ -269,15 +268,11 @@ const NuclearMiningPage = () => {
             </p>
           ) : null}
           <CustomButton2
-            text={
-              isSubmitting
-                ? `Starting ${PROVIDER_LABELS[selectedProvider]} checkout...`
-                : `Pay with ${PROVIDER_LABELS[selectedProvider]}`
-            }
+            text={isSubmitting ? "Processing subscription..." : "Subscribe"}
             image={BellButtonImage}
-            onClick={handleSubscribe}
+            onClick={handleSubscribeClick}
             imageStyling="w-34"
-            ariaLabel="Start Nuclear Mining subscription checkout"
+            ariaLabel="Open Nuclear Mining payment options"
             disabled={
               isSubmitting ||
               couponValidationStatus === "error" ||
@@ -306,6 +301,13 @@ const NuclearMiningPage = () => {
         onClose={handleCloseLoginPopup}
         onLoginSuccess={handleLoginSuccess}
         onRegisterClick={handleRegisterClick}
+      />
+      <PaymentMethodPopup
+        isOpen={isPaymentPopupOpen}
+        onClose={() => setIsPaymentPopupOpen(false)}
+        onSelectPaymentMethod={handlePaymentMethodSelect}
+        planName={PLAN_NAME}
+        subscriptionAmount={PLAN_PRICE}
       />
 
       <div className="text-base mt-40 flex flex-col gap-20 max-w-5xl leading-8 mb-40">

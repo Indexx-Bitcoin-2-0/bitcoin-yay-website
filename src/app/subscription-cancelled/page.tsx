@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { Suspense, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import PaymentFailedPopup from "@/components/PaymentFailedPopup";
@@ -11,7 +11,7 @@ import {
   derivePlanRoute,
 } from "@/constants/subscriptionResponseMeta";
 
-const SubscriptionCancelledPage = () => {
+const SubscriptionCancelledContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const paramsSnapshot = searchParams.toString();
@@ -63,5 +63,11 @@ const SubscriptionCancelledPage = () => {
     </>
   );
 };
+
+const SubscriptionCancelledPage = () => (
+  <Suspense fallback={<div className="sr-only" aria-live="polite">Processing...</div>}>
+    <SubscriptionCancelledContent />
+  </Suspense>
+);
 
 export default SubscriptionCancelledPage;
