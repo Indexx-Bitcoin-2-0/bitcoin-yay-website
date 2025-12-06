@@ -9,16 +9,17 @@ type CustomButton2Props = {
   _blank?: boolean;
   ariaLabel?: string;
   disabled?: boolean;
+  textMaxWidth?: string;
 } & (
-  | {
+    | {
       link: string;
       onClick?: never;
     }
-  | {
+    | {
       link?: never;
       onClick?: MouseEventHandler<HTMLDivElement>;
     }
-);
+  );
 
 export default function CustomButton2({
   image,
@@ -29,6 +30,7 @@ export default function CustomButton2({
   _blank = false,
   ariaLabel,
   disabled = false,
+  textMaxWidth,
 }: CustomButton2Props) {
   const commonClasses = disabled
     ? "cursor-not-allowed opacity-50 text-tertiary group flex flex-col items-center justify-center w-fit"
@@ -42,7 +44,10 @@ export default function CustomButton2({
         className={`${disabled ? "" : "group-hover:scale-110"} transition-transform duration-300 ${imageStyling}`}
       />
       {text && (
-        <div className="flex justify-center mt-4 text-center">
+        <div
+          className="flex justify-center mt-4 text-center"
+          style={textMaxWidth ? { maxWidth: textMaxWidth } : undefined}
+        >
           <p className={`text-lg ${disabled ? "" : "group-hover:text-primary"}`}>{text}</p>
         </div>
       )}
