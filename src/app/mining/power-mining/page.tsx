@@ -35,65 +35,64 @@ const PowerMiningPage = () => {
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-40 items-center justify-center my-40">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 lg:gap-16 my-40 max-w-7xl mx-auto items-start">
+        {/* Electric Mining Plan */}
         <Link
           href="/mining/electric-mining"
           className="flex flex-col items-center justify-center group"
         >
-          <div className="h-32 flex justify-center items-center">
+          <div className="h-32 flex justify-center items-center mb-6">
             <Image
               src={ElectricPowerButtonImage}
               alt="Electric Mining"
-              className="w-18 group-hover:hidden"
-            />
-            <Image
-              src={ElectricPowerButtonImage}
-              alt="Electric Mining"
-              className="w-18 hidden group-hover:block"
+              className="w-20 md:w-24 lg:w-28 group-hover:scale-110 transition-transform duration-300"
             />
           </div>
-          <p className="mt-2 text-lg font-semibold group-hover:text-primary">
-            ELECTRIC
+          <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-white mb-4 text-center uppercase">
+            ELECTRIC MINING PLAN
+          </h3>
+          <p className="text-base  text-white text-center leading-relaxed">
+            Charge your mining speed with extra power double your earning rate and keep your sessions running stronger, longer.
           </p>
         </Link>
+
+        {/* Turbo Mining Plan */}
         <Link
           href="/mining/turbo-mining"
           className="flex flex-col items-center justify-center group"
         >
-          <div className="h-32 flex justify-center items-center">
+          <div className="h-32 flex justify-center items-center mb-6">
             <Image
               src={TurboPowerButtonImage}
-              alt="Electric Mining"
-              className="w-28 group-hover:hidden"
-            />
-            <Image
-              src={TurboPowerButtonImage}
-              alt="Electric Mining"
-              className="w-28 hidden group-hover:block"
+              alt="Turbo Mining"
+              className="w-24 md:w-28 lg:w-32 group-hover:scale-110 transition-transform duration-300"
             />
           </div>
-          <p className="mt-2 text-lg font-semibold group-hover:text-primary">
-            TURBO
+          <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-white mb-4 text-center uppercase">
+            TURBO MINING PLAN
+          </h3>
+          <p className="text-base  text-white text-center leading-relaxed">
+            Experience 6x faster mining climb to Alchemy in record time and multiply your BTCY rewards.
           </p>
         </Link>
+
+        {/* Nuclear Mining Plan */}
         <Link
           href="/mining/nuclear-mining"
           className="flex flex-col items-center justify-center group"
         >
-          <div className="h-32 flex justify-center items-center">
+          <div className="h-32 flex justify-center items-center mb-6">
             <Image
               src={NuclearPowerButtonImage}
-              alt="Electric Mining"
-              className="w-30 group-hover:hidden"
-            />
-            <Image
-              src={NuclearPowerButtonImage}
-              alt="Electric Mining"
-              className="w-30 hidden group-hover:block"
+              alt="Nuclear Mining"
+              className="w-28 md:w-32 lg:w-36 group-hover:scale-110 transition-transform duration-300"
             />
           </div>
-          <p className="mt-2 text-lg font-semibold group-hover:text-primary">
-            NUCLEAR
+          <h3 className="text-lg md:text-xl lg:text-2xl font-bold text-white mb-4 text-center uppercase">
+            NUCLEAR MINING PLAN
+          </h3>
+          <p className="text-base  text-white text-center leading-relaxed">
+            The ultimate boost maximum power, maximum output. Unlock BTCY&apos;s highest earning potential with unstoppable mining energy.
           </p>
         </Link>
       </div>
