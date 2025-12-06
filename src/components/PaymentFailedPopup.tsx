@@ -3,16 +3,20 @@
 import React from "react";
 import Image from "next/image";
 import PopupComponent from "@/components/PopupComponent";
-import { X, Check } from "lucide-react";
 import ElectricMiningArtImage1 from "@/assets/images/mining/electric-mining-art-1.webp";
 import TurboMiningArtImage1 from "@/assets/images/mining/turbo-mining-art-1.webp";
 import NuclearMiningArtImage1 from "@/assets/images/mining/nuclear-mining-art-1.webp";
+import ThumbsUpButtonImage from "@/assets/images/buttons/thumbs-up-button.webp";
+import RegisterButtonImage from "@/assets/images/buttons/register-button.webp";
+import CustomButton2 from "./CustomButton2";
+import { PaymentModalDetail } from "@/components/paymentModalTypes";
 
 interface PaymentFailedPopupProps {
     isOpen: boolean;
     onClose: () => void;
     onTryAgain: () => void;
-    planName: "Electric Mining" | "Turbo Mining" | "Nuclear Mining";
+    planName?: string;
+    details?: PaymentModalDetail[];
 }
 
 const PaymentFailedPopup: React.FC<PaymentFailedPopupProps> = ({
@@ -20,18 +24,22 @@ const PaymentFailedPopup: React.FC<PaymentFailedPopupProps> = ({
     onClose,
     onTryAgain,
     planName,
+    details,
 }) => {
+    const normalizedPlan = (planName ?? "").toLowerCase();
+
     const getPlanArtImage = () => {
-        switch (planName) {
-            case "Electric Mining":
-                return ElectricMiningArtImage1;
-            case "Turbo Mining":
-                return TurboMiningArtImage1;
-            case "Nuclear Mining":
-                return NuclearMiningArtImage1;
-            default:
-                return ElectricMiningArtImage1;
+        if (normalizedPlan.includes("turbo")) {
+            return TurboMiningArtImage1;
         }
+        if (normalizedPlan.includes("nuclear")) {
+            return NuclearMiningArtImage1;
+        }
+        if (normalizedPlan.includes("electric")) {
+            return ElectricMiningArtImage1;
+        }
+
+        return TurboMiningArtImage1;
     };
 
     const artImage = getPlanArtImage();
@@ -58,29 +66,38 @@ const PaymentFailedPopup: React.FC<PaymentFailedPopupProps> = ({
                     </p>
                 </div>
 
-                {/* Action Buttons */}
-                <div className="flex items-center justify-center gap-6">
-                    {/* Cancel Button */}
-                    <div className="flex flex-col items-center gap-2">
-                        <button
-                            onClick={onClose}
-                            className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-bg2 border border-bg3 flex items-center justify-center hover:border-primary/50 transition-all cursor-pointer shadow-lg"
-                        >
-                            <X className="w-10 h-10 md:w-12 md:h-12 text-white stroke-[3]" />
-                        </button>
-                        <p className="text-base md:text-lg text-white font-medium">Cancel</p>
+                {details?.length ? (
+                    <div className="text-left w-full text-sm text-gray-300 mb-6 space-y-2">
+                        {details.map((detail) => (
+                            <div
+                                key={detail.label}
+                                className="flex items-center justify-between gap-4 rounded-lg border border-white/10 bg-white/5 px-3 py-2"
+                            >
+                                <span className="text-xs font-semibold text-tertiary">
+                                    {detail.label}
+                                </span>
+                                <span className="text-sm font-medium text-white break-all">
+                                    {detail.value ?? "—"}
+                                </span>
+                            </div>
+                        ))}
                     </div>
+                ) : null}
 
-                    {/* Try Again Button */}
-                    <div className="flex flex-col items-center gap-2">
-                        <button
-                            onClick={onTryAgain}
-                            className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-primary flex items-center justify-center hover:bg-primary/80 transition-all cursor-pointer shadow-lg"
-                        >
-                            <Check className="w-10 h-10 md:w-12 md:h-12 text-white stroke-[3]" />
-                        </button>
-                        <p className="text-base md:text-lg text-white font-medium">Try Again</p>
-                    </div>
+                {/* Action Buttons */}
+                <div className="flex flex-col md:flex-row gap-6 items-center justify-center mt-4">
+                    <CustomButton2
+                        image={ThumbsUpButtonImage}
+                        text="Cancel"
+                        onClick={onClose}
+                        imageStyling="w-28 md:w-32"
+                    />
+                    <CustomButton2
+                        image={RegisterButtonImage}
+                        text="Try Again"
+                        onClick={onTryAgain}
+                        imageStyling="w-28 md:w-32"
+                    />
                 </div>
             </div>
         </PopupComponent>
@@ -88,4 +105,3 @@ const PaymentFailedPopup: React.FC<PaymentFailedPopupProps> = ({
 };
 
 export default PaymentFailedPopup;
-

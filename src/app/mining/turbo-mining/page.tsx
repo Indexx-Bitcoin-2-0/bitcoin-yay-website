@@ -1,13 +1,210 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
 import CustomButton2 from "@/components/CustomButton2";
+import LoginPopup from "@/components/LoginPopup";
+import PaymentMethodPopup from "@/components/PaymentMethodPopup";
+import { useAuth } from "@/contexts/AuthContext";
+import { PROVIDER_LABELS } from "@/constants/paymentProviders";
+import {
+  purchaseSubscription,
+  validateCoupon,
+  PaymentProvider,
+  SubscriptionPurchasePayload,
+} from "@/lib/subscriptions";
 
 import TurboMiningButtonImage from "@/assets/images/mining/turbo-icon.webp";
 import TurboMiningArtImage1 from "@/assets/images/mining/turbo-mining-art-1.webp";
 import BellButtonImage from "@/assets/images/buttons/bell-button.webp";
 
+const formatUsd = (value: number) =>
+  value.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+  });
+
+const PLAN_KEY = "turbo";
+const PLAN_NAME = "Turbo Power Mining";
+const PLAN_PRICE = 90;
+
 const TurboMiningPage = () => {
+  const { user, isLoading } = useAuth();
+  const [couponCode, setCouponCode] = useState("BTCY10");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [feedback, setFeedback] = useState<{
+    type: "info" | "error";
+    message: string;
+  } | null>(null);
+  const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
+  const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
+  const [couponValidationStatus, setCouponValidationStatus] =
+    useState<"idle" | "valid" | "error">("idle");
+  const [couponValidationMessage, setCouponValidationMessage] =
+    useState<string | null>(null);
+  const [couponValidationLoading, setCouponValidationLoading] =
+    useState(false);
+
+  const handleCouponInputChange = (value: string) => {
+    setCouponCode(value);
+    if (couponValidationStatus !== "idle") {
+      setCouponValidationStatus("idle");
+      setCouponValidationMessage(null);
+    }
+  };
+
+  const validateCurrentCoupon = async (): Promise<boolean> => {
+    const trimmedCoupon = couponCode.trim();
+    if (!trimmedCoupon) {
+      setCouponValidationStatus("idle");
+      setCouponValidationMessage(null);
+      return true;
+    }
+
+    setCouponValidationLoading(true);
+    try {
+      const validation = await validateCoupon(PLAN_KEY, trimmedCoupon);
+      setCouponValidationStatus("valid");
+      setCouponValidationMessage(
+        `Coupon applied (${validation.couponCode}): ${
+          validation.couponDescription ??
+          `${validation.discountPercent}% off`
+        } (final ${formatUsd(validation.finalPrice)})`
+      );
+      return true;
+    } catch (error) {
+      setCouponValidationStatus("error");
+      setCouponValidationMessage(
+        error instanceof Error ? error.message : "Coupon validation failed."
+      );
+      return false;
+    } finally {
+      setCouponValidationLoading(false);
+    }
+  };
+
+  const handleCouponBlur = () => {
+    void validateCurrentCoupon();
+  };
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      setIsLoginPopupOpen(true);
+    }
+  }, [isLoading, user]);
+
+  const startSubscription = async (provider: PaymentProvider) => {
+    if (isSubmitting) {
+      return;
+    }
+
+    if (!user?.email) {
+      setFeedback({
+        type: "error",
+        message: "Please log in to start a subscription.",
+      });
+      setIsLoginPopupOpen(true);
+      return;
+    }
+
+    setIsPaymentPopupOpen(false);
+    setIsSubmitting(true);
+    setFeedback(null);
+
+    try {
+      const payload: SubscriptionPurchasePayload = {
+        email: user.email,
+        provider,
+        planKey: PLAN_KEY,
+        metadata: {
+          planName: PLAN_NAME,
+          speedBoost: "18 BTCY/h",
+          page: "turbo-mining",
+        },
+      };
+
+      const trimmedCoupon = couponCode.trim();
+      if (trimmedCoupon && couponValidationStatus !== "valid") {
+        const couponValid = await validateCurrentCoupon();
+        if (!couponValid) {
+          return;
+        }
+      }
+
+      if (trimmedCoupon) {
+        payload.couponCode = trimmedCoupon;
+      }
+
+      const result = await purchaseSubscription(payload);
+
+      const redirectUrl =
+        (result.sessionUrl as string | undefined) ??
+        (result.approvalUrl as string | undefined) ??
+        (result.checkoutUrl as string | undefined) ??
+        (result.redirectUrl as string | undefined);
+
+      if (redirectUrl && typeof window !== "undefined") {
+        window.location.href = redirectUrl;
+        setFeedback({
+          type: "info",
+          message: `Redirecting to ${PROVIDER_LABELS[provider]} checkout.`,
+        });
+      } else {
+        const fallbackMessageParts: string[] = [];
+        if (result.sessionId) {
+          fallbackMessageParts.push(`Session ID: ${result.sessionId}.`);
+        }
+        fallbackMessageParts.push(
+          "Check your email or the provider dashboard for next steps."
+        );
+        setFeedback({
+          type: "info",
+          message: `Subscription request created. ${fallbackMessageParts.join(
+            " "
+          )}`,
+        });
+      }
+    } catch (error) {
+      setFeedback({
+        type: "error",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Unable to start the subscription purchase.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleSubscribeClick = () => {
+    if (isSubmitting) {
+      return;
+    }
+
+    if (!user?.email) {
+      setFeedback({
+        type: "error",
+        message: "Please log in to start a subscription.",
+      });
+      setIsLoginPopupOpen(true);
+      return;
+    }
+
+    setFeedback(null);
+    setIsPaymentPopupOpen(true);
+  };
+
+  const handlePaymentMethodSelect = (method: PaymentProvider) => {
+    void startSubscription(method);
+  };
+
+  const handleLoginSuccess = () => setIsLoginPopupOpen(false);
+  const handleCloseLoginPopup = () => setIsLoginPopupOpen(false);
+  const handleRegisterClick = () => setIsLoginPopupOpen(false);
+
   return (
     <div className="mx-auto mt-40 md:mt-60 px-4 md:px-20 xl:px-40 relative max-w-[2000px]">
       <div className="flex flex-col items-center justify-center gap-20">
@@ -33,22 +230,86 @@ const TurboMiningPage = () => {
             9 BTCY/<span className="text-3xl md:text-6xl font-bold">Hr</span>
           </p>
           <ul className="mt-20 list-disc list-inside text-xl flex flex-col gap-6">
-            <li>  <span className="font-bold line-through">
-              $300
-            </span> $ 90/m subscription fee</li>
+            <li>
+              <span className="font-bold line-through">$300</span> $ 90/m subscription fee
+            </li>
             <li>1 BTCY ~ $ 0.10</li>
             <li>~9 BTCY/hour ~ $ 0.90</li>
             <li className="text-primary">Referral Bonuses</li>
             <li>Priority Mining Support</li>
           </ul>
         </div>
-        <CustomButton2
-          text="Coming Soon"
-          image={BellButtonImage}
-          disabled={true}
-          imageStyling="w-34"
-        />
+        <div className="flex flex-col items-center gap-6 w-full">
+          <div className="w-full max-w-md text-left">
+            <label className="text-sm text-tertiary" htmlFor="turbo-coupon">
+              Coupon code (optional)
+            </label>
+            <input
+              id="turbo-coupon"
+              placeholder="e.g., BTCY10"
+              value={couponCode}
+              onChange={(event) => handleCouponInputChange(event.target.value)}
+              onBlur={handleCouponBlur}
+              className="mt-2 w-full rounded-lg border border-white/20 bg-transparent px-4 py-2 text-white placeholder:text-tertiary focus:border-primary focus:outline-none"
+            />
+          </div>
+          {couponValidationLoading ? (
+            <p className="text-sm text-primary text-center mt-2">
+              Validating coupon…
+            </p>
+          ) : couponValidationMessage ? (
+            <p
+              className={`text-sm text-center mt-2 ${
+                couponValidationStatus === "error"
+                  ? "text-red-500"
+                  : "text-green-400"
+              }`}
+            >
+              {couponValidationMessage}
+            </p>
+          ) : null}
+          <CustomButton2
+            text={isSubmitting ? "Processing subscription..." : "Subscribe"}
+            image={BellButtonImage}
+            onClick={handleSubscribeClick}
+            imageStyling="w-34"
+            ariaLabel="Open Turbo Mining payment options"
+            disabled={
+              isSubmitting ||
+              couponValidationStatus === "error" ||
+              couponValidationLoading
+            }
+          />
+          {feedback && (
+            <p
+              className={`text-center text-sm ${
+                feedback.type === "error" ? "text-red-500" : "text-green-400"
+              }`}
+            >
+              {feedback.message}
+            </p>
+          )}
+          {!user && !isLoading && (
+            <p className="text-sm text-tertiary">
+              You will need to log in or register before purchasing a subscription.
+            </p>
+          )}
+        </div>
       </div>
+
+      <LoginPopup
+        isOpen={isLoginPopupOpen}
+        onClose={handleCloseLoginPopup}
+        onLoginSuccess={handleLoginSuccess}
+        onRegisterClick={handleRegisterClick}
+      />
+      <PaymentMethodPopup
+        isOpen={isPaymentPopupOpen}
+        onClose={() => setIsPaymentPopupOpen(false)}
+        onSelectPaymentMethod={handlePaymentMethodSelect}
+        planName={PLAN_NAME}
+        subscriptionAmount={PLAN_PRICE}
+      />
 
       <div className="text-base mt-40 flex flex-col gap-20 max-w-5xl leading-8 mb-40">
         <div>
