@@ -42,7 +42,7 @@ import FortuneFunnelIcon from "@/assets/images/alchemy/fortuneFunnel.svg";
 import MegaPathIcon from "@/assets/images/alchemy/mega_path.svg";
 import AlchemyGatewayIcon from "@/assets/images/alchemy/AlchemyGateway.svg";
 import DownArrowIcon from '@/assets/images/alchemy/downArrow.svg'
-
+import StartAlchemyImage from "@/assets/images/alchemy/startAlchemySVG.svg";
 const MAX_NUGGET_INPUT = 1000;
 const WALLET_OVERVIEW_BASE_URL = "https://cex.indexx.ai/wallet/overview";
 const MINIMUM_BALANCE_MESSAGE = `You need at least ${MINIMUM_BTCY_BALANCE_FOR_ALCHEMY.toLocaleString(
@@ -470,7 +470,7 @@ export default function AlchemyPage() {
         />
       </div>
 
-      <div className="mt-40 bg-bg0/30 rounded-3xl p-6 md:p-14 flex flex-col gap-16">
+      <div id="alchemy-nuggets-input" className="mt-40 bg-bg0/30 rounded-3xl p-6 md:p-14 flex flex-col gap-16">
         <div className="text-center">
           <h3 className="text-4xl md:text-6xl font-bold text-primary">
             Bitcoin-Yay Nuggets
@@ -512,6 +512,10 @@ export default function AlchemyPage() {
               imageStyling="w-20 md:w-30"
             />
           </div>
+
+          <p className="mt-6 text-base md:text-lg text-red-500 text-center max-w-2xl mx-auto">
+            Alchemy unlocks after you mine 50,000 Bitcoin-Yay nuggets. Then you can convert any amount you want.
+          </p>
 
           {(formError || balanceError || statusMessage) && (
             <div className="mt-4 flex justify-center">
@@ -918,9 +922,18 @@ export default function AlchemyPage() {
             <li>
               {" "}
               Receive Outcome <br /> Based on your multiplier (e.g., 0.5x, 1.2x,
-              2x, 3x), you’ll see how much BTCY you get back.
+              2x, 3x), you'll see how much BTCY you get back.
             </li>
           </ul>
+        </div>
+
+        <div className="flex justify-center items-center mt-20">
+          <CustomButton2
+            text="Start Alchemy"
+            image={StartAlchemyImage}
+            imageStyling="w-20 md:w-30"
+            link="#alchemy-nuggets-input"
+          />
         </div>
       </div>
 
