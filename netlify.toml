@@ -1,0 +1,5 @@
+[[redirects]]
+from = "/"
+to = "/sale"
+status = 200
+conditions = { Host = ["sales.bitcoinyay.com"] }
