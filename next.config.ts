@@ -48,14 +48,7 @@ const nextConfig = {
         destination: 'https://sales.bitcoinyay.com/',
         permanent: true, // use 301 in production
       },
-      {
-        source: '/sale',
-        has: [
-          { type: 'host', value: 'www.bitcoinyay.com' },
-        ],
-        destination: 'https://sales.bitcoinyay.com/',
-        permanent: true,
-      },
+    
     ];
   },
 
