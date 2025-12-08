@@ -37,18 +37,31 @@ const nextConfig = {
 
   async redirects() {
     return [
+      // 1. Redirect root of sales subdomain to /sale page
       {
-        source: '/sale',
+        source: '/',
         has: [
           {
             type: 'host',
-            value: 'bitcoinyay.com',
+            value: 'sales.bitcoinyay.com',
           },
         ],
-        destination: 'https://sales.bitcoinyay.com/',
-        permanent: true, // use 301 in production
+        destination: '/sale',
+        permanent: false,
       },
-    
+      // 2. OPTIONAL: Redirect all paths from sales subdomain to /sale
+      // (if you want ALL URLs like sales.bitcoinyay.com/anything to go to /sale)
+      {
+        source: '/:path*',  // All paths
+        has: [
+          {
+            type: 'host',
+            value: 'sales.bitcoinyay.com',
+          },
+        ],
+        destination: '/sale',
+        permanent: false,
+      },
     ];
   },
 
@@ -63,7 +76,6 @@ const nextConfig = {
         hostname: 'developer.apple.com',
       },
     ],
-    // Disable Next.js image optimization so it doesn't use /_next/image
     unoptimized: true,
   },
 
