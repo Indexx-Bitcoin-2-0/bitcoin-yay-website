@@ -38,15 +38,23 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: '/',                         // only the root path
+        source: '/sale',
         has: [
           {
-            type: 'host',                    // check Host header
-            value: 'sales.bitcoinyay.com',   // only for this subdomain
+            type: 'host',
+            value: 'bitcoinyay.com',
           },
         ],
-        destination: '/sale',                // go to the /sale page
-        permanent: false,                    // 307 (good while testing)
+        destination: 'https://sales.bitcoinyay.com/',
+        permanent: true, // use 301 in production
+      },
+      {
+        source: '/sale',
+        has: [
+          { type: 'host', value: 'www.bitcoinyay.com' },
+        ],
+        destination: 'https://sales.bitcoinyay.com/',
+        permanent: true,
       },
     ];
   },
