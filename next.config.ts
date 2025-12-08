@@ -35,6 +35,22 @@ const nextConfig = {
     ];
   },
 
+  async redirects() {
+    return [
+      {
+        source: '/',                         // only the root path
+        has: [
+          {
+            type: 'host',                    // check Host header
+            value: 'sales.bitcoinyay.com',   // only for this subdomain
+          },
+        ],
+        destination: '/sale',                // go to the /sale page
+        permanent: false,                    // 307 (good while testing)
+      },
+    ];
+  },
+
   images: {
     remotePatterns: [
       {
