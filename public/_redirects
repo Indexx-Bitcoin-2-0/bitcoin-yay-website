@@ -1,5 +1,2 @@
-# Special rule: sales.bitcoinyay.com => /sale
-https://sales.bitcoinyay.com/   /sale   200
-
-# Fallback SPA rule for everything else
-/*   /index.html   200
+# Redirect sales subdomain root to /sale
+https://sales.bitcoinyay.com/   /sale   301
