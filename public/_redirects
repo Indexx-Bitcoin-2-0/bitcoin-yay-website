@@ -1,2 +1,5 @@
-#
-/* /index.html 200
+# Special rule: sales.bitcoinyay.com => /sale
+https://sales.bitcoinyay.com/   /sale   200
+
+# Fallback SPA rule for everything else
+/*   /index.html   200
