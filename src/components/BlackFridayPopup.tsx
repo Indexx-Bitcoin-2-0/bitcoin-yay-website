@@ -48,10 +48,10 @@ const BlackFridayPopup: React.FC<BlackFridayPopupProps> = ({
     return (
         <PopupComponent isOpen={isOpen} onClose={onClose} >
             <div className="w-90 md:w-140 lg:w-180 p-4 md:p-6 xl:p-8 text-center">
-                {/* Title with Flame Icon */}
+                {/* Title */}
                 <div className="flex items-center justify-center gap-3 mb-4 md:mb-10">
-                    <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary">
-                        70% OFF Power Mining Subscription
+                    <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-primary">
+                        CHRISTMAS SALE - LIMITED • 70% OFF
                     </h1>
                 </div>
 
@@ -91,16 +91,16 @@ const BlackFridayPopup: React.FC<BlackFridayPopupProps> = ({
                     })}
                 </div>
 
-                {/* Cyber Monday Deal Information */}
+                {/* Christmas Sale Information */}
                 <div className="mb-6 md:mb-8">
                     <p className="text-lg md:text-xl font-bold text-white mb-2">
-                        Cyber Monday Deal
+                        Christmas Sale
                     </p>
                     <p className="text-sm md:text-base text-white mb-2">
-                        Cyber Monday: 1st December to 11th December.
+                        Christmas Sale: 12th December to 28th December.
                     </p>
                     <p className="text-sm md:text-base text-white">
-                        More mining power for almost no cost.
+                        Christmas Crypto Rush is Live — Upgrade & Mine Faster
                     </p>
                 </div>
 

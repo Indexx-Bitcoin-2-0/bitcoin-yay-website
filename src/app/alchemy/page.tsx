@@ -905,23 +905,23 @@ export default function AlchemyPage() {
         </div>
 
         <div className="mt-10 text-xl">
-          <ul className="list-decimal leading-10 pl-4 md:pl-10">
-            <li>
-              Select Input Amount <br /> Choose how many BTCY to commit —
+          <ul className=" leading-10 pl-4 md:pl-10">
+            <li className="text-[16px] ">
+              <span className="font-semibold text-[20px]">1. Select Input Amount</span> <br /> Choose how many BTCY to commit —
               options depend on your user tier (Free, Electric, Turbo, Nuclear,
               Quantum).
             </li>
-            <li>
-              Start Alchemy <br /> Click Start Alchemy → your BTCY enters a
-              1-hour randomized process.
+            <li className="text-[16px]">
+              <span className="font-semibold text-[20px]">2. Start Alchemy</span> <br /> Click Start Alchemy → your BTCY enters a
+              60-minutes randomized process.
             </li>
-            <li>
-              Wait 1 Hour <br /> After 1 hour, the system reveals your outcome:
-              Gain (small or big) Partial loss
+            <li className="text-[16px]">
+              <span className="font-semibold text-[20px]">3. Wait for 60 Minutes</span> <br /> After 60 minutes, the system reveals your outcome:
+              Gain (small or big) or a Partial loss.
             </li>
-            <li>
-              {" "}
-              Receive Outcome <br /> Based on your multiplier (e.g., 0.5x, 1.2x,
+            <li className="text-[16px]">
+
+              <span className="font-semibold text-[20px]">4. Receive Outcome</span> <br /> Based on your multiplier (e.g., 0.5x, 1.2x,
               2x, 3x), you'll see how much BTCY you get back.
             </li>
           </ul>

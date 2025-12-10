@@ -4,23 +4,31 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
-import { Check, X, ArrowUp } from "lucide-react";
+import { Check, X } from "lucide-react";
 import LoginPopup from "@/components/LoginPopup";
 import PaymentMethodPopup from "@/components/PaymentMethodPopup";
 import SubscriptionConfirmPopup from "@/components/SubscriptionConfirmPopup";
 import PaymentSuccessPopup from "@/components/PaymentSuccessPopup";
 import PaymentFailedPopup from "@/components/PaymentFailedPopup";
-
 import ElectricMiningArtImage1 from "@/assets/images/mining/electric-mining-art-1.webp";
 import TurboMiningArtImage1 from "@/assets/images/mining/turbo-mining-art-1.webp";
 import NuclearMiningArtImage1 from "@/assets/images/mining/nuclear-mining-art-1.webp";
 import CustomButton2 from "@/components/CustomButton2";
-import CheckIcon from '@/assets/images/currentPlan.svg'
-import UpgradeIcon from '@/assets/images/UpgradeIcon.svg'
-import CancelImage from '@/assets/images/cancelIcon.svg'
-type PlanType = "Electric Mining" | "Turbo Mining" | "Nuclear Mining";
+import CheckIcon from '@/assets/images/currentPlan.svg';
+import UpgradeIcon from '@/assets/images/UpgradeIcon.svg';
+import CancelImage from '@/assets/images/cancelIcon.svg';
+
+import {
+    fetchSubscriptionHistory,
+    PaymentProvider,
+    SubscriptionHistoryEntry,
+    purchaseSubscription,
+} from "@/lib/subscriptions";
+type PlanType = "Free" | "Electric Mining" | "Turbo Mining" | "Nuclear Mining";
+type AvailablePlanKey = "electric" | "turbo" | "nuclear";
 
 interface Plan {
+    key?: AvailablePlanKey;
     name: PlanType;
     price: number;
     btcPerHour: number;
@@ -31,8 +39,9 @@ interface Plan {
 
 const plans: Plan[] = [
     {
+        key: "electric",
         name: "Electric Mining",
-        price: 100,
+        price: 30,
         btcPerHour: 4.5,
         hourlyEarnings: 0.45,
         features: [
@@ -44,8 +53,9 @@ const plans: Plan[] = [
         artImage: ElectricMiningArtImage1,
     },
     {
+        key: "turbo",
         name: "Turbo Mining",
-        price: 300,
+        price: 90,
         btcPerHour: 9,
         hourlyEarnings: 0.9,
         features: [
@@ -58,8 +68,9 @@ const plans: Plan[] = [
         artImage: TurboMiningArtImage1,
     },
     {
+        key: "nuclear",
         name: "Nuclear Mining",
-        price: 600,
+        price: 180,
         btcPerHour: 13.5,
         hourlyEarnings: 1.35,
         features: [
@@ -73,20 +84,91 @@ const plans: Plan[] = [
     },
 ];
 
+const FREE_PLAN_DATA: Plan = {
+    name: "Free",
+    price: 0,
+    btcPerHour: 1.5,
+    hourlyEarnings: 0,
+    features: [
+        "Speed Boost x1",
+        "1.5 BTCY/hour ~ $0.15",
+        "No subscription fee",
+        "Keep earning while you decide",
+    ],
+    artImage: ElectricMiningArtImage1,
+};
+
+const ACTIVE_STATUS_KEYWORDS = ["active", "success", "paid", "completed"];
+const isActiveStatus = (status?: string) => {
+    if (!status) return false;
+    return ACTIVE_STATUS_KEYWORDS.some((keyword) =>
+        status.toLowerCase().includes(keyword)
+    );
+};
+
+const normalizePlanKey = (value?: string): AvailablePlanKey | undefined => {
+    const normalized = value?.toLowerCase();
+    if (!normalized) return undefined;
+    if (normalized.includes("electric")) return "electric";
+    if (normalized.includes("turbo")) return "turbo";
+    if (normalized.includes("nuclear")) return "nuclear";
+    return undefined;
+};
+
+const HISTORY_PAGE_SIZE = 5;
+const HISTORY_PROVIDER_OPTIONS: PaymentProvider[] = ["stripe", "paypal"];
+
+const formatCurrency = (value: number, currency = "USD") =>
+    value.toLocaleString("en-US", {
+        style: "currency",
+        currency,
+    });
+
+const formatDateTime = (value?: string) => {
+    if (!value) return "—";
+    const date = new Date(value);
+    return date.toLocaleString("en-US", {
+        dateStyle: "medium",
+        timeStyle: "short",
+    });
+};
+
+const getStatusBadgeClasses = (status: string) => {
+    const normalized = status?.toLowerCase();
+    if (normalized === "active" || normalized === "success") {
+        return "border-green-500 text-green-400";
+    }
+    if (normalized === "pending") {
+        return "border-yellow-500 text-yellow-400";
+    }
+    if (normalized === "failed" || normalized === "cancelled" || normalized === "canceled") {
+        return "border-red-500 text-red-400";
+    }
+    return "border-white/30 text-white/70";
+};
+
 export default function SubscriptionPage() {
     const { user, isLoading } = useAuth();
     const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
-    const [currentPlan, setCurrentPlan] = useState<PlanType>("Electric Mining");
-    const [paymentMethod, setPaymentMethod] = useState<"paypal" | "stripe">("paypal");
+    const [paymentMethod, setPaymentMethod] = useState<PaymentProvider>("stripe");
     const [memberSince, setMemberSince] = useState<string>("Nov 19, 2024");
     const [nextBillingDate, setNextBillingDate] = useState<string>("Dec 19, 2025");
+    const [historyEntries, setHistoryEntries] = useState<SubscriptionHistoryEntry[]>([]);
+    const [historyLoading, setHistoryLoading] = useState(false);
+    const [historyError, setHistoryError] = useState<string | null>(null);
+    const [historyTotal, setHistoryTotal] = useState(0);
+    const [feedback, setFeedback] = useState<{
+        type: "info" | "error";
+        message: string;
+    } | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Popup states
     const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
     const [isConfirmPopupOpen, setIsConfirmPopupOpen] = useState(false);
     const [isSuccessPopupOpen, setIsSuccessPopupOpen] = useState(false);
     const [isFailedPopupOpen, setIsFailedPopupOpen] = useState(false);
-    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<"paypal" | "stripe" | null>(null);
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<"paypal" | "stripe" | "ach" | "wire" | "zelle" | "tygapay" | "venmo" | null>(null);
     const [selectedPlan, setSelectedPlan] = useState<PlanType | null>(null);
 
     useEffect(() => {
@@ -94,6 +176,67 @@ export default function SubscriptionPage() {
             setIsLoginPopupOpen(true);
         }
     }, [user, isLoading]);
+
+    useEffect(() => {
+        if (!user?.email) {
+            setHistoryEntries([]);
+            setHistoryTotal(0);
+            setHistoryError(null);
+            setHistoryLoading(false);
+            return;
+        }
+
+        let isCancelled = false;
+
+        const loadHistory = async () => {
+            setHistoryLoading(true);
+            setHistoryError(null);
+            try {
+                const response = await fetchSubscriptionHistory({
+                    email: user.email,
+                    provider: paymentMethod,
+                    page: 1,
+                    limit: HISTORY_PAGE_SIZE,
+                });
+
+                if (isCancelled) {
+                    return;
+                }
+
+                setHistoryEntries(response.data ?? []);
+                setHistoryTotal(response.total ?? response.data?.length ?? 0);
+            } catch (error) {
+                if (isCancelled) {
+                    return;
+                }
+                setHistoryError(
+                    error instanceof Error
+                        ? error.message
+                        : "Unable to load subscription history."
+                );
+            } finally {
+                if (!isCancelled) {
+                    setHistoryLoading(false);
+                }
+            }
+        };
+
+        void loadHistory();
+
+        return () => {
+            isCancelled = true;
+        };
+    }, [user?.email, paymentMethod]);
+
+    const activeEntry = historyEntries.find((entry) =>
+        isActiveStatus(entry.status)
+    );
+    const activePlanKey = normalizePlanKey(activeEntry?.planKey);
+    const activePlanDefinition = activePlanKey
+        ? plans.find((plan) => plan.key === activePlanKey)
+        : undefined;
+    const currentPlanData = activePlanDefinition ?? FREE_PLAN_DATA;
+    const currentPlanName = currentPlanData.name;
 
     const handleLoginSuccess = () => {
         setIsLoginPopupOpen(false);
@@ -104,13 +247,15 @@ export default function SubscriptionPage() {
     };
 
     const handleUpgrade = (planName: PlanType) => {
-        if (planName === currentPlan) return;
+        if (planName === currentPlanName) return;
         setSelectedPlan(planName);
         setIsPaymentPopupOpen(true);
     };
 
-    const handlePaymentMethodSelect = (method: "paypal" | "stripe") => {
-        setSelectedPaymentMethod(method);
+    const handlePaymentMethodSelect = (method: "paypal" | "stripe" | "ach" | "wire" | "zelle" | "tygapay" | "venmo") => {
+        // Map to supported providers if needed (backend may only support paypal/stripe)
+        const supportedMethod = method === "paypal" || method === "stripe" ? method : "stripe";
+        setSelectedPaymentMethod(supportedMethod as PaymentProvider);
         setIsPaymentPopupOpen(false);
         setIsConfirmPopupOpen(true);
     };
@@ -121,24 +266,75 @@ export default function SubscriptionPage() {
     };
 
     const handleSubscribe = async () => {
-        if (!selectedPlan) return;
+        if (!selectedPlan || !selectedPaymentMethod) return;
+        if (!user?.email) {
+            setIsLoginPopupOpen(true);
+            return;
+        }
+
+        const planDefinition = plans.find((plan) => plan.name === selectedPlan);
+        const planKey = planDefinition?.key ?? selectedPlan.toLowerCase();
+
+        setIsConfirmPopupOpen(false);
+        setIsSubmitting(true);
+        setFeedback(null);
 
         try {
-            // TODO: Implement payment processing
-            const paymentSuccess = true; // Replace with actual payment result
+            // Map to supported providers (backend may only support paypal/stripe)
+            const supportedProvider: PaymentProvider =
+                selectedPaymentMethod === "paypal" || selectedPaymentMethod === "stripe"
+                    ? selectedPaymentMethod
+                    : "stripe";
 
-            setIsConfirmPopupOpen(false);
+            const payload = {
+                email: user.email,
+                provider: supportedProvider,
+                planKey,
+                metadata: {
+                    planName: selectedPlan,
+                    page: "subscription-page",
+                    originalPaymentMethod: selectedPaymentMethod, // Store original for reference
+                },
+            };
 
-            if (paymentSuccess) {
-                setCurrentPlan(selectedPlan);
-                setIsSuccessPopupOpen(true);
+            const result = await purchaseSubscription(payload);
+
+            const redirectUrl =
+                (result.sessionUrl as string | undefined) ??
+                (result.approvalUrl as string | undefined) ??
+                (result.checkoutUrl as string | undefined) ??
+                (result.redirectUrl as string | undefined);
+
+            if (redirectUrl && typeof window !== "undefined") {
+                window.location.href = redirectUrl;
+                setFeedback({
+                    type: "info",
+                    message: `Redirecting to ${selectedPaymentMethod} checkout...`,
+                });
             } else {
-                setIsFailedPopupOpen(true);
+                const fallbackMessageParts: string[] = [];
+                if (result.sessionId) {
+                    fallbackMessageParts.push(`Session ID: ${result.sessionId}.`);
+                }
+                fallbackMessageParts.push(
+                    "Check your email or the provider dashboard for next steps."
+                );
+                setFeedback({
+                    type: "info",
+                    message: `Subscription request created. ${fallbackMessageParts.join(" ")}`,
+                });
             }
         } catch (error) {
-            console.error("Payment error:", error);
-            setIsConfirmPopupOpen(false);
+            setFeedback({
+                type: "error",
+                message:
+                    error instanceof Error
+                        ? error.message
+                        : "Unable to start the subscription purchase.",
+            });
             setIsFailedPopupOpen(true);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -158,8 +354,6 @@ export default function SubscriptionPage() {
 
 
 
-    const currentPlanData = plans.find((p) => p.name === currentPlan) || plans[0];
-
     return (
         <div className="mx-auto mt-40 md:mt-60 px-4 md:px-20 xl:px-40 relative max-w-[2000px] mb-40">
             {/* My Subscription Section */}
@@ -170,6 +364,14 @@ export default function SubscriptionPage() {
                 <p className="text-base md:text-lg text-gray-400 mb-8">
                     Manage your mining plan and subscription
                 </p>
+                {feedback && (
+                    <p
+                        className={`text-sm mb-6 ${feedback.type === "error" ? "text-red-500" : "text-green-400"
+                            }`}
+                    >
+                        {feedback.message}
+                    </p>
+                )}
 
                 <div className=" border border-bg2 rounded-xl p-6 md:p-8 relative">
                     <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
@@ -193,12 +395,20 @@ export default function SubscriptionPage() {
                             </ul>
                         </div>
                         <div className="flex flex-col items-center gap-4 justify-between h-full">
-                            <div className="text-right">
-                                <p className="text-sm text-gray-400 mb-1">Next billing date</p>
-                                <p className="text-lg text-white font-medium">{nextBillingDate}</p>
-                            </div>
+                            {currentPlanName !== "Free" && (
+                                <div className="text-right">
+                                    <p className="text-sm text-gray-400 mb-1">Next billing date</p>
+                                    <p className="text-lg text-white font-medium">{nextBillingDate}</p>
+                                </div>
+                            )}
 
-                            <CustomButton2 text="Cancel Subscription" onClick={handleCancelSubscription} image={CancelImage} />
+                            {currentPlanName !== "Free" && (
+                                <CustomButton2
+                                    text="Cancel Subscription"
+                                    onClick={handleCancelSubscription}
+                                    image={CancelImage}
+                                />
+                            )}
                         </div>
                     </div>
                 </div>
@@ -211,7 +421,7 @@ export default function SubscriptionPage() {
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {plans.map((plan) => {
-                        const isCurrentPlan = plan.name === currentPlan;
+                        const isCurrentPlan = plan.name === currentPlanName;
                         return (
                             <div
                                 key={plan.name}
@@ -288,6 +498,88 @@ export default function SubscriptionPage() {
                 </div>
             </div>
 
+            {/* Subscription History Section */}
+            <div className="mt-20 border border-bg2 rounded-xl p-6 md:p-8">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-4">
+                    <h2 className="text-2xl md:text-4xl font-semibold text-white">
+                        Subscription History
+                    </h2>
+                    {(historyEntries.length > 0 || historyTotal > 0) && (
+                        <p className="text-sm text-tertiary">
+                            Showing {historyEntries.length} of {historyTotal || historyEntries.length} attempts
+                        </p>
+                    )}
+                </div>
+                <div className="flex flex-wrap gap-2 mb-4">
+                    {HISTORY_PROVIDER_OPTIONS.map((providerOption) => (
+                        <button
+                            key={providerOption}
+                            type="button"
+                            onClick={() => setPaymentMethod(providerOption)}
+                            className={`rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wide transition ${paymentMethod === providerOption
+                                    ? "border-primary bg-primary/20 text-white"
+                                    : "border-white/20 text-tertiary hover:border-white/70"
+                                }`}
+                        >
+                            {providerOption.toUpperCase()}
+                        </button>
+                    ))}
+                </div>
+
+                {historyLoading ? (
+                    <p className="text-sm text-white/70">Loading history…</p>
+                ) : historyError ? (
+                    <p className="text-sm text-red-500">{historyError}</p>
+                ) : !historyEntries.length ? (
+                    <p className="text-sm text-tertiary">
+                        {user?.email
+                            ? "No subscription history found for this payment provider."
+                            : "Log in to view your subscription history."}
+                    </p>
+                ) : (
+                    <div className="mt-6 flex flex-col gap-4">
+                        {historyEntries.map((entry) => (
+                            <div
+                                key={entry._id}
+                                className="rounded-xl border border-white/10 bg-white/5 p-4"
+                            >
+                                <div className="flex flex-wrap items-center justify-between gap-2">
+                                    <p className="text-lg font-semibold text-white">
+                                        {entry.planName ?? entry.planKey}
+                                    </p>
+                                    <span
+                                        className={`text-xs font-semibold uppercase tracking-wider rounded-full px-3 py-1 border ${getStatusBadgeClasses(
+                                            entry.status
+                                        )}`}
+                                    >
+                                        {entry.status}
+                                    </span>
+                                </div>
+                                <p className="text-sm text-tertiary mt-1">
+                                    {entry.provider?.toUpperCase()} ·{" "}
+                                    {formatCurrency(entry.amount ?? 0, entry.currency ?? "USD")} ·{" "}
+                                    {entry.miningInterval ?? "Monthly"}
+                                </p>
+                                <p className="text-xs text-gray-400 mt-1">
+                                    Created {formatDateTime(entry.createdAt)}
+                                </p>
+                                {entry.couponCode && (
+                                    <p className="text-xs text-gray-400 mt-1">
+                                        Coupon {entry.couponCode} (
+                                        {entry.couponDiscountPercent ?? 0}%)
+                                    </p>
+                                )}
+                                {entry.events?.length ? (
+                                    <p className="text-xs text-gray-400 mt-1">
+                                        Latest event: {entry.events[entry.events.length - 1].type}
+                                    </p>
+                                ) : null}
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+
             {/* Popups */}
             {selectedPlan && (
                 <>
@@ -330,4 +622,3 @@ export default function SubscriptionPage() {
         </div>
     );
 }
-

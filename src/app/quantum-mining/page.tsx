@@ -35,6 +35,7 @@ import ButtonBorder from "@/assets/images/button-border.webp";
 import ButtonBorderActive from "@/assets/images/button-border-active.webp";
 import SuccessPopup from "./SuccessPopup";
 import UnsuccessPopup from "./UnsuccessPopup";
+
 import {
   PaymentOption,
   CryptoOrderData,
@@ -53,6 +54,7 @@ import {
   SocketEventHandlers,
   QuantumOrderSocketPayload,
 } from "@/lib/quantum-mining";
+
 
 interface Errors {
   payAmount?: string;
@@ -681,8 +683,8 @@ const QuantumMiningPage = () => {
             typeof data?.orderCurrency === "string" && data.orderCurrency
               ? (data.orderCurrency as string)
               : selectedPaymentOption === "USD"
-              ? "USD"
-              : undefined;
+                ? "USD"
+                : undefined;
           const orderTypeValue =
             (typeof data?.orderType === "string" && data.orderType) || "Quantum";
           const paymentTypeValue =
@@ -989,9 +991,8 @@ const QuantumMiningPage = () => {
 
         {/* Buy Now Button */}
         <div
-          className={`flex justify-center mt-20 ${
-            isBuyDisabled ? "pointer-events-none opacity-60" : ""
-          }`}
+          className={`flex justify-center mt-20 ${isBuyDisabled ? "pointer-events-none opacity-60" : ""
+            }`}
           aria-disabled={isBuyDisabled}
         >
           <CustomButton2
