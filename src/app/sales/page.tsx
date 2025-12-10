@@ -23,6 +23,8 @@ import CardImage2 from "@/assets/images/home/card-2.webp";
 import CardImage3 from "@/assets/images/home/card-3.webp";
 import SalesPageArt from '@/assets/images/salesPageArt.svg';
 import SalesBackground from '@/assets/images/salesCoinBG.png';
+import ChristmasTreeImage from "@/assets/images/christmas_icon.png";
+
 import { EMAIL_TO_ADMIN_API_ROUTE } from "@/routes";
 import {
     Accordion,
@@ -95,35 +97,34 @@ export default function SalePage() {
         <div className="min-h-screen ">
             {/* Hero Banner Section - First 1/4 */}
             <div className="mx-auto mt-40 md:mt-60 px-4 md:px-8 lg:px-20 xl:px-40 relative max-w-[2000px]">
+                <div className="flex items-center justify-center">
+                    <Image
+                        src={ChristmasTreeImage}
+                        alt="Christmas Tree"
+                        className="w-30 h-30 object-contain"
+                    />
+                </div>
                 {/* Title */}
                 <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-bold text-white uppercase mb-4 md:mb-10">
-                    Bitcoin-YAY 12.12.2025 MEGA Sale
+                    CHRISTMAS SALE — LIMITED • 70% OFF
                 </h1>
                 <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 lg:gap-12">
 
 
                     {/* Left Content */}
                     <div className="flex-1 w-full lg:w-auto">
-                        {/* Cyber Monday Tag */}
-                        <div className="inline-flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 rounded-full border border-bg2 mb-6 md:mb-8">
-
-                            <span className="text-sm md:text-base lg:text-lg font-semibold text-primary">
-                                CYBER MONDAY SALE — LIMITED • 70% OFF
-                            </span>
-                        </div>
-
                         {/* Main Headline */}
                         <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-bold text-white mb-6 md:mb-8 leading-tight">
-                            Cyber Monday Crypto Surge is Live — Upgrade & Mine Faster
+                            Christmas Crypto Rush is Live — Upgrade & Mine Faster
                         </h2>
 
                         {/* Body Text */}
                         <div className="text-base md:text-lg lg:text-xl text-gray-300 mb-8 md:mb-10 space-y-4">
                             <p>
-                                Unlock up to 9x faster BTCY mining. Thousands have already upgraded — don&apos;t be left behind. Offer runs through the Cyber Monday window.
+                                Experience up to 9x faster BTCY mining — many users already upgraded.
                             </p>
                             <p>
-                                Our Cyber Monday sale is officially live! Enjoy up to 70% OFF on all Power Mining subscriptions until 11 December.
+                                Christmas Sale is live: Get 70% OFF on all Power Mining plans until 28th December.
                             </p>
                         </div>
 
@@ -159,7 +160,7 @@ export default function SalePage() {
 
                         {/* Disclaimer */}
                         <p className="text-xs md:text-sm text-gray-400 max-w-2xl">
-                            Limited-time sale runs through Cyber Monday. Prices & availability subject to platform terms.
+                            Limited-time Christmas sale! Prices & availability apply.
                         </p>
                     </div>
 
@@ -198,7 +199,7 @@ export default function SalePage() {
                                         required
                                         value={email}
                                         onChange={handleEmailChange}
-                                        placeholder="Enter your email"
+                                        placeholder="Email"
                                         disabled={isLoading}
                                         className="w-full px-4 py-3 md:px-6 md:py-4 rounded-lg bg-bg1 text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition-colors text-base md:text-lg"
                                     />
@@ -240,13 +241,13 @@ export default function SalePage() {
                     {/* Title Section */}
                     <div className="text-center mb-8 md:mb-12">
                         <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-semibold text-primary mb-4 md:mb-6">
-                            Power Mining — Holiday Offer
+                            Power Mining —  Christmas Sale
                         </h2>
                         <p className="text-sm md:text-base lg:text-1xl text-[#D5D5D5] mb-4">
                             Boost your mining time & earnings with an exclusive discount
                         </p>
                         <p className="text-base md:text-lg lg:text-xl text-gray-300 font-bold">
-                            Choose your plan — 70% OFF until 12/12
+                            Choose your plan — 70% OFF until 28/12
                         </p>
                     </div>
 
@@ -271,7 +272,7 @@ export default function SalePage() {
                                     Electric Mining
                                 </h3>
                                 <p className="text-sm md:text-base text-gray-400 mb-4">
-                                    $30 / month - ~4.5 BTCY/hr
+                                    $30 / month ~9 BTCY/hr
                                 </p>
                                 <div className="flex flex-col gap-2 mb-4">
                                     <span className="text-base md:text-lg lg:text-xl font-bold text-gray-400 line-through">
@@ -295,7 +296,7 @@ export default function SalePage() {
                                     Turbo Mining
                                 </h3>
                                 <p className="text-sm md:text-base text-gray-400 mb-4">
-                                    $90 / month - ~9 BTCY/hr
+                                    $90 / month ~18 BTCY/hr
                                 </p>
                                 <div className="flex flex-col gap-2 mb-4">
                                     <span className="text-base md:text-lg lg:text-xl font-bold text-gray-400 line-through">
@@ -319,7 +320,7 @@ export default function SalePage() {
                                     Nuclear Mining
                                 </h3>
                                 <p className="text-sm md:text-base text-gray-400 mb-4">
-                                    $180 / month - ~13.5 BTCY/hr
+                                    $180 / month ~27 BTCY/hr
                                 </p>
                                 <div className="flex flex-col gap-2 mb-4">
                                     <span className="text-base md:text-lg lg:text-xl font-bold text-gray-400 line-through">
@@ -344,12 +345,12 @@ export default function SalePage() {
                             link="/mining/power-mining"
                             imageStyling="w-24 h-24 "
                         />
-                        {/* <CustomButton2
+                        <CustomButton2
                             text="Learn More"
                             image={InfoButtonImage}
                             link="/mining/power-mining"
                             imageStyling="w-16 h-16 mb-4"
-                        /> */}
+                        />
                     </div>
                 </div>
             </div>
@@ -469,7 +470,7 @@ export default function SalePage() {
                     FAQ
                 </h2>
                 <h3 className="text-xl md:text-2xl lg:text-3xl font-semibold text-primary text-center mb-12 md:mb-16">
-                    Power Mining, BTCY & Cyber Monday Promo
+                    Power Mining, BTCY & Christmas Promo
                 </h3>
 
                 <div className="space-y-4">
@@ -515,10 +516,10 @@ export default function SalePage() {
                             className="border border-bg2 rounded-lg px-4 md:px-6 mt-4"
                         >
                             <AccordionTrigger className="text-left text-lg md:text-xl font-semibold text-white hover:no-underline">
-                                How does the Cyber Monday Power Mining promotion work?
+                                How does the Christmas Power Mining promotion work?
                             </AccordionTrigger>
                             <AccordionContent className="text-base md:text-lg text-gray-300 pt-2 pb-4">
-                                From 1st December to 11th December, you can get Power Mining at <strong>70% off</strong> the regular price. During this promotional period, any eligible Power Mining package you purchase inside the app will show the discounted price before you confirm payment.
+                                From Now to 28th December, you can get Power Mining at <strong>70% off</strong> the regular price. During this promotional period, any eligible Power Mining package you purchase inside the app will show the discounted price before you confirm payment.
                             </AccordionContent>
                         </AccordionItem>
 
@@ -566,7 +567,7 @@ export default function SalePage() {
                                 Can I still mine for free without buying Power Mining?
                             </AccordionTrigger>
                             <AccordionContent className="text-base md:text-lg text-gray-300 pt-2 pb-4">
-                                Yes. Free mining remains available to everyone. Power Mining is an optional upgrade for users who want to earn faster, reach Alchemy sooner, tap less frequently, and benefit from the limited-time Cyber Monday 70% off promotion running from 1st-11th December.
+                                Yes. Free mining remains available to everyone. Power Mining is an optional upgrade for users who want to earn faster, reach Alchemy sooner, tap less frequently, and benefit from the limited-time from now to 28 December, Christmas 70% off promotion.
                             </AccordionContent>
                         </AccordionItem>
                     </Accordion>

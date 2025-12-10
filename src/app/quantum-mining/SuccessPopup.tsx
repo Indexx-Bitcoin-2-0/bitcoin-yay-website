@@ -57,9 +57,8 @@ export default function SuccessPopup({
     if (amountDisplay) {
       entries.push({
         label: "Amount",
-        value: `${amountDisplay}${
-          orderSummary.currency ? ` ${orderSummary.currency}` : ""
-        }`,
+        value: `${amountDisplay}${orderSummary.currency ? ` ${orderSummary.currency}` : ""
+          }`,
       });
     }
 
@@ -82,7 +81,7 @@ export default function SuccessPopup({
 
   const headline =
     orderSummary?.orderType &&
-    orderSummary.orderType.toLowerCase().includes("quantum")
+      orderSummary.orderType.toLowerCase().includes("quantum")
       ? "Quantum Order Confirmed"
       : "Payment Successful!";
 
@@ -131,7 +130,7 @@ export default function SuccessPopup({
             <CustomButton2
               image={EyeButtonImage}
               text="View wallet"
-              onClick={() => {}}
+              onClick={() => { }}
               imageStyling="w-30"
             />
           </div>

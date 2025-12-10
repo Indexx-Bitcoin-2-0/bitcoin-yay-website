@@ -11,8 +11,8 @@ const BlackFridayPopupHandler = () => {
     const router = useRouter();
 
     useEffect(() => {
-        // Don't show popup on /download or /sale pages
-        if (pathname === "/download" || pathname === "/sale") {
+        // Don't show popup on /download or /sales pages
+        if (pathname === "/download" || pathname === "/sales") {
             setIsOpen(false);
             return;
         }

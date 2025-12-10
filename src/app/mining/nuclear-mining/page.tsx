@@ -68,9 +68,8 @@ const NuclearMiningPage = () => {
       const validation = await validateCoupon(PLAN_KEY, trimmedCoupon);
       setCouponValidationStatus("valid");
       setCouponValidationMessage(
-        `Coupon applied (${validation.couponCode}): ${
-          validation.couponDescription ??
-          `${validation.discountPercent}% off`
+        `Coupon applied (${validation.couponCode}): ${validation.couponDescription ??
+        `${validation.discountPercent}% off`
         } (final ${formatUsd(validation.finalPrice)})`
       );
       return true;
@@ -197,8 +196,10 @@ const NuclearMiningPage = () => {
     setIsPaymentPopupOpen(true);
   };
 
-  const handlePaymentMethodSelect = (method: PaymentProvider) => {
-    void startSubscription(method);
+  const handlePaymentMethodSelect = (method: "paypal" | "stripe" | "ach" | "wire" | "zelle" | "tygapay" | "venmo") => {
+    // Map to supported providers (backend may only support paypal/stripe)
+    const supportedMethod: PaymentProvider = method === "paypal" || method === "stripe" ? method : "stripe";
+    void startSubscription(supportedMethod);
   };
 
   const handleLoginSuccess = () => setIsLoginPopupOpen(false);
@@ -258,11 +259,10 @@ const NuclearMiningPage = () => {
             </p>
           ) : couponValidationMessage ? (
             <p
-              className={`text-sm text-center mt-2 ${
-                couponValidationStatus === "error"
+              className={`text-sm text-center mt-2 ${couponValidationStatus === "error"
                   ? "text-red-500"
                   : "text-green-400"
-              }`}
+                }`}
             >
               {couponValidationMessage}
             </p>
@@ -281,9 +281,8 @@ const NuclearMiningPage = () => {
           />
           {feedback && (
             <p
-              className={`text-center text-sm ${
-                feedback.type === "error" ? "text-red-500" : "text-green-400"
-              }`}
+              className={`text-center text-sm ${feedback.type === "error" ? "text-red-500" : "text-green-400"
+                }`}
             >
               {feedback.message}
             </p>

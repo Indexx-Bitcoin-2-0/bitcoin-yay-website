@@ -19,10 +19,10 @@ import UpgradeIcon from '@/assets/images/UpgradeIcon.svg';
 import CancelImage from '@/assets/images/cancelIcon.svg';
 
 import {
-  fetchSubscriptionHistory,
-  PaymentProvider,
-  SubscriptionHistoryEntry,
-  purchaseSubscription,
+    fetchSubscriptionHistory,
+    PaymentProvider,
+    SubscriptionHistoryEntry,
+    purchaseSubscription,
 } from "@/lib/subscriptions";
 type PlanType = "Free" | "Electric Mining" | "Turbo Mining" | "Nuclear Mining";
 type AvailablePlanKey = "electric" | "turbo" | "nuclear";
@@ -119,32 +119,32 @@ const HISTORY_PAGE_SIZE = 5;
 const HISTORY_PROVIDER_OPTIONS: PaymentProvider[] = ["stripe", "paypal"];
 
 const formatCurrency = (value: number, currency = "USD") =>
-  value.toLocaleString("en-US", {
-    style: "currency",
-    currency,
-  });
+    value.toLocaleString("en-US", {
+        style: "currency",
+        currency,
+    });
 
 const formatDateTime = (value?: string) => {
-  if (!value) return "—";
-  const date = new Date(value);
-  return date.toLocaleString("en-US", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  });
+    if (!value) return "—";
+    const date = new Date(value);
+    return date.toLocaleString("en-US", {
+        dateStyle: "medium",
+        timeStyle: "short",
+    });
 };
 
 const getStatusBadgeClasses = (status: string) => {
-  const normalized = status?.toLowerCase();
-  if (normalized === "active" || normalized === "success") {
-    return "border-green-500 text-green-400";
-  }
-  if (normalized === "pending") {
-    return "border-yellow-500 text-yellow-400";
-  }
-  if (normalized === "failed" || normalized === "cancelled" || normalized === "canceled") {
-    return "border-red-500 text-red-400";
-  }
-  return "border-white/30 text-white/70";
+    const normalized = status?.toLowerCase();
+    if (normalized === "active" || normalized === "success") {
+        return "border-green-500 text-green-400";
+    }
+    if (normalized === "pending") {
+        return "border-yellow-500 text-yellow-400";
+    }
+    if (normalized === "failed" || normalized === "cancelled" || normalized === "canceled") {
+        return "border-red-500 text-red-400";
+    }
+    return "border-white/30 text-white/70";
 };
 
 export default function SubscriptionPage() {
@@ -168,7 +168,7 @@ export default function SubscriptionPage() {
     const [isConfirmPopupOpen, setIsConfirmPopupOpen] = useState(false);
     const [isSuccessPopupOpen, setIsSuccessPopupOpen] = useState(false);
     const [isFailedPopupOpen, setIsFailedPopupOpen] = useState(false);
-    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<"paypal" | "stripe" | null>(null);
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<"paypal" | "stripe" | "ach" | "wire" | "zelle" | "tygapay" | "venmo" | null>(null);
     const [selectedPlan, setSelectedPlan] = useState<PlanType | null>(null);
 
     useEffect(() => {
@@ -252,8 +252,10 @@ export default function SubscriptionPage() {
         setIsPaymentPopupOpen(true);
     };
 
-    const handlePaymentMethodSelect = (method: "paypal" | "stripe") => {
-        setSelectedPaymentMethod(method);
+    const handlePaymentMethodSelect = (method: "paypal" | "stripe" | "ach" | "wire" | "zelle" | "tygapay" | "venmo") => {
+        // Map to supported providers if needed (backend may only support paypal/stripe)
+        const supportedMethod = method === "paypal" || method === "stripe" ? method : "stripe";
+        setSelectedPaymentMethod(supportedMethod as PaymentProvider);
         setIsPaymentPopupOpen(false);
         setIsConfirmPopupOpen(true);
     };
@@ -278,13 +280,20 @@ export default function SubscriptionPage() {
         setFeedback(null);
 
         try {
+            // Map to supported providers (backend may only support paypal/stripe)
+            const supportedProvider: PaymentProvider =
+                selectedPaymentMethod === "paypal" || selectedPaymentMethod === "stripe"
+                    ? selectedPaymentMethod
+                    : "stripe";
+
             const payload = {
                 email: user.email,
-                provider: selectedPaymentMethod,
+                provider: supportedProvider,
                 planKey,
                 metadata: {
                     planName: selectedPlan,
                     page: "subscription-page",
+                    originalPaymentMethod: selectedPaymentMethod, // Store original for reference
                 },
             };
 
@@ -357,9 +366,8 @@ export default function SubscriptionPage() {
                 </p>
                 {feedback && (
                     <p
-                        className={`text-sm mb-6 ${
-                            feedback.type === "error" ? "text-red-500" : "text-green-400"
-                        }`}
+                        className={`text-sm mb-6 ${feedback.type === "error" ? "text-red-500" : "text-green-400"
+                            }`}
                     >
                         {feedback.message}
                     </p>
@@ -508,11 +516,10 @@ export default function SubscriptionPage() {
                             key={providerOption}
                             type="button"
                             onClick={() => setPaymentMethod(providerOption)}
-                            className={`rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wide transition ${
-                                paymentMethod === providerOption
+                            className={`rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wide transition ${paymentMethod === providerOption
                                     ? "border-primary bg-primary/20 text-white"
                                     : "border-white/20 text-tertiary hover:border-white/70"
-                            }`}
+                                }`}
                         >
                             {providerOption.toUpperCase()}
                         </button>
