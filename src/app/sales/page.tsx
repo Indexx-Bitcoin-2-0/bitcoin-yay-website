@@ -12,6 +12,7 @@ import AppleStoreButtonImage from "@/assets/images/buttons/get-on-applestore-but
 import ArrowDownButtonImage from "@/assets/images/buttons/arrow-up-button.webp";
 import DollarButtonImage from "@/assets/images/buttons/dollar-button.webp";
 import InfoButtonImage from "@/assets/images/buttons/info-button.webp";
+import logo from "@/assets/images/main-logo.svg";
 
 import Image1 from "@/assets/images/home/hero-section/1.webp";
 import DownloadLogo from "@/assets/images/download-button.svg";
@@ -93,10 +94,28 @@ export default function SalePage() {
         }
     };
 
+    // Extract logo component
+    const Logo = () => (
+        <div className="">
+            <Link href="/" className="">
+                <Image
+                    src={logo}
+                    alt="logo"
+                    className="w-[165px] md:w-[300px] hover:scale-105 transition-transform duration-300"
+                />
+            </Link>
+        </div>
+    );
+
+
     return (
         <div className="min-h-screen ">
             {/* Hero Banner Section - First 1/4 */}
-            <div className="mx-auto mt-40 md:mt-60 px-4 md:px-8 lg:px-20 xl:px-40 relative max-w-[2000px]">
+            <div className="flex items-center justify-center mt-20 md:mt-20">
+                <Logo />
+            </div>
+
+            <div className="mx-auto mt-20 md:mt-30 px-4 md:px-8 lg:px-20 xl:px-40 relative max-w-[2000px]">
                 <div className="flex items-center justify-center">
                     <Image
                         src={ChristmasTreeImage}

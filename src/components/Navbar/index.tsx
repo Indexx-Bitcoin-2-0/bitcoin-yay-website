@@ -646,8 +646,8 @@ const Navbar: React.FC = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   // Check if popup should be shown
   useEffect(() => {
-    // Don't show popup on /download or /sales pages
-    if (currentPath === "/download" || currentPath === "/sales") {
+    // Don't show popup on /download, /sales, or /quantum-sale pages
+    if (currentPath === "/download" || currentPath === "/sales" || currentPath === "/quantum-sale") {
       setIsPopupOpen(false);
       return;
     }
