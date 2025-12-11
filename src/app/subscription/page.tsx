@@ -124,6 +124,8 @@ const formatCurrency = (value: number, currency = "USD") =>
         currency,
     });
 
+const SUBSCRIPTION_PAUSED_MESSAGE =
+    "Subscriptions via PayPal and Stripe are temporarily disabled. We will update this page once payments resume.";
 const formatDateTime = (value?: string) => {
     if (!value) return "—";
     const date = new Date(value);
@@ -248,8 +250,10 @@ export default function SubscriptionPage() {
 
     const handleUpgrade = (planName: PlanType) => {
         if (planName === currentPlanName) return;
-        setSelectedPlan(planName);
-        setIsPaymentPopupOpen(true);
+        setFeedback({
+            type: "info",
+            message: SUBSCRIPTION_PAUSED_MESSAGE,
+        });
     };
 
     const handlePaymentMethodSelect = (method: "paypal" | "stripe" | "ach" | "wire" | "zelle" | "tygapay" | "venmo") => {
@@ -363,6 +367,9 @@ export default function SubscriptionPage() {
                 </h1>
                 <p className="text-base md:text-lg text-gray-400 mb-8">
                     Manage your mining plan and subscription
+                </p>
+                <p className="text-sm text-amber-300 mb-6">
+                    {SUBSCRIPTION_PAUSED_MESSAGE}
                 </p>
                 {feedback && (
                     <p

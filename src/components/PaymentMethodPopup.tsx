@@ -43,8 +43,8 @@ const PaymentMethodPopup: React.FC<PaymentMethodPopupProps> = ({
         {
             id: "creditcard" as PaymentMethod,
             name: "Credit Card",
-            description: "",
-            disabled: false,
+            description: "Subscriptions via Stripe/Credit Cards are temporarily paused.",
+            disabled: true,
             icon: (
                 <Image
                     src={CreditCardIcon}
@@ -57,8 +57,8 @@ const PaymentMethodPopup: React.FC<PaymentMethodPopupProps> = ({
         {
             id: "paypal" as PaymentMethod,
             name: "PayPal",
-            description: "",
-            disabled: false,
+            description: "Subscriptions via PayPal are temporarily paused.",
+            disabled: true,
             icon: (
                 <Image
                     src={PayPalIcon}
@@ -70,8 +70,8 @@ const PaymentMethodPopup: React.FC<PaymentMethodPopupProps> = ({
         {
             id: "stripe" as PaymentMethod,
             name: "Stripe",
-            description: "",
-            disabled: false,
+            description: "Subscriptions via Stripe are temporarily paused.",
+            disabled: true,
             icon: (
                 <Image
                     src={StripeIcon}
@@ -196,4 +196,3 @@ const PaymentMethodPopup: React.FC<PaymentMethodPopupProps> = ({
 };
 
 export default PaymentMethodPopup;
-
