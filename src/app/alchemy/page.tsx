@@ -48,6 +48,9 @@ const WALLET_OVERVIEW_BASE_URL = "https://cex.indexx.ai/wallet/overview";
 const MINIMUM_BALANCE_MESSAGE = `You need at least ${MINIMUM_BTCY_BALANCE_FOR_ALCHEMY.toLocaleString(
   "en-US"
 )} BTCY to start an Alchemy`;
+const MAX_NUGGET_INPUT_MESSAGE = `You can only convert up to ${MAX_NUGGET_INPUT.toLocaleString(
+  "en-US"
+)} BTCY per session.`;
 
 export default function AlchemyPage() {
   const { user, isLoading: isAuthLoading } = useAuth();
@@ -63,10 +66,11 @@ export default function AlchemyPage() {
   const [balanceLoading, setBalanceLoading] = useState(false);
   const [balanceError, setBalanceError] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
-  const [inputError, setInputError] = useState<string | null>(null);
+  const [limitWarning, setLimitWarning] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [walletUrl, setWalletUrl] = useState(WALLET_OVERVIEW_BASE_URL);
   const popupTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const limitWarningTimerRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
   const [isProcessingAlchemy, setIsProcessingAlchemy] = useState(false);
   const [liquidityPoolData, setLiquidityPoolData] = useState<
@@ -94,22 +98,31 @@ export default function AlchemyPage() {
     const digitsOnly = rawValue.replace(/[^0-9]/g, "");
     if (!digitsOnly) {
       setNuggetInput("");
-      setInputError(null);
+      setLimitWarning(null);
       return;
     }
 
     const numericValue = Number(digitsOnly);
     const clampedValue = Math.min(numericValue, MAX_NUGGET_INPUT);
+    const limitExceeded = numericValue > MAX_NUGGET_INPUT;
+
     setNuggetInput(String(clampedValue));
 
-    if (numericValue > MAX_NUGGET_INPUT) {
-      setInputError(
-        `You can only convert up to ${MAX_NUGGET_INPUT.toLocaleString(
-          "en-US"
-        )} BTCY per session.`
-      );
+    if (limitExceeded) {
+      setLimitWarning(MAX_NUGGET_INPUT_MESSAGE);
+      if (limitWarningTimerRef.current) {
+        clearTimeout(limitWarningTimerRef.current);
+      }
+      limitWarningTimerRef.current = setTimeout(() => {
+        setLimitWarning(null);
+        limitWarningTimerRef.current = null;
+      }, 2500);
     } else {
-      setInputError(null);
+      setLimitWarning(null);
+      if (limitWarningTimerRef.current) {
+        clearTimeout(limitWarningTimerRef.current);
+        limitWarningTimerRef.current = null;
+      }
     }
   };
 
@@ -159,6 +172,14 @@ export default function AlchemyPage() {
     return () => {
       if (popupTimerRef.current) {
         clearTimeout(popupTimerRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (limitWarningTimerRef.current) {
+        clearTimeout(limitWarningTimerRef.current);
       }
     };
   }, []);
@@ -287,8 +308,8 @@ export default function AlchemyPage() {
     setFormError(null);
     setStatusMessage(null);
 
-    if (inputError) {
-      setFormError("Please fix the nugget amount before converting.");
+    if (limitWarning) {
+      setFormError(MAX_NUGGET_INPUT_MESSAGE);
       return;
     }
 
@@ -320,6 +341,11 @@ export default function AlchemyPage() {
     const amount = Number(nuggetInput);
     if (Number.isNaN(amount) || amount <= 0) {
       setFormError("Enter a valid nugget amount.");
+      return;
+    }
+
+    if (amount > MAX_NUGGET_INPUT) {
+      setFormError(MAX_NUGGET_INPUT_MESSAGE);
       return;
     }
 
@@ -483,8 +509,8 @@ export default function AlchemyPage() {
             placeholder="Enter Nuggets Amount"
             className="mt-10 w-full rounded-2xl bg-bg2/70 border border-bg2 px-6 py-4 text-center text-xl text-white placeholder:text-tertiary focus:outline-none focus:ring-2 focus:ring-primary"
           />
-          {inputError && (
-            <p className="mt-4 text-sm text-red-500 text-center">{inputError}</p>
+          {limitWarning && (
+            <p className="mt-4 text-sm text-red-500 text-center">{limitWarning}</p>
           )}
           {user ? (
             <p className="mt-4 text-sm text-tertiary">
@@ -940,7 +966,7 @@ export default function AlchemyPage() {
 
 
       {showIgnited && (
-        <div className="fixed inset-0 bg-white/40 z-50 flex items-center justify-center px-4">
+        <div className="fixed inset-0 bg-white/40 backdrop-blur-3xl z-50 flex items-center justify-center px-4">
           <div className="bg-bg1 p-10 max-w-3xl">
             <div className="flex justify-center mb-8">
 

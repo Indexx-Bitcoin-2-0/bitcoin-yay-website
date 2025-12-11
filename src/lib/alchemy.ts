@@ -849,7 +849,17 @@ export async function getUserWalletBalance(
     });
     const result = await parseJsonSafe(response);
 
-    if (!response.ok) {
+    const additionalData =
+      result?.data && typeof result.data === "object" && result.data !== null
+        ? (result.data as Record<string, unknown>)
+        : undefined;
+
+    const isCoinNotRegisteredError =
+      response.status === 500 &&
+      typeof result?.data === "string" &&
+      result.data.toLowerCase().includes("coin not registered");
+
+    if (!response.ok && !isCoinNotRegisteredError) {
       throw new Error(result?.error || "Failed to fetch wallet balance");
     }
 
@@ -859,8 +869,10 @@ export async function getUserWalletBalance(
         email,
         symbol,
         network,
-        balance: toSafeNumber(result?.data?.balance ?? result?.balance ?? 0),
-        ...result?.data,
+        balance: toSafeNumber(
+          additionalData?.balance ?? result?.balance ?? 0
+        ),
+        ...(additionalData ?? {}),
       },
     };
   } catch (error) {
