@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -165,6 +166,17 @@ export default function AlchemyOutcomePage() {
                             Session ID: {sessionState.sessionId}
                         </p>
                     )}
+                    <div className="mt-6 rounded-2xl border border-dashed border-white/20 bg-bg2/30 p-4 text-sm text-tertiary space-y-2">
+                        <p className="text-white font-semibold text-sm">Check your history</p>
+                        <p className="text-xs md:text-sm">
+                            While your Nuggets are refining, review previous Alchemy sessions and pending
+                            claim transactions at{" "}
+                            <Link href="/alchemy/history" className="text-primary underline">
+                                Alchemy History
+                            </Link>
+                            .
+                        </p>
+                    </div>
                 </div>
             </div>
 

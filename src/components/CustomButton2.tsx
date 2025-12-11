@@ -10,6 +10,8 @@ type CustomButton2Props = {
   ariaLabel?: string;
   disabled?: boolean;
   textMaxWidth?: string;
+  className?: string;
+  widthClassName?: string;
 } & (
     | {
       link: string;
@@ -31,11 +33,15 @@ export default function CustomButton2({
   ariaLabel,
   disabled = false,
   textMaxWidth,
+  className,
+  widthClassName,
 }: CustomButton2Props) {
   const commonClasses = disabled
-    ? "cursor-not-allowed opacity-50 text-tertiary group flex flex-col items-center justify-center w-fit"
-    : "cursor-pointer text-tertiary group flex flex-col items-center justify-center w-fit";
+    ? "cursor-not-allowed opacity-50 text-tertiary group flex flex-col items-center justify-center"
+    : "cursor-pointer text-tertiary group flex flex-col items-center justify-center";
 
+  const widthClass = widthClassName ?? "w-fit";
+  const rootClasses = `${commonClasses} ${widthClass} ${className ?? ""}`.trim();
   const content = (
     <>
       <Image
@@ -56,7 +62,7 @@ export default function CustomButton2({
 
   if (disabled) {
     return (
-      <div className={commonClasses} aria-label={ariaLabel} aria-disabled="true">
+      <div className={rootClasses} aria-label={ariaLabel} aria-disabled="true">
         {content}
       </div>
     );
@@ -67,7 +73,7 @@ export default function CustomButton2({
       <Link
         href={link}
         target={_blank ? "_blank" : undefined}
-        className={commonClasses}
+        className={rootClasses}
         aria-label={ariaLabel}
       >
         {content}
@@ -77,7 +83,7 @@ export default function CustomButton2({
 
   if (onClick) {
     return (
-      <div onClick={onClick} className={commonClasses}>
+      <div onClick={onClick} className={rootClasses}>
         {content}
       </div>
     );
