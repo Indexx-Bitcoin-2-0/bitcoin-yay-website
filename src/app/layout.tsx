@@ -1,9 +1,8 @@
 import "./globals.css";
 import { Suspense } from "react";
-import Footer from "@/components/Footer";
-import Navbar from "@/components/Navbar";
 import SignInTokenHandler from "@/components/SignInTokenHandler";
 import BlackFridayPopupHandler from "@/components/BlackFridayPopupHandler";
+import ConditionalLayout from "@/components/ConditionalLayout";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { GoogleOAuthProvider } from "@react-oauth/google"; // ✅ Import this
 
@@ -65,9 +64,7 @@ export default function RootLayout({
               <SignInTokenHandler />
             </Suspense>
             <BlackFridayPopupHandler />
-            <Navbar />
-            <main>{children}</main>
-            <Footer />
+            <ConditionalLayout>{children}</ConditionalLayout>
           </AuthProvider>
         </GoogleOAuthProvider>
       </body>
