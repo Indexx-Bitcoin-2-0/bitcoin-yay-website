@@ -2,15 +2,17 @@
 
 export const dynamic = "force-dynamic";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { clusterApiUrl, Connection, LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
 import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import TronWeb from "tronweb";
 import type { TronWeb as TronWebConstructor } from "tronweb";
 import { Check } from "lucide-react";
 import CustomButton2 from "@/components/CustomButton2";
 import PopupComponent from "@/components/PopupComponent";
 import WalletIcon from '@/assets/images/alchemy/home/walletIcon.png';
+import PointingButtonImage from "@/assets/images/buttons/point-button.webp";
 import { useAuth } from "@/contexts/AuthContext";
 import LoginPopup from "@/components/LoginPopup";
 import { TRONABI } from "@/contracts/tron/abi";
@@ -153,6 +155,7 @@ type TronClaimStatusState = {
 };
 
 function ClaimPageContent() {
+  const router = useRouter();
   const { user, isLoading } = useAuth();
   const [selectedDestination, setSelectedDestination] = useState<ClaimDestinationId>("tron");
   const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
@@ -171,6 +174,8 @@ function ClaimPageContent() {
   });
   const [tronStatusError, setTronStatusError] = useState<string | null>(null);
   const [claimSuccessMessage, setClaimSuccessMessage] = useState<string | null>(null);
+  const [isSuccessPopupOpen, setIsSuccessPopupOpen] = useState(false);
+  const successRedirectTimerRef = useRef<NodeJS.Timeout | null>(null);
   const [ethereumState, setEthereumState] = useState({
     installed: false,
     connected: false,
@@ -207,6 +212,14 @@ function ClaimPageContent() {
       : selectedDestination === "ethereum"
       ? ethereumState.connected
       : true;
+
+  const getSuccessMessage = (destination: ClaimDestination): string => {
+    const walletLabel = destination.walletName ?? destination.name;
+    if (destination.id === "indexx") {
+      return `Indexx Asset Wallet claim queued. Check ${walletLabel} shortly to see your BTCY.`;
+    }
+    return `Claim to ${destination.name} succeeded. Tokens will arrive via ${walletLabel}.`;
+  };
 
   const walletWarningMessage = `Connect ${selectedDestinationData.walletName} to proceed with claiming on ${selectedDestinationData.name}.`;
   const walletErrorMessage = `Connect ${selectedDestinationData.walletName} before claiming on ${selectedDestinationData.name}.`;
@@ -420,7 +433,21 @@ function ClaimPageContent() {
   useEffect(() => {
     setClaimStatus(null);
     setClaimError(null);
+    setClaimSuccessMessage(null);
+    setIsSuccessPopupOpen(false);
+    if (successRedirectTimerRef.current) {
+      clearTimeout(successRedirectTimerRef.current);
+      successRedirectTimerRef.current = null;
+    }
   }, [selectedDestination]);
+
+  useEffect(() => {
+    return () => {
+      if (successRedirectTimerRef.current) {
+        clearTimeout(successRedirectTimerRef.current);
+      }
+    };
+  }, []);
 
   const handleLoginSuccess = () => setIsLoginPopupOpen(false);
   const handleCloseLoginPopup = () => setIsLoginPopupOpen(false);
@@ -668,26 +695,31 @@ function ClaimPageContent() {
     setIsClaiming(true);
 
     try {
+      let detailMessage: string;
       if (selectedDestination === "solana") {
         if (!walletState.phantom.connected) {
           throw new Error("Please connect your Phantom wallet before claiming.");
         }
-        const message = await claimOnSolana(walletState.phantom.address);
-        setClaimStatus(message);
-        setClaimSuccessMessage(message);
+        detailMessage = await claimOnSolana(walletState.phantom.address);
       } else if (selectedDestination === "tron") {
         if (!walletState.tronLink.connected) {
           throw new Error("Please connect your TronLink wallet before claiming.");
         }
-        const message = await claimOnTron(walletState.tronLink.address);
-        setClaimStatus(message);
-        setClaimSuccessMessage(message);
+        detailMessage = await claimOnTron(walletState.tronLink.address);
       } else {
-        const message =
+        detailMessage =
           "Indexx Asset Wallet claims are custodial and will be processed within your Indexx wallet dashboard.";
-        setClaimStatus(message);
-        setClaimSuccessMessage(message);
       }
+
+      setClaimStatus(detailMessage);
+      setClaimSuccessMessage(getSuccessMessage(selectedDestinationData));
+      setIsSuccessPopupOpen(true);
+      if (successRedirectTimerRef.current) {
+        clearTimeout(successRedirectTimerRef.current);
+      }
+      successRedirectTimerRef.current = setTimeout(() => {
+        router.push("/alchemy/history");
+      }, 1400);
     } catch (error) {
       setClaimError(
         error instanceof Error ? error.message : "Unable to claim tokens right now."
@@ -699,6 +731,12 @@ function ClaimPageContent() {
 
   const openConfirmPopup = async () => {
     setClaimError(null);
+    setClaimSuccessMessage(null);
+    setIsSuccessPopupOpen(false);
+    if (successRedirectTimerRef.current) {
+      clearTimeout(successRedirectTimerRef.current);
+      successRedirectTimerRef.current = null;
+    }
     if (walletRequired && !walletReady) {
       setClaimError(walletErrorMessage);
       return;
@@ -1024,21 +1062,22 @@ function ClaimPageContent() {
               </span>
               ?
             </p>
-            <div className="flex flex-col gap-3 md:flex-row md:justify-end">
-              <button
-                type="button"
+            <div className="flex flex-col gap-6 md:flex-row md:justify-center">
+              <CustomButton2
+                image={PointingButtonImage}
+                text="No, cancel"
+                imageStyling="w-28 h-28"
+                widthClassName="w-32 md:w-36"
                 onClick={closeConfirmPopup}
-                className="w-full rounded-full border border-white/40 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white transition hover:border-primary/80 hover:text-primary md:w-auto"
-              >
-                No, cancel
-              </button>
-              <button
-                type="button"
+              />
+              <CustomButton2
+                image={WalletIcon}
+                text="Yes, proceed"
+                imageStyling="w-28 h-28"
+                widthClassName="w-32 md:w-36"
                 onClick={confirmClaim}
-                className="w-full rounded-full border border-primary/70 bg-gradient-to-r from-primary to-secondary px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white transition md:w-auto"
-              >
-                Yes, proceed
-              </button>
+                disabled={isSessionFinalizing || isClaiming}
+              />
             </div>
           </div>
         </PopupComponent>
@@ -1057,21 +1096,32 @@ function ClaimPageContent() {
           {claimError && (
             <p className="text-sm text-red-400">{claimError}</p>
           )}
+          {claimSuccessMessage && (
+            <p className="text-sm text-primary">{claimSuccessMessage}</p>
+          )}
         </div>
 
         {claimSuccessMessage && (
-          <PopupComponent isOpen onClose={() => setClaimSuccessMessage(null)}>
+          <PopupComponent
+            isOpen={isSuccessPopupOpen}
+            onClose={() => setIsSuccessPopupOpen(false)}
+          >
             <div className="w-72 md:w-96 bg-bg p-6 rounded-2xl flex flex-col gap-4">
               <p className="text-base text-white leading-relaxed">
                 {claimSuccessMessage}
               </p>
-              <button
-                type="button"
-                onClick={() => setClaimSuccessMessage(null)}
-                className="w-full rounded-full border border-primary/70 bg-gradient-to-r from-primary to-secondary px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white transition"
-              >
-                Close
-              </button>
+              {claimStatus && (
+                <p className="text-sm text-tertiary">{claimStatus}</p>
+              )}
+              <div className="flex justify-center">
+                <CustomButton2
+                  image={PointingButtonImage}
+                  text="Close"
+                  imageStyling="w-20 h-20"
+                  widthClassName="w-32 md:w-40"
+                  onClick={() => setIsSuccessPopupOpen(false)}
+                />
+              </div>
             </div>
           </PopupComponent>
         )}
