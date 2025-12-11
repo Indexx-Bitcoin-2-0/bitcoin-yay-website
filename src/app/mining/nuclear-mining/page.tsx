@@ -6,7 +6,7 @@ import Link from "next/link";
 
 import CustomButton2 from "@/components/CustomButton2";
 import LoginPopup from "@/components/LoginPopup";
-import PaymentMethodPopup from "@/components/PaymentMethodPopup";
+import PaymentMethodPopup, { PaymentMethod } from "@/components/PaymentMethodPopup";
 import { useAuth } from "@/contexts/AuthContext";
 import { PROVIDER_LABELS } from "@/constants/paymentProviders";
 import {
@@ -196,7 +196,7 @@ const NuclearMiningPage = () => {
     setIsPaymentPopupOpen(true);
   };
 
-  const handlePaymentMethodSelect = (method: "paypal" | "stripe" | "ach" | "wire" | "zelle" | "tygapay" | "venmo") => {
+  const handlePaymentMethodSelect = (method: PaymentMethod) => {
     // Map to supported providers (backend may only support paypal/stripe)
     const supportedMethod: PaymentProvider = method === "paypal" || method === "stripe" ? method : "stripe";
     void startSubscription(supportedMethod);

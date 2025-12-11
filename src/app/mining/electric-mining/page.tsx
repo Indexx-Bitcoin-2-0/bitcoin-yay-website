@@ -6,7 +6,7 @@ import Link from "next/link";
 
 import CustomButton2 from "@/components/CustomButton2";
 import LoginPopup from "@/components/LoginPopup";
-import PaymentMethodPopup from "@/components/PaymentMethodPopup";
+import PaymentMethodPopup, { PaymentMethod } from "@/components/PaymentMethodPopup";
 import { useAuth } from "@/contexts/AuthContext";
 import { PROVIDER_LABELS } from "@/constants/paymentProviders";
 import {
@@ -196,8 +196,10 @@ const ElectricMiningPage = () => {
     setIsPaymentPopupOpen(true);
   };
 
-  const handlePaymentMethodSelect = (method: PaymentProvider) => {
-    void startSubscription(method);
+  const handlePaymentMethodSelect = (method: PaymentMethod) => {
+    const supportedProvider: PaymentProvider =
+      method === "paypal" || method === "stripe" ? method : "stripe";
+    void startSubscription(supportedProvider);
   };
 
   const handleLoginSuccess = () => setIsLoginPopupOpen(false);

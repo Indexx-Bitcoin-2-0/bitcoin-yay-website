@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { Check, X } from "lucide-react";
 import LoginPopup from "@/components/LoginPopup";
-import PaymentMethodPopup from "@/components/PaymentMethodPopup";
+import PaymentMethodPopup, { PaymentMethod } from "@/components/PaymentMethodPopup";
 import SubscriptionConfirmPopup from "@/components/SubscriptionConfirmPopup";
 import PaymentSuccessPopup from "@/components/PaymentSuccessPopup";
 import PaymentFailedPopup from "@/components/PaymentFailedPopup";
@@ -250,13 +250,10 @@ export default function SubscriptionPage() {
 
     const handleUpgrade = (planName: PlanType) => {
         if (planName === currentPlanName) return;
-        setFeedback({
-            type: "info",
-            message: SUBSCRIPTION_PAUSED_MESSAGE,
-        });
+        // Subscriptions are paused; nothing to do here.
     };
 
-    const handlePaymentMethodSelect = (method: "paypal" | "stripe" | "ach" | "wire" | "zelle" | "tygapay" | "venmo") => {
+    const handlePaymentMethodSelect = (method: PaymentMethod) => {
         // Map to supported providers if needed (backend may only support paypal/stripe)
         const supportedMethod = method === "paypal" || method === "stripe" ? method : "stripe";
         setSelectedPaymentMethod(supportedMethod as PaymentProvider);

@@ -12,13 +12,13 @@ import VenmoIcon from "@/assets/images/popup/venmo.svg";
 import AchIcon from "@/assets/images/popup/ach.svg";
 import CreditCardIcon from "@/assets/images/popup/creditCard.svg";
 
-type PaymentMethod = "paypal" | "stripe" | "creditcard" | "ach" | "wire" | "zelle" | "tygapay" | "venmo";
+export type PaymentMethod = "paypal" | "stripe" | "creditcard" | "ach" | "wire" | "zelle" | "tygapay" | "venmo";
 type PaymentProvider = "paypal" | "stripe";
 
 interface PaymentMethodPopupProps {
     isOpen: boolean;
     onClose: () => void;
-    onSelectPaymentMethod: (method: PaymentProvider) => void;
+    onSelectPaymentMethod: (method: PaymentMethod) => void;
     planName?: string;
     subscriptionAmount?: number;
 }
@@ -33,9 +33,7 @@ const PaymentMethodPopup: React.FC<PaymentMethodPopupProps> = ({
     const handlePaymentMethodClick = (method: PaymentMethod, disabled: boolean) => {
         if (disabled) return;
 
-        // Map creditcard to stripe since Stripe handles credit cards
-        const provider: PaymentProvider = method === "creditcard" ? "stripe" : method as PaymentProvider;
-        onSelectPaymentMethod(provider);
+        onSelectPaymentMethod(method);
         // Don't close - the parent will handle showing the confirmation popup
     };
 
