@@ -304,25 +304,26 @@ export default function Home() {
       <div className="container mx-auto px-4 py-8 relative">
         {/* Part 02 */}
         <div
-          className="mt-60 text-center flex flex-col items-center"
+          className="mt-20 text-center flex flex-col items-center"
           id="mobile-mining"
         >
           <div className="flex flex-col justify-center ">
             <p className="text-2xl">Bitcoin-Yay</p>
-            <h2 className="text-4xl md:text-7xl font-bold my-4">
+            <h2 className="text-4xl md:text-[68px] font-bold my-4">
               Your Mobile Mining
             </h2>
-            <h3 className="text-2xl md:text-4xl">Micro Token of Bitcoin</h3>
+            <h3 className="text-2xl md:text-4xl mb-4">Micro Token of Bitcoin</h3>
+            <p className="text-2xl">Bitcoin Yay is your petty cash for Bitcoin! </p>
+
+
           </div>
-          <div className="my-10 flex flex-col justify-center items-center">
+          <div className="mt-10 flex flex-col justify-center items-center">
             <Image
               src={PhoneImage1}
               alt="Phone Image 1"
-              className="w-80 md:w-140 lg:w-240"
+              className="w-80 md:w-140 lg:w-140"
             />
-            <p className="text-2xl font-bold my-10">
-              Bitcoin-Yay is your petty cash for Bitcoin!{" "}
-            </p>
+
           </div>
           <CustomButton2
             image={DownloadLogo}
@@ -337,13 +338,13 @@ export default function Home() {
             <Image
               src={PhoneImage2}
               alt="Phone Image 2"
-              className="w-80 md:w-140 lg:w-240"
+              className="w-80 md:w-90 lg:w-90"
             />
-            <h2 className="text-4xl md:text-7xl font-bold my-20 text-center">
+            <h2 className="text-4xl md:text-[48px] font-bold mt-20 text-center">
               Download The Bitcoin-Yay App
             </h2>
           </div>
-          <div className="flex flex-col items-center justify-center mt-10">
+          <div className="flex flex-col items-center justify-center ">
             <CustomButton2
               image={DownloadLogo}
               text="Download the Mining App"
@@ -353,8 +354,11 @@ export default function Home() {
         </div>
 
         {/* Part 04 */}
+        <div className="flex flex-col items-start mt-60 mx-10">
+          <p className="text-xl text-left mb-10 max-w-100 ">Get real-time updates, smart insights, and seamless crypto management.</p>
+        </div>
 
-        <div className="flex flex-wrap gap-6 items-start justify-center md:mx-10 mt-80 ">
+        <div className="flex flex-wrap gap-6 items-start justify-center mx-10 ">
           <CustomCard
             image={CardImage1}
             title="Bitcoin  Diversification."
@@ -377,15 +381,15 @@ export default function Home() {
           />
         </div>
 
-        <div className="lg:-mx-auto mt-20 w-screen relative right-0 flex items-end justify-end">
-          <Image src={bgArtImage1} alt="art-image" className="w-150 lg:w-190" />
+        <div className="lg:-mx-auto mt-20 w-screen absolute right-[-150px] flex items-end justify-end">
+          <Image src={bgArtImage1} alt="art-image" className="w-100 lg:w-140" />
         </div>
 
         {/* Part 05 */}
-        <div className=" flex flex-col justify-center items-center">
+        <div className=" flex flex-col justify-center relative items-center mt-60 z-10">
           <div className="text-center">
             <p className="text-2xl text-primary">Discover the</p>
-            <h2 className="text-4xl md:text-7xl font-bold my-4">
+            <h2 className="text-4xl md:text-[68px] font-bold my-4">
               Benefits Of Our App
             </h2>
           </div>
@@ -393,7 +397,7 @@ export default function Home() {
             <Image
               src={PhoneImage3}
               alt="Phone Image 3"
-              className="w-80 md:w-140 lg:w-240"
+              className="w-80 md:w-100 lg:w-100"
             />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 mt-10 gap-2">
@@ -418,7 +422,7 @@ export default function Home() {
               description="To ensure client security and fund protection, we offer secure offline storage and conduct regular security evaluations."
             />
           </div>
-          <div className="flex flex-col items-center justify-center mt-40">
+          <div className="flex flex-col items-center justify-center mt-10">
             <CustomButton2
               image={DownloadLogo}
               text="Download the Mining App"
@@ -427,14 +431,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="mt-40 flex flex-col justify-center text-center items-center">
-          <h1 className="px-4 text-4xl md:text-5xl xl:text-6xl font-bold text-primary max-w-250 leading-10 md:leading-18">
-            Bitcoin-Yay Is The Micro Token And Petty Cash Of Bitcoin{" "}
-          </h1>
-          <h2 className="mt-20 text-3xl md:text-[54px] max-w-250 font-semibold">
-            Download the App for Free Mining
-          </h2>
-        </div>
+
 
         {/* Part 06 */}
         <div className="flex flex-col md:flex-row gap-20 justify-center items-center mt-40 md:mt-80 mx-10">
@@ -452,9 +449,9 @@ export default function Home() {
                     "_blank"
                   );
                 }}
-                className="w-50 lg:w-72 xl:w-84 2xl:w-100 absolute hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
+                className="w-40 lg:w-56 xl:w-64 2xl:w-72 absolute hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
               />
-              <Image src={PhoneImage4} alt="Phone Image 4" />
+              <Image src={PhoneImage4} alt="Phone Image 4" className="w-100 lg:w-100" />
               <Image
                 src={AppleLogo}
                 alt="Apple Logo"
@@ -491,10 +488,10 @@ export default function Home() {
                     "_blank"
                   );
                 }}
-                className="w-50 lg:w-72 xl:w-84 2xl:w-100 absolute hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
+                className="w-40 lg:w-56 xl:w-64 2xl:w-72 absolute hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer"
               />
 
-              <Image src={PhoneImage4} alt="Phone Image 4" />
+              <Image src={PhoneImage4} alt="Phone Image 4" className="w-100 lg:w-100" />
               <Image
                 src={PlaystoreLogo}
                 alt="Apple Logo"
@@ -518,16 +515,16 @@ export default function Home() {
             </div>
           </div>
         </div>
-
+        {/* 
         <div className="mt-40 flex flex-col justify-center text-center items-center">
           <h2 className="mt-20 text-3xl md:text-[54px] font-semibold">
             Download the app now to start the free mining.
           </h2>
-        </div>
+        </div> */}
 
         {/* Part 07 */}
 
-        <div className="flex flex-col items-center justify-center mt-40 md:mt-80">
+        <div className="flex flex-col items-center justify-center mt-40 md:mt-70">
           <Image src={IndexxLogo1} alt="Indexx Logo" />
           <h2 className="text-4xl md:text-6xl font-medium my-4">
             Crypto Paradise
@@ -583,7 +580,7 @@ export default function Home() {
         </div>
 
         {/* Part 08 */}
-
+        {/* 
         <div className="mt-80">
           <div className="text-center mt-40 flex flex-col items-center">
             <p className="text-2xl font-medium text-primary">Get to know our</p>
@@ -629,11 +626,11 @@ export default function Home() {
               desc="The keeper of your treasures! This gopher secures your BTCY earnings and keeps your balance safe and sound."
             />
           </div>
-        </div>
+        </div> */}
 
         {/* Part 9 */}
 
-        <div className="mt-80 md:mt-100 flex flex-col items-center justify-center text-center">
+        <div className="mt-60 md:mt-60 flex flex-col items-center justify-center text-center">
           <div>
             <h2 className="text-4xl md:text-7xl font-bold my-6">
               What Our Minners Say?
