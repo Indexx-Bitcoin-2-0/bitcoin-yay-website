@@ -29,7 +29,10 @@ import {
   getClickConvertSessionState,
   ClickConvertSessionState,
 } from "@/lib/alchemy";
-import { MINIMUM_BTCY_BALANCE_FOR_ALCHEMY } from "@/app/alchemy/constants";
+import {
+  getMinimumBalanceMessage,
+  getMinimumBTCYBalanceForAlchemy,
+} from "@/app/alchemy/constants";
 import { getAuthenticatedWalletUrl } from "@/lib/authenticated-wallet";
 import {
   fetchActiveLiquidityPool,
@@ -45,9 +48,6 @@ import DownArrowIcon from '@/assets/images/alchemy/downArrow.svg'
 import StartAlchemyImage from "@/assets/images/alchemy/startAlchemySVG.svg";
 const MAX_NUGGET_INPUT = 1000;
 const WALLET_OVERVIEW_BASE_URL = "https://cex.indexx.ai/wallet/overview";
-const MINIMUM_BALANCE_MESSAGE = `You need at least ${MINIMUM_BTCY_BALANCE_FOR_ALCHEMY.toLocaleString(
-  "en-US"
-)} BTCY to start an Alchemy`;
 const MAX_NUGGET_INPUT_MESSAGE = `You can only convert up to ${MAX_NUGGET_INPUT.toLocaleString(
   "en-US"
 )} BTCY per session.`;
@@ -88,6 +88,7 @@ export default function AlchemyPage() {
     100,
     Math.round((poolCurrent / Math.max(poolTarget, 1)) * 100)
   );
+  const alchemyUnlockLimit = getMinimumBTCYBalanceForAlchemy(user?.email);
 
   const handleLoginSuccess = () => setIsLoginPopupOpen(false);
   const handleCloseLoginPopup = () => setIsLoginPopupOpen(false);
@@ -210,9 +211,11 @@ export default function AlchemyPage() {
         const totalBalance =
           response.data?.totalBTCYBalance ?? response.data?.balance ?? 0;
 
+        const requiredBalance = getMinimumBTCYBalanceForAlchemy(user?.email);
+
         setUserBalance(totalBalance);
-        if (totalBalance < MINIMUM_BTCY_BALANCE_FOR_ALCHEMY) {
-          setBalanceError(MINIMUM_BALANCE_MESSAGE);
+        if (totalBalance < requiredBalance) {
+          setBalanceError(getMinimumBalanceMessage(user?.email));
         } else {
           setBalanceError(null);
         }
@@ -328,8 +331,9 @@ export default function AlchemyPage() {
       return;
     }
 
-    if (userBalance < MINIMUM_BTCY_BALANCE_FOR_ALCHEMY) {
-      setFormError(MINIMUM_BALANCE_MESSAGE);
+    const requiredBalance = getMinimumBTCYBalanceForAlchemy(user?.email);
+    if (userBalance < requiredBalance) {
+      setFormError(getMinimumBalanceMessage(user?.email));
       return;
     }
 
@@ -540,7 +544,9 @@ export default function AlchemyPage() {
           </div>
 
           <p className="mt-6 text-base md:text-lg text-red-500 text-center max-w-2xl mx-auto">
-            Alchemy unlocks after you mine 50,000 Bitcoin-Yay nuggets. Then you can convert any amount you want.
+            Alchemy unlocks after you mine{" "}
+            {alchemyUnlockLimit.toLocaleString("en-US")} Bitcoin-Yay nuggets. Then
+            you can convert any amount you want.
           </p>
 
           {(formError || balanceError || statusMessage) && (
