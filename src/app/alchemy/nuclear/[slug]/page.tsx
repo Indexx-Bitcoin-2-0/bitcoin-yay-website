@@ -27,7 +27,10 @@ import {
 import CongratulationsPage from "@/app/alchemy/congratulations/page";
 import RetainedPage from "@/app/alchemy/retained/page";
 
-import { MINIMUM_BTCY_BALANCE_FOR_ALCHEMY } from "@/app/alchemy/constants";
+import {
+  getMinimumBalanceMessage,
+  getMinimumBTCYBalanceForAlchemy,
+} from "@/app/alchemy/constants";
 
 interface AlchemyDetailPageProps {
   params: Promise<{
@@ -41,6 +44,7 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
   // const router = useRouter();
 
   const { user, isLoading } = useAuth(); // Get authenticated user
+  const minimumBalanceForUser = getMinimumBTCYBalanceForAlchemy(user?.email);
   const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
   const [configLoading, setConfigLoading] = useState(true);
   const [configError, setConfigError] = useState<string | null>(null);
@@ -110,10 +114,9 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
         userType: balance.data?.userType,
         plan: balance.data?.plan,
       });
-      if (balance.data?.totalBTCYBalance < MINIMUM_BTCY_BALANCE_FOR_ALCHEMY) {
-        setError(
-          `You need at least ${MINIMUM_BTCY_BALANCE_FOR_ALCHEMY.toLocaleString('en-US')} BTCY to start an Alchemy`
-        );
+      const requiredBalance = getMinimumBTCYBalanceForAlchemy(user?.email);
+      if (balance.data?.totalBTCYBalance < requiredBalance) {
+        setError(getMinimumBalanceMessage(user?.email));
         setIsLoadingAlchemy(false);
         return;
       }
@@ -417,8 +420,7 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
             <>
               <div
                 className={`${
-                  isLoadingAlchemy ||
-                  userPlanData.balance < MINIMUM_BTCY_BALANCE_FOR_ALCHEMY
+                  isLoadingAlchemy || userPlanData.balance < minimumBalanceForUser
                     ? "opacity-50 cursor-not-allowed pointer-events-none"
                     : "cursor-pointer"
                 }`}
