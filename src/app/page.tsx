@@ -6,6 +6,8 @@ import BenefitCard from "@/components/BenefitCard";
 import HeroComponent from "@/components/HeroComponent";
 
 import IndexxLogo1 from "@/assets/images/indexx-logo-1.svg";
+import IndexxAiLogo from "@/assets/images/indexx.ai.svg";
+import BitcoinYayLogo from "@/assets/images/main-logo.svg";
 import DownloadLogo from "../assets/images/download-button.svg";
 import AppleLogo from "@/assets/images/home/apple-logo.svg";
 import PlaystoreLogo from "@/assets/images/home/playstore-logo.svg";
@@ -51,6 +53,7 @@ import TurbineMiningButtonImage from "@/assets/images/mining/turbo-icon.webp";
 import NuclearMiningButtonImage from "@/assets/images/mining/nuclear-icon.webp";
 
 import bgArtImage1 from "../assets/images/bitcoin-art-2.png";
+import BitcoinArtWatermark from "@/assets/images/coin-bg.png";
 
 import ArtImage1 from "@/assets/images/home/art-1.svg";
 import ArtImage2 from "@/assets/images/home/art-2.svg";
@@ -165,7 +168,134 @@ export default function Home() {
       {/* Part 01 */}
       <HeroComponent />
 
+      {/* Indexx.ai — Official Home of BTCY Section */}
+      <div className="relative mt-20 md:mt-30 px-4 md:px-8 lg:px-20 xl:px-40 py-20 md:py-32">
+        {/* Background subtle coin graphics - optional overlay */}
+        <div className="absolute inset-0 opacity-5 pointer-events-none overflow-hidden">
+          <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-4xl">
+            {/* Placeholder for coin stack graphic - can be added if asset is available */}
+          </div>
+        </div>
 
+        {/* Content Container */}
+        <div className="relative z-10 max-w-5xl mx-auto text-center">
+          {/* Main Title */}
+          <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-6 md:mb-8">
+            <span className="text-primary">Indexx.ai</span>
+            <span className="text-primary"> — The Official Home of BTCY</span>
+          </h1>
+
+          {/* Subtitle/Tagline */}
+          <p className="text-xl md:text-2xl lg:text-3xl text-white mb-8 md:mb-10 font-medium">
+            All BTCY utilities, storage, and future trading live on Indexx.ai
+          </p>
+
+          {/* Descriptive Paragraph */}
+          <p className="text-base md:text-lg lg:text-xl text-gray-300 mb-12 md:mb-16 leading-relaxed max-w-4xl mx-auto">
+            Bitcoin Yay is where BTCY is mined — Indexx.ai is where BTCY lives, moves, and is used. Once you reach 10,000 mined BTCY, withdrawals are sent directly to your Indexx Asset Wallet, which also hosts all BTCY utilities including Lotto, Shop, and future Alchemy conversions. Indexx.ai is the official platform powering the Bitcoin Yay ecosystem.
+          </p>
+
+          {/* Logos */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-8 md:gap-12 lg:gap-16 mb-16 md:mb-24">
+            <Image
+              src={IndexxAiLogo}
+              alt="Indexx.ai Logo"
+              className="w-48 md:w-56 lg:w-64 h-auto"
+            />
+            <Image
+              src={BitcoinYayLogo}
+              alt="Bitcoin-Yay Logo"
+              className="w-48 md:w-56 lg:w-64 h-auto"
+            />
+          </div>
+
+          {/* Features Section - Numbered List */}
+          <div className="text-left max-w-3xl mx-auto space-y-10 md:space-y-12 lg:space-y-14 relative">
+            {/* background Image - Watermark */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+              <Image
+                src={BitcoinArtWatermark}
+                alt=""
+                className="w-full max-w-2xl h-auto opacity-10 md:opacity-15"
+                aria-hidden="true"
+              />
+            </div>
+
+            {/* Feature 1 */}
+            <div className="relative z-10">
+              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary mb-4 md:mb-6">
+                1. Official BTCY Wallet
+              </h2>
+              <ul className="space-y-3 text-base md:text-lg lg:text-xl text-white pl-6">
+                <li className="list-disc">
+                  Indexx Asset Wallet is the only official wallet for BTCY withdrawals from Bitcoin Yay.
+                </li>
+                <li className="list-disc">
+                  Secure, ecosystem-native, and automatically linked to your Bitcoin Yay account.
+                </li>
+              </ul>
+            </div>
+
+            {/* Feature 2 */}
+            <div className="relative z-10">
+              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary mb-4 md:mb-6">
+                2. 10K Withdrawal Gateway
+              </h2>
+              <ul className="space-y-3 text-base md:text-lg lg:text-xl text-white pl-6">
+                <li className="list-disc">
+                  BTCY can be withdrawn to Indexx once you mine 10,000 BTCY.
+                </li>
+                <li className="list-disc">
+                  Withdrawn BTCY is used inside the Indexx ecosystem (Lotto, Shop, utilities).
+                </li>
+              </ul>
+            </div>
+
+            {/* Feature 3 */}
+            <div className="relative z-10">
+              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary mb-4 md:mb-6">
+                3. All BTCY Utilities Live on Indexx
+              </h2>
+              <ul className="space-y-3 text-base md:text-lg lg:text-xl text-white pl-6">
+                <li className="list-disc">Lotto (games & rewards)</li>
+                <li className="list-disc">Shop (ecosystem purchases)</li>
+                <li className="list-disc">Future utilities built directly on Indexx</li>
+                <li className="list-disc">Alchemy conversions when unlocked</li>
+              </ul>
+            </div>
+
+            {/* Feature 4 */}
+            <div className="relative z-10">
+              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary mb-4 md:mb-6">
+                4. Future Trading & Liquidity
+              </h2>
+              <ul className="space-y-3 text-base md:text-lg lg:text-xl text-white pl-6">
+                <li className="list-disc">
+                  Indexx will host future BTCY trading pairs once liquidity is enabled.
+                </li>
+                <li className="list-disc">
+                  Alchemy converts mined BTCY into tradable form when conditions are met.
+                </li>
+              </ul>
+            </div>
+
+            {/* Feature 5 */}
+            <div className="relative z-10">
+              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary mb-4 md:mb-6">
+                5. One Account, One Ecosystem
+              </h2>
+              <ul className="space-y-3 text-base md:text-lg lg:text-xl text-white pl-6">
+                <li className="list-disc">
+                  Your Bitcoin Yay account automatically creates your Indexx account.
+                </li>
+                <li className="list-disc">
+                  No extra sign-ups, no fragmentation.
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Mining Navigation button #######################################################################################  */}
       <div className="flex mt-40 mb-40 gap-30 flex-wrap justify-center max-w-7xl mx-auto">

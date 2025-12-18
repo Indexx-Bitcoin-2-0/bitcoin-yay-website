@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import PopupComponent from "@/components/PopupComponent";
 import { Flame, Zap, Gauge, Atom, Pickaxe } from "lucide-react";
 import ElectricMiningArtImage1 from "@/assets/images/mining/electric-mining-art-1.webp";
@@ -21,6 +22,13 @@ const BlackFridayPopup: React.FC<BlackFridayPopupProps> = ({
     onClose,
     onStartMining,
 }) => {
+    const router = useRouter();
+
+    const handleSubscribeNow = () => {
+        onClose();
+        router.push("/mining/power-mining");
+    };
+
     const plans = [
         {
             name: "Electric",
@@ -108,9 +116,9 @@ const BlackFridayPopup: React.FC<BlackFridayPopupProps> = ({
                 <div className="flex flex-col items-center gap-2 mb-4">
                     <CustomButton2
                         text="Subscribe Now"
-                        link="/mining/power-mining"
                         image={BellButtonImage}
                         imageStyling="w-25 md:w-30"
+                        onClick={handleSubscribeNow}
                     />
                 </div>
 

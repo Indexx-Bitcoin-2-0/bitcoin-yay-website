@@ -981,7 +981,10 @@ const Navbar: React.FC = () => {
               <CustomButton2
                 image={RegisterButtonImage}
                 text={"Contact Us"}
-                link="/support/#contact-us"
+                onClick={() => {
+                  handlePopupClose();
+                  router.push("/support/#contact-us");
+                }}
                 imageStyling="w-20 lg:w-24"
               />
             </div>

@@ -36,6 +36,11 @@ import ButtonBorderActive from "@/assets/images/button-border-active.webp";
 import SuccessPopup from "./SuccessPopup";
 import UnsuccessPopup from "./UnsuccessPopup";
 
+import CardImage1 from "@/assets/images/home/card-1.webp";
+import CardImage2 from "@/assets/images/home/card-2.webp";
+import CardImage3 from "@/assets/images/home/card-3.webp";
+
+
 import {
   PaymentOption,
   CryptoOrderData,
@@ -748,15 +753,16 @@ const QuantumMiningPage = () => {
     <div className="mx-auto mt-40 max-w-[1800px] px-4 md:px-10 xl:px-20">
       <div className="flex flex-col-reverse lg:flex-row">
         <div className="mt-10 md:mt-20 w-full lg:w-[90%] flex flex-col justify-items-center">
-          <h1 className="text-[40px] md:text-7xl xl:text-[100px] font-bold  lg:leading-28">
-            Quantum Mining: <br /> Larger Scale Grade <br />
-            BTCY Access
+          <h1 className="text-[40px] md:text-7xl  font-bold  lg:leading-28">
+            Own BTCY — Before It <br />Gets Listed
+
           </h1>
 
           <p className="mt-10 text-2xl md:text-3xl max-w-3xl">
-            Secure large-scale BTCY purchases{" "}
-            <span className="font-bold">($10 – $100K+)</span> via bank wires,
-            stable coins, and global OTC solutions.
+            No mining required. Buy BTCY directly at an early-stage price.
+            <br />
+            BTCY is a pre-listed digital asset connected with Indexx.ai
+
           </p>
         </div>
 
@@ -773,53 +779,95 @@ const QuantumMiningPage = () => {
           />
         </div>
       </div>
-      <div className="font-bold mt-16 flex flex-col justify-center items-center">
-        <CustomButton2
-          image={NoteButtonImage}
-          text="Register"
-          link="#buy-btcy"
-          imageStyling="w-30"
-        />
-      </div>
-      <div className="mt-40">
-        <h2 className="text-4xl md:text-6xl xl:text-8xl font-bold text-center">
-          Register and Purchase BTCY
-        </h2>
-        <div className="flex flex-col lg:flex-row justify-center mt-20 gap-30 p-4 md:p-10 xl:p-20">
-          <div className="w-full lg:w-1/2">
-            <div className="flex items-center gap-4">
-              <Image src={FlagIcon} alt="Flag" className="w-10" />
-              <h4 className="text-3xl md:text-4xl font-bold">For US Users</h4>
-            </div>
-            <ul className="list-disc text-2xl md:text-3xl mt-10 text-tertiary pl-6">
-              <li>USDT / USDC</li>
-              <li>Paypal</li>
-              <li>USD credit/debit card</li>
-              <li>
-                USD bank wire <ComingSoonBadge />
-              </li>
-            </ul>
+
+      {/* Benefits Section - Three Cards */}
+      <div className="mx-auto mt-40 md:mt-60 px-4 md:px-8 lg:px-20 xl:px-40 relative max-w-[2000px]">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 lg:gap-16">
+          {/* No Mining Required */}
+          <div className="flex flex-col items-center text-center">
+            <Image
+              src={CardImage1}
+              alt="No Mining Required"
+              className="w-full max-w-xs h-auto object-contain mb-6"
+            />
+            <h3 className="text-xl md:text-2xl lg:text-3xl font-semibold text-primary mb-4">
+              No Mining Required
+            </h3>
+            <p className="text-base md:text-lg text-gray-300">
+              Quantum system auto-generates BTCY — no manual mining needed.
+            </p>
           </div>
-          <div className="w-full lg:w-1/2">
-            <div className="flex items-center gap-4">
-              <Image src={GlobeIcon} alt="Globe" className="w-10" />
-              <h4 className="text-3xl md:text-4xl font-bold">
-                For Global Users
-              </h4>
+
+          {/* Indexx.ai Asset Wallet */}
+          <div className="flex flex-col items-center text-center">
+            <Image
+              src={CardImage2}
+              alt="Indexx.ai Asset Wallet"
+              className="w-full max-w-xs h-auto object-contain mb-6"
+            />
+            <h3 className="text-xl md:text-2xl lg:text-3xl font-semibold text-primary mb-4">
+              Indexx.ai Asset Wallet
+            </h3>
+            <p className="text-base md:text-lg text-gray-300">
+              BTCY Tokens go direct to indexx.ai Asset Wallet
+            </p>
+          </div>
+
+          {/* Buy at Low Price */}
+          <div className="flex flex-col items-center text-center">
+            <Image
+              src={CardImage3}
+              alt="Buy at Low Price"
+              className="w-full max-w-xs h-auto object-contain mb-6"
+            />
+            <h3 className="text-xl md:text-2xl lg:text-3xl font-semibold text-primary mb-4">
+              Buy at Low Price
+            </h3>
+            <p className="text-base md:text-lg text-gray-300">
+              BTCY is in early low-price phase — perfect time to enter.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Why Choose Quantum Mining Section */}
+      <div className="mx-auto mt-40 md:mt-60 px-4 md:px-8 lg:px-20 xl:px-40 relative max-w-[2000px]">
+        <div className="flex flex-col items-center justify-center">
+          {/* Title */}
+          <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-primary text-center mb-12 md:mb-16">
+            Why Choose Quantum Mining?
+          </h2>
+
+          {/* Benefits List */}
+          <div className="flex flex-col gap-8 md:gap-12 lg:gap-16 max-w-4xl">
+            {/* Benefit 1 */}
+            <div className="flex flex-col gap-4">
+              <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-white">
+                1. Skip Daily Mining – Get BTCY Instantly
+              </h3>
+              <p className="text-base md:text-lg lg:text-xl text-gray-300 leading-relaxed">
+                Quantum Mining is for people who don&apos;t want to tap and mine every day. Instead of slowly collecting nuggets, you can buy BTCY tokens directly in the pre-sale and lock in your position immediately.
+              </p>
             </div>
-            <ul className="list-disc text-2xl md:text-3xl mt-10 text-tertiary pl-6">
-              <li>USDT / USDC</li>
-              <li>Paypal</li>
-              <li>
-                Local currencies: EUR, GBP, JPY, AED, INR <ComingSoonBadge />
-              </li>
-              <li>
-                Bank wires (SWIFT/SEPA) <ComingSoonBadge />
-              </li>
-              <li>
-                Local methods: Alipay, UPI, M-Pesa <ComingSoonBadge />
-              </li>
-            </ul>
+
+            {/* Benefit 2 */}
+            <div className="flex flex-col gap-4">
+              <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-white">
+                2.Buy While the Price Is Low (Christmas Discount)
+              </h3>
+              <p className="text-base md:text-lg lg:text-xl text-gray-300 leading-relaxed">
+                With the Christmas Discount, you get 10% off your BTCY token purchase for a limited time. You’re entering at an early stage, before launch and before potential future price movements once BTCY is live and tradable (if and when it gets listed). </p>
+            </div>
+
+            {/* Benefit 3 */}
+            <div className="flex flex-col gap-4">
+              <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-white">
+                3. Aligned with Bitcoin – Pegged Ratio
+              </h3>
+              <p className="text-base md:text-lg lg:text-xl text-gray-300 leading-relaxed">
+                BTCY is designed with a target peg of 1,000,000 BTCY = 1 BTC, connecting the ecosystem to Bitcoin&apos;s price. Quantum Mining lets you participate in that vision early—while understanding that the peg, listing, and future market price are not guaranteed and can change.
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -1006,7 +1054,38 @@ const QuantumMiningPage = () => {
           />
         </div>
       </div>
+      <div className="flex flex-col lg:flex-row items-center justify-center gap-20 mt-80">
+        <Image
+          src={ArtImage4}
+          alt="Art Image 3"
+          className="w-80 md:w-120 lg:w-120 xl:w-140 -ml-20"
+        />
+        <div className="w-full flex flex-col justify-center max-w-[800px] px-4">
+          <h3 className="text-3xl md:text-5xl xl:text-7xl 2xl:text-8xl font-bold">
+            Onboarding Flow Steps
+          </h3>
+          <ul className="list-disc mt-16 text-2xl md:text-3xl font-medium pl-4 md:pl-10 flex flex-col gap-16">
+            <li>Register as Buyer (Individual or Institutional)</li>
 
+            <li>Minimum Purchase: 10 USD</li>
+
+            <li>KYC Requirements:</li>
+
+            <li>Not Required for purchases up to $1,000 USD</li>
+
+            <li>
+              Required for purchases above $1,000 USD or for large/institutional
+              investors
+            </li>
+
+            <li>Submit Buy Request (e.g., $10 – $50,000 USDT or more)</li>
+
+            <li>Receive Invoice & Pay</li>
+
+            <li>BTCY Tokens Delivered</li>
+          </ul>
+        </div>
+      </div>
       <div className="mt-40 flex flex-col justify-center items-center">
         <Image src={ArtImage3} alt="Art 1" className="w-80 md:w-100" />
         <h2 className="mt-10 text-4xl md:text-6xl xl:text-8xl font-bold">
@@ -1065,47 +1144,63 @@ const QuantumMiningPage = () => {
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row items-center justify-center gap-20 mt-80">
-        <Image
-          src={ArtImage4}
-          alt="Art Image 3"
-          className="w-80 md:w-120 lg:w-120 xl:w-140 -ml-20"
-        />
-        <div className="w-full flex flex-col justify-center max-w-[800px] px-4">
-          <h3 className="text-3xl md:text-5xl xl:text-7xl 2xl:text-8xl font-bold">
-            Onboarding Flow Steps
-          </h3>
-          <ul className="list-disc mt-16 text-2xl md:text-3xl font-medium pl-4 md:pl-10 flex flex-col gap-16">
-            <li>Register as Buyer (Individual or Institutional)</li>
 
-            <li>Minimum Purchase: 10 USD</li>
 
-            <li>KYC Requirements:</li>
-
-            <li>Not Required for purchases up to $1,000 USD</li>
-
-            <li>
-              Required for purchases above $1,000 USD or for large/institutional
-              investors
-            </li>
-
-            <li>Submit Buy Request (e.g., $10 – $50,000 USDT or more)</li>
-
-            <li>Receive Invoice & Pay</li>
-
-            <li>BTCY Tokens Delivered</li>
-          </ul>
+      <div className="mt-40">
+        <h2 className="text-4xl md:text-6xl xl:text-8xl font-bold text-center">
+          Register and Purchase BTCY
+        </h2>
+        <div className="flex flex-col lg:flex-row justify-center mt-20 gap-30 p-4 md:p-10 xl:p-20">
+          <div className="w-full lg:w-1/2">
+            <div className="flex items-center gap-4">
+              <Image src={FlagIcon} alt="Flag" className="w-10" />
+              <h4 className="text-3xl md:text-4xl font-bold">For US Users</h4>
+            </div>
+            <ul className="list-disc text-2xl md:text-3xl mt-10 text-tertiary pl-6">
+              <li>USDT / USDC</li>
+              <li>Paypal</li>
+              <li>USD credit/debit card</li>
+              <li>
+                USD bank wire <ComingSoonBadge />
+              </li>
+            </ul>
+          </div>
+          <div className="w-full lg:w-1/2">
+            <div className="flex items-center gap-4">
+              <Image src={GlobeIcon} alt="Globe" className="w-10" />
+              <h4 className="text-3xl md:text-4xl font-bold">
+                For Global Users
+              </h4>
+            </div>
+            <ul className="list-disc text-2xl md:text-3xl mt-10 text-tertiary pl-6">
+              <li>USDT / USDC</li>
+              <li>Paypal</li>
+              <li>
+                Local currencies: EUR, GBP, JPY, AED, INR <ComingSoonBadge />
+              </li>
+              <li>
+                Bank wires (SWIFT/SEPA) <ComingSoonBadge />
+              </li>
+              <li>
+                Local methods: Alipay, UPI, M-Pesa <ComingSoonBadge />
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
 
+
       {/* FAQs section */}
       <div className="my-80 flex flex-col items-center justify-center px-4 max-w-[1000px] mx-auto">
-        <div className="w-full flex justify-between md:justify-start">
+        <div className="w-full flex justify-between md:justify-center">
           <h2 className="text-5xl md:text-5xl lg:text-8xl font-bold mt-10">
             FAQs
           </h2>
           <Image src={ArtImage5} alt="Art Image 5" className="w-54" />
         </div>
+        <h3 className="text-xl md:text-2xl lg:text-3xl font-semibold text-primary text-center mb-12 md:mb-16">
+          Quantum Mining, BTCY &  Christmas Discount
+        </h3>
 
         {/* FAQ Accordions */}
         <div className="w-full mt-16">
@@ -1115,17 +1210,10 @@ const QuantumMiningPage = () => {
               className="border border-bg3 rounded-lg px-6 bg-transparent"
             >
               <AccordionTrigger className="text-left text-xl md:text-2xl font-bold text-tertiary hover:no-underline flex items-center justify-between">
-                What documents are required for KYC?
+                What is Quantum Mining?
               </AccordionTrigger>
               <AccordionContent className="text-base md:text-lg text-tertiary my-4">
-                To complete KYC for Quantum Mining, individuals must provide a
-                government-issued photo ID, a recent proof of address (like a
-                utility bill or bank statement), and a selfie holding their ID.
-                For institutions, documents include a certificate of
-                incorporation, company proof of address, ID of the authorized
-                representative, and ownership structure details. In some cases,
-                a source of funds declaration or AML questionnaire may also be
-                required to comply with regulatory standards.
+                Quantum Mining is our pre-sale route for BTCY. Instead of mining nuggets inside the app and converting later, you buy BTCY tokens directly before launch. It’s designed for users who want to secure tokens upfront rather than tap and mine daily.
               </AccordionContent>
             </AccordionItem>
 
@@ -1134,10 +1222,13 @@ const QuantumMiningPage = () => {
               className="border border-bg3 rounded-lg px-6 bg-transparent"
             >
               <AccordionTrigger className="text-left text-xl md:text-2xl font-bold text-tertiary hover:no-underline flex items-center justify-between">
-                Can I use a company account?
+                How is Quantum Mining different from Power Mining?
               </AccordionTrigger>
               <AccordionContent className="text-base md:text-lg text-tertiary my-4">
-                temp
+                <ul className="list-disc pl-5 space-y-2">
+                  <li><strong>Power Mining:</strong> You mine nuggets in the app faster and with longer sessions, then later convert those nuggets into BTCY via Alchemy when the feature is live.</li>
+                  <li><strong>Quantum Mining:</strong> You skip nuggets entirely and purchase BTCY tokens directly as a pre-sale. It’s about getting tokens now rather than grinding daily mining sessions.</li>
+                </ul>
               </AccordionContent>
             </AccordionItem>
 
@@ -1146,22 +1237,92 @@ const QuantumMiningPage = () => {
               className="border border-bg3 rounded-lg px-6 bg-transparent"
             >
               <AccordionTrigger className="text-left text-xl md:text-2xl font-bold text-tertiary hover:no-underline flex items-center justify-between">
-                Is there a minimum holding period?
+                What exactly am I buying with Quantum Mining?
               </AccordionTrigger>
               <AccordionContent className="text-base md:text-lg text-tertiary my-4">
-                temp
+                You are purchasing an allocation of BTCY tokens in advance, under our pre-sale terms. These tokens are not yet listed or tradable on public exchanges. They will be delivered/activated according to the project’s launch and token release schedule, subject to the platform’s terms and any applicable regulations.
               </AccordionContent>
             </AccordionItem>
 
             <AccordionItem
               value="item-4"
+              className="border border-bg3 rounded-lg px-6 bg-transparent"
+            >
+              <AccordionTrigger className="text-left text-xl md:text-2xl font-bold text-tertiary hover:no-underline flex items-center justify-between">
+                What does the 1,000,000 BTCY = 1 BTC ratio mean?
+              </AccordionTrigger>
+              <AccordionContent className="text-base md:text-lg text-tertiary my-4">
+                This ratio is a target peg used inside the Bitcoin Yay ecosystem to conceptually link BTCY to Bitcoin (1,000,000 BTCY representing the value of 1 BTC in the design). It is not a guaranteed exchange rate and does not mean you can always swap 1,000,000 BTCY for 1 BTC. Actual market prices, if and when BTCY lists, will depend on supply, demand, and market conditions.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem
+              value="item-5"
+              className="border border-bg3 rounded-lg px-6 bg-transparent"
+            >
+              <AccordionTrigger className="text-left text-xl md:text-2xl font-bold text-tertiary hover:no-underline flex items-center justify-between">
+                Is BTCY listed on any exchange right now?
+              </AccordionTrigger>
+              <AccordionContent className="text-base md:text-lg text-tertiary my-4">
+                No. BTCY is not currently listed on any exchange. Quantum Mining is a pre-launch token purchase. Future listings, if they happen, will be announced separately and are not guaranteed.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem
+              value="item-6"
+              className="border border-bg3 rounded-lg px-6 bg-transparent"
+            >
+              <AccordionTrigger className="text-left text-xl md:text-2xl font-bold text-tertiary hover:no-underline flex items-center justify-between">
+                Does Quantum Mining guarantee that BTCY will go up in value?
+              </AccordionTrigger>
+              <AccordionContent className="text-base md:text-lg text-tertiary my-4">
+                No. There is no guarantee that BTCY will increase in value, be listed on exchanges, or be tradeable in your region. Crypto tokens are highly volatile, and you should assume you can lose some or all of the funds you commit.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem
+              value="item-7"
+              className="border border-bg3 rounded-lg px-6 bg-transparent"
+            >
+              <AccordionTrigger className="text-left text-xl md:text-2xl font-bold text-tertiary hover:no-underline flex items-center justify-between">
+                Who is Quantum Mining best suited for?
+              </AccordionTrigger>
+              <AccordionContent className="text-base md:text-lg text-tertiary my-4">
+                Quantum Mining is aimed at users who:
+                <ul className="list-disc pl-5 space-y-1 mt-2">
+                  <li>Don't want to tap and mine every day</li>
+                  <li>Prefer buying tokens directly instead of grinding nuggets</li>
+                  <li>Want to take advantage of early pricing and limited-time discounts (like the 12:12 10% off sale) while understanding the high risk and speculative nature of pre-launch tokens.</li>
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem
+              value="item-8"
+              className="border border-bg3 rounded-lg px-6 bg-transparent"
+            >
+              <AccordionTrigger className="text-left text-xl md:text-2xl font-bold text-tertiary hover:no-underline flex items-center justify-between">
+                Can I still mine for free or use Power Mining if I choose Quantum Mining?
+              </AccordionTrigger>
+              <AccordionContent className="text-base md:text-lg text-tertiary my-4">
+                Yes. Quantum Mining is optional. You can still:
+                <ul className="list-disc pl-5 space-y-1 mt-2">
+                  <li>Mine for free inside the app</li>
+                  <li>Upgrade to Power Mining for faster nugget earning</li>
+                  <li>Or combine all three: free mining, Power Mining, and Quantum Mining depending on your strategy and risk appetite.</li>
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem
+              value="item-9"
               className="border border-bg3 last:border-b-1 rounded-lg px-6 bg-transparent"
             >
               <AccordionTrigger className="text-left text-xl md:text-2xl font-bold text-tertiary hover:no-underline flex items-center justify-between">
-                Do you offer escrow for large trades?
+                Where do my purchased BTCY tokens and withdrawn nuggets go?
               </AccordionTrigger>
               <AccordionContent className="text-base md:text-lg text-tertiary my-4">
-                temp
+                Your BTCY app account is directly linked to your Indexx.ai asset wallet. When you buy BTCY through Quantum Mining or withdraw mined nuggets via Alchemy, the resulting BTCY tokens are sent to your Indexx.ai asset wallet automatically. You can log into Indexx.ai using your Bitcoin Yay (BTCY) account, view your BTCY balance there, and use any supported features on the exchange once BTCY is live and available.
               </AccordionContent>
             </AccordionItem>
           </Accordion>
