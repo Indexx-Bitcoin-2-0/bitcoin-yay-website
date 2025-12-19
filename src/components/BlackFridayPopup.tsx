@@ -4,12 +4,10 @@ import React from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import PopupComponent from "@/components/PopupComponent";
-import { Flame, Zap, Gauge, Atom, Pickaxe } from "lucide-react";
-import ElectricMiningArtImage1 from "@/assets/images/mining/electric-mining-art-1.webp";
-import TurboMiningArtImage1 from "@/assets/images/mining/turbo-mining-art-1.webp";
-import NuclearMiningArtImage1 from "@/assets/images/mining/nuclear-mining-art-1.webp";
 import CustomButton2 from "./CustomButton2";
-import BellButtonImage from "@/assets/images/buttons/bell-button.webp";
+import SalesPageArt from '@/assets/images/christmas_icon.png';
+import ArtImage1 from "@/assets/images/quantum-mining/quantum-mining-icon.webp";
+import CartButtonImage from "@/assets/images/UpgradeNowSalesPage.svg";
 
 interface BlackFridayPopupProps {
     isOpen: boolean;
@@ -24,101 +22,72 @@ const BlackFridayPopup: React.FC<BlackFridayPopupProps> = ({
 }) => {
     const router = useRouter();
 
-    const handleSubscribeNow = () => {
+    const handleBuyBTCY = () => {
         onClose();
-        router.push("/mining/power-mining");
+        router.push("/quantum-mining");
     };
-
-    const plans = [
-        {
-            name: "Electric",
-            originalPrice: 100,
-            discountedPrice: 30,
-            icon: Zap,
-            artImage: ElectricMiningArtImage1,
-        },
-        {
-            name: "Turbo",
-            originalPrice: 300,
-            discountedPrice: 90,
-            icon: Gauge,
-            artImage: TurboMiningArtImage1,
-        },
-        {
-            name: "Nuclear",
-            originalPrice: 600,
-            discountedPrice: 180,
-            icon: Atom,
-            artImage: NuclearMiningArtImage1,
-        },
-    ];
 
     return (
         <PopupComponent isOpen={isOpen} onClose={onClose} >
             <div className="w-90 md:w-140 lg:w-180 p-4 md:p-6 xl:p-8 text-center">
-                {/* Title */}
-                <div className="flex items-center justify-center gap-3 mb-4 md:mb-10">
-                    <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-primary">
-                        CHRISTMAS SALE - LIMITED • 70% OFF
-                    </h1>
+                {/* Top Section - Christmas Icon and Heading */}
+                <div className="flex items-start justify-center gap-3 mb-4 md:mb-6">
+                    {/* Christmas Icon */}
+                    <div className="flex-shrink-0 mt-1">
+                        <Image
+                            src={SalesPageArt}
+                            alt="Christmas Icon"
+                            className="w-12 h-12 md:w-16 md:h-16 object-contain"
+                        />
+                    </div>
+                    {/* Heading */}
+                    <div className="flex flex-col items-start">
+                        <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-primary mb-2">
+                            CHRISTMAS SALE - LIMITED •
+                        </h1>
+                        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary">
+                            +10% Bonus
+                        </h2>
+                    </div>
                 </div>
 
-                {/* Pricing Plans */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
-                    {plans.map((plan) => {
-                        return (
-                            <div
-                                key={plan.name}
-                                className="flex flex-col items-center gap-3"
-                            >
-                                {/* Plan Illustration */}
-                                <div className="flex justify-center mb-2">
-                                    <Image
-                                        src={plan.artImage}
-                                        alt={plan.name}
-                                        className="w-24 h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 object-contain"
-                                    />
-                                </div>
+                {/* Middle Section - Quantum Mining Icon */}
+                <div className="flex justify-center mb-4 md:mb-6">
+                    <Image
+                        src={ArtImage1}
+                        alt="Quantum Mining Icon"
+                        className="w-24 h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 object-contain"
+                    />
+                </div>
 
-                                {/* Plan Name */}
-                                <h3 className="text-base md:text-lg font-bold text-white">
-                                    {plan.name} Plan
-                                </h3>
-
-                                {/* Pricing */}
-                                <div className="flex flex-col items-center gap-1">
-                                    <span className="text-sm md:text-base text-gray-400 line-through">
-                                        ${plan.originalPrice}
-                                    </span>
-                                    <span className="text-xl md:text-2xl lg:text-3xl font-bold text-primary">
-                                        ${plan.discountedPrice}
-                                    </span>
-                                </div>
-                            </div>
-                        );
-                    })}
+                {/* Bonus Text */}
+                <div className="mb-4 md:mb-6">
+                    <p className="text-lg md:text-xl font-bold text-primary mb-1">
+                        +10% Bonus
+                    </p>
+                    <p className="text-base md:text-lg text-white">
+                        Btcy Token Purchases
+                    </p>
                 </div>
 
                 {/* Christmas Sale Information */}
                 <div className="mb-6 md:mb-8">
-                    <p className="text-lg md:text-xl font-bold text-white mb-2">
-                        Christmas Sale
-                    </p>
                     <p className="text-sm md:text-base text-white mb-2">
-                        Christmas Sale: 12th December to 28th December.
+                        Christmas Sale: Valid till 28th December
                     </p>
                     <p className="text-sm md:text-base text-white">
-                        Christmas Crypto Rush is Live — Upgrade & Mine Faster
+                        Skip Daily Mining - Get BTCY Instantly
                     </p>
                 </div>
 
-                {/* Subscribe Now Button */}
+                {/* Buy BTCY Button */}
                 <div className="flex flex-col items-center gap-2 mb-4">
                     <CustomButton2
-                        text="Subscribe Now"
-                        image={BellButtonImage}
-                        imageStyling="w-25 md:w-30"
-                        onClick={handleSubscribeNow}
+                        text="Buy BTCY to get 10% Bonus"
+                        image={CartButtonImage}
+                        imageStyling="w-20 h-20 md:w-24 md:h-24"
+                        onClick={handleBuyBTCY}
+                        textMaxWidth="200px"
                     />
                 </div>
 
