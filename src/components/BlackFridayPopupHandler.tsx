@@ -11,8 +11,8 @@ const BlackFridayPopupHandler = () => {
     const router = useRouter();
 
     useEffect(() => {
-        // Don't show popup on /download, /sales, or /quantum-sale pages
-        if (pathname === "/download" || pathname === "/sales" || pathname === "/quantum-sale") {
+        // Don't show popup on /download, /sales, /quantum-sale, or /power-mining-funnel pages
+        if (pathname === "/download" || pathname === "/sales" || pathname === "/quantum-sale" || pathname === "/power-mining-funnel") {
             setIsOpen(false);
             return;
         }

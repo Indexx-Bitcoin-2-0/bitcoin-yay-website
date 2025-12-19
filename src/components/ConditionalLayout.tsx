@@ -10,7 +10,7 @@ export default function ConditionalLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const hideHeaderFooter = pathname === "/sales" || pathname === "/quantum-sale";
+  const hideHeaderFooter = pathname === "/sales" || pathname === "/quantum-sale" || pathname === "/power-mining-funnel";
 
   return (
     <>
@@ -20,3 +20,4 @@ export default function ConditionalLayout({
     </>
   );
 }
+
