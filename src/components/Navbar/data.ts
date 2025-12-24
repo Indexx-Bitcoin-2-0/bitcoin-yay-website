@@ -359,6 +359,23 @@ const header_data = [
         ],
       },
       {
+        heading: "Choose Plans",
+        links: [
+          {
+            name: "Snatch Mining",
+            href: `/mining/free-mining`,
+          },
+          {
+            name: "Power Mining",
+            href: `/mining/power-mining`,
+          },
+          {
+            name: "Quantum Mining",
+            href: `/mining/quantum-mining`,
+          },
+        ],
+      },
+      {
         heading: "Action",
         links: [
           {
