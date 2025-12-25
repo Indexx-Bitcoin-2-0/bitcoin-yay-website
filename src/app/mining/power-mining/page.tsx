@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import PowerMiningButtonImage from "@/assets/images/mining/power-mining-icon.webp";
-import PowerMiningArtImage1 from "@/assets/images/mining/power-mining-art-1.webp";
+import PowerMiningArtImage1 from "@/assets/images/mining/electric-mining-art-1.webp";
 
 import ElectricPowerButtonImage from "@/assets/images/mining/electric-icon.webp";
 import TurboPowerButtonImage from "@/assets/images/mining/turbo-icon.webp";
@@ -97,11 +97,23 @@ const PowerMiningPage = () => {
         </Link>
       </div>
 
+      {/*  We need to add video container here with youtube video iframe link  */}
+      <div className="flex items-center justify-center my-20 max-w-7xl mx-auto aspect-video">
+        <iframe
+          src="https://www.youtube.com/embed/tuppsYWEDGI"
+          title="Power Mining"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          className="w-full h-full"
+        ></iframe>
+      </div>
+
       <div className="flex items-center justify-center my-20">
         <Image
           src={PowerMiningArtImage1}
           alt="Power Mining Art"
-          className="w-300"
+          className="w-150"
         />
       </div>
 

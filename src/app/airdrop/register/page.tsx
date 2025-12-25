@@ -112,8 +112,8 @@ export default function AirdropRegisterPage() {
         walletAddress: walletAddress,
         walletProvider: "",
         airdropAmount: 0,
-        tokenName: "WIBS",
-        eventType: "bitcoin-yay WIBS Airdrop",
+        tokenName: "BTCY",
+        eventType: "bitcoin-yay New Year Airdrop",
       });
 
       if (res.status === 200 || res.status === 201) {
@@ -240,7 +240,7 @@ export default function AirdropRegisterPage() {
                 Congratulations!
               </h2>
               <p className="mt-6 max-w-100 lg:text-xl">
-                You have successfully registered for the Lotto Airdrop.
+                You have successfully registered for the bitcoin-yay New Year Airdrop.
               </p>
 
               {/* <div className="mb-6 mt-2 lg:mt-8 w-full px-4 md:px-8 text-start">
@@ -345,7 +345,7 @@ export default function AirdropRegisterPage() {
         <h2 className="mt-6 text-5xl md:text-7xl font-bold">
           bitcoin-yay
           <br />
-          <span className="text-primary">WIBS Airdrop!</span>
+          <span className="text-primary">New Year Airdrop!</span>
         </h2>
         <p className="mt-16 text-xl font-medium">
           To claim airdrop you need to be a Miner. Download the app and join now
@@ -415,7 +415,7 @@ export default function AirdropRegisterPage() {
               className={
                 "w-full text-lg p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none  hover:border-primary"
               }
-              placeholder="Enter your pump.fun wallet address"
+              placeholder="Enter your Tron wallet address"
               value={walletAddress}
               onChange={(e) => setWalletAddress(e.target.value)}
             />

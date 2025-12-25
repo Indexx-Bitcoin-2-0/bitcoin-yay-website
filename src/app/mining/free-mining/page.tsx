@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 import FreeMiningButtonImage from "@/assets/images/mining/free-mining-icon.webp";
-import FreeMiningArtImage1 from "@/assets/images/mining/free-mining-art-1.webp";
+import FreeMiningArtImage1 from "@/assets/images/mining/free_snatch_mining.svg";
 
 const FreeMiningPage = () => {
   return (
@@ -24,11 +24,23 @@ const FreeMiningPage = () => {
           </p>
         </div>
       </div>
+
+      {/*  We need to add video container here with youtube video iframe link  */}
+      <div className="flex items-center justify-center my-20 max-w-7xl mx-auto aspect-video">
+        <iframe
+          src="https://www.youtube.com/embed/ijFCuR8nr-E"
+          title="Snatch Mining"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          className="w-full h-full"
+        ></iframe>
+      </div>
       <div className="flex items-center justify-center my-20">
         <Image
           src={FreeMiningArtImage1}
           alt="Free Mining Art"
-          className="w-300"
+          className="w-150"
         />
       </div>
 

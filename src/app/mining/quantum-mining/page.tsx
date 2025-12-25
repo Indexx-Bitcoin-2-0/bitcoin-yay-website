@@ -3,7 +3,7 @@ import Image from "next/image";
 import CustomButton2 from "@/components/CustomButton2";
 
 import QuantumMiningButtonImage from "@/assets/images/mining/quantum-mining-icon.webp";
-import QuantumMiningArtImage1 from "@/assets/images/mining/quantum-mining-art-1.webp";
+import QuantumMiningArtImage1 from "@/assets/images/mining/nuclear-mining-art-1.webp";
 import BuyNowButtonImage from "@/assets/images/buttons/buy-now-button.webp"
 
 const PowerMiningPage = () => {
@@ -32,12 +32,23 @@ const PowerMiningPage = () => {
           </p>
         </div>
       </div>
+      {/*  We need to add video container here with youtube video iframe link  */}
+      <div className="flex items-center justify-center my-20 max-w-7xl mx-auto aspect-video">
+        <iframe
+          src="https://www.youtube.com/embed/bVbsQwh_GCI"
+          title="Quantum Mining"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          className="w-full h-full"
+        ></iframe>
+      </div>
 
       <div className="flex items-center justify-center my-20">
         <Image
           src={QuantumMiningArtImage1}
           alt="Quantum Mining Art"
-          className="w-300"
+          className="w-150"
         />
       </div>
 

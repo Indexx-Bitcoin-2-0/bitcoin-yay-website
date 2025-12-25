@@ -28,13 +28,13 @@ import DownloadButtonImage from "@/assets/images/buttons/download-button.webp";
 import UserReviewCards from "@/components/UserReviewCards";
 
 export const metadata = {
-  title: "bitcoin-yay Airdrop - 4th July Freedom Boost FREE Mining",
+  title: "BTCY New Year Airdrop 2026 - Start the new year with free crypto",
   description:
-    "Join the bitcoin-yay Freedom Boost Airdrop! Get 5 days of FREE turbo mining power on July 4th. Register now for the worldwide airdrop and start earning BTCY tokens instantly.",
+    "Win 250 BTCY tokens (~$25) just for joining Bitcoin Yay and inviting one friend. Join the BTCY New Year Airdrop 2026 now!",
   openGraph: {
-    title: "bitcoin-yay Airdrop - 4th July Freedom Boost FREE Mining",
+    title: "BTCY New Year Airdrop 2026 - Start the new year with free crypto",
     description:
-      "Join the bitcoin-yay Freedom Boost Airdrop! Get 5 days of FREE turbo mining power on July 4th. Register now for the worldwide airdrop and start earning BTCY tokens instantly.",
+      "Win 250 BTCY tokens (~$25) just for joining Bitcoin Yay and inviting one friend. Join the BTCY New Year Airdrop 2026 now!",
   },
 };
 
@@ -44,7 +44,7 @@ export default function Airdrop() {
       <div className="relative flex flex-col lg:flex-row">
         <div className="mt-10 w-full lg:w-[90%] flex flex-col justify-items-center px-4 md:pl-20 xl:pl-30">
           <h2 className="text-[40px] md:text-7xl xl:text-[100px] font-bold">
-            Join the WIBS Airdrop!
+            BTCY New Year Airdrop 2026
             <br />
             {/* <span className="text-primary">Lotto Airdrop</span>! */}
           </h2>
@@ -53,20 +53,10 @@ export default function Airdrop() {
             Get your free ticket + bonus entries for referrals
           </p> */}
           <p className="mt-10 text-2xl md:text-3xl font-semibold">
-            Claim your share of{" "}
-            <span className="text-primary">10,000,000 WIBS</span> Equally
-            distributed to verified participants.
+            Start the new year with free crypto.
           </p>
           <p className="mt-4 text-xl md:text-2xl font-medium">
-            WIBS is also live on{" "}
-            <Link
-              href="https://pump.fun/coin/EM6R4tQ15598xsA7GwefGwCq2Z4MbV6H3FYHfh8ENBTY"
-              target="_blank"
-              className="text-primary hover:underline hover:underline-offset-4 cursor-pointer"
-            >
-              Pump.fun!
-            </Link>
-            You can buy right now!.
+            Win 250 BTCY tokens (~$25) just for joining Bitcoin Yay and inviting one friend.
           </p>
 
           <div className="font-bold mt-10 flex justify-center md:justify-start items-center md:items-start gap-10 md:gap-20">
@@ -74,13 +64,6 @@ export default function Airdrop() {
               image={RegisterButtonImage}
               text="Join Airdrop Now"
               link="/airdrop/register"
-              imageStyling="w-30"
-            />
-            <CustomButton2
-              image={CartButtonImage}
-              text="Buy Now"
-              link="https://pump.fun/coin/EM6R4tQ15598xsA7GwefGwCq2Z4MbV6H3FYHfh8ENBTY"
-              _blank={true}
               imageStyling="w-30"
             />
           </div>
@@ -168,8 +151,7 @@ export default function Airdrop() {
               Download & Register
             </h4>
             <p className="text-xl font-light">
-              Download the bitcoin-yay App and register with your email. Your
-              app email must match your BitcoinYay.com account to qualify.
+              Download the Bitcoin Yay app
             </p>
           </div>
           <div className="max-w-100 text-center mx-auto">
@@ -184,8 +166,7 @@ export default function Airdrop() {
               Ticket
             </h4>
             <p className="text-xl font-light">
-              Everyone who signs up during the window is included. 10,000,000
-              WIBS will be equally split among all verified participants.
+              Invite 1 friend using your referral link
             </p>
           </div>
 
@@ -201,31 +182,7 @@ export default function Airdrop() {
               Wallet
             </h4>
             <p className="text-xl font-light">
-              Sign up on{" "}
-              <Link
-                href="https://pump.fun"
-                target="_blank"
-                className="text-primary hover:underline hover:underline-offset-4 cursor-pointer"
-              >
-                pump.fun
-              </Link>{" "}
-              and share us your wallet address for pump.fun and WIBS will
-              airdropped directly to that wallet on distribution day
-            </p>
-          </div>
-          <div className="max-w-100 text-center mx-auto">
-            <div className=" h-70 flex justify-center items-center">
-              <Image
-                src={WhatYouGetImage4}
-                alt="What you get 1"
-                className="w-64"
-              />
-            </div>
-            <h4 className="mt-6 text-3xl font-semibold h-24 flex items-center justify-center">
-              Already Mining?
-            </h4>
-            <p className="text-xl font-light">
-              Great! Stack WIBS alongside your BTCY mining progress.
+              Submit your TRON wallet address
             </p>
           </div>
         </div>
@@ -258,15 +215,15 @@ export default function Airdrop() {
             </p>
           </div>
           <div className="w-90 flex flex-col ">
-            <h3 className="text-[40px] md:text-5xl font-bold">Until Sept 28</h3>
+            <h3 className="text-[40px] md:text-5xl font-bold">Until Dec 31, 2025</h3>
             <p className="mt-2 md:mt-10 text-xl md:text-3xl">
               Sign-up window closes
             </p>
           </div>{" "}
           <div className="w-90 flex flex-col ">
-            <h3 className="text-[40px] md:text-5xl font-bold">Sept 29, 2025</h3>
+            <h3 className="text-[40px] md:text-5xl font-bold">Jan 1, 2026</h3>
             <p className="mt-2 md:mt-10 text-xl md:text-3xl">
-              WIBS distribution to Indexx Wallets
+              Airdrop Distribution
             </p>
           </div>
         </div>
@@ -278,26 +235,10 @@ export default function Airdrop() {
             Eligibility & Rules
           </h2>
           <ul className="mt-10 list-disc pl-6 text-xl md:text-3xl flex flex-col gap-6 md:gap-10">
-            <li>Have a valid bitcoin-yay account and Indexx Wallet.</li>
-            <li>App email must match your BitcoinYay.com account email.</li>
-            <li>
-              One sign-up per person; duplicate or fraudulent entries will be
-              removed.
-            </li>
-            <li>
-              10,000,000 WIBS are equally divided among verified participants.
-            </li>
-            <li>
-              Must have a valid{" "}
-              <Link
-                href="https://pump.fun"
-                target="_blank"
-                className="text-primary hover:underline hover:underline-offset-4 cursor-pointer"
-              >
-                pump.fun
-              </Link>{" "}
-              wallet address{" "}
-            </li>
+            <li><strong>Download the Bitcoin Yay app</strong></li>
+            <li><strong>Invite at least 1 friend (verified referral)</strong></li>
+            <li><strong>Submit a valid TRON (TRC20) wallet address</strong></li>
+            <li><strong>Register before midnight on Dec 31</strong></li>
           </ul>
           <div className="mx-auto md:mx-0 mt-10 flex justify-center md:justify-start items-center md:items-start gap-10 md:gap-20">
             <CustomButton2
@@ -528,24 +469,15 @@ export default function Airdrop() {
           </p>
 
           <h5 className="mt-6 text-3xl font-bold">
-            Q: When will I receive WIBS?
+            Q: When will I receive BTCY?
           </h5>
           <p className="mt-4 text-lg">
-            A: Distribution happens on Sept 29, 2025. WIBS will appear in your
-            Indexx Wallet automatically.
+            A: Distribution happens on Jan 1, 2026. BTCY tokens will be distributed to your TRON wallet address.
           </p>
 
-          <h5 className="mt-6 text-3xl font-bold">Q: Can I buy WIBS?</h5>
+          <h5 className="mt-6 text-3xl font-bold">Q: How much can I win?</h5>
           <p className="mt-4 text-lg">
-            A: Yes — tap Buy WIBS on{" "}
-            <Link
-              href="https://pump.fun/coin/EM6R4tQ15598xsA7GwefGwCq2Z4MbV6H3FYHfh8ENBTY"
-              target="_blank"
-              className="text-primary hover:underline hover:underline-offset-4 cursor-pointer"
-            >
-              Pump.fun
-            </Link>{" "}
-            to purchase directly.
+            A: You can win 250 BTCY tokens (~$25) by joining Bitcoin Yay and inviting one friend.
           </p>
         </div>
       </div>
