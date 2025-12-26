@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import axios, { AxiosError } from "axios";
+import { TronWeb } from "tronweb";
 
 import { AIRDROP_REGISTER_API_ROUTE } from "@/routes";
 import { getGmailAliasInfo } from "@/lib/utils";
@@ -17,7 +18,7 @@ import CopyIcon2 from "@/assets/images/icons/copy-icon-2.webp";
 import InfoIcon from "@/assets/images/icons/info-icon.webp";
 import DownloadButton from "@/assets/images/buttons/download-button.webp";
 import BackButton from "@/assets/images/buttons/back-button.webp";
-import IndexxButton from "@/assets/images/buttons/indexx-button.webp";
+import RegisterButtonImage from "@/assets/images/buttons/register-button.webp";
 import PointFingerButtonImage from "@/assets/images/buttons/point-button.webp";
 import PopupArt1 from "@/assets/images/airdrop/popup-art.webp";
 import PopupArt2 from "@/assets/images/airdrop/popup-art-1.webp";
@@ -27,6 +28,7 @@ import PopupArt5 from "@/assets/images/airdrop/popup-art-4.png";
 
 import PopupComponent from "@/components/PopupComponent";
 import CustomButton2 from "@/components/CustomButton2";
+import RegisterPopup from "@/components/RegisterPopup";
 
 interface FormErrors {
   email?: string;
@@ -35,6 +37,13 @@ interface FormErrors {
   walletAddress?: string;
   general?: string; // For general form errors, e.g., from API
 }
+
+const isValidTronAddress = (address: string): boolean => {
+  if (!address.trim()) {
+    return false;
+  }
+  return TronWeb.isAddress(address.trim());
+};
 
 export default function AirdropRegisterPage() {
   const [email, setEmail] = useState<string>("");
@@ -52,6 +61,8 @@ export default function AirdropRegisterPage() {
   const [isRegistrationClosed] = useState<boolean>(false);
   const [errors, setErrors] = useState<FormErrors>({});
   const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
+  const [isRegisterPopupOpen, setIsRegisterPopupOpen] =
+    useState<boolean>(false);
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -74,6 +85,9 @@ export default function AirdropRegisterPage() {
 
     if (!walletAddress.trim()) {
       newErrors.walletAddress = "Wallet address is required.";
+    } else if (!isValidTronAddress(walletAddress)) {
+      newErrors.walletAddress =
+        "Please enter a valid Tron wallet address (starts with T and has 34 characters).";
     }
 
     if (!acceptTerms) {
@@ -302,20 +316,25 @@ export default function AirdropRegisterPage() {
               <h3 className="text-5xl font-medium mt-6">Oops</h3>
               <p className="mt-6">
                 {errors.general ||
-                  "An error occurred while processing your request. Please try again."}
+                  "We couldn’t find a registration on file for that email. Please register to continue."}
               </p>
-              <div className="flex justify-between w-full mt-10 px-4">
+              <div className="flex flex-col gap-4 w-full max-w-[260px] mt-10 px-4">
                 <CustomButton2
-                  image={IndexxButton}
-                  text="Go to indexx.ai"
-                  link="https://indexx.ai"
+                  image={RegisterButtonImage}
+                  text="Register to claim"
                   imageStyling="w-22"
+                  widthClassName="w-full"
+                  onClick={() => {
+                    setIsPopupOpen(false);
+                    setIsRegisterPopupOpen(true);
+                  }}
                 />
                 <CustomButton2
                   image={BackButton}
                   text="Back"
                   link="/airdrop"
                   imageStyling="w-22"
+                  widthClassName="w-full"
                 />
               </div>
             </div>
@@ -427,7 +446,16 @@ export default function AirdropRegisterPage() {
           </div>
           <p className="text-primary text-base italic mb-6">
             <span className="font-bold">Note:</span> If you don&apos;t have a
-            Tron wallet please create one
+            Tron wallet please create one via the official{" "}
+            <Link
+              href="https://www.tronlink.org"
+              target="_blank"
+              rel="noreferrer"
+              className="underline"
+            >
+              TronLink wallet site
+            </Link>
+            .
           </p>
 
           <div className="mb-6 items-center">
@@ -503,6 +531,12 @@ export default function AirdropRegisterPage() {
           </div>
         </form>
       </div>
+      <RegisterPopup
+        isOpen={isRegisterPopupOpen}
+        onClose={() => setIsRegisterPopupOpen(false)}
+        onRegisterSuccess={() => setIsRegisterPopupOpen(false)}
+        onLoginClick={() => setIsRegisterPopupOpen(false)}
+      />
     </div>
   );
 }
