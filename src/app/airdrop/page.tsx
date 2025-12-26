@@ -14,7 +14,7 @@ import ArtImage4 from "@/assets/images/wibs-airdrop/art-4.webp";
 import CalendarArt from "@/assets/images/wibs-airdrop/calander-art.webp";
 
 import WhatYouGetImage1 from "@/assets/images/wibs-airdrop/what-you-get-1.webp";
-import WhatYouGetImage2 from "@/assets/images/wibs-airdrop/wibs-logo.webp";
+import WhatYouGetImage2 from "@/assets/images/logo.webp";
 import WhatYouGetImage3 from "@/assets/images/wibs-airdrop/what-you-get-3.webp";
 import WhatYouGetImage4 from "@/assets/images/wibs-airdrop/what-you-get-4.webp";
 // import WorldMapImage from "@/assets/images/airdrop/political-map-world.webp";

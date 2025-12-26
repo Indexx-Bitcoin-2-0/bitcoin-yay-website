@@ -427,14 +427,7 @@ export default function AirdropRegisterPage() {
           </div>
           <p className="text-primary text-base italic mb-6">
             <span className="font-bold">Note:</span> If you don&apos;t have a
-            pump.fun wallet address, please sign up on{" "}
-            <Link
-              href="https://pump.fun"
-              target="_blank"
-              className="text-primary hover:underline hover:underline-offset-4 cursor-pointer"
-            >
-              pump.fun
-            </Link>
+            Tron wallet please create one
           </p>
 
           <div className="mb-6 items-center">

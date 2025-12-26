@@ -960,11 +960,11 @@ const Navbar: React.FC = () => {
         <ReferralHandler onReferralDetected={handleReferralDetected} />
       </Suspense>
 
-      {currentPath !== "/download" && (
+      {currentPath !== "/download" && currentPath !== "/" && (
         <PopupComponent isOpen={isPopupOpen} onClose={handlePopupClose}>
           <div className="mt-10 mx-2 px-10 flex flex-col items-center justify-center w-90 md:w-120 xl:w-140 relative">
             <Image src={PopupArt1} alt="Popup Art 1" className="w-30 md:w-40" />
-            <h1 className="mt-4 text-3xl xl:text-4xl text-center font-bold text-[#5000AD]">
+            <h1 className="mt-4 text-3xl xl:text-4xl text-center font-bold text-primary">
               "Notice"
             </h1>
             <p className="mt-4 text-lg xl:text-xl font-light text-center">
