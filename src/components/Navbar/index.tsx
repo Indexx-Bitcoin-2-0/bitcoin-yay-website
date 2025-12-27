@@ -960,7 +960,8 @@ const Navbar: React.FC = () => {
         <ReferralHandler onReferralDetected={handleReferralDetected} />
       </Suspense>
 
-      {currentPath !== "/download" && currentPath !== "/" && (
+      {/* Notice popup disabled - showing New Year Airdrop popup instead */}
+      {/* {currentPath !== "/download" && currentPath !== "/" && (
         <PopupComponent isOpen={isPopupOpen} onClose={handlePopupClose}>
           <div className="mt-10 mx-2 px-10 flex flex-col items-center justify-center w-90 md:w-120 xl:w-140 relative">
             <Image src={PopupArt1} alt="Popup Art 1" className="w-30 md:w-40" />
@@ -990,7 +991,7 @@ const Navbar: React.FC = () => {
             </div>
           </div>
         </PopupComponent>
-      )}
+      )} */}
 
       <div className="relative flex items-center justify-between h-[150px] px-4 lg:px-[60px] mx-auto">
         {/* {!isMobile && <Backdrop visible={backdropVisibility} />}

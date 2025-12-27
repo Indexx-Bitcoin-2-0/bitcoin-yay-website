@@ -14,7 +14,7 @@ import ArtImage4 from "@/assets/images/wibs-airdrop/art-4.webp";
 import CalendarArt from "@/assets/images/wibs-airdrop/calander-art.webp";
 
 import WhatYouGetImage1 from "@/assets/images/wibs-airdrop/what-you-get-1.webp";
-import WhatYouGetImage2 from "@/assets/images/logo.webp";
+import WhatYouGetImage2 from "@/assets/images/tokenUpdatedImg.svg";
 import WhatYouGetImage3 from "@/assets/images/wibs-airdrop/what-you-get-3.webp";
 import WhatYouGetImage4 from "@/assets/images/wibs-airdrop/what-you-get-4.webp";
 // import WorldMapImage from "@/assets/images/airdrop/political-map-world.webp";
@@ -138,7 +138,7 @@ export default function Airdrop() {
 
       <div className="mt-80 px-4 md:px-20 xl:px-20">
         <h2 className="text-6xl lg:text-8xl font-semibold">How It Works</h2>
-        <div className="mt-20 w-full mx-auto grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-20">
+        <div className="mt-20 w-full mx-auto grid grid-cols-1 md:grid-cols-3 gap-20">
           <div className="max-w-100 text-center mx-auto">
             <div className=" h-70 flex justify-center items-center">
               <Image
@@ -169,7 +169,6 @@ export default function Airdrop() {
               Invite 1 friend using your referral link
             </p>
           </div>
-
           <div className="max-w-100 text-center mx-auto">
             <div className=" h-70 flex justify-center items-center">
               <Image
