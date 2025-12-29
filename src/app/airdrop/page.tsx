@@ -3,7 +3,7 @@ import Link from "next/link";
 // import CountdownTimer from "@/components/CounterComponent";
 import CustomButton2 from "@/components/CustomButton2";
 
-import ArtImage1 from "@/assets/images/wibs-airdrop/art-1.webp";
+import ArtImage1 from "@/assets/images/btcy-airdrop/btcyairdrop.png"
 // import LottoLogo from "@/assets/images/lotto-airdrop/lotto-logo.webp";
 import ArtImage2 from "@/assets/images/wibs-airdrop/art-2.webp";
 // import ArtImage3 from "@/assets/images/lotto-airdrop/art-3.webp";

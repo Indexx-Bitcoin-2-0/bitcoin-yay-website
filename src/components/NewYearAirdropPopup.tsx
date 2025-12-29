@@ -9,7 +9,7 @@ import LogoImage from "@/assets/images/main-logo.svg";
 import IndexxLogo from "@/assets/images/indexx.ai.svg";
 import RegisterButtonImage from "@/assets/images/buttons/register-button.webp";
 // Using one of the airdrop art images for the illustration
-import AirdropArt from "@/assets/images/airdrop/art-1.webp";
+import AirdropArt from "@/assets/images/btcy-airdrop/btcyairdroppopup.svg";
 
 interface NewYearAirdropPopupProps {
     isOpen: boolean;
