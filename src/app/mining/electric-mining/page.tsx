@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { ChevronDown, Check } from "lucide-react";
 
 import CustomButton2 from "@/components/CustomButton2";
 import LoginPopup from "@/components/LoginPopup";
 import PaymentMethodPopup, { PaymentMethod } from "@/components/PaymentMethodPopup";
+import NewYearPromotionalBanner from "@/components/NewYearPromotionalBanner";
 import { useAuth } from "@/contexts/AuthContext";
 import { PROVIDER_LABELS } from "@/constants/paymentProviders";
 import {
@@ -28,12 +30,16 @@ const formatUsd = (value: number) =>
 
 const PLAN_KEY = "electric";
 const PLAN_NAME = "Electric Power Mining";
-const PLAN_PRICE = 30;
+const PLAN_PRICE_MONTHLY = 30;
+const PLAN_PRICE_WEEKLY = 7.5; // Monthly price / 4
 
 const ElectricMiningPage = () => {
   const { user, isLoading } = useAuth();
+  const [duration, setDuration] = useState<"weekly" | "monthly">("monthly");
+  const [isDurationDropdownOpen, setIsDurationDropdownOpen] = useState(false);
   const [couponCode, setCouponCode] = useState("BTCY10");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const durationDropdownRef = useRef<HTMLDivElement>(null);
   const [feedback, setFeedback] = useState<{
     type: "info" | "error";
     message: string;
@@ -88,11 +94,45 @@ const ElectricMiningPage = () => {
     void validateCurrentCoupon();
   };
 
+  const handleDurationChange = (value: "weekly" | "monthly") => {
+    setDuration(value);
+    setIsDurationDropdownOpen(false);
+    // Reset coupon validation when duration changes
+    if (couponValidationStatus !== "idle") {
+      setCouponValidationStatus("idle");
+      setCouponValidationMessage(null);
+    }
+  };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        durationDropdownRef.current &&
+        !durationDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDurationDropdownOpen(false);
+      }
+    };
+
+    if (isDurationDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isDurationDropdownOpen]);
+
   useEffect(() => {
     if (!isLoading && !user) {
       setIsLoginPopupOpen(true);
     }
   }, [isLoading, user]);
+
+  // Calculate current price based on duration
+  const currentPrice = duration === "weekly" ? PLAN_PRICE_WEEKLY : PLAN_PRICE_MONTHLY;
+  const priceLabel = duration === "weekly" ? "week" : "m";
 
   const startSubscription = async (provider: PaymentProvider) => {
     if (isSubmitting) {
@@ -121,6 +161,7 @@ const ElectricMiningPage = () => {
           planName: PLAN_NAME,
           speedBoost: "9 BTCY/h",
           page: "electric-mining",
+          duration: duration,
         },
       };
 
@@ -208,6 +249,11 @@ const ElectricMiningPage = () => {
 
   return (
     <div className="mx-auto mt-40 md:mt-60 px-4 md:px-20 xl:px-40 relative max-w-[2000px]">
+      {/* New Year Promotional Banner */}
+      <div className="mb-20">
+        <NewYearPromotionalBanner />
+      </div>
+
       <div className="flex flex-col items-center justify-center gap-20">
         <div className="flex items-center gap-10">
           <Image
@@ -231,8 +277,8 @@ const ElectricMiningPage = () => {
           </p>
           <ul className="mt-20 list-disc list-inside text-xl flex flex-col gap-6">
             <li><span className="font-bold line-through">
-              $100
-            </span> $ 30/m subscription fee</li>
+              {duration === "weekly" ? "$25" : "$100"}
+            </span> $ {currentPrice.toFixed(duration === "weekly" ? 2 : 0)}/{priceLabel} subscription fee</li>
             <li>1 BTCY ~ $ 0.10</li>
             <li>~4.5 BTCY/hour ~ $ 0.45</li>
             <li className="text-primary">Referral Bonuses</li>
@@ -240,6 +286,45 @@ const ElectricMiningPage = () => {
           </ul>
         </div>
         <div className="flex flex-col items-center gap-6 w-full">
+          <div className="w-full max-w-md text-left" ref={durationDropdownRef}>
+            <label className="block text-sm text-tertiary mb-2" htmlFor="electric-duration">
+              Duration
+            </label>
+            <div className="relative">
+              <button
+                type="button"
+                id="electric-duration"
+                onClick={() => setIsDurationDropdownOpen(!isDurationDropdownOpen)}
+                className="flex items-center gap-3 p-3  rounded-lg cursor-pointer text-tertiary border border-white/20 w-full text-lg focus:border-primary hover:border-primary mt-2"
+              >
+                <span className="flex-1 text-left capitalize">{duration}</span>
+                <ChevronDown className="w-5 h-5" strokeWidth={2.5} />
+              </button>
+
+              {isDurationDropdownOpen && (
+                <div className="absolute left-0 top-full mt-1 w-full bg-bg2 rounded-md shadow-lg z-10 border border-bg">
+                  <div className="py-1">
+                    {(["weekly", "monthly"] as const).map((option) => (
+                      <button
+                        key={option}
+                        type="button"
+                        onClick={() => handleDurationChange(option)}
+                        className="w-full px-4 py-3 text-left text-tertiary hover:bg-primary hover:text-bg transition-colors text-lg cursor-pointer flex items-center gap-3"
+                      >
+                        <span className="flex-1 capitalize">{option}</span>
+                        {duration === option && (
+                          <Check
+                            className="w-5 h-5 ml-auto"
+                            strokeWidth={2.5}
+                          />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
           <div className="w-full max-w-md text-left">
             <label className="text-sm text-tertiary" htmlFor="electric-coupon">
               Coupon code (optional)
@@ -250,7 +335,7 @@ const ElectricMiningPage = () => {
               value={couponCode}
               onChange={(event) => handleCouponInputChange(event.target.value)}
               onBlur={handleCouponBlur}
-              className="mt-2 w-full rounded-lg border border-white/20 bg-transparent px-4 py-2 text-white placeholder:text-tertiary focus:border-primary focus:outline-none"
+              className="mt-2 w-full rounded-lg border border-white/20 bg-transparent px-4 py-4 text-white placeholder:text-tertiary focus:border-primary focus:outline-none"
             />
           </div>
           {couponValidationLoading ? (
@@ -306,7 +391,7 @@ const ElectricMiningPage = () => {
         onClose={() => setIsPaymentPopupOpen(false)}
         onSelectPaymentMethod={handlePaymentMethodSelect}
         planName={PLAN_NAME}
-        subscriptionAmount={PLAN_PRICE}
+        subscriptionAmount={currentPrice}
       />
 
       <div className="text-base mt-40 flex flex-col gap-20 max-w-5xl leading-8 mb-40">

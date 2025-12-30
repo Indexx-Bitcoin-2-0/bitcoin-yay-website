@@ -65,6 +65,7 @@ import InfoButtonImage from "@/assets/images/buttons/info-button.webp";
 import UserReviewCards from "@/components/UserReviewCards";
 import DisclaimerComponent from "@/components/DisclaimerComponent";
 import CustomButton2 from "@/components/CustomButton2";
+import NewYearPromotionalBanner from "@/components/NewYearPromotionalBanner";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -141,6 +142,11 @@ export default function Home() {
 
   return (
     <div className="overflow-hidden relative mt-40 mx-auto">
+      {/* New Year Promotional Banner */}
+      <div className="px-4 md:px-8 lg:px-20 xl:px-40 mb-20">
+        <NewYearPromotionalBanner />
+      </div>
+
       <div className="mt-6 flex flex-col items-center text-center">
         <div className="px-4 text-2xl font-bold text-primary max-w-250 leading-tight">
           Bitcoin-Yay Is The Micro Token
