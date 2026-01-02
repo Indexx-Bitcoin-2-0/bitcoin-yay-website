@@ -58,13 +58,53 @@ export interface SubscriptionHistoryFilters {
   limit?: number;
 }
 
-const SUBSCRIPTIONS_HOST =
-  process.env.NEXT_PUBLIC_API_URL ?? "https://api.v1.indexx.ai";
+export interface MiningSubscriptionPlan {
+  _id: string;
+  email: string;
+  plan: string;
+  speedBoost?: number;
+  miningRate?: number;
+  cost?: number;
+  paymentMethod?: string;
+  startDate?: string;
+  endDate?: string;
+  coinSymbol?: string;
+  status?: string;
+  referralBonusUsed?: number;
+  bonusNote?: string;
+  lastBonusAppliedAt?: string | null;
+  referralNote?: string;
+  referredByEmail?: string;
+  [key: string]: unknown;
+}
 
-const SUBSCRIPTIONS_BASE_URL = `${SUBSCRIPTIONS_HOST}/api/v1/bitcoinyay/subscriptions`;
-export const SUBSCRIPTIONS_PURCHASE_URL = `${SUBSCRIPTIONS_BASE_URL}/purchase`;
-const COUPON_VALIDATION_URL = `${SUBSCRIPTIONS_BASE_URL}/coupons/validate`;
-const SUBSCRIPTION_HISTORY_URL = SUBSCRIPTIONS_BASE_URL;
+export interface ChangePlanPayload {
+  subscriptionId: string;
+  newPlanKey: "electric" | "turbo" | "nuclear" | "free" | string;
+}
+
+export interface ChangePlanResponse {
+  success: boolean;
+  message: string;
+  data: {
+    key: string;
+    name: string;
+    amount: number;
+    currency: string;
+    miningSpeed: number;
+    stripePriceId: string;
+  };
+}
+
+const LOCAL_SUBSCRIPTIONS_BASE_URL = "/api/subscriptions";
+export const SUBSCRIPTIONS_PURCHASE_URL = `${LOCAL_SUBSCRIPTIONS_BASE_URL}/purchase`;
+const COUPON_VALIDATION_URL = `${LOCAL_SUBSCRIPTIONS_BASE_URL}/coupons/validate`;
+const MINING_SUBSCRIPTION_PLAN_URL = "/api/mining/getUserSubscriptionPlan";
+
+const REMOTE_SUBSCRIPTIONS_HOST =
+  process.env.NEXT_PUBLIC_API_URL ?? "https://api.v1.indexx.ai";
+const SUBSCRIPTION_HISTORY_URL = `${REMOTE_SUBSCRIPTIONS_HOST}/api/v1/bitcoinyay/subscriptions`;
+const CHANGE_PLAN_URL = `${REMOTE_SUBSCRIPTIONS_HOST}/api/v1/bitcoinyay/subscriptions/changeplan`;
 
 export interface CouponValidationResponse {
   provider: string;
@@ -157,4 +197,46 @@ export async function fetchSubscriptionHistory(
   }
 
   return result as SubscriptionHistoryResponse;
+}
+
+export async function changeSubscriptionPlan(
+  payload: ChangePlanPayload
+): Promise<ChangePlanResponse> {
+  const response = await fetch(CHANGE_PLAN_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const result = await response.json().catch(() => null);
+  if (!response.ok || !result) {
+    const errorMessage =
+      result?.error || result?.message || "Unable to change the subscription plan.";
+    throw new Error(errorMessage);
+  }
+
+  return result as ChangePlanResponse;
+}
+
+export async function fetchUserSubscriptionPlan(
+  coinSymbol: string,
+  email: string
+): Promise<MiningSubscriptionPlan | null> {
+  const response = await fetch(
+    `${MINING_SUBSCRIPTION_PLAN_URL}/${coinSymbol}/${encodeURIComponent(email)}`,
+    {
+      method: "GET",
+    }
+  );
+
+  const result = await response.json().catch(() => null);
+  if (!response.ok || !result) {
+    const errorMessage =
+      result?.error || result?.message || "Unable to load the mining subscription plan.";
+    throw new Error(errorMessage);
+  }
+
+  return result.data ?? null;
 }

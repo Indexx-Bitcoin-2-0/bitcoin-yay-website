@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
-import { Check, X } from "lucide-react";
+import { Check } from "lucide-react";
 import LoginPopup from "@/components/LoginPopup";
 import PaymentMethodPopup, { PaymentMethod } from "@/components/PaymentMethodPopup";
 import SubscriptionConfirmPopup from "@/components/SubscriptionConfirmPopup";
@@ -19,7 +18,10 @@ import UpgradeIcon from '@/assets/images/UpgradeIcon.svg';
 import CancelImage from '@/assets/images/cancelIcon.svg';
 
 import {
+    changeSubscriptionPlan,
     fetchSubscriptionHistory,
+    fetchUserSubscriptionPlan,
+    MiningSubscriptionPlan,
     PaymentProvider,
     SubscriptionHistoryEntry,
     purchaseSubscription,
@@ -115,6 +117,15 @@ const normalizePlanKey = (value?: string): AvailablePlanKey | undefined => {
     return undefined;
 };
 
+const DEFAULT_SPEED_BOOSTS: Record<AvailablePlanKey, number> = {
+    electric: 3,
+    turbo: 6,
+    nuclear: 9,
+};
+
+const getDefaultSpeedBoost = (value?: AvailablePlanKey) =>
+    value ? DEFAULT_SPEED_BOOSTS[value] ?? 1 : 1;
+
 const HISTORY_PAGE_SIZE = 5;
 const HISTORY_PROVIDER_OPTIONS: PaymentProvider[] = ["stripe", "paypal"];
 
@@ -123,6 +134,14 @@ const formatCurrency = (value: number, currency = "USD") =>
         style: "currency",
         currency,
     });
+
+const formatMetric = (value: number) =>
+    value.toLocaleString("en-US", {
+        maximumFractionDigits: 2,
+    });
+
+const getSupportedPaymentProvider = (method: PaymentMethod): PaymentProvider =>
+    method === "paypal" || method === "stripe" ? method : "stripe";
 
 const SUBSCRIPTION_PAUSED_MESSAGE =
     "Subscriptions via PayPal and Stripe are temporarily disabled. We will update this page once payments resume.";
@@ -149,12 +168,15 @@ const getStatusBadgeClasses = (status: string) => {
     return "border-white/30 text-white/70";
 };
 
+type RefreshPlanOptions = {
+    signal?: { cancelled: boolean };
+    withLoading?: boolean;
+};
+
 export default function SubscriptionPage() {
     const { user, isLoading } = useAuth();
     const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState<PaymentProvider>("stripe");
-    const [memberSince, setMemberSince] = useState<string>("Nov 19, 2024");
-    const [nextBillingDate, setNextBillingDate] = useState<string>("Dec 19, 2025");
     const [historyEntries, setHistoryEntries] = useState<SubscriptionHistoryEntry[]>([]);
     const [historyLoading, setHistoryLoading] = useState(false);
     const [historyError, setHistoryError] = useState<string | null>(null);
@@ -164,14 +186,54 @@ export default function SubscriptionPage() {
         message: string;
     } | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [miningPlan, setMiningPlan] = useState<MiningSubscriptionPlan | null>(null);
+    const [planLoading, setPlanLoading] = useState(false);
+    const [planError, setPlanError] = useState<string | null>(null);
+    const [planChangeLoading, setPlanChangeLoading] = useState(false);
+    const [planChangeTarget, setPlanChangeTarget] = useState<AvailablePlanKey | null>(null);
+    const [planChangeFeedback, setPlanChangeFeedback] = useState<{
+        type: "info" | "error";
+        message: string;
+    } | null>(null);
 
     // Popup states
     const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
     const [isConfirmPopupOpen, setIsConfirmPopupOpen] = useState(false);
     const [isSuccessPopupOpen, setIsSuccessPopupOpen] = useState(false);
     const [isFailedPopupOpen, setIsFailedPopupOpen] = useState(false);
-    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<"paypal" | "stripe" | "ach" | "wire" | "zelle" | "tygapay" | "venmo" | null>(null);
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod | null>(null);
     const [selectedPlan, setSelectedPlan] = useState<PlanType | null>(null);
+
+    const refreshMiningPlan = useCallback(
+        async (options: RefreshPlanOptions = {}) => {
+            if (!user?.email) return;
+            const showLoading = options.withLoading ?? true;
+            if (showLoading) {
+                setPlanLoading(true);
+                setPlanError(null);
+            }
+
+            try {
+                const plan = await fetchUserSubscriptionPlan("BTCY", user.email);
+                if (options.signal?.cancelled) return;
+                setMiningPlan(plan);
+            } catch (error) {
+                if (options.signal?.cancelled) return;
+                setMiningPlan(null);
+                setPlanError(
+                    error instanceof Error
+                        ? error.message
+                        : "Unable to load your mining subscription."
+                );
+            } finally {
+                if (options.signal?.cancelled) return;
+                if (showLoading) {
+                    setPlanLoading(false);
+                }
+            }
+        },
+        [user?.email]
+    );
 
     useEffect(() => {
         if (!isLoading && !user) {
@@ -230,15 +292,69 @@ export default function SubscriptionPage() {
         };
     }, [user?.email, paymentMethod]);
 
+    useEffect(() => {
+        if (!user?.email) {
+            setMiningPlan(null);
+            setPlanError(null);
+            setPlanLoading(false);
+            return;
+        }
+
+        const signal = { cancelled: false };
+        void refreshMiningPlan({ signal });
+
+        return () => {
+            signal.cancelled = true;
+        };
+    }, [user?.email, refreshMiningPlan]);
+
     const activeEntry = historyEntries.find((entry) =>
         isActiveStatus(entry.status)
     );
-    const activePlanKey = normalizePlanKey(activeEntry?.planKey);
+    const planKeyFromHistory = normalizePlanKey(
+        activeEntry?.planKey ?? activeEntry?.planName
+    );
+    const planKeyFromApi = normalizePlanKey(miningPlan?.plan);
+    const activePlanKey = planKeyFromApi ?? planKeyFromHistory;
     const activePlanDefinition = activePlanKey
         ? plans.find((plan) => plan.key === activePlanKey)
         : undefined;
     const currentPlanData = activePlanDefinition ?? FREE_PLAN_DATA;
-    const currentPlanName = currentPlanData.name;
+    const currentPlanDisplayName = miningPlan?.plan ?? currentPlanData.name;
+    const planCostValue =
+        typeof miningPlan?.cost === "number"
+            ? miningPlan.cost
+            : currentPlanData.price;
+    const planMiningRate =
+        typeof miningPlan?.miningRate === "number"
+            ? miningPlan.miningRate
+            : currentPlanData.btcPerHour;
+    const planSpeedBoost =
+        typeof miningPlan?.speedBoost === "number"
+            ? miningPlan.speedBoost
+            : getDefaultSpeedBoost(activePlanKey);
+    const planStatus = miningPlan?.status ?? activeEntry?.status ?? "Active";
+    const planPaymentMethod = miningPlan?.paymentMethod ?? paymentMethod;
+    const planStartLabel = miningPlan?.startDate
+        ? formatDateTime(miningPlan.startDate)
+        : null;
+    const planEndLabel = miningPlan?.endDate
+        ? formatDateTime(miningPlan.endDate)
+        : null;
+    const planWindowParts: string[] = [];
+    if (planStartLabel) planWindowParts.push(planStartLabel);
+    if (planEndLabel) planWindowParts.push(planEndLabel);
+    const planWindowRange = planWindowParts.length
+        ? planWindowParts.join(" – ")
+        : "—";
+    const displayMemberSince = planStartLabel ?? "—";
+    const displayNextBillingDate = planEndLabel ?? "—";
+    const formattedPlanMiningRate = formatMetric(planMiningRate);
+    const formattedPlanSpeedBoost = formatMetric(planSpeedBoost);
+    const planStatusPillClass = isActiveStatus(planStatus)
+        ? "bg-green-500"
+        : "bg-white/30";
+    const isPaidPlan = !!activePlanDefinition;
 
     const handleLoginSuccess = () => {
         setIsLoginPopupOpen(false);
@@ -248,15 +364,59 @@ export default function SubscriptionPage() {
         setIsLoginPopupOpen(false);
     };
 
-    const handleUpgrade = (planName: PlanType) => {
-        if (planName === currentPlanName) return;
-        // Subscriptions are paused; nothing to do here.
+    const schedulePlanChange = useCallback(
+        async (planKey: AvailablePlanKey) => {
+            if (planKey === activePlanKey) return;
+            if (!miningPlan?._id) {
+                setPlanChangeFeedback({
+                    type: "error",
+                    message: "Unable to locate your active subscription.",
+                });
+                return;
+            }
+
+            setPlanChangeLoading(true);
+            setPlanChangeTarget(planKey);
+            setPlanChangeFeedback(null);
+
+            try {
+                const result = await changeSubscriptionPlan({
+                    subscriptionId: miningPlan._id,
+                    newPlanKey: planKey,
+                });
+                setPlanChangeFeedback({
+                    type: "info",
+                    message:
+                        result.message ??
+                        `Plan change to ${result.data?.name ?? planKey} scheduled.`,
+                });
+                await refreshMiningPlan();
+            } catch (error) {
+                setPlanChangeFeedback({
+                    type: "error",
+                    message:
+                        error instanceof Error
+                            ? error.message
+                            : "Unable to schedule the plan change.",
+                });
+            } finally {
+                setPlanChangeLoading(false);
+                setPlanChangeTarget(null);
+            }
+        },
+        [activePlanKey, miningPlan?._id, refreshMiningPlan]
+    );
+
+    const handleUpgrade = (planName: PlanType, planKey?: AvailablePlanKey) => {
+        const isCurrentPlan =
+            (planKey && planKey === activePlanKey) ||
+            (!planKey && planName === currentPlanDisplayName);
+        if (isCurrentPlan || !planKey) return;
+        void schedulePlanChange(planKey);
     };
 
     const handlePaymentMethodSelect = (method: PaymentMethod) => {
-        // Map to supported providers if needed (backend may only support paypal/stripe)
-        const supportedMethod = method === "paypal" || method === "stripe" ? method : "stripe";
-        setSelectedPaymentMethod(supportedMethod as PaymentProvider);
+        setSelectedPaymentMethod(method);
         setIsPaymentPopupOpen(false);
         setIsConfirmPopupOpen(true);
     };
@@ -282,10 +442,7 @@ export default function SubscriptionPage() {
 
         try {
             // Map to supported providers (backend may only support paypal/stripe)
-            const supportedProvider: PaymentProvider =
-                selectedPaymentMethod === "paypal" || selectedPaymentMethod === "stripe"
-                    ? selectedPaymentMethod
-                    : "stripe";
+            const supportedProvider = getSupportedPaymentProvider(selectedPaymentMethod);
 
             const payload = {
                 email: user.email,
@@ -339,6 +496,10 @@ export default function SubscriptionPage() {
         }
     };
 
+    const selectedPaymentProvider = selectedPaymentMethod
+        ? getSupportedPaymentProvider(selectedPaymentMethod)
+        : null;
+
     const handleTryAgain = () => {
         setIsFailedPopupOpen(false);
         setIsPaymentPopupOpen(true);
@@ -376,6 +537,29 @@ export default function SubscriptionPage() {
                         {feedback.message}
                     </p>
                 )}
+                {planLoading && (
+                    <p className="text-sm text-white/70 mb-6">
+                        Refreshing your mining subscription details…
+                    </p>
+                )}
+                {planError && (
+                    <p className="text-sm text-red-500 mb-6">{planError}</p>
+                )}
+                {planChangeLoading && (
+                    <p className="text-sm text-white/70 mb-6">
+                        Scheduling your plan change…
+                    </p>
+                )}
+                {planChangeFeedback && (
+                    <p
+                        className={`text-sm mb-6 ${planChangeFeedback.type === "error"
+                            ? "text-red-500"
+                            : "text-green-400"
+                            }`}
+                    >
+                        {planChangeFeedback.message}
+                    </p>
+                )}
 
                 <div className=" border border-bg2 rounded-xl p-6 md:p-8 relative">
                     <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
@@ -384,10 +568,10 @@ export default function SubscriptionPage() {
                                 Current Plan
                             </div>
                             <h2 className="text-2xl md:text-4xl font-bold text-white mb-4">
-                                {currentPlanData.name}
+                                {currentPlanDisplayName}
                             </h2>
                             <p className="text-lg md:text-xl text-white mb-6">
-                                ${currentPlanData.price}/month • {currentPlanData.btcPerHour} BTCY/hour
+                                {formatCurrency(planCostValue)} • {formattedPlanMiningRate} BTCY/hour
                             </p>
                             <ul className="space-y-3">
                                 {currentPlanData.features.map((feature, index) => (
@@ -397,16 +581,36 @@ export default function SubscriptionPage() {
                                     </li>
                                 ))}
                             </ul>
+                            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm text-white/80">
+                                <div>
+                                    <p className="text-xs uppercase tracking-wider text-gray-400 mb-1">Speed Boost</p>
+                                    <p className="text-lg text-white font-semibold">
+                                        {formattedPlanSpeedBoost}×
+                                    </p>
+                                </div>
+                                <div>
+                                    <p className="text-xs uppercase tracking-wider text-gray-400 mb-1">Mining Window</p>
+                                    <p className="text-lg text-white font-semibold">{planWindowRange}</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs uppercase tracking-wider text-gray-400 mb-1">Status</p>
+                                    <p className="text-lg text-white font-semibold">{planStatus}</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs uppercase tracking-wider text-gray-400 mb-1">Payment Method</p>
+                                    <p className="text-lg text-white font-semibold">{planPaymentMethod}</p>
+                                </div>
+                            </div>
                         </div>
                         <div className="flex flex-col items-center gap-4 justify-between h-full">
-                            {currentPlanName !== "Free" && (
+                            {isPaidPlan && (
                                 <div className="text-right">
                                     <p className="text-sm text-gray-400 mb-1">Next billing date</p>
-                                    <p className="text-lg text-white font-medium">{nextBillingDate}</p>
+                                    <p className="text-lg text-white font-medium">{displayNextBillingDate}</p>
                                 </div>
                             )}
 
-                            {currentPlanName !== "Free" && (
+                            {isPaidPlan && (
                                 <CustomButton2
                                     text="Cancel Subscription"
                                     onClick={handleCancelSubscription}
@@ -425,7 +629,12 @@ export default function SubscriptionPage() {
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {plans.map((plan) => {
-                        const isCurrentPlan = plan.name === currentPlanName;
+                        const isCurrentPlan = plan.key ? plan.key === activePlanKey : false;
+                        const isSchedulingThisPlan =
+                            planChangeLoading && plan.key === planChangeTarget;
+                        const upgradeButtonText = isSchedulingThisPlan
+                            ? "Scheduling..."
+                            : `Upgrade`;
                         return (
                             <div
                                 key={plan.name}
@@ -459,15 +668,14 @@ export default function SubscriptionPage() {
                                 </ul>
                                 <div className="flex flex-col items-center gap-2 mt-auto">
                                     {isCurrentPlan ? (
-                                        <>
-                                            <CustomButton2 text="Current Plan" image={CheckIcon} onClick={() => { }} />
-                                        </>
+                                        <CustomButton2 text="Current Plan" image={CheckIcon} onClick={() => { }} />
                                     ) : (
-                                        <>
-
-                                            <CustomButton2 text="Upgrade" image={UpgradeIcon} onClick={() => handleUpgrade(plan.name)} />
-
-                                        </>
+                                        <CustomButton2
+                                            text={upgradeButtonText}
+                                            image={UpgradeIcon}
+                                            onClick={() => handleUpgrade(plan.name, plan.key)}
+                                            disabled={planChangeLoading}
+                                        />
                                     )}
                                 </div>
                             </div>
@@ -486,17 +694,17 @@ export default function SubscriptionPage() {
                         <div>
                             <p className="text-sm text-gray-400 mb-2">Status</p>
                             <div className="flex items-center gap-2">
-                                <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                                <p className="text-lg text-white font-medium">Active</p>
+                                <div className={`w-3 h-3 rounded-full ${planStatusPillClass}`}></div>
+                                <p className="text-lg text-white font-medium">{planStatus}</p>
                             </div>
                         </div>
                         <div>
                             <p className="text-sm text-gray-400 mb-2">Payment Method</p>
-                            <p className="text-lg text-white font-medium capitalize">{paymentMethod}</p>
+                            <p className="text-lg text-white font-medium capitalize">{planPaymentMethod}</p>
                         </div>
                         <div>
                             <p className="text-sm text-gray-400 mb-2">Member Since</p>
-                            <p className="text-lg text-white font-medium">{memberSince}</p>
+                            <p className="text-lg text-white font-medium">{displayMemberSince}</p>
                         </div>
                     </div>
                 </div>
@@ -595,13 +803,13 @@ export default function SubscriptionPage() {
                         subscriptionAmount={plans.find((p) => p.name === selectedPlan)?.price || 0}
                     />
 
-                    {selectedPaymentMethod && (
+                    {selectedPaymentProvider && (
                         <SubscriptionConfirmPopup
                             isOpen={isConfirmPopupOpen}
                             onClose={() => setIsConfirmPopupOpen(false)}
                             onBack={handleBackToPaymentMethod}
                             onSubscribe={handleSubscribe}
-                            paymentMethod={selectedPaymentMethod}
+                            paymentMethod={selectedPaymentProvider}
                             subscriptionAmount={plans.find((p) => p.name === selectedPlan)?.price || 0}
                             planName={selectedPlan}
                         />

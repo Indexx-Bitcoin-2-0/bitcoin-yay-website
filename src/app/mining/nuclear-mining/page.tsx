@@ -28,7 +28,8 @@ const formatUsd = (value: number) =>
     currency: "USD",
   });
 
-const PLAN_KEY = "nuclear";
+const MONTHLY_PLAN_KEY = "nuclear";
+const WEEKLY_PLAN_KEY = "weeklynuclear";
 const PLAN_NAME = "Nuclear Power Mining";
 const PLAN_PRICE_MONTHLY = 180;
 const PLAN_PRICE_WEEKLY = 45; // Monthly price / 4
@@ -52,6 +53,11 @@ const NuclearMiningPage = () => {
     useState<string | null>(null);
   const [couponValidationLoading, setCouponValidationLoading] =
     useState(false);
+  const getPlanKey = () =>
+    duration === "weekly" ? WEEKLY_PLAN_KEY : MONTHLY_PLAN_KEY;
+
+  const getDisplayPlanName = () =>
+    duration === "weekly" ? `${PLAN_NAME} (Weekly)` : PLAN_NAME;
 
   const handleCouponInputChange = (value: string) => {
     setCouponCode(value);
@@ -71,7 +77,7 @@ const NuclearMiningPage = () => {
 
     setCouponValidationLoading(true);
     try {
-      const validation = await validateCoupon(PLAN_KEY, trimmedCoupon);
+      const validation = await validateCoupon(getPlanKey(), trimmedCoupon);
       setCouponValidationStatus("valid");
       setCouponValidationMessage(
         `Coupon applied (${validation.couponCode}): ${validation.couponDescription ??
@@ -156,9 +162,9 @@ const NuclearMiningPage = () => {
       const payload: SubscriptionPurchasePayload = {
         email: user.email,
         provider,
-        planKey: PLAN_KEY,
+        planKey: getPlanKey(),
         metadata: {
-          planName: PLAN_NAME,
+          planName: getDisplayPlanName(),
           speedBoost: "27 BTCY/h",
           page: "nuclear-mining",
           duration: duration,
@@ -238,8 +244,8 @@ const NuclearMiningPage = () => {
   };
 
   const handlePaymentMethodSelect = (method: PaymentMethod) => {
-    // Map to supported providers (backend may only support paypal/stripe)
-    const supportedMethod: PaymentProvider = method === "paypal" || method === "stripe" ? method : "stripe";
+    const supportedMethod: PaymentProvider =
+      method === "stripe" ? "stripe" : "paypal";
     void startSubscription(supportedMethod);
   };
 
