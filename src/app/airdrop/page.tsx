@@ -214,13 +214,13 @@ export default function Airdrop() {
             </p>
           </div>
           <div className="w-90 flex flex-col ">
-            <h3 className="text-[40px] md:text-5xl font-bold">Until Dec 31, 2025</h3>
+            <h3 className="text-[40px] md:text-5xl font-bold">Until Dec 04, 2026</h3>
             <p className="mt-2 md:mt-10 text-xl md:text-3xl">
               Sign-up window closes
             </p>
           </div>{" "}
           <div className="w-90 flex flex-col ">
-            <h3 className="text-[40px] md:text-5xl font-bold">Jan 1, 2026</h3>
+            <h3 className="text-[40px] md:text-5xl font-bold">Jan 05, 2026</h3>
             <p className="mt-2 md:mt-10 text-xl md:text-3xl">
               Airdrop Distribution
             </p>

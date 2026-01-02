@@ -81,10 +81,10 @@ const NewYearAirdropPopup: React.FC<NewYearAirdropPopupProps> = ({
                         100 Winners
                     </p>
                     <p className="text-base ">
-                        Ends  Dec 31, 2025
+                        Ends Jan 04, 2026
                     </p>
                     <p className="text-base  ">
-                        Distribution  Jan 1, 2026
+                        Distribution  Jan 05, 2026
                     </p>
                 </div>
 
