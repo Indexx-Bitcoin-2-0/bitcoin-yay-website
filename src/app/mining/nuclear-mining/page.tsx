@@ -29,7 +29,7 @@ const formatUsd = (value: number) =>
   });
 
 const MONTHLY_PLAN_KEY = "nuclear";
-const WEEKLY_PLAN_KEY = "weeklynuclear";
+const WEEKLY_PLAN_KEY = "weeklyNuclear";
 const PLAN_NAME = "Nuclear Power Mining";
 const PLAN_PRICE_MONTHLY = 180;
 const PLAN_PRICE_WEEKLY = 45; // Monthly price / 4
@@ -38,7 +38,7 @@ const NuclearMiningPage = () => {
   const { user, isLoading } = useAuth();
   const [duration, setDuration] = useState<"weekly" | "monthly">("monthly");
   const [isDurationDropdownOpen, setIsDurationDropdownOpen] = useState(false);
-  const [couponCode, setCouponCode] = useState("BTCY10");
+  const [couponCode, setCouponCode] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const durationDropdownRef = useRef<HTMLDivElement>(null);
   const [feedback, setFeedback] = useState<{
@@ -339,7 +339,7 @@ const NuclearMiningPage = () => {
             </label>
             <input
               id="nuclear-coupon"
-              placeholder="e.g., BTCY10"
+              placeholder="e.g., BTCYNEWYEAR"
               value={couponCode}
               onChange={(event) => handleCouponInputChange(event.target.value)}
               onBlur={handleCouponBlur}
