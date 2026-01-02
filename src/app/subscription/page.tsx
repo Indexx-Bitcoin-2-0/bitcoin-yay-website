@@ -155,14 +155,21 @@ const formatDateTime = (value?: string) => {
 };
 
 const getStatusBadgeClasses = (status: string) => {
-    const normalized = status?.toLowerCase();
-    if (normalized === "active" || normalized === "success") {
+    const normalized = status?.toLowerCase() ?? "";
+    if (normalized.includes("active")) {
+        return "border-primary text-primary";
+    }
+    if (normalized === "success") {
         return "border-green-500 text-green-400";
     }
     if (normalized === "pending") {
-        return "border-yellow-500 text-yellow-400";
+        return "border-white/30 text-white";
     }
-    if (normalized === "failed" || normalized === "cancelled" || normalized === "canceled") {
+    if (
+        normalized === "failed" ||
+        normalized === "cancelled" ||
+        normalized === "canceled"
+    ) {
         return "border-red-500 text-red-400";
     }
     return "border-white/30 text-white/70";
