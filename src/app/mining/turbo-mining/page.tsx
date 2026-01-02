@@ -279,8 +279,10 @@ const TurboMiningPage = () => {
         <div className="mt-20 flex flex-col items-center justify-center gap-4">
           <p className="text-3xl font-bold text-center">Generate</p>
           <p className="text-6xl md:text-9xl font-bold text-center">
-
             9 BTCY/<span className="text-3xl md:text-6xl font-bold">Hr</span>
+          </p>
+          <p className="mt-4 inline-flex items-center rounded-full border border-white/30 bg-white px-6 py-3 text-base font-semibold uppercase tracking-wide text-black shadow-lg">
+            6× Mining Speed. Faster performance for active users.
           </p>
           <ul className="mt-20 list-disc list-inside text-xl flex flex-col gap-6">
             <li>
