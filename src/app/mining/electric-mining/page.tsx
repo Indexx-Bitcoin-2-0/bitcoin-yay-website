@@ -31,8 +31,8 @@ const formatUsd = (value: number) =>
 const MONTHLY_PLAN_KEY = "electric";
 const WEEKLY_PLAN_KEY = "weeklyElectric";
 const PLAN_NAME = "Electric Power Mining";
-const PLAN_PRICE_MONTHLY = 30;
-const PLAN_PRICE_WEEKLY = 7.5; // Monthly price / 4
+const PLAN_PRICE_MONTHLY = 35;
+const PLAN_PRICE_WEEKLY = 10;
 
 const ElectricMiningPage = () => {
   const { user, isLoading } = useAuth();
@@ -165,7 +165,7 @@ const ElectricMiningPage = () => {
         planKey: getPlanKey(),
         metadata: {
           planName: getDisplayPlanName(),
-          speedBoost: "9 BTCY/h",
+          speedBoost: "3× mining speed",
           page: "electric-mining",
           duration: duration,
         },

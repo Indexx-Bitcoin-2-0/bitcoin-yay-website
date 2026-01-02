@@ -31,8 +31,8 @@ const formatUsd = (value: number) =>
 const MONTHLY_PLAN_KEY = "turbo";
 const WEEKLY_PLAN_KEY = "weeklyTurbo";
 const PLAN_NAME = "Turbo Power Mining";
-const PLAN_PRICE_MONTHLY = 90;
-const PLAN_PRICE_WEEKLY = 22.5; // Monthly price / 4
+const PLAN_PRICE_MONTHLY = 75;
+const PLAN_PRICE_WEEKLY = 20;
 
 const TurboMiningPage = () => {
   const { user, isLoading } = useAuth();
@@ -165,7 +165,7 @@ const TurboMiningPage = () => {
         planKey: getPlanKey(),
         metadata: {
           planName: getDisplayPlanName(),
-          speedBoost: "18 BTCY/h",
+          speedBoost: "6× mining speed",
           page: "turbo-mining",
           duration: duration,
         },

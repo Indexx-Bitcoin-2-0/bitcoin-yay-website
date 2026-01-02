@@ -43,7 +43,7 @@ const plans: Plan[] = [
     {
         key: "electric",
         name: "Electric Mining",
-        price: 30,
+        price: 35,
         btcPerHour: 4.5,
         hourlyEarnings: 0.45,
         features: [
@@ -57,7 +57,7 @@ const plans: Plan[] = [
     {
         key: "turbo",
         name: "Turbo Mining",
-        price: 90,
+        price: 75,
         btcPerHour: 9,
         hourlyEarnings: 0.9,
         features: [
@@ -72,7 +72,7 @@ const plans: Plan[] = [
     {
         key: "nuclear",
         name: "Nuclear Mining",
-        price: 180,
+        price: 100,
         btcPerHour: 13.5,
         hourlyEarnings: 1.35,
         features: [

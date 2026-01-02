@@ -31,8 +31,8 @@ const formatUsd = (value: number) =>
 const MONTHLY_PLAN_KEY = "nuclear";
 const WEEKLY_PLAN_KEY = "weeklyNuclear";
 const PLAN_NAME = "Nuclear Power Mining";
-const PLAN_PRICE_MONTHLY = 180;
-const PLAN_PRICE_WEEKLY = 45; // Monthly price / 4
+const PLAN_PRICE_MONTHLY = 100;
+const PLAN_PRICE_WEEKLY = 30;
 
 const NuclearMiningPage = () => {
   const { user, isLoading } = useAuth();
@@ -165,7 +165,7 @@ const NuclearMiningPage = () => {
         planKey: getPlanKey(),
         metadata: {
           planName: getDisplayPlanName(),
-          speedBoost: "27 BTCY/h",
+          speedBoost: "9× mining speed",
           page: "nuclear-mining",
           duration: duration,
         },
