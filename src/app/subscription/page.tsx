@@ -144,7 +144,7 @@ const getSupportedPaymentProvider = (method: PaymentMethod): PaymentProvider =>
     method === "paypal" || method === "stripe" ? method : "stripe";
 
 const SUBSCRIPTION_PAUSED_MESSAGE =
-    "Subscriptions via PayPal and Stripe are temporarily disabled. We will update this page once payments resume.";
+    " ";
 const formatDateTime = (value?: string) => {
     if (!value) return "—";
     const date = new Date(value);
