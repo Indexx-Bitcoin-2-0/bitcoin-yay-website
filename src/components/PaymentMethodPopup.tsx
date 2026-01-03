@@ -1,4 +1,4 @@
-"use client";
+ "use client";
 
 import React from "react";
 import Image from "next/image";
@@ -13,7 +13,6 @@ import AchIcon from "@/assets/images/popup/ach.svg";
 import CreditCardIcon from "@/assets/images/popup/creditCard.svg";
 
 export type PaymentMethod = "paypal" | "stripe" | "creditcard" | "ach" | "wire" | "zelle" | "tygapay" | "venmo";
-type PaymentProvider = "paypal" | "stripe";
 
 interface PaymentMethodPopupProps {
     isOpen: boolean;
@@ -23,6 +22,12 @@ interface PaymentMethodPopupProps {
     subscriptionAmount?: number;
 }
 
+const formatCurrency = (value: number) =>
+    value.toLocaleString("en-US", {
+        style: "currency",
+        currency: "USD",
+    });
+
 const PaymentMethodPopup: React.FC<PaymentMethodPopupProps> = ({
     isOpen,
     onClose,
@@ -30,6 +35,13 @@ const PaymentMethodPopup: React.FC<PaymentMethodPopupProps> = ({
     planName,
     subscriptionAmount,
 }) => {
+    const amountLabel =
+        subscriptionAmount !== undefined ? ` • ${formatCurrency(subscriptionAmount)}` : "";
+    const planLabel =
+        planName || subscriptionAmount !== undefined
+            ? `${planName ?? "Subscription"}${amountLabel}`
+            : null;
+
     const handlePaymentMethodClick = (method: PaymentMethod, disabled: boolean) => {
         if (disabled) return;
 
@@ -40,13 +52,13 @@ const PaymentMethodPopup: React.FC<PaymentMethodPopupProps> = ({
     const paymentMethods = [
         {
             id: "creditcard" as PaymentMethod,
-            name: "Credit Card",
-            description: "Subscriptions via Stripe/Credit Cards are temporarily paused.",
-            disabled: true,
+            name: "Credit Card (via PayPal)",
+            description: "Pay securely with your credit or debit card through PayPal.",
+            disabled: false,
             icon: (
                 <Image
                     src={CreditCardIcon}
-                    alt="PayPal"
+                    alt="Credit Card"
                     className="w-10 h-10 md:w-12 md:h-12 object-contain"
                 />
             ),
@@ -55,8 +67,8 @@ const PaymentMethodPopup: React.FC<PaymentMethodPopupProps> = ({
         {
             id: "paypal" as PaymentMethod,
             name: "PayPal",
-            description: "Subscriptions via PayPal are temporarily paused.",
-            disabled: true,
+            description: "Use your PayPal wallet, PayPal Credit, or linked cards.",
+            disabled: false,
             icon: (
                 <Image
                     src={PayPalIcon}
@@ -68,8 +80,8 @@ const PaymentMethodPopup: React.FC<PaymentMethodPopupProps> = ({
         {
             id: "stripe" as PaymentMethod,
             name: "Stripe",
-            description: "Subscriptions via Stripe are temporarily paused.",
-            disabled: true,
+            description: "Cards, wallets, Apple Pay, and Google Pay (powered by Stripe).",
+            disabled: false,
             icon: (
                 <Image
                     src={StripeIcon}
@@ -157,6 +169,11 @@ const PaymentMethodPopup: React.FC<PaymentMethodPopupProps> = ({
                 <p className="text-base md:text-lg text-gray-400 mb-8">
                     Choose how you'd like to pay for your subscription
                 </p>
+                {planLabel && (
+                    <p className="text-sm md:text-base text-tertiary text-center mb-6">
+                        {planLabel}
+                    </p>
+                )}
 
                 <div className="flex flex-col gap-4">
                     {paymentMethods.map((method) => (
