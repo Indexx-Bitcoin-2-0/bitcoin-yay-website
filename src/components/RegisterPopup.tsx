@@ -5,12 +5,15 @@ import Image from "next/image";
 import axios from "axios";
 import PopupComponent from "@/components/PopupComponent";
 import SetPasswordPopup from "@/components/SetPasswordPopup";
+import EmailVerificationPopup from "@/components/EmailVerificationPopup";
 import SuccessRegistrationPopup from "@/components/SuccessRegistrationPopup";
 import { useAuth } from "@/contexts/AuthContext";
 import { getGmailAliasInfo } from "@/lib/utils";
 import {
   GOOGLE_REGISTER_API_ROUTE,
   REGISTER_API_ROUTE,
+  SEND_OTP_API_ROUTE,
+  VERIFY_OTP_API_ROUTE,
   CHECK_EMAIL_FOR_REGISTRATION_API_ROUTE,
   CHECK_USERNAME_FOR_REGISTRATION_API_ROUTE,
 } from "@/routes";
@@ -40,21 +43,6 @@ interface GoogleTokenResponse {
   access_token: string;
 }
 
-const getInitialFormData = () => ({
-  firstName: "",
-  lastName: "",
-  username: "",
-  countryCode: "+1",
-  country: "United States",
-  phoneNumber: "",
-  email: "",
-  password: "",
-  confirmPassword: "",
-  referralCode: "",
-});
-
-type RegistrationFormData = ReturnType<typeof getInitialFormData>;
-
 const RegisterPopup: React.FC<RegisterPopupProps> = ({
   isOpen,
   onClose,
@@ -63,16 +51,28 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
   referralCode,
 }) => {
   const { login } = useAuth();
-  const [formData, setFormData] = useState<RegistrationFormData>(
-    getInitialFormData
-  );
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    username: "",
+    countryCode: "+1",
+    country: "United States",
+    phoneNumber: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    referralCode: "",
+  });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showCountryDropdown, setShowCountryDropdown] = useState(false);
   const [showSetPassword, setShowSetPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showEmailVerification, setShowEmailVerification] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [registrationEmail, setRegistrationEmail] = useState("");
+  const [registrationData, setRegistrationData] = useState<any>(null);
   const [isCheckingEmail, setIsCheckingEmail] = useState(false);
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
   const [emailAvailable, setEmailAvailable] = useState<boolean | null>(null);
@@ -252,20 +252,58 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
     setErrors({});
 
     if (validateForm()) {
-      const registrationData = {
-        firstName: formData.firstName.trim(),
-        lastName: formData.lastName.trim(),
-        username: formData.username.trim(),
-        countryCode: formData.countryCode,
-        country: formData.country,
-        phoneNumber: formData.phoneNumber.trim(),
-        email: formData.email.trim(),
-        password: formData.password,
-        confirmPassword: formData.confirmPassword,
-        referralCode: formData.referralCode.trim(),
-      };
+      try {
+        const registrationData = {
+          firstName: formData.firstName.trim(),
+          lastName: formData.lastName.trim(),
+          username: formData.username.trim(),
+          countryCode: formData.countryCode,
+          country: formData.country,
+          phoneNumber: formData.phoneNumber.trim(),
+          email: formData.email.trim(),
+          password: formData.password,
+          confirmPassword: formData.confirmPassword,
+          referralCode: formData.referralCode.trim(),
+        };
 
-      await registerAccount(registrationData);
+        // First, send OTP to email for verification
+        const otpResponse = await axios.post(SEND_OTP_API_ROUTE, {
+          email: formData.email.trim(),
+          type: "New Register",
+        });
+
+        console.log("register otpResponse", otpResponse);
+
+        if (otpResponse.status === 200) {
+          // Store registration data and email for verification
+          setRegistrationEmail(formData.email.trim());
+          setRegistrationData(registrationData);
+
+          // Show email verification popup
+          setShowEmailVerification(true);
+        } else {
+          setErrors({
+            general:
+              otpResponse?.data?.message ||
+              otpResponse?.data?.data?.message ||
+              otpResponse?.data?.data ||
+              "Failed to send verification code. Please try again.",
+          });
+        }
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          const errorMessage =
+            error.response?.data?.data ||
+            error.response?.data?.data?.message ||
+            error.response?.data?.message ||
+            "Failed to send verification code. Please try again.";
+          setErrors({ general: errorMessage });
+        } else {
+          setErrors({
+            general: "Failed to send verification code. Please try again.",
+          });
+        }
+      }
     }
 
     setIsSubmitting(false);
@@ -380,22 +418,18 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
     setShowSetPassword(false);
   };
 
-  const resetForm = () => {
-    setFormData(getInitialFormData());
-    setEmailAvailable(null);
-    setUsernameAvailable(null);
-    setErrors({});
-  };
-
-  const registerAccount = async (registrationData: RegistrationFormData) => {
+  // Email verification handlers
+  const handleEmailVerified = async () => {
     try {
       const response = await axios.post(REGISTER_API_ROUTE, registrationData);
 
       if (response.status === 200 || response.status === 201) {
+        // Extract user data from API response
         const apiData = response.data.data || response.data;
+
         const userData = {
-          email: registrationData.email,
-          name: `${registrationData.firstName} ${registrationData.lastName}`,
+          email: registrationEmail,
+          name: `${formData.firstName} ${formData.lastName}`,
           access_token:
             apiData.access_token || "temp-access-token-" + Date.now(),
           refresh_token:
@@ -408,14 +442,35 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
         login(userData);
         onClose();
         setShowSuccessPopup(true);
-        resetForm();
+
+        // Reset form
+        setFormData({
+          firstName: "",
+          lastName: "",
+          username: "",
+          countryCode: "+1",
+          country: "United States",
+          phoneNumber: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+          referralCode: "",
+        });
+        setRegistrationEmail("");
+        setRegistrationData(null);
+        setShowEmailVerification(false);
       } else {
+        // Close verification popup and show error on registration popup
+        setShowEmailVerification(false);
         setErrors({
           general: "Registration failed. Please try again.",
         });
       }
     } catch (error: unknown) {
       console.error("Registration error:", error);
+
+      // Close verification popup and show error on registration popup
+      setShowEmailVerification(false);
 
       if (axios.isAxiosError(error)) {
         const errorMessage =
@@ -428,6 +483,46 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
         setErrors({ general: "Registration failed. Please try again." });
       }
     }
+  };
+
+  const handleResendRegistrationCode = async () => {
+    try {
+      const response = await axios.post(SEND_OTP_API_ROUTE, {
+        email: registrationEmail,
+        type: "New Register",
+      });
+
+      if (response.status === 200) {
+        console.log("Verification code resent to", registrationEmail);
+      } else {
+        setErrors({
+          general:
+            response?.data?.message ||
+            response?.data?.data?.message ||
+            response?.data?.data ||
+            "Failed to resend verification code. Please try again.",
+        });
+      }
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        const errorMessage =
+          error.response?.data?.data ||
+          error.response?.data?.data?.message ||
+          error.response?.data?.message ||
+          "Failed to resend verification code. Please try again.";
+        setErrors({ general: errorMessage });
+      } else {
+        setErrors({
+          general: "Failed to send verification code. Please try again.",
+        });
+      }
+    }
+  };
+
+  const handleCloseEmailVerification = () => {
+    setShowEmailVerification(false);
+    setRegistrationEmail("");
+    setRegistrationData(null);
   };
 
   const handleCloseSuccessPopup = () => {
@@ -838,6 +933,16 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
         onClose={handleCloseSetPassword}
         onPasswordSet={handlePasswordSet}
         onSkip={handleSkipPassword}
+      />
+
+      {/* EmailVerificationPopup - shown after registration */}
+      <EmailVerificationPopup
+        isOpen={showEmailVerification}
+        onClose={handleCloseEmailVerification}
+        email={registrationEmail}
+        onVerified={handleEmailVerified}
+        onResendCode={handleResendRegistrationCode}
+        verificationApiRoute={VERIFY_OTP_API_ROUTE}
       />
 
       {/* SuccessRegistrationPopup - shown after successful registration */}
