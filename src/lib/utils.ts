@@ -79,8 +79,10 @@ export function extractApiMessage(payload: any): string | undefined {
   if (payload == null) return undefined;
   if (typeof payload === "string") return payload;
   if (typeof payload.message === "string") return payload.message;
+  if (typeof payload.error === "string") return payload.error;
   if (typeof payload.data === "string") return payload.data;
   if (payload.data && typeof payload.data.message === "string") return payload.data.message;
+  if (payload.data && typeof payload.data.error === "string") return payload.data.error;
   if (Array.isArray(payload.errors) && payload.errors.length) {
     const first = payload.errors[0];
     return (first?.message || first?.msg || String(first)) as string;

@@ -20,6 +20,7 @@ import GoogleRegisterButtonImage from "@/assets/images/buttons/google-button.web
 import CustomButton2 from "@/components/CustomButton2";
 import { ChevronDown, Check, Eye, EyeOff } from "lucide-react";
 import { useGoogleLogin } from "@react-oauth/google";
+import { extractApiMessage } from "@/lib/utils";
 // import { extractApiMessage, normalizeErrorMessage } from "@/lib/utils";
 
 interface RegisterPopupProps {
@@ -351,7 +352,7 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
           const errorMessage =
-            error.response?.data?.message ||
+            extractApiMessage(error.response?.data) ||
             "Google signup failed. Please try again.";
           setErrors({ general: errorMessage });
         } else {
@@ -419,9 +420,7 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
 
       if (axios.isAxiosError(error)) {
         const errorMessage =
-          error.response?.data?.data ||
-          error.response?.data?.data?.message ||
-          error.response?.data?.message ||
+          extractApiMessage(error.response?.data) ||
           "Registration failed. Please try again.";
         setErrors({ general: errorMessage });
       } else {
@@ -777,7 +776,7 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
               >
                 <CustomButton2
                   image={RegisterButtonImage}
-                  text={""}
+                  text={"Register"}
                   link="#"
                   imageStyling="w-30"
                 />

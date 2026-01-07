@@ -4,12 +4,13 @@ import React, { useState } from "react";
 import axios from "axios";
 import PopupComponent from "@/components/PopupComponent";
 import { InputOTP } from "@/components/ui/input-otp";
-import SendButtonImage from "@/assets/images/buttons/send-button.webp";
+import SubmitButtonImage from "@/assets/images/buttons/submit-button.webp";
 import CustomButton2 from "@/components/CustomButton2";
 import {
   FORGOT_PASSWORD_API_ROUTE,
   FORGOT_PASSWORD_VERIFY_API_ROUTE,
 } from "@/routes";
+import { extractApiMessage } from "@/lib/utils";
 
 interface EmailVerificationPopupProps {
   isOpen: boolean;
@@ -65,8 +66,7 @@ const EmailVerificationPopup: React.FC<EmailVerificationPopupProps> = ({
 
       if (axios.isAxiosError(error)) {
         const errorMessage =
-          error.response?.data?.data?.message ||
-          error.response?.data?.message ||
+          extractApiMessage(error.response?.data) ||
           "Invalid verification code. Please try again.";
         setError(errorMessage);
       } else {
@@ -96,8 +96,7 @@ const EmailVerificationPopup: React.FC<EmailVerificationPopupProps> = ({
 
       if (axios.isAxiosError(error)) {
         const errorMessage =
-          error.response?.data?.data?.message ||
-          error.response?.data?.message ||
+          extractApiMessage(error.response?.data) ||
           "Failed to resend code. Please try again.";
         setError(errorMessage);
       } else {
@@ -161,7 +160,7 @@ const EmailVerificationPopup: React.FC<EmailVerificationPopupProps> = ({
               }
             >
               <CustomButton2
-                image={SendButtonImage}
+                image={SubmitButtonImage}
                 text={""}
                 link="#"
                 imageStyling="w-30"

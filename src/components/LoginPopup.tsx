@@ -11,6 +11,7 @@ import RegisterPopup from "@/components/RegisterPopup";
 import SetPasswordPopup from "@/components/SetPasswordPopup";
 import { useAuth } from "@/contexts/AuthContext";
 import { GOOGLE_LOGIN_API_ROUTE, LOGIN_API_ROUTE } from "@/routes";
+import { extractApiMessage } from "@/lib/utils";
 
 import MainLogo from "@/assets/images/main-logo.svg";
 import LoginButtonImage from "@/assets/images/buttons/login-button.webp";
@@ -123,10 +124,8 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
         if (axios.isAxiosError(error)) {
           console.log("Login error:", error);
           const errorMessage =
-            error.response?.data?.data?.message ||
-            error.response?.data?.message ||
+            extractApiMessage(error.response?.data) ||
             "Login failed. Please try again.";
-          console.log("Login error message:", errorMessage);
           setErrors({ general: errorMessage });
         } else {
           setErrors({ general: "Login failed. Please try again." });
@@ -188,9 +187,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
       } catch (error: unknown) {
         if (axios.isAxiosError(error)) {
           const errorMessage =
-            error.response?.data?.data ||
-            error.response?.data?.data?.message ||
-            error.response?.data?.message ||
+            extractApiMessage(error.response?.data) ||
             "Google login failed. Please try again.";
           setErrors({ general: errorMessage });
         } else {
