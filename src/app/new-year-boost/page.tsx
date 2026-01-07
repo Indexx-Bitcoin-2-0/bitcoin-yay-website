@@ -1,31 +1,120 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
-
+import { useAuth } from "@/contexts/AuthContext";
+import LoginPopup from "@/components/LoginPopup";
 import PromotionalArt from "@/assets/images/btcy-airdrop/btcyairdroppopup.svg";
 import CartButtonImage from "@/assets/images/buttons/cart-button.webp";
 import CustomButton2 from "@/components/CustomButton2";
 import SalesBackground from '@/assets/images/salesCoinBG.png';
+import {
+    purchaseSubscription,
+    PaymentProvider,
+} from "@/lib/subscriptions";
+import { PROVIDER_LABELS } from "@/constants/paymentProviders";
+
 interface BoostPlan {
     id: string;
     title: string;
     price: number;
     days: number;
+    planKey: string;
 }
 
 const plans: BoostPlan[] = [
-    { id: "1-day", title: "1 Day Plan", price: 5, days: 1 },
-    { id: "3-days", title: "3 Days Plan", price: 10, days: 3 },
-    { id: "7-days", title: "7 Days Plan", price: 20, days: 7 },
+    { id: "1-day", title: "1 Day Plan", price: 5, days: 1, planKey: "event15x1day" },
+    { id: "3-days", title: "3 Days Plan", price: 10, days: 3, planKey: "event15x3day" },
+    { id: "7-days", title: "7 Days Plan", price: 20, days: 7, planKey: "event15x7day" },
 ];
 
+const PROVIDER_OPTIONS: PaymentProvider[] = ["stripe", "paypal"];
+
 const NewYearBoostPage = () => {
-    const handleBuySubscription = (plan: BoostPlan) => {
-        // TODO: Implement purchase logic
-        console.log("Buying subscription for:", plan);
-        // You can redirect to payment page or open a popup here
+    const { user } = useAuth();
+    const [selectedProvider, setSelectedProvider] = useState<PaymentProvider>("stripe");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
+    const [feedback, setFeedback] = useState<{
+        type: "info" | "error";
+        message: string;
+    } | null>(null);
+
+    const handleBuySubscription = async (plan: BoostPlan) => {
+        if (isSubmitting) {
+            return;
+        }
+
+        if (!user?.email) {
+            setFeedback({
+                type: "error",
+                message: "Please log in to purchase a boost.",
+            });
+            setIsLoginPopupOpen(true);
+            return;
+        }
+
+        setFeedback(null);
+        setIsSubmitting(true);
+
+        try {
+            const payload = {
+                email: user.email,
+                provider: selectedProvider,
+                planKey: plan.planKey,
+                metadata: {
+                    planName: plan.title,
+                    durationDays: plan.days,
+                    speedMultiplier: "15x",
+                    page: "new-year-boost",
+                    price: plan.price,
+                },
+            };
+
+            const result = await purchaseSubscription(payload);
+            const redirectUrl =
+                result.sessionUrl ??
+                result.approvalUrl ??
+                result.checkoutUrl ??
+                result.redirectUrl;
+
+            if (redirectUrl && typeof window !== "undefined") {
+                window.location.href = redirectUrl;
+                setFeedback({
+                    type: "info",
+                    message: `Redirecting to ${PROVIDER_LABELS[selectedProvider]} checkout...`,
+                });
+            } else {
+                const fallbackMessageParts: string[] = [];
+                if (result.sessionId) {
+                    fallbackMessageParts.push(`Session ID: ${result.sessionId}.`);
+                }
+                fallbackMessageParts.push(
+                    "Check your email or the provider dashboard for next steps."
+                );
+                setFeedback({
+                    type: "info",
+                    message: `Subscription request created. ${fallbackMessageParts.join(
+                        " "
+                    )}`,
+                });
+            }
+        } catch (error) {
+            setFeedback({
+                type: "error",
+                message:
+                    error instanceof Error
+                        ? error.message
+                        : "Unable to start the subscription purchase.",
+            });
+        } finally {
+            setIsSubmitting(false);
+        }
     };
+
+    const handleCloseLoginPopup = () => setIsLoginPopupOpen(false);
+    const handleLoginSuccess = () => setIsLoginPopupOpen(false);
+    const handleRegisterClick = () => setIsLoginPopupOpen(false);
 
     return (
         <div className="mt-40 relative overflow-hidden">
@@ -111,6 +200,35 @@ const NewYearBoostPage = () => {
                     </p>
                 </div>
 
+                <div className="flex items-center justify-center gap-3 mb-6">
+                    {PROVIDER_OPTIONS.map((provider) => (
+                        <button
+                            key={provider}
+                            type="button"
+                            onClick={() => setSelectedProvider(provider)}
+                            className={`px-4 py-2 rounded-full text-sm md:text-base border transition ${selectedProvider === provider
+                                ? "border-primary bg-primary/10 text-primary"
+                                : "border-white/30 text-white/60"
+                                }`}
+                        >
+                            {PROVIDER_LABELS[provider]}
+                        </button>
+                    ))}
+                </div>
+
+                {feedback && (
+                    <div className="mb-6">
+                        <p
+                            className={`text-center text-sm md:text-base font-medium ${feedback.type === "error"
+                                ? "text-red-500"
+                                : "text-green-400"
+                                }`}
+                        >
+                            {feedback.message}
+                        </p>
+                    </div>
+                )}
+
                 {/* Plan Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 lg:gap-10 max-w-6xl mx-auto relative z-10">
                     {plans.map((plan) => (
@@ -142,15 +260,22 @@ const NewYearBoostPage = () => {
                                     text="Buy Subscription"
                                     onClick={() => handleBuySubscription(plan)}
                                     imageStyling="w-14 md:w-18 lg:w-20"
+                                    disabled={isSubmitting}
                                 />
                             </div>
                         </div>
                     ))}
                 </div>
             </div>
+
+            <LoginPopup
+                isOpen={isLoginPopupOpen}
+                onClose={handleCloseLoginPopup}
+                onLoginSuccess={handleLoginSuccess}
+                onRegisterClick={handleRegisterClick}
+            />
         </div>
     );
 };
 
 export default NewYearBoostPage;
-

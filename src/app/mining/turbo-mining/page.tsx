@@ -28,16 +28,17 @@ const formatUsd = (value: number) =>
     currency: "USD",
   });
 
-const PLAN_KEY = "turbo";
+const MONTHLY_PLAN_KEY = "turbo";
+const WEEKLY_PLAN_KEY = "weeklyTurbo";
 const PLAN_NAME = "Turbo Power Mining";
-const PLAN_PRICE_MONTHLY = 90;
-const PLAN_PRICE_WEEKLY = 22.5; // Monthly price / 4
+const PLAN_PRICE_MONTHLY = 75;
+const PLAN_PRICE_WEEKLY = 20;
 
 const TurboMiningPage = () => {
   const { user, isLoading } = useAuth();
   const [duration, setDuration] = useState<"weekly" | "monthly">("monthly");
   const [isDurationDropdownOpen, setIsDurationDropdownOpen] = useState(false);
-  const [couponCode, setCouponCode] = useState("BTCY10");
+  const [couponCode, setCouponCode] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const durationDropdownRef = useRef<HTMLDivElement>(null);
   const [feedback, setFeedback] = useState<{
@@ -52,6 +53,11 @@ const TurboMiningPage = () => {
     useState<string | null>(null);
   const [couponValidationLoading, setCouponValidationLoading] =
     useState(false);
+  const getPlanKey = () =>
+    duration === "weekly" ? WEEKLY_PLAN_KEY : MONTHLY_PLAN_KEY;
+
+  const getDisplayPlanName = () =>
+    duration === "weekly" ? `${PLAN_NAME} (Weekly)` : PLAN_NAME;
 
   const handleCouponInputChange = (value: string) => {
     setCouponCode(value);
@@ -71,7 +77,7 @@ const TurboMiningPage = () => {
 
     setCouponValidationLoading(true);
     try {
-      const validation = await validateCoupon(PLAN_KEY, trimmedCoupon);
+      const validation = await validateCoupon(getPlanKey(), trimmedCoupon);
       setCouponValidationStatus("valid");
       setCouponValidationMessage(
         `Coupon applied (${validation.couponCode}): ${validation.couponDescription ??
@@ -156,10 +162,10 @@ const TurboMiningPage = () => {
       const payload: SubscriptionPurchasePayload = {
         email: user.email,
         provider,
-        planKey: PLAN_KEY,
+        planKey: getPlanKey(),
         metadata: {
-          planName: PLAN_NAME,
-          speedBoost: "18 BTCY/h",
+          planName: getDisplayPlanName(),
+          speedBoost: "6× mining speed",
           page: "turbo-mining",
           duration: duration,
         },
@@ -238,8 +244,8 @@ const TurboMiningPage = () => {
   };
 
   const handlePaymentMethodSelect = (method: PaymentMethod) => {
-    // Map to supported providers (backend may only support paypal/stripe)
-    const supportedMethod: PaymentProvider = method === "paypal" || method === "stripe" ? method : "stripe";
+    const supportedMethod: PaymentProvider =
+      method === "stripe" ? "stripe" : "paypal";
     void startSubscription(supportedMethod);
   };
 
@@ -273,8 +279,10 @@ const TurboMiningPage = () => {
         <div className="mt-20 flex flex-col items-center justify-center gap-4">
           <p className="text-3xl font-bold text-center">Generate</p>
           <p className="text-6xl md:text-9xl font-bold text-center">
-
             9 BTCY/<span className="text-3xl md:text-6xl font-bold">Hr</span>
+          </p>
+          <p className="mt-4 inline-flex items-center rounded-full border border-white/30 bg-white px-6 py-3 text-base font-semibold uppercase tracking-wide text-black shadow-lg">
+            6× Mining Speed. Faster performance for active users.
           </p>
           <ul className="mt-20 list-disc list-inside text-xl flex flex-col gap-6">
             <li>
@@ -334,7 +342,7 @@ const TurboMiningPage = () => {
             </label>
             <input
               id="turbo-coupon"
-              placeholder="e.g., BTCY10"
+              placeholder="e.g., BTCYNEWYEAR"
               value={couponCode}
               onChange={(event) => handleCouponInputChange(event.target.value)}
               onBlur={handleCouponBlur}
