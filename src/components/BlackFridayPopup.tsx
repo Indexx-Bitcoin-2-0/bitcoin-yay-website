@@ -33,19 +33,19 @@ const BlackFridayPopup: React.FC<BlackFridayPopupProps> = ({
                 {/* Top Section - Christmas Icon and Heading */}
                 <div className="flex items-start justify-center gap-3 mb-4 md:mb-6">
                     {/* Christmas Icon */}
-                    <div className="flex-shrink-0 mt-1">
+                    {/* <div className="flex-shrink-0 mt-1">
                         <Image
                             src={SalesPageArt}
                             alt="Christmas Icon"
                             className="w-12 h-12 md:w-16 md:h-16 object-contain"
                         />
-                    </div>
+                    </div> */}
                     {/* Heading */}
                     <div className="flex flex-col items-start">
                         <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-primary mb-2">
-                            CHRISTMAS SALE - LIMITED •
+                            NEW YEAR SALE - LIMITED
                         </h1>
-                        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary">
+                        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary text-center">
                             +10% Bonus
                         </h2>
                     </div>

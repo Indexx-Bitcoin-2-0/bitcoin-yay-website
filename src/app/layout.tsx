@@ -64,8 +64,8 @@ export default function RootLayout({
             <Suspense fallback={null}>
               <SignInTokenHandler />
             </Suspense>
-            {/* <BlackFridayPopupHandler /> */}
-            <NewYearAirdropPopupHandler />
+            <BlackFridayPopupHandler />
+            {/* <NewYearAirdropPopupHandler /> */}
             <ConditionalLayout>{children}</ConditionalLayout>
           </AuthProvider>
         </GoogleOAuthProvider>
