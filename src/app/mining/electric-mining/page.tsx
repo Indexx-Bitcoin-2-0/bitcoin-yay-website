@@ -281,10 +281,10 @@ const ElectricMiningPage = () => {
           <p className="text-6xl md:text-9xl font-bold text-center">
             4.5 BTCY/<span className="text-3xl md:text-6xl font-bold">Hr</span>
           </p>
-          <p className="mt-4 inline-flex items-center rounded-full border border-white/30 bg-white px-6 py-3 text-base font-semibold uppercase tracking-wide text-black shadow-lg">
+          <p className="mt-4 inline-flex items-center text-base font-semibold uppercase tracking-wide text-primary">
             3× Mining Speed. Faster performance for active users.
           </p>
-          <ul className="mt-20 list-disc list-inside text-xl flex flex-col gap-6">
+          <ul className="mt-20 list-disc list-inside text-xl flex flex-col gap-6 max-w-[400px]">
             <li><span className="font-bold line-through">
               {duration === "weekly" ? "$25" : "$100"}
             </span> $ {currentPrice.toFixed(duration === "weekly" ? 2 : 0)}/{priceLabel} subscription fee</li>
@@ -292,12 +292,13 @@ const ElectricMiningPage = () => {
             <li>~4.5 BTCY/hour ~ $ 0.45</li>
             <li className="text-primary">Referral Bonuses</li>
             <li>Priority Mining Support</li>
+            <li>Enjoy 3× more tokens than the 1.5 BTCY free plan for faster overall growth.</li>
           </ul>
         </div>
         <div className="flex flex-col items-center gap-6 w-full">
           <div className="w-full max-w-md text-left" ref={durationDropdownRef}>
             <label className="block text-sm text-tertiary mb-2" htmlFor="electric-duration">
-              Duration
+              Plan Type
             </label>
             <div className="relative">
               <button
@@ -340,7 +341,7 @@ const ElectricMiningPage = () => {
             </label>
             <input
               id="electric-coupon"
-              placeholder="e.g., BTCYNEWYEAR"
+              placeholder="e.g., BTCYNEWYEAR (Optional)"
               value={couponCode}
               onChange={(event) => handleCouponInputChange(event.target.value)}
               onBlur={handleCouponBlur}

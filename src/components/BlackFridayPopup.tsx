@@ -72,9 +72,6 @@ const BlackFridayPopup: React.FC<BlackFridayPopupProps> = ({
 
                 {/* Christmas Sale Information */}
                 <div className="mb-6 md:mb-8">
-                    <p className="text-sm md:text-base text-white mb-2">
-                        Christmas Sale: Valid till 28th December
-                    </p>
                     <p className="text-sm md:text-base text-white">
                         Skip Daily Mining - Get BTCY Instantly
                     </p>

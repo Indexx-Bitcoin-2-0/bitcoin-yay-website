@@ -220,34 +220,35 @@ const header_data = [
       },
     ],
   },
-  {
-    mainTextDesktop: "DAO",
-    mainTextMob: "DAO",
-    active: false,
-    href: "/dao",
-    hasMegaDrop: true,
-    dropDownContent: [
-      {
-        heading: "Explore bitcoin-yay DAO",
-        mainList: true,
-        links: [
-          {
-            name: "Proposal Studio",
-            href: "/dao",
-          },
-        ],
-      },
-      {
-        heading: "Support",
-        links: [
-          {
-            name: "Contact Us",
-            href: "/support",
-          },
-        ],
-      },
-    ],
-  },
+
+  // {
+  //   mainTextDesktop: "DAO",
+  //   mainTextMob: "DAO",
+  //   active: false,
+  //   href: "/dao",
+  //   hasMegaDrop: true,
+  //   dropDownContent: [
+  //     {
+  //       heading: "Explore bitcoin-yay DAO",
+  //       mainList: true,
+  //       links: [
+  //         {
+  //           name: "Proposal Studio",
+  //           href: "/dao",
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       heading: "Support",
+  //       links: [
+  //         {
+  //           name: "Contact Us",
+  //           href: "/support",
+  //         },
+  //       ],
+  //     },
+  //   ],
+  // },
 
   {
     mainTextDesktop: "Eco",
@@ -358,23 +359,23 @@ const header_data = [
           },
         ],
       },
-      {
-        heading: "Choose Plans",
-        links: [
-          {
-            name: "Snatch Mining",
-            href: `/mining/free-mining`,
-          },
-          {
-            name: "Power Mining",
-            href: `/mining/power-mining`,
-          },
-          {
-            name: "Quantum Mining",
-            href: `/mining/quantum-mining`,
-          },
-        ],
-      },
+      // {
+      //   heading: "Choose Plans",
+      //   links: [
+      //     {
+      //       name: "Snatch Mining",
+      //       href: `/mining/free-mining`,
+      //     },
+      //     {
+      //       name: "Power Mining",
+      //       href: `/mining/power-mining`,
+      //     },
+      //     {
+      //       name: "Quantum Mining",
+      //       href: `/mining/quantum-mining`,
+      //     },
+      //   ],
+      // },
       {
         heading: "Action",
         links: [
@@ -399,7 +400,13 @@ const header_data = [
       },
     ],
   },
-
+  {
+    mainTextDesktop: "Subscription",
+    mainTextMob: "Subscription",
+    active: false,
+    href: "/mining/power-mining",
+    hasMegaDrop: false,
+  },
   {
     mainTextDesktop: "WIBS",
     mainTextMob: "WIBS",

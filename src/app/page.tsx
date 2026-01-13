@@ -66,7 +66,7 @@ import UserReviewCards from "@/components/UserReviewCards";
 import DisclaimerComponent from "@/components/DisclaimerComponent";
 import CustomButton2 from "@/components/CustomButton2";
 import NewYearPromotionalBanner from "@/components/NewYearPromotionalBanner";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
 const CustomCard = ({
@@ -116,6 +116,13 @@ export default function Home() {
   const [btcyPrice, setBtcyPrice] = useState<number | null>(null);
 
   const [isPowerMiningActive, setIsPowerMiningActive] = useState(false);
+  const powerMiningRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isPowerMiningActive) {
+      powerMiningRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [isPowerMiningActive]);
 
   useEffect(() => {
     const fetchPrices = async () => {
@@ -369,7 +376,7 @@ export default function Home() {
         </Link>
         {isPowerMiningActive && (
           <>
-            <div className="w-full text-center mt-20 mb-10">
+            <div ref={powerMiningRef} className="w-full text-center mt-20 mb-10">
               <h2 className="text-3xl md:text-4xl font-bold text-white">
                 3 Subscriptions Power Mining Plans
               </h2>
