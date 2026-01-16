@@ -81,6 +81,8 @@ export interface MiningSubscriptionPlan {
 export interface ChangePlanPayload {
   subscriptionId: string;
   newPlanKey: "electric" | "turbo" | "nuclear" | "free" | string;
+  email: string;
+  provider: PaymentProvider;
 }
 
 export interface ChangePlanResponse {

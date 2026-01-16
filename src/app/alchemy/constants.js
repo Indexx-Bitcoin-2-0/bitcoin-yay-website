@@ -4,16 +4,12 @@ export const SPECIAL_ALCHEMY_LIMIT_VALUE = 10000;
 const SPECIAL_ALCHEMY_LIMIT_EMAILS = new Set(
   [
     "muhdbalaweenty712@gmail.com",
+    "kuswantokus884@gmail.com",
     "sunkuomkarsai@gmail.com",
     "sunkuomkarsai5@gmail.com",
-    "ekopastikaya95@gmail.com",
-    "rongkomodo1990@gmail.com",
-    "simonazzahraeva1@gmail.com",
-    "gulraiz726@gmail.com",
+  
     "usmanwunti2020@gmail.com",
-    "alwinwise4@gmail.com",
-    "sujektogayam@gmail.com",
-    "gbevougatto@gmail.com",
+    
     "issaumer125@gmail.com",
   ].map((email) => email.toLowerCase())
 );
