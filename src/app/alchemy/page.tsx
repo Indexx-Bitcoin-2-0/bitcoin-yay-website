@@ -352,7 +352,7 @@ export default function AlchemyPage() {
         <div className="px-4 mt-2 text-xs font-bold text-primary max-w-250">
           1 Bitcoin = 1 Million bitcoin-yay
         </div>
-        <div className="mt-8 w-full max-w-3xl px-4">
+        {/* <div className="mt-8 w-full max-w-3xl px-4">
           <div className="flex items-center justify-between text-[11px] uppercase text-tertiary">
             <span>Liquidity pool</span>
             <span>{liquidityProgressPercent}% funded</span>
@@ -382,7 +382,7 @@ export default function AlchemyPage() {
               {poolStatusMessage}
             </p>
           ) : null}
-        </div>
+        </div> */}
       </div>
 
       <div className="flex justify-center items-center mt-40">
