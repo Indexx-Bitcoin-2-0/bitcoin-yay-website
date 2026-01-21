@@ -59,6 +59,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
   const [recaptchaToken, setRecaptchaToken] = useState("");
   const [recaptchaError, setRecaptchaError] = useState("");
   const captchaRef = useRef<ReCAPTCHA | null>(null);
+  const isLoginButtonDisabled = isSubmitting || !recaptchaToken;
 
   const validateForm = (): boolean => {
     const newErrors: { email?: string; password?: string } = {};
@@ -156,6 +157,14 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
       resetCaptcha();
       setIsSubmitting(false);
     }
+  };
+
+  const handleLoginButtonClick: React.MouseEventHandler<HTMLDivElement> = (e) => {
+    e.preventDefault();
+    if (isLoginButtonDisabled) {
+      return;
+    }
+    submitLogin();
   };
 
   const handleGoogleLogin = useGoogleLogin({
@@ -410,7 +419,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
             <div className="mb-4 flex justify-center">
               <ReCAPTCHA
                 sitekey={RECAPTCHA_SITE_KEY}
-                onChange={(token) => {
+                onChange={(token:any) => {
                   setRecaptchaToken(token ?? "");
                   if (token) {
                     setRecaptchaError("");
@@ -429,26 +438,14 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
 
             {/* Login Button */}
             <div className="flex justify-center mb-4">
-              <div
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (!isSubmitting) {
-                    submitLogin();
-                  }
-                }}
-                className={
-                  isSubmitting
-                    ? "opacity-50 cursor-not-allowed"
-                    : "cursor-pointer"
-                }
-              >
-                <CustomButton2
-                  image={LoginButtonImage}
-                  text={""}
-                  link="#"
-                  imageStyling="w-30"
-                />
-              </div>
+              <CustomButton2
+                image={LoginButtonImage}
+                text={""}
+                imageStyling="w-30"
+                onClick={handleLoginButtonClick}
+                disabled={isLoginButtonDisabled}
+                className="mb-6"
+              />
             </div>
 
             {/* Divider */}

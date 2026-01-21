@@ -85,6 +85,7 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
   const [recaptchaToken, setRecaptchaToken] = useState("");
   const [recaptchaError, setRecaptchaError] = useState("");
   const recaptchaRef = useRef<ReCAPTCHA | null>(null);
+  const isRegisterButtonDisabled = isSubmitting || !recaptchaToken;
 
   // Update referral code when referralCode prop changes
   useEffect(() => {
@@ -337,6 +338,16 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
       setIsSubmitting(false);
       resetRecaptcha();
     }
+  };
+
+  const handleRegisterButtonClick: React.MouseEventHandler<HTMLDivElement> = (
+    e
+  ) => {
+    e.preventDefault();
+    if (isRegisterButtonDisabled) {
+      return;
+    }
+    submitForm();
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -903,26 +914,14 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
 
             {/* Register Button */}
             <div className="flex justify-center mb-4 mt-10">
-              <div
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (!isSubmitting) {
-                    submitForm();
-                  }
-                }}
-                className={
-                  isSubmitting
-                    ? "opacity-50 cursor-not-allowed mb-6"
-                    : "cursor-pointer mb-6"
-                }
-              >
-                <CustomButton2
-                  image={RegisterButtonImage}
-                  text={"Register"}
-                  link="#"
-                  imageStyling="w-30"
-                />
-              </div>
+              <CustomButton2
+                image={RegisterButtonImage}
+                text={"Register"}
+                imageStyling="w-30"
+                onClick={handleRegisterButtonClick}
+                disabled={isRegisterButtonDisabled}
+                className="mb-6"
+              />
             </div>
 
             {/* Divider */}
