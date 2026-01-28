@@ -649,66 +649,36 @@ const Navbar: React.FC = () => {
   // Check if popup should be shown
   useEffect(() => {
     // Don't show popup on /download, /sales, /quantum-sale, or /power-mining-funnel pages
-    if (currentPath === "/download" || currentPath === "/sales" || currentPath === "/quantum-sale" || currentPath === "/power-mining-funnel") {
+    if (
+      currentPath === "/download" ||
+      currentPath === "/sales" ||
+      currentPath === "/quantum-sale" ||
+      currentPath === "/power-mining-funnel"
+    ) {
       setIsPopupOpen(false);
       return;
     }
 
     const checkPopupTiming = () => {
-      // First check if Black Friday popup should show
-      const blackFridayPopupClosed = localStorage.getItem("blackFridayPopupClosed");
-      const now = new Date().getTime();
-
-      let shouldShowBlackFriday = false;
-      if (!blackFridayPopupClosed) {
-        shouldShowBlackFriday = true;
-      } else {
-        const lastClosedTime = parseInt(blackFridayPopupClosed);
-        const timeDifference = now - lastClosedTime;
-        const thirtyMinutesInMs = 30 * 60 * 1000; // 30 minutes in milliseconds
-        if (timeDifference >= thirtyMinutesInMs) {
-          shouldShowBlackFriday = true;
-        }
+      const lastPopupClosed = localStorage.getItem("bitcoinYayPopupLastClosed");
+      if (!lastPopupClosed) {
+        setIsPopupOpen(true);
+        return;
       }
 
-      // Only show default popup if Black Friday popup should NOT show
-      if (!shouldShowBlackFriday) {
-        const lastPopupClosed = localStorage.getItem("bitcoinYayPopupLastClosed");
-        if (!lastPopupClosed) {
-          setIsPopupOpen(true);
-        } else {
-          const lastClosedTime = parseInt(lastPopupClosed);
-          const timeDifference = now - lastClosedTime;
-          const thirtyMinutesInMs = 30 * 60 * 1000; // 30 minutes in milliseconds
+      const now = Date.now();
+      const thirtyMinutesInMs = 30 * 60 * 1000;
+      const lastClosedTime = parseInt(lastPopupClosed);
 
-          if (timeDifference >= thirtyMinutesInMs) {
-            setIsPopupOpen(true);
-          }
-        }
-      } else {
-        // Black Friday popup should show, so don't show default popup
-        setIsPopupOpen(false);
+      if (now - lastClosedTime >= thirtyMinutesInMs) {
+        setIsPopupOpen(true);
       }
     };
 
-    // Delay to check after Black Friday popup handler has run
-    const timer = setTimeout(() => {
-      checkPopupTiming();
-    }, 600);
-
-    // Listen for Black Friday popup close event
-    const handleBlackFridayClosed = () => {
-      // When Black Friday popup closes, check if default popup should show
-      setTimeout(() => {
-        checkPopupTiming();
-      }, 100);
-    };
-
-    window.addEventListener("blackFridayPopupClosed", handleBlackFridayClosed);
+    const timer = setTimeout(checkPopupTiming, 600);
 
     return () => {
       clearTimeout(timer);
-      window.removeEventListener("blackFridayPopupClosed", handleBlackFridayClosed);
     };
   }, [currentPath]);
 

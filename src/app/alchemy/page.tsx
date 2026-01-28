@@ -3,11 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 
 import AlchemyLogo from "@/assets/images/alchemy/alchemy-trade-logo.webp";
 import ArtImage1 from "@/assets/images/alchemy/home/art-1.png";
 import PointingButtonImage from "@/assets/images/buttons/point-button.webp";
-import ThumbsUpButtonImage from "@/assets/images/buttons/thumbs-up-button.webp";
+
 
 import FreeMiningButtonImage from "@/assets/images/alchemy/home/free-art.webp";
 import PowerMiningButtonImage from "@/assets/images/alchemy/home/power-mining-art.webp";
@@ -19,12 +21,14 @@ import HowItWorksArt from "@/assets/images/alchemy/home/howItWorks.png";
 import WalletIcon from '@/assets/images/alchemy/home/walletIcon.png'
 
 import CustomButton2 from "@/components/CustomButton2";
-import PopupComponent from "@/components/PopupComponent";
 import { useAuth } from "@/contexts/AuthContext";
 import LoginPopup from "@/components/LoginPopup";
 import {
   getUserBTCYBalance,
+  processAlchemyConversion,
+  saveClickConvertSessionState,
   getClickConvertSessionState,
+  ClickConvertSessionState,
 } from "@/lib/alchemy";
 import {
   getMinimumBalanceMessage,
@@ -58,6 +62,7 @@ export default function AlchemyPage() {
   const [btcyPrice, setBtcyPrice] = useState<number | null>(null);
   const [nuggetInput, setNuggetInput] = useState("");
   const [tokenOutput, setTokenOutput] = useState("");
+  const [showIgnited, setShowIgnited] = useState(false);
   const [userBalance, setUserBalance] = useState<number | null>(null);
   const [balanceLoading, setBalanceLoading] = useState(false);
   const [balanceError, setBalanceError] = useState<string | null>(null);
@@ -65,9 +70,10 @@ export default function AlchemyPage() {
   const [limitWarning, setLimitWarning] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [walletUrl, setWalletUrl] = useState(WALLET_OVERVIEW_BASE_URL);
-  const [isAlchemyDisabledPopupOpen, setIsAlchemyDisabledPopupOpen] =
-    useState(false);
+  const popupTimerRef = useRef<NodeJS.Timeout | null>(null);
   const limitWarningTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const router = useRouter();
+  const [isProcessingAlchemy, setIsProcessingAlchemy] = useState(false);
   const [liquidityPoolData, setLiquidityPoolData] = useState<
     NormalizedActiveLiquidityPool
   >(DEFAULT_ACTIVE_LIQUIDITY_POOL);
@@ -162,6 +168,14 @@ export default function AlchemyPage() {
         "Awaiting completion—your Nuggets are still refining through Alchemy."
       );
     }
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (popupTimerRef.current) {
+        clearTimeout(popupTimerRef.current);
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -292,10 +306,103 @@ export default function AlchemyPage() {
     return "free";
   };
 
-  const handleConvert = () => {
+  const handleConvert = async () => {
+    if (isProcessingAlchemy) return;
+
     setFormError(null);
     setStatusMessage(null);
-    setIsAlchemyDisabledPopupOpen(true);
+
+    if (limitWarning) {
+      setFormError(MAX_NUGGET_INPUT_MESSAGE);
+      return;
+    }
+
+    if (!user) {
+      setIsLoginPopupOpen(true);
+      return;
+    }
+
+    if (balanceLoading) {
+      setFormError("Checking your BTCY balance. Please wait...");
+      return;
+    }
+
+    if (userBalance === null) {
+      setFormError("Unable to read your BTCY balance yet.");
+      return;
+    }
+
+    const requiredBalance = getMinimumBTCYBalanceForAlchemy(user?.email);
+    if (userBalance < requiredBalance) {
+      setFormError(getMinimumBalanceMessage(user?.email));
+      return;
+    }
+
+    if (!nuggetInput) {
+      setFormError("Enter the amount of nuggets you want to refine.");
+      return;
+    }
+
+    const amount = Number(nuggetInput);
+    if (Number.isNaN(amount) || amount <= 0) {
+      setFormError("Enter a valid nugget amount.");
+      return;
+    }
+
+    if (amount > MAX_NUGGET_INPUT) {
+      setFormError(MAX_NUGGET_INPUT_MESSAGE);
+      return;
+    }
+
+    setIsProcessingAlchemy(true);
+    setStatusMessage("Processing your Nuggets with the Alchemy engine...");
+    try {
+      const processResult = await processAlchemyConversion({
+        email: user.email,
+        nuggetTokens: amount,
+        userType: normalizeAlchemyUserType(user.userType),
+        referralCodeUsed: "",
+        nftBoostApplied: false,
+      });
+
+      if (!processResult.success || !processResult.session?.sessionId) {
+        throw new Error(
+          processResult.error || "Failed to queue your Alchemy conversion."
+        );
+      }
+
+      const sessionPayload: ClickConvertSessionState = {
+        ...processResult.session,
+        sessionId: processResult.session.sessionId,
+        email: user.email,
+        inputAmount: amount,
+        createdAt: new Date().toISOString(),
+        startedAt:
+          processResult.session.startedAt ?? new Date().toISOString(),
+      };
+
+      saveClickConvertSessionState(sessionPayload);
+      setTokenOutput("");
+      setStatusMessage(
+        "Alchemy queued—your Nuggets will be processed in the next 60 minutes."
+      );
+      setShowIgnited(true);
+      if (popupTimerRef.current) {
+        clearTimeout(popupTimerRef.current);
+      }
+      popupTimerRef.current = setTimeout(() => {
+        setShowIgnited(false);
+        router.push("/alchemy/outcome");
+      }, 10000);
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Failed to start the conversion. Please try again.";
+      setFormError(message);
+    } finally {
+      setIsProcessingAlchemy(false);
+    }
   };
 
   return (
@@ -352,7 +459,7 @@ export default function AlchemyPage() {
         <div className="px-4 mt-2 text-xs font-bold text-primary max-w-250">
           1 Bitcoin = 1 Million bitcoin-yay
         </div>
-        <div className="mt-8 w-full max-w-3xl px-4">
+        {/* <div className="mt-8 w-full max-w-3xl px-4">
           <div className="flex items-center justify-between text-[11px] uppercase text-tertiary">
             <span>Liquidity pool</span>
             <span>{liquidityProgressPercent}% funded</span>
@@ -382,7 +489,7 @@ export default function AlchemyPage() {
               {poolStatusMessage}
             </p>
           ) : null}
-        </div>
+        </div> */}
       </div>
 
       <div className="flex justify-center items-center mt-40">
@@ -865,6 +972,67 @@ export default function AlchemyPage() {
 
 
 
+      {showIgnited && (
+        <div className="fixed inset-0 bg-white/40 backdrop-blur-3xl z-50 flex items-center justify-center px-4">
+          <div className="bg-bg1 p-10 max-w-3xl">
+            <div className="flex justify-center mb-8">
+
+              <div className=" inset-0 flex items-center justify-center">
+                <motion.div
+                  className="relative w-36 h-36"
+                  animate={{
+                    scale: [1, 1.08, 1],
+                  }}
+                  transition={{
+                    duration: 2.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                >
+                  {/* Logo glow - orange + gold */}
+                  <div
+                    className="absolute inset-0 rounded-full blur-[50px]"
+                    style={{
+                      background: "radial-gradient(circle, rgba(255,135,40,0.5) 0%, rgba(255,215,0,0.3) 100%)",
+                    }}
+                  />
+                  {/* Logo image */}
+                  <Image
+                    src={ClickConvertIcon}
+                    alt="BTCY Logo"
+                    className="relative z-10 w-full h-full object-contain"
+                    style={{
+                      filter: "drop-shadow(0 0 25px rgba(255,135,40,0.7))",
+                    }}
+                  />
+                </motion.div>
+              </div>
+            </div>
+            <h3 className="text-4xl md:text-6xl font-semibold mb-10 text-center">
+              Alchemy Ignited
+            </h3>
+            <p className="text-lg mb-3">
+              Your Nuggets are now entering the BTCY Alchemy Engine.
+            </p>
+            <p className="text-lg mb-3">
+              The system will run its preset algorithm, analyzing your mining
+              activity, stage level, and referral impact.
+            </p>
+            <p className="text-lg mb-3">
+              Your final outcome may be a gain, neutral result, or loss of
+              Nuggets.
+            </p>
+            <p className="text-lg mb-6">
+              This process can take up to 60 minutes, and your Nuggets remain
+              locked during analysis.
+            </p>
+            <p className="text-sm text-tertiary">
+              Returns are algorithm-driven and may vary.
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="mt-80 font-light flex flex-col gap-4 mb-40">
         <h3 className="text-xl font-semibold">Disclaimer</h3>
         <p>
@@ -1029,38 +1197,6 @@ export default function AlchemyPage() {
           understood, and agree to all the above terms.
         </p>
       </div>
-      <PopupComponent
-        isOpen={isAlchemyDisabledPopupOpen}
-        onClose={() => setIsAlchemyDisabledPopupOpen(false)}
-      >
-        <div className="w-90 md:w-140 lg:w-180 rounded-2xl bg-bg border border-white/10 p-6 md:p-8 shadow-2xl text-center">
-          <div className="flex items-center justify-center mb-4">
-            <Image
-              src={ClickConvertIcon}
-              alt="Alchemy Click & Convert"
-              className="w-24 md:w-32"
-            />
-          </div>
-          <h3 className="text-2xl md:text-3xl font-semibold text-primary">
-            Alchemy is Closed for Now
-          </h3>
-          <p className="mt-3 text-sm md:text-base text-white/80">
-            Alchemy is currently offline while we work on an even stronger experience. We’re hard at work improving fairness, speed, and security—check socials for relaunch updates.
-          </p>
-          <div className="mt-6 flex flex-col gap-2 text-left text-sm md:text-base text-white/70">
-            <p>• Engine updates for better fairness, faster processing, and stronger security.</p>
-            <p>• Get notified via our socials when the relaunch lands.</p>
-          </div>
-          <div className="mt-6 flex justify-center">
-            <CustomButton2
-              image={ThumbsUpButtonImage}
-              text="Got it"
-              onClick={() => setIsAlchemyDisabledPopupOpen(false)}
-              imageStyling="w-20 lg:w-24"
-            />
-          </div>
-        </div>
-      </PopupComponent>
       <LoginPopup
         isOpen={isLoginPopupOpen}
         onClose={handleCloseLoginPopup}

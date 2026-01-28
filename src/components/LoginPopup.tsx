@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Image from "next/image";
 import axios from "axios";
 import PopupComponent from "@/components/PopupComponent";
@@ -13,6 +13,8 @@ import SetPasswordPopup from "@/components/SetPasswordPopup";
 import { useAuth } from "@/contexts/AuthContext";
 import { GOOGLE_LOGIN_API_ROUTE, LOGIN_API_ROUTE } from "@/routes";
 import { extractApiMessage } from "@/lib/utils";
+import ReCAPTCHA from "react-google-recaptcha";
+import { RECAPTCHA_SITE_KEY } from "@/constants/recaptcha";
 
 import MainLogo from "@/assets/images/main-logo.svg";
 import LoginButtonImage from "@/assets/images/buttons/login-button.webp";
@@ -55,6 +57,10 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
   const [showRegister, setShowRegister] = useState(false);
   const [showSetPassword, setShowSetPassword] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
+  const [recaptchaToken, setRecaptchaToken] = useState("");
+  const [recaptchaError, setRecaptchaError] = useState("");
+  const captchaRef = useRef<ReCAPTCHA | null>(null);
+  const isLoginButtonDisabled = isSubmitting || !recaptchaToken;
 
   const validateForm = (): boolean => {
     const newErrors: { email?: string; password?: string } = {};
@@ -84,57 +90,82 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
     setIsSubmitting(true);
     setErrors({});
 
-    if (validateForm()) {
-      try {
-        const response = await axios.post(LOGIN_API_ROUTE, {
-          email: email.trim(),
-          password: password,
-        });
-
-        if (response.status === 200 && response.data) {
-          // Extract user data from API response
-          const apiData = response.data.data; // API returns data inside 'data' property
-
-          const userData = {
-            email: apiData.email,
-            name: apiData.name || email.split("@")[0], // Use email prefix as fallback for name
-            access_token: apiData.access_token,
-            refresh_token: apiData.refresh_token,
-            role: apiData.role,
-            userType: apiData.userType,
-            shortToken: apiData.shortToken,
-          };
-
-          login(userData);
-          onLoginSuccess();
-          onClose();
-
-          // Reset form
-          setEmail("");
-          setPassword("");
-        } else {
-          setErrors({
-            general:
-              "Login failed. Please check your credentials and try again.",
-          });
-        }
-      } catch (error: unknown) {
-        console.error("Login error:", error);
-
-        // Show server message directly
-        if (axios.isAxiosError(error)) {
-          console.log("Login error:", error);
-          const errorMessage =
-            extractApiMessage(error.response?.data) ||
-            "Login failed. Please try again.";
-          setErrors({ general: errorMessage });
-        } else {
-          setErrors({ general: "Login failed. Please try again." });
-        }
-      }
+    if (!validateForm()) {
+      setIsSubmitting(false);
+      return;
     }
 
-    setIsSubmitting(false);
+    if (!recaptchaToken) {
+      setRecaptchaError("Please verify you are not a robot.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    const resetCaptcha = () => {
+      captchaRef.current?.reset();
+      setRecaptchaToken("");
+      setRecaptchaError("");
+    };
+
+    try {
+      const response = await axios.post(LOGIN_API_ROUTE, {
+        email: email.trim(),
+        password: password,
+        recaptchaToken,
+      });
+
+      if (response.status === 200 && response.data) {
+        // Extract user data from API response
+        const apiData = response.data.data; // API returns data inside 'data' property
+
+        const userData = {
+          email: apiData.email,
+          name: apiData.name || email.split("@")[0], // Use email prefix as fallback for name
+          access_token: apiData.access_token,
+          refresh_token: apiData.refresh_token,
+          role: apiData.role,
+          userType: apiData.userType,
+          shortToken: apiData.shortToken,
+        };
+
+        login(userData);
+        onLoginSuccess();
+        onClose();
+
+        // Reset form
+        setEmail("");
+        setPassword("");
+      } else {
+        setErrors({
+          general:
+            "Login failed. Please check your credentials and try again.",
+        });
+      }
+    } catch (error: unknown) {
+      console.error("Login error:", error);
+
+      // Show server message directly
+      if (axios.isAxiosError(error)) {
+        console.log("Login error:", error);
+        const errorMessage =
+          extractApiMessage(error.response?.data) ||
+          "Login failed. Please try again.";
+        setErrors({ general: errorMessage });
+      } else {
+        setErrors({ general: "Login failed. Please try again." });
+      }
+    } finally {
+      resetCaptcha();
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleLoginButtonClick: React.MouseEventHandler<HTMLDivElement> = (e) => {
+    e.preventDefault();
+    if (isLoginButtonDisabled) {
+      return;
+    }
+    submitLogin();
   };
 
   const handleGoogleLogin = useGoogleLogin({
@@ -386,28 +417,36 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
               </div>
             )}
 
-            {/* Login Button */}
-            <div className="flex justify-center mb-4">
-              <div
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (!isSubmitting) {
-                    submitLogin();
+            <div className="mb-4 flex justify-center">
+              <ReCAPTCHA
+                sitekey={RECAPTCHA_SITE_KEY}
+                onChange={(token:any) => {
+                  setRecaptchaToken(token ?? "");
+                  if (token) {
+                    setRecaptchaError("");
                   }
                 }}
-                className={
-                  isSubmitting
-                    ? "opacity-50 cursor-not-allowed"
-                    : "cursor-pointer"
-                }
-              >
-                <CustomButton2
-                  image={LoginButtonImage}
-                  text={""}
-                  link="#"
-                  imageStyling="w-30"
-                />
-              </div>
+                onExpired={() => setRecaptchaToken("")}
+                ref={captchaRef}
+                className="mx-auto"
+              />
+            </div>
+            {recaptchaError && (
+              <p className="mb-4 text-center text-xs text-red-500">
+                {recaptchaError}
+              </p>
+            )}
+
+            {/* Login Button */}
+            <div className="flex justify-center mb-4">
+              <CustomButton2
+                image={LoginButtonImage}
+                text={""}
+                imageStyling="w-30"
+                onClick={handleLoginButtonClick}
+                disabled={isLoginButtonDisabled}
+                className="mb-6"
+              />
             </div>
 
             {/* Divider */}

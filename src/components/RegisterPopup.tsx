@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import axios from "axios";
 import PopupComponent from "@/components/PopupComponent";
@@ -24,6 +24,8 @@ import CustomButton2 from "@/components/CustomButton2";
 import { ChevronDown, Check, Eye, EyeOff } from "lucide-react";
 import { useGoogleLogin } from "@react-oauth/google";
 import { extractApiMessage } from "@/lib/utils";
+import ReCAPTCHA from "react-google-recaptcha";
+import { RECAPTCHA_SITE_KEY } from "@/constants/recaptcha";
 // import { extractApiMessage, normalizeErrorMessage } from "@/lib/utils";
 
 interface RegisterPopupProps {
@@ -80,6 +82,10 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
   const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(
     null
   );
+  const [recaptchaToken, setRecaptchaToken] = useState("");
+  const [recaptchaError, setRecaptchaError] = useState("");
+  const recaptchaRef = useRef<ReCAPTCHA | null>(null);
+  const isRegisterButtonDisabled = isSubmitting || !recaptchaToken;
 
   // Update referral code when referralCode prop changes
   useEffect(() => {
@@ -243,6 +249,19 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
     return Object.keys(newErrors).length === 0;
   };
 
+  const handleRecaptchaChange = (token: string | null) => {
+    setRecaptchaToken(token ?? "");
+    if (token) {
+      setRecaptchaError("");
+    }
+  };
+
+  const resetRecaptcha = () => {
+    recaptchaRef.current?.reset();
+    setRecaptchaToken("");
+    setRecaptchaError("");
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     await submitForm();
@@ -252,62 +271,83 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
     setIsSubmitting(true);
     setErrors({});
 
-    if (validateForm()) {
-      try {
-        const registrationData = {
-          firstName: formData.firstName.trim(),
-          lastName: formData.lastName.trim(),
-          username: formData.username.trim(),
-          countryCode: formData.countryCode,
-          country: formData.country,
-          phoneNumber: formData.phoneNumber.trim(),
-          email: formData.email.trim(),
-          password: formData.password,
-          confirmPassword: formData.confirmPassword,
-          referralCode: formData.referralCode.trim(),
-        };
-
-        // First, send OTP to email for verification
-        const otpResponse = await axios.post(SEND_OTP_API_ROUTE, {
-          email: formData.email.trim(),
-          type: "New Register",
-        });
-
-        console.log("register otpResponse", otpResponse);
-
-        if (otpResponse.status === 200) {
-          // Store registration data and email for verification
-          setRegistrationEmail(formData.email.trim());
-          setRegistrationData(registrationData);
-
-          // Show email verification popup
-          setShowEmailVerification(true);
-        } else {
-          setErrors({
-            general:
-              otpResponse?.data?.message ||
-              otpResponse?.data?.data?.message ||
-              otpResponse?.data?.data ||
-              "Failed to send verification code. Please try again.",
-          });
-        }
-      } catch (error: unknown) {
-        if (axios.isAxiosError(error)) {
-          const errorMessage =
-            error.response?.data?.data ||
-            error.response?.data?.data?.message ||
-            error.response?.data?.message ||
-            "Failed to send verification code. Please try again.";
-          setErrors({ general: errorMessage });
-        } else {
-          setErrors({
-            general: "Failed to send verification code. Please try again.",
-          });
-        }
-      }
+    if (!validateForm()) {
+      setIsSubmitting(false);
+      return;
     }
 
-    setIsSubmitting(false);
+    if (!recaptchaToken) {
+      setRecaptchaError("Please verify you are not a robot.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      const registrationData = {
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        username: formData.username.trim(),
+        countryCode: formData.countryCode,
+        country: formData.country,
+        phoneNumber: formData.phoneNumber.trim(),
+        email: formData.email.trim(),
+        password: formData.password,
+        confirmPassword: formData.confirmPassword,
+        referralCode: formData.referralCode.trim(),
+      };
+
+      // First, send OTP to email for verification
+      const otpResponse = await axios.post(SEND_OTP_API_ROUTE, {
+        email: formData.email.trim(),
+        type: "New Register",
+        recaptchaToken,
+      });
+
+      console.log("register otpResponse", otpResponse);
+
+      if (otpResponse.status === 200) {
+        // Store registration data and email for verification
+        setRegistrationEmail(formData.email.trim());
+        setRegistrationData(registrationData);
+
+        // Show email verification popup
+        setShowEmailVerification(true);
+      } else {
+        setErrors({
+          general:
+            otpResponse?.data?.message ||
+            otpResponse?.data?.data?.message ||
+            otpResponse?.data?.data ||
+            "Failed to send verification code. Please try again.",
+        });
+      }
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        const errorMessage =
+          error.response?.data?.data ||
+          error.response?.data?.data?.message ||
+          error.response?.data?.message ||
+          "Failed to send verification code. Please try again.";
+        setErrors({ general: errorMessage });
+      } else {
+        setErrors({
+          general: "Failed to send verification code. Please try again.",
+        });
+      }
+    } finally {
+      setIsSubmitting(false);
+      resetRecaptcha();
+    }
+  };
+
+  const handleRegisterButtonClick: React.MouseEventHandler<HTMLDivElement> = (
+    e
+  ) => {
+    e.preventDefault();
+    if (isRegisterButtonDisabled) {
+      return;
+    }
+    submitForm();
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -854,28 +894,34 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
               </div>
             )}
 
+            <div className="mb-4 flex justify-center">
+              <ReCAPTCHA
+                sitekey={RECAPTCHA_SITE_KEY}
+                onChange={handleRecaptchaChange}
+                onExpired={() => {
+                  setRecaptchaToken("");
+                  setRecaptchaError("Recaptcha expired. Please verify again.");
+                }}
+                ref={recaptchaRef}
+                className="mx-auto"
+              />
+            </div>
+            {recaptchaError && (
+              <p className="mb-4 text-center text-xs text-red-500">
+                {recaptchaError}
+              </p>
+            )}
+
             {/* Register Button */}
             <div className="flex justify-center mb-4 mt-10">
-              <div
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (!isSubmitting) {
-                    submitForm();
-                  }
-                }}
-                className={
-                  isSubmitting
-                    ? "opacity-50 cursor-not-allowed mb-6"
-                    : "cursor-pointer mb-6"
-                }
-              >
-                <CustomButton2
-                  image={RegisterButtonImage}
-                  text={"Register"}
-                  link="#"
-                  imageStyling="w-30"
-                />
-              </div>
+              <CustomButton2
+                image={RegisterButtonImage}
+                text={"Register"}
+                imageStyling="w-30"
+                onClick={handleRegisterButtonClick}
+                disabled={isRegisterButtonDisabled}
+                className="mb-6"
+              />
             </div>
 
             {/* Divider */}

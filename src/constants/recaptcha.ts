@@ -1,0 +1,3 @@
+export const RECAPTCHA_SITE_KEY =
+  process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ||
+  "6Lc3pE4sAAAAALfhqPZSmgiDtzr0AqH5qTp1a6Ap";

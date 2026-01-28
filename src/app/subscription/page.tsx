@@ -342,6 +342,8 @@ export default function SubscriptionPage() {
             : getDefaultSpeedBoost(activePlanKey);
     const planStatus = miningPlan?.status ?? activeEntry?.status ?? "Active";
     const planPaymentMethod = miningPlan?.paymentMethod ?? paymentMethod;
+    const planPaymentProvider: PaymentProvider =
+        planPaymentMethod?.toLowerCase() === "paypal" ? "paypal" : "stripe";
     const planStartLabel = miningPlan?.startDate
         ? formatDateTime(miningPlan.startDate)
         : null;
@@ -382,6 +384,14 @@ export default function SubscriptionPage() {
                 return;
             }
 
+            if (!user?.email) {
+                setPlanChangeFeedback({
+                    type: "error",
+                    message: "You must be logged in to change your subscription plan.",
+                });
+                return;
+            }
+
             setPlanChangeLoading(true);
             setPlanChangeTarget(planKey);
             setPlanChangeFeedback(null);
@@ -390,6 +400,8 @@ export default function SubscriptionPage() {
                 const result = await changeSubscriptionPlan({
                     subscriptionId: miningPlan._id,
                     newPlanKey: planKey,
+                    email: user.email,
+                    provider: planPaymentProvider,
                 });
                 setPlanChangeFeedback({
                     type: "info",
@@ -411,7 +423,7 @@ export default function SubscriptionPage() {
                 setPlanChangeTarget(null);
             }
         },
-        [activePlanKey, miningPlan?._id, refreshMiningPlan]
+        [activePlanKey, miningPlan?._id, planPaymentProvider, refreshMiningPlan, user?.email]
     );
 
     const handleUpgrade = (planName: PlanType, planKey?: AvailablePlanKey) => {
