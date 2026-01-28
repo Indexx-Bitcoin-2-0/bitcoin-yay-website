@@ -209,12 +209,22 @@ const header_data = [
           },
         ],
       },
+
       {
         heading: "Support",
         links: [
           {
             name: "Contact Us",
             href: "/support/#contact-us",
+          },
+        ],
+      },
+      {
+        heading: "Explore bitcoin-yay DAO",
+        links: [
+          {
+            name: "Proposal Studio",
+            href: "/dao",
           },
         ],
       },

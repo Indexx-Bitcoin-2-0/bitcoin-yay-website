@@ -36,7 +36,6 @@ const PowerMiningPage = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 lg:gap-16 my-40 max-w-7xl mx-auto items-start">
-        {/* Electric Mining Plan */}
         <Link
           href="/mining/electric-mining"
           className="flex flex-col items-center justify-center group"
@@ -56,7 +55,6 @@ const PowerMiningPage = () => {
           </p>
         </Link>
 
-        {/* Turbo Mining Plan */}
         <Link
           href="/mining/turbo-mining"
           className="flex flex-col items-center justify-center group"
@@ -76,7 +74,6 @@ const PowerMiningPage = () => {
           </p>
         </Link>
 
-        {/* Nuclear Mining Plan */}
         <Link
           href="/mining/nuclear-mining"
           className="flex flex-col items-center justify-center group"

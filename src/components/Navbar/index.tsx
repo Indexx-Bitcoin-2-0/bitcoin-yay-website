@@ -17,10 +17,11 @@ import Link from "next/link";
 import logo from "@/assets/images/main-logo.svg";
 import mobLogo from "@/assets/images/logo.webp";
 import ProfileIcon from "@/assets/images/profile-icon.webp";
+import UserDropdown from "./UserDropdown";
 import Data from "./data";
 import { useAuth } from "@/contexts/AuthContext";
 import LoginPopup from "@/components/LoginPopup";
-import RegisterPopup from "@/components/RegisterPopup";
+// import RegisterPopup from "@/components/RegisterPopup";
 import ReferralHandler from "@/components/ReferralHandler";
 import {
   Accordion,
@@ -44,6 +45,7 @@ import CustomButton2 from "@/components/CustomButton2";
 import PopupComponent from "@/components/PopupComponent";
 import PowerButtonImage from "@/assets/images/buttons/power-button.webp";
 import BuyNowButtonImage from "@/assets/images/buttons/buy-now-button.webp";
+import JoinPopup from "@/components/JoinPopup";
 
 // Types for better type safety
 interface LinkItem {
@@ -1128,31 +1130,12 @@ const Navbar: React.FC = () => {
         <div className="hidden xl:flex items-center gap-8">
           {isAuthenticated && user ? (
             <>
-              <BalanceWidget
-                nuggetBalance={balances.nugget}
-                withdrawnBalance={balances.withdrawn}
-                tokenBalance={balances.token}
+              <UserDropdown
+                user={user}
+                balances={balances}
+                onLogout={handleLogout}
                 isLoading={isBalanceLoading}
-                errorMessage={balanceError}
-                onOpenModal={handleOpenBalanceModal}
-                className="flex-shrink-0 max-w-[320px]"
               />
-              <div className="text-sm font-normal transition-all duration-300 flex items-center gap-6 pr-2">
-                <button
-                  onClick={handleLogout}
-                  className="hover:text-primary text-tertiary cursor-pointer"
-                >
-                  Logout
-                </button>
-                <div className="flex items-center gap-2">
-                  <Image
-                    src={ProfileIcon}
-                    alt="Profile Icon"
-                    className="w-14"
-                  />
-                  <span className="text-tertiary">{user.email}</span>
-                </div>
-              </div>
             </>
           ) : (
             <div className="text-sm font-normal transition-all duration-300 flex gap-10">
@@ -1166,7 +1149,7 @@ const Navbar: React.FC = () => {
                 onClick={() => setIsRegisterPopupOpen(true)}
                 className="hover:text-primary text-tertiary cursor-pointer"
               >
-                Register
+                Join
               </button>
             </div>
           )}
@@ -1174,7 +1157,7 @@ const Navbar: React.FC = () => {
 
         {/* Mobile Menu */}
         <div
-          className={`absolute left-0 top-26 w-full p-8 bg-bg shadow-lg transform z-20 ${menuOpen ? "translate-y-0" : "-translate-y-[130%]"
+          className={`absolute left-0 top-32 w-full p-8 bg-bg shadow-lg transform z-20 ${menuOpen ? "translate-y-0" : "-translate-y-[130%]"
             }  xl:hidden max-h-[calc(100vh-150px)] overflow-y-auto`}
         >
           {/* Auth Section (Mobile) */}
@@ -1221,7 +1204,7 @@ const Navbar: React.FC = () => {
                   }}
                   className="hover:text-primary text-tertiary cursor-pointer"
                 >
-                  Register
+                  Join
                 </button>
               </div>
             )}
@@ -1309,7 +1292,7 @@ const Navbar: React.FC = () => {
       />
 
       {/* Register Popup */}
-      <RegisterPopup
+      {/* <RegisterPopup
         isOpen={isRegisterPopupOpen}
         onClose={() => setIsRegisterPopupOpen(false)}
         onRegisterSuccess={handleRegisterSuccess}
@@ -1318,6 +1301,12 @@ const Navbar: React.FC = () => {
           setIsLoginPopupOpen(true);
         }}
         referralCode={referralCode}
+      /> */}
+
+      {/* Join Popup */}
+      <JoinPopup
+        isOpen={isRegisterPopupOpen}
+        onClose={() => setIsRegisterPopupOpen(false)}
       />
     </nav>
   );

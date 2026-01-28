@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import axios, { AxiosError } from "axios";
@@ -29,6 +29,7 @@ import PopupArt5 from "@/assets/images/airdrop/popup-art-4.png";
 import PopupComponent from "@/components/PopupComponent";
 import CustomButton2 from "@/components/CustomButton2";
 import RegisterPopup from "@/components/RegisterPopup";
+import DownloadAppPopup from "@/components/DownloadAppPopup";
 
 interface FormErrors {
   email?: string;
@@ -63,6 +64,16 @@ export default function AirdropRegisterPage() {
   const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
   const [isRegisterPopupOpen, setIsRegisterPopupOpen] =
     useState<boolean>(false);
+  const [isDownloadPopupOpen, setIsDownloadPopupOpen] =
+    useState<boolean>(false);
+
+  useEffect(() => {
+    // Show download popup on mount with a small delay
+    const timer = setTimeout(() => {
+      setIsDownloadPopupOpen(true);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -536,6 +547,10 @@ export default function AirdropRegisterPage() {
         onClose={() => setIsRegisterPopupOpen(false)}
         onRegisterSuccess={() => setIsRegisterPopupOpen(false)}
         onLoginClick={() => setIsRegisterPopupOpen(false)}
+      />
+      <DownloadAppPopup
+        isOpen={isDownloadPopupOpen}
+        onClose={() => setIsDownloadPopupOpen(false)}
       />
     </div>
   );

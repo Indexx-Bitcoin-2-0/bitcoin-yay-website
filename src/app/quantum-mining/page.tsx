@@ -780,98 +780,6 @@ const QuantumMiningPage = () => {
         </div>
       </div>
 
-      {/* Benefits Section - Three Cards */}
-      <div className="mx-auto mt-40 md:mt-60 px-4 md:px-8 lg:px-20 xl:px-40 relative max-w-[2000px]">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 lg:gap-16">
-          {/* No Mining Required */}
-          <div className="flex flex-col items-center text-center">
-            <Image
-              src={CardImage1}
-              alt="No Mining Required"
-              className="w-full max-w-xs h-auto object-contain mb-6"
-            />
-            <h3 className="text-xl md:text-2xl lg:text-3xl font-semibold text-primary mb-4">
-              No Mining Required
-            </h3>
-            <p className="text-base md:text-lg text-gray-300">
-              Quantum system auto-generates BTCY — no manual mining needed.
-            </p>
-          </div>
-
-          {/* Indexx.ai Asset Wallet */}
-          <div className="flex flex-col items-center text-center">
-            <Image
-              src={CardImage2}
-              alt="Indexx.ai Asset Wallet"
-              className="w-full max-w-xs h-auto object-contain mb-6"
-            />
-            <h3 className="text-xl md:text-2xl lg:text-3xl font-semibold text-primary mb-4">
-              Indexx.ai Asset Wallet
-            </h3>
-            <p className="text-base md:text-lg text-gray-300">
-              BTCY Tokens go direct to indexx.ai Asset Wallet
-            </p>
-          </div>
-
-          {/* Buy at Low Price */}
-          <div className="flex flex-col items-center text-center">
-            <Image
-              src={CardImage3}
-              alt="Buy at Low Price"
-              className="w-full max-w-xs h-auto object-contain mb-6"
-            />
-            <h3 className="text-xl md:text-2xl lg:text-3xl font-semibold text-primary mb-4">
-              Buy at Low Price
-            </h3>
-            <p className="text-base md:text-lg text-gray-300">
-              BTCY is in early low-price phase — perfect time to enter.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Why Choose Quantum Mining Section */}
-      <div className="mx-auto mt-40 md:mt-60 px-4 md:px-8 lg:px-20 xl:px-40 relative max-w-[2000px]">
-        <div className="flex flex-col items-center justify-center">
-          {/* Title */}
-          <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-primary text-center mb-12 md:mb-16">
-            Why Choose Quantum Mining?
-          </h2>
-
-          {/* Benefits List */}
-          <div className="flex flex-col gap-8 md:gap-12 lg:gap-16 max-w-4xl">
-            {/* Benefit 1 */}
-            <div className="flex flex-col gap-4">
-              <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-white">
-                1. Skip Daily Mining – Get BTCY Instantly
-              </h3>
-              <p className="text-base md:text-lg lg:text-xl text-gray-300 leading-relaxed">
-                Quantum Mining is for people who don&apos;t want to tap and mine every day. Instead of slowly collecting nuggets, you can buy BTCY tokens directly in the pre-sale and lock in your position immediately.
-              </p>
-            </div>
-
-            {/* Benefit 2 */}
-            <div className="flex flex-col gap-4">
-              <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-white">
-                2.Buy While the Price Is Low (Christmas Discount)
-              </h3>
-              <p className="text-base md:text-lg lg:text-xl text-gray-300 leading-relaxed">
-                With the Christmas Discount, you get 10% off your BTCY token purchase for a limited time. You’re entering at an early stage, before launch and before potential future price movements once BTCY is live and tradable (if and when it gets listed). </p>
-            </div>
-
-            {/* Benefit 3 */}
-            <div className="flex flex-col gap-4">
-              <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-white">
-                3. Aligned with Bitcoin – Pegged Ratio
-              </h3>
-              <p className="text-base md:text-lg lg:text-xl text-gray-300 leading-relaxed">
-                BTCY is designed with a target peg of 1,000,000 BTCY = 1 BTC, connecting the ecosystem to Bitcoin&apos;s price. Quantum Mining lets you participate in that vision early—while understanding that the peg, listing, and future market price are not guaranteed and can change.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div
         id="buy-btcy"
         className="mt-40 border-2 border-bg3 rounded-2xl p-8 md:p-12 max-w-5xl mx-auto"
@@ -1054,6 +962,101 @@ const QuantumMiningPage = () => {
           />
         </div>
       </div>
+
+
+      {/* Benefits Section - Three Cards */}
+      <div className="mx-auto mt-40 md:mt-60 px-4 md:px-8 lg:px-20 xl:px-40 relative max-w-[2000px]">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 lg:gap-16">
+          {/* No Mining Required */}
+          <div className="flex flex-col items-center text-center">
+            <Image
+              src={CardImage1}
+              alt="No Mining Required"
+              className="w-full max-w-xs h-auto object-contain mb-6"
+            />
+            <h3 className="text-xl md:text-2xl lg:text-3xl font-semibold text-primary mb-4">
+              No Mining Required
+            </h3>
+            <p className="text-base md:text-lg text-gray-300">
+              Quantum system auto-generates BTCY — no manual mining needed.
+            </p>
+          </div>
+
+          {/* Indexx.ai Asset Wallet */}
+          <div className="flex flex-col items-center text-center">
+            <Image
+              src={CardImage2}
+              alt="Indexx.ai Asset Wallet"
+              className="w-full max-w-xs h-auto object-contain mb-6"
+            />
+            <h3 className="text-xl md:text-2xl lg:text-3xl font-semibold text-primary mb-4">
+              Indexx.ai Asset Wallet
+            </h3>
+            <p className="text-base md:text-lg text-gray-300">
+              BTCY Tokens go direct to indexx.ai Asset Wallet
+            </p>
+          </div>
+
+          {/* Buy at Low Price */}
+          <div className="flex flex-col items-center text-center">
+            <Image
+              src={CardImage3}
+              alt="Buy at Low Price"
+              className="w-full max-w-xs h-auto object-contain mb-6"
+            />
+            <h3 className="text-xl md:text-2xl lg:text-3xl font-semibold text-primary mb-4">
+              Buy at Low Price
+            </h3>
+            <p className="text-base md:text-lg text-gray-300">
+              BTCY is in early low-price phase — perfect time to enter.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Why Choose Quantum Mining Section */}
+      <div className="mx-auto mt-40 md:mt-60 px-4 md:px-8 lg:px-20 xl:px-40 relative max-w-[2000px]">
+        <div className="flex flex-col items-center justify-center">
+          {/* Title */}
+          <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-primary text-center mb-12 md:mb-16">
+            Why Choose Quantum Mining?
+          </h2>
+
+          {/* Benefits List */}
+          <div className="flex flex-col gap-8 md:gap-12 lg:gap-16 max-w-4xl">
+            {/* Benefit 1 */}
+            <div className="flex flex-col gap-4">
+              <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-white">
+                1. Skip Daily Mining – Get BTCY Instantly
+              </h3>
+              <p className="text-base md:text-lg lg:text-xl text-gray-300 leading-relaxed">
+                Quantum Mining is for people who don&apos;t want to tap and mine every day. Instead of slowly collecting nuggets, you can buy BTCY tokens directly in the pre-sale and lock in your position immediately.
+              </p>
+            </div>
+
+            {/* Benefit 2 */}
+            <div className="flex flex-col gap-4">
+              <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-white">
+                2.Buy While the Price Is Low (Christmas Discount)
+              </h3>
+              <p className="text-base md:text-lg lg:text-xl text-gray-300 leading-relaxed">
+                With the Christmas Discount, you get 10% off your BTCY token purchase for a limited time. You’re entering at an early stage, before launch and before potential future price movements once BTCY is live and tradable (if and when it gets listed). </p>
+            </div>
+
+            {/* Benefit 3 */}
+            <div className="flex flex-col gap-4">
+              <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-white">
+                3. Aligned with Bitcoin – Pegged Ratio
+              </h3>
+              <p className="text-base md:text-lg lg:text-xl text-gray-300 leading-relaxed">
+                BTCY is designed with a target peg of 1,000,000 BTCY = 1 BTC, connecting the ecosystem to Bitcoin&apos;s price. Quantum Mining lets you participate in that vision early—while understanding that the peg, listing, and future market price are not guaranteed and can change.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
       <div className="flex flex-col lg:flex-row items-center justify-center gap-20 mt-80">
         <Image
           src={ArtImage4}

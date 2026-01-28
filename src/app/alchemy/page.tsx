@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import AlchemyLogo from "@/assets/images/alchemy/alchemy-logo.webp";
+import AlchemyLogo from "@/assets/images/alchemy/alchemy-trade-logo.webp";
 import ArtImage1 from "@/assets/images/alchemy/home/art-1.png";
 import PointingButtonImage from "@/assets/images/buttons/point-button.webp";
 import ThumbsUpButtonImage from "@/assets/images/buttons/thumbs-up-button.webp";

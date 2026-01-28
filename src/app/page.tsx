@@ -501,7 +501,7 @@ export default function Home() {
           <p className="text-xl text-left mb-10 max-w-100 ">Get real-time updates, smart insights, and seamless crypto management.</p>
         </div>
 
-        <div className="flex flex-wrap gap-6 items-start justify-center mx-10 ">
+        <div className="flex flex-wrap gap-6 items-start mx-10 ">
           <CustomCard
             image={CardImage1}
             title="Bitcoin  Diversification."

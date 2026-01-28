@@ -7,7 +7,8 @@ import PopupComponent from "@/components/PopupComponent";
 import ForgotPasswordPopup from "@/components/ForgotPasswordPopup";
 import EmailVerificationPopup from "@/components/EmailVerificationPopup";
 import ResetPasswordPopup from "@/components/ResetPasswordPopup";
-import RegisterPopup from "@/components/RegisterPopup";
+// import RegisterPopup from "@/components/RegisterPopup";
+import JoinPopup from "@/components/JoinPopup";
 import SetPasswordPopup from "@/components/SetPasswordPopup";
 import { useAuth } from "@/contexts/AuthContext";
 import { GOOGLE_LOGIN_API_ROUTE, LOGIN_API_ROUTE } from "@/routes";
@@ -450,7 +451,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
                 onClick={onRegisterClick}
                 className="text-primary text-sm hover:underline cursor-pointer"
               >
-                Register
+                Join
               </button>
             </div>
           </form>
@@ -479,11 +480,16 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
         email={resetEmail}
       />
 
-      <RegisterPopup
+      {/* <RegisterPopup
         isOpen={showRegister}
         onClose={handleCloseRegister}
         onLoginClick={onRegisterClick}
         onRegisterSuccess={handleRegisterSuccess}
+      /> */}
+
+      <JoinPopup
+        isOpen={showRegister}
+        onClose={handleCloseRegister}
       />
 
       <SetPasswordPopup

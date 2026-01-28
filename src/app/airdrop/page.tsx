@@ -26,6 +26,7 @@ import DownloadButtonImage from "@/assets/images/buttons/download-button.webp";
 // import PointFingerButtonImage from "@/assets/images/buttons/point-button.webp";
 
 import UserReviewCards from "@/components/UserReviewCards";
+import PrizeBreakdown from "@/components/PrizeBreakdown";
 
 export const metadata = {
   title: "BTCY New Year Airdrop 2026 - Start the new year with free crypto",
@@ -43,20 +44,17 @@ export default function Airdrop() {
     <div className="mx-auto mt-40 max-w-[1800px]">
       <div className="relative flex flex-col lg:flex-row">
         <div className="mt-10 w-full lg:w-[90%] flex flex-col justify-items-center px-4 md:pl-20 xl:pl-30">
-          <h2 className="text-[40px] md:text-7xl xl:text-[100px] font-bold">
-            BTCY New Year Airdrop 2026
+          <h2 className="text-[40px] md:text-7xl">
+            BTCY Loyalty Airdrop
             <br />
             {/* <span className="text-primary">Lotto Airdrop</span>! */}
           </h2>
 
-          {/* <p className="mt-10 text-xl lg:text-2xl max-w-220 text-bg3">
-            Get your free ticket + bonus entries for referrals
-          </p> */}
-          <p className="mt-10 text-2xl md:text-3xl font-semibold">
-            Start the new year with free crypto.
+          <p className="mt-10 text-2xl md:text-3xl text-primary">
+            Rewarding our most loyal Bitcoin Yay miners.
           </p>
-          <p className="mt-4 text-xl md:text-2xl font-medium">
-            Win 250 BTCY tokens (~$25) just for joining Bitcoin Yay and inviting one friend.
+          <p className="mt-4 text-xl">
+            Active BTCY miners can win from a 50,000 BTCY prize pool. Register now and keep mining to increase your chances.
           </p>
 
           <div className="font-bold mt-10 flex justify-center md:justify-start items-center md:items-start gap-10 md:gap-20">
@@ -137,7 +135,7 @@ export default function Airdrop() {
       </div> */}
 
       <div className="mt-80 px-4 md:px-20 xl:px-20">
-        <h2 className="text-6xl lg:text-8xl font-semibold">How It Works</h2>
+        <h2 className="text-6xl lg:text-8xl  text-center ">How It Works</h2>
         <div className="mt-20 w-full mx-auto grid grid-cols-1 md:grid-cols-3 gap-20">
           <div className="max-w-100 text-center mx-auto">
             <div className=" h-70 flex justify-center items-center">
@@ -163,10 +161,10 @@ export default function Airdrop() {
               />
             </div>
             <h4 className="mt-6 text-3xl font-semibold h-24 flex items-center justify-center">
-              Ticket
+              Register
             </h4>
             <p className="text-xl font-light">
-              Invite 1 friend using your referral link
+              Submit the airdrop registration form
             </p>
           </div>
           <div className="max-w-100 text-center mx-auto">
@@ -181,8 +179,7 @@ export default function Airdrop() {
               Wallet
             </h4>
             <p className="text-xl font-light">
-              Submit your TRON wallet address
-            </p>
+              Wait to receive your rewards            </p>
           </div>
         </div>
       </div>
@@ -195,12 +192,8 @@ export default function Airdrop() {
         />
       </div>
 
-      {/* <div className="mt-80 flex flex-col items-center justify-center">
-        <h2 className="text-5xl md:text-8xl font-bold">Eligibility</h2>
-        <p className="mt-10 text-3xl font-light">World Wide call-out</p>
-        <Image src={WorldMapImage} alt="World Map" className="w-full" />
-      </div> */}
-
+      {/* Add new section here  */}
+      <PrizeBreakdown />
       <div className="mt-80 ">
         <Image src={CalendarArt} alt="Calendar Art" className="mx-auto w-30" />
         <h2 className="mt-10 text-[40px] md:text-7xl xl:text-[100px] text-center font-bold">
@@ -208,21 +201,21 @@ export default function Airdrop() {
         </h2>
         <div className="flex flex-wrap w-full justify-center items-start gap-20 mt-10 md:mt-30 px-4 md:px-10 xl:px-20">
           <div className="w-90 flex flex-col ">
-            <h3 className="text-[40px] md:text-5xl font-bold">Now</h3>
+            <h3 className="text-[40px] md:text-5xl font-bold">February 2, 2026</h3>
             <p className="mt-2 md:mt-10 text-xl md:text-3xl">
               Campaign live — start registering
             </p>
           </div>
           <div className="w-90 flex flex-col ">
-            <h3 className="text-[40px] md:text-5xl font-bold">Until Jan 04, 2026</h3>
+            <h3 className="text-[40px] md:text-5xl font-bold">Until February 8, 2026</h3>
             <p className="mt-2 md:mt-10 text-xl md:text-3xl">
               Sign-up window closes
             </p>
           </div>{" "}
           <div className="w-90 flex flex-col ">
-            <h3 className="text-[40px] md:text-5xl font-bold">Jan 05, 2026</h3>
+            <h3 className="text-[40px] md:text-5xl font-bold">February 9, 2026</h3>
             <p className="mt-2 md:mt-10 text-xl md:text-3xl">
-              Airdrop Distribution
+              Winners announced & BTCY distributed
             </p>
           </div>
         </div>
@@ -234,10 +227,10 @@ export default function Airdrop() {
             Eligibility & Rules
           </h2>
           <ul className="mt-10 list-disc pl-6 text-xl md:text-3xl flex flex-col gap-6 md:gap-10">
-            <li><strong>Download the Bitcoin Yay app</strong></li>
-            <li><strong>Invite at least 1 friend (verified referral)</strong></li>
+            <li><strong>Must be an active BTCY miner</strong></li>
+            <li><strong>Registration required before snapshot</strong></li>
+            <li><strong>One account per user (multi-accounts disqualified)</strong></li>
             <li><strong>Submit a valid TRON (TRC20) wallet address</strong></li>
-            <li><strong>Register before midnight on Dec 31</strong></li>
           </ul>
           <div className="mx-auto md:mx-0 mt-10 flex justify-center md:justify-start items-center md:items-start gap-10 md:gap-20">
             <CustomButton2
@@ -461,22 +454,21 @@ export default function Airdrop() {
           FAQs
         </h2>
         <div className="text-tertiary mt-20 max-w-5xl">
-          <h5 className="mt-6 text-3xl font-bold">Q: How do I register?</h5>
+          <h5 className="mt-6 text-3xl font-bold">Q: Who can participate?</h5>
           <p className="mt-4 text-lg">
-            A: Tap Join Airdrop Now, log in or create your bitcoin-yay account,
-            and ensure your app email matches your website email.
+            A: Only active BTCY miners with a registered account.
           </p>
 
           <h5 className="mt-6 text-3xl font-bold">
-            Q: When will I receive BTCY?
+            Q: How are winners selected?
           </h5>
           <p className="mt-4 text-lg">
-            A: Distribution happens on Jan 1, 2026. BTCY tokens will be distributed to your TRON wallet address.
+            A: All winners will be randomly selected.
           </p>
 
-          <h5 className="mt-6 text-3xl font-bold">Q: How much can I win?</h5>
+          <h5 className="mt-6 text-3xl font-bold">Q: What if I don’t win BTCY?</h5>
           <p className="mt-4 text-lg">
-            A: You can win 250 BTCY tokens (~$25) by joining Bitcoin Yay and inviting one friend.
+            A: You’ll still receive 7 days of Turbo Mining Power.
           </p>
         </div>
       </div>

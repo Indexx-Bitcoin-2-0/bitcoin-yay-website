@@ -46,9 +46,8 @@ const CarouselFrame2 = () => {
         </h2>
         <h3 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold my-2 md:my-4">is Here!</h3>
         <p className="text-lg md:text-xl xl:text-2xl hidden md:block max-w-1/2 mt-4">
-          AI-Powered Mobile Mining. No Expensive Rigs. Just You, Your Phone, and
-          BTCY. Earn bitcoin-yay effortlessly by participating daily. Fully
-          decentralized, mobile-first.
+          Experience AI-powered mobile mining without expensive hardware.
+          Participate daily, earn Bitcoin Yay (BTCY), and be part of the Bitcoin family — we are family, building a fully decentralized, mobile-first ecosystem powered by real utility, mining innovation, and community ownership.
         </p>
       </div>
       <Image
@@ -65,11 +64,12 @@ const CarouselFrame3 = () => {
     <div className="h-full relative flex flex-col lg:flex-row justify-between items-center text-center md:text-left md:px-20 lg:px-40">
       <div className="w-full flex flex-col justify-center z-10">
         <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-bold my-2 md:my-4 md:max-w-2/3">
-          Pick Up Your Gopher to Mine BTCY
+          Start Mining BTCY
         </h2>
         <p className="text-lg md:text-xl lg:text-2xl hidden md:block max-w-1/2 mt-4">
-          Start free. Upgrade for speed, perks, and priority rewards. Everyone
-          starts somewhere.
+          You’re the Mining Gopher — fast, focused, and always mining.
+          Start free. Upgrade for speed, perks, and priority rewards.
+          Everyone starts somewhere.
         </p>
       </div>
       <Image
@@ -93,14 +93,11 @@ const CarouselFrame4 = () => {
       </div>
       <div className="w-full flex flex-col justify-center items-center text-center order-1 md:order-2 z-10">
         <h2 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mt-2 md:mt-4">
-          Built on Bitcoin.
+          Mine Bitcoin-Yay.<br /> Powered by You.
         </h2>
-        <h2 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mt-2">
-          Powered by You.
-        </h2>
+
         <p className="text-lg md:text-xl lg:text-2xl mt-4 hidden md:block lg:max-w-1/2">
-          Every mined token earns you ownership. The more you contribute, the
-          more you shape the future.
+          Every mined token earns you ownership. The more you contribute, the more you shape the future.
         </p>
       </div>
     </div>
@@ -205,7 +202,7 @@ const CarouselFrame8 = () => {
           is Powered by indexx.ai
         </h3>
         <p className="text-base md:text-lg lg:text-xl xl:text-2xl hidden md:block max-w-2xl mt-4 leading-relaxed">
-          Indexx.ai is the official host of Bitcoin-Yay (BTCY) — powering its blockchain wallet, ecosystem, and utilities like Alchemy and Quantum Mining. It's where BTCY becomes real, secure, and trade-ready.
+          Indexx.ai is the official host of Bitcoin Yay (BTCY) powering its blockchain wallet, ecosystem, and utilities like Alchemy, Snatch Mining, Power Mining and Quantum Mining. It’s where BTCY becomes real, secure, and trade-ready.
         </p>
       </div>
       <div className="w-full md:w-1/2 flex justify-center md:justify-end items-center">
@@ -235,6 +232,18 @@ export default function HeroSection() {
 
   const handleMouseDown = () => setPaused(true);
   const handleMouseUp = () => setPaused(false);
+
+  const handlePrevious = () => {
+    setPaused(true);
+    setCurrentIndex((prevIndex) => (prevIndex - 1 + 8) % 8);
+    setTimeout(() => setPaused(false), 3000); // Resume auto-play after 3 seconds
+  };
+
+  const handleNext = () => {
+    setPaused(true);
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % 8);
+    setTimeout(() => setPaused(false), 3000); // Resume auto-play after 3 seconds
+  };
 
   return (
     <div
@@ -292,6 +301,49 @@ export default function HeroSection() {
         <CarouselFrame7 />
       </div>
 
+      {/* Left Arrow */}
+      <button
+        onClick={handlePrevious}
+        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-20 text-white rounded-full p-3 md:p-4 transition-all duration-300 hover:scale-110"
+        aria-label="Previous slide"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={2}
+          stroke="#ff8728"
+          className="w-5 h-5 md:w-6 md:h-6"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M15.75 19.5L8.25 12l7.5-7.5"
+          />
+        </svg>
+      </button>
+
+      {/* Right Arrow */}
+      <button
+        onClick={handleNext}
+        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-20  text-white p-3 md:p-4 transition-all duration-300 hover:scale-110"
+        aria-label="Next slide"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={2}
+          stroke="#ff8728"
+          className="w-5 h-5 md:w-6 md:h-6"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M8.25 4.5l7.5 7.5-7.5 7.5"
+          />
+        </svg>
+      </button>
     </div>
   );
 }
