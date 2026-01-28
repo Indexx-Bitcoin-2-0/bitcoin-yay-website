@@ -1,13 +1,14 @@
 "use client";
 
-import { FormEvent, useState, useEffect } from "react";
+import { FormEvent, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import axios, { AxiosError } from "axios";
 import { TronWeb } from "tronweb";
 
-import { AIRDROP_REGISTER_API_ROUTE } from "@/routes";
+import { BTCY_LOYALTY_AIRDROP_REGISTER_API_ROUTE } from "@/routes";
 import { getGmailAliasInfo } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
 
 import BgImage1 from "@/assets/images/airdrop/bg-art-1.webp";
 import BgImage2 from "@/assets/images/airdrop/bg-art-2.webp";
@@ -66,14 +67,7 @@ export default function AirdropRegisterPage() {
     useState<boolean>(false);
   const [isDownloadPopupOpen, setIsDownloadPopupOpen] =
     useState<boolean>(false);
-
-  useEffect(() => {
-    // Show download popup on mount with a small delay
-    const timer = setTimeout(() => {
-      setIsDownloadPopupOpen(true);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, []);
+  const { isAuthenticated } = useAuth();
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -130,15 +124,12 @@ export default function AirdropRegisterPage() {
     setFormSubmitted(true);
 
     try {
-      const res = await axios.post(AIRDROP_REGISTER_API_ROUTE, {
-        email: email,
-        referralCode: referralLink,
-        userType: "Indexx Exchange",
-        walletAddress: walletAddress,
-        walletProvider: "",
-        airdropAmount: 0,
-        tokenName: "BTCY",
-        eventType: "bitcoin-yay New Year Airdrop",
+      const res = await axios.post(BTCY_LOYALTY_AIRDROP_REGISTER_API_ROUTE, {
+        email: email.trim(),
+        walletAddress: walletAddress.trim(),
+        userType: "participant",
+        referralCode: referralLink.trim(),
+        walletProvider: "TRON",
       });
 
       if (res.status === 200 || res.status === 201) {
@@ -156,16 +147,29 @@ export default function AirdropRegisterPage() {
       setIsPopupOpen(true);
       setFormSubmitted(false);
     } catch (error) {
-      let errorMessage = (error as AxiosError).response?.data;
-      errorMessage = (errorMessage as { data?: object })?.data;
+      const axiosError = error as AxiosError;
+      const serverMessage =
+        (axiosError.response?.data as { data?: { message?: string } })?.data
+          ?.message;
+      const fallbackMessage =
+        axiosError.message || "Network error or server unavailable. Please try again.";
+      const generalMessage =
+        typeof serverMessage === "string" && serverMessage.length > 0
+          ? serverMessage
+          : fallbackMessage;
+      const shouldShowDownloadPopup =
+        !isAuthenticated &&
+        axiosError.response?.status === 400 &&
+        typeof generalMessage === "string" &&
+        generalMessage.toLowerCase().includes("not registered");
+
       setIsRegistrationSuccessful(false);
-      setErrors({
-        general:
-          error instanceof Error && "response" in error
-            ? (errorMessage as { message?: string })?.message ||
-            "An error occurred"
-            : "Network error or server unavailable. Please try again.",
-      });
+      setErrors({ general: generalMessage });
+
+      if (shouldShowDownloadPopup) {
+        setIsDownloadPopupOpen(true);
+      }
+
       setIsPopupOpen(true);
       setFormSubmitted(false);
     }
