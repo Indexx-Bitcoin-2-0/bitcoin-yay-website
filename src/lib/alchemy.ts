@@ -12,7 +12,13 @@ import {
   GET_USER_WALLET_BALANCE_API_ROUTE,
 } from "@/routes";
 
-export const ALCHEMY_DISABLED = false;
+export const ALCHEMY_DISABLED = true;
+
+const ensureAlchemyEnabled = (): void => {
+  if (ALCHEMY_DISABLED) {
+    throw new Error("Alchemy is temporarily disabled for all users.");
+  }
+};
 
 export interface CreateAlchemyData {
   email: string;
@@ -146,6 +152,7 @@ export async function createAlchemy(
   data: CreateAlchemyData
 ): Promise<CreateAlchemyResponse> {
   try {
+    ensureAlchemyEnabled();
     const accessToken = getAccessToken();
 
     if (!accessToken) {
@@ -192,6 +199,7 @@ export async function completeAlchemy(
   data: CompleteAlchemyData
 ): Promise<CompleteAlchemyResponse> {
   try {
+    ensureAlchemyEnabled();
     const accessToken = getAccessToken();
 
     if (!accessToken) {
@@ -287,6 +295,7 @@ export async function processAlchemyConversion(
   data: ProcessAlchemyData
 ): Promise<AlchemyProcessResponse> {
   try {
+    ensureAlchemyEnabled();
     const accessToken = getAccessToken();
 
     if (!accessToken) {
@@ -342,6 +351,7 @@ export async function completeAlchemyProcess(
   data: CompleteAlchemyProcessData
 ): Promise<AlchemyProcessResponse> {
   try {
+    ensureAlchemyEnabled();
     const accessToken = getAccessToken();
 
     if (!accessToken) {
@@ -391,6 +401,7 @@ export async function completeAlchemyProcess(
  */
 export async function getAlchemyConfig(): Promise<AlchemyConfigResponse> {
   try {
+    ensureAlchemyEnabled();
     const accessToken = getAccessToken();
     console.log("log", accessToken)
     if (!accessToken) {
@@ -922,6 +933,7 @@ export async function getAlchemySessionsByEmail(
   email: string
 ): Promise<AlchemySessionsResponse> {
   try {
+    ensureAlchemyEnabled();
     const accessToken = getAccessToken();
 
     if (!accessToken) {
@@ -1022,6 +1034,7 @@ export async function finalizeClickConvertSessionState({
   withdrawalType?: WithdrawalType;
   withdrawalAddress?: string;
 } = {}): Promise<ClickConvertSessionState | null> {
+  ensureAlchemyEnabled();
   const stored = getClickConvertSessionState();
   if (!stored?.sessionId) return null;
   if (stored.completedAt && !forceComplete) {
