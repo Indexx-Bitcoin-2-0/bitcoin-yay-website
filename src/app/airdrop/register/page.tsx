@@ -138,7 +138,7 @@ export default function AirdropRegisterPage() {
         walletProvider: "",
         airdropAmount: 0,
         tokenName: "BTCY",
-        eventType: "bitcoin-yay New Year Airdrop",
+        eventType: "bitcoin-yay Loyalty Airdrop",
       });
 
       if (res.status === 200 || res.status === 201) {
@@ -265,7 +265,7 @@ export default function AirdropRegisterPage() {
                 Congratulations!
               </h2>
               <p className="mt-6 max-w-100 lg:text-xl">
-                You have successfully registered for the bitcoin-yay New Year Airdrop.
+                You have successfully registered for the bitcoin-yay Loyalty Airdrop.
               </p>
 
               {/* <div className="mb-6 mt-2 lg:mt-8 w-full px-4 md:px-8 text-start">
@@ -375,7 +375,7 @@ export default function AirdropRegisterPage() {
         <h2 className="mt-6 text-5xl md:text-7xl font-bold">
           bitcoin-yay
           <br />
-          <span className="text-primary">New Year Airdrop!</span>
+          <span className="text-primary">Loyalty Airdrop!</span>
         </h2>
         <p className="mt-16 text-xl font-medium">
           To claim airdrop you need to be a Miner. Download the app and join now

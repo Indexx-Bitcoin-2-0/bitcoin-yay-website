@@ -29,13 +29,13 @@ import UserReviewCards from "@/components/UserReviewCards";
 import PrizeBreakdown from "@/components/PrizeBreakdown";
 
 export const metadata = {
-  title: "BTCY New Year Airdrop 2026 - Start the new year with free crypto",
+  title: "BTCY Loyalty Airdrop 2026 - Rewarding Our Active BTCY Miners",
   description:
-    "Win 250 BTCY tokens (~$25) just for joining Bitcoin Yay and inviting one friend. Join the BTCY New Year Airdrop 2026 now!",
+    "Join the BTCY Loyalty Airdrop and win from a 50,000 BTCY prize pool. Exclusive for active Bitcoin Yay miners. Register before February 8, 2026!",
   openGraph: {
-    title: "BTCY New Year Airdrop 2026 - Start the new year with free crypto",
+    title: "BTCY Loyalty Airdrop 2026 - Rewarding Our Active BTCY Miners",
     description:
-      "Win 250 BTCY tokens (~$25) just for joining Bitcoin Yay and inviting one friend. Join the BTCY New Year Airdrop 2026 now!",
+      "Join the BTCY Loyalty Airdrop and win from a 50,000 BTCY prize pool. Exclusive for active Bitcoin Yay miners. Register before February 8, 2026!",
   },
 };
 
