@@ -30,12 +30,12 @@ const CustomCard = ({
   buttonLink: string;
 }) => {
   return (
-    <div className="flex w-full md:w-[48vw] h-160 px-2 flex-col items-center justify-center text-center bg-[#181818]">
+    <div className="flex w-full px-10 flex-col items-center justify-center text-center bg-[#181818] py-10">
       <div className="py-20 h-60 flex items-center justify-center">
         <Image src={image} alt={title} className="w-54" />
       </div>
       <h3 className="text-4xl font-bold mt-10">{title}</h3>
-      <p className="text-lg mt-3">{description}</p>
+      <p className="text-lg mt-3 max-w-100">{description}</p>
       <Link href={buttonLink} className="mt-6">
         <CustomButton
           text={buttonText}
@@ -67,11 +67,11 @@ export default function Bible() {
           the BTCY network.
         </p>
       </div>
-      <div className="mt-40 max-w-screen overflow-hidden">
+      <div className="mt-40 max-w-7xl mx-auto overflow-hidden">
         <Image src={ArtImage2} alt="Art Image 2" className="min-w-200" />
       </div>
 
-      <div className="mt-80 px-4 md:px-20 xl:px-40">
+      <div className="mt-80 max-w-7xl mx-auto px-4 md:px-20 xl:px-40">
         <h2 className="text-5xl md:text-7xl font-bold">
           What’s inside BTCY Bible
         </h2>
@@ -80,14 +80,15 @@ export default function Bible() {
         </p>
       </div>
 
-      <div className="flex items-center justify-center w-full mt-20">
-        <div className="mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="flex max-w-7xl mx-auto items-center justify-center w-full mt-20">
+        <div className="mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
           <CustomCard
             image={CardImage1}
             title="Story"
             description="A Crypto based lottery where you can earn big rewards"
             buttonText="Read More"
             buttonLink="/bible/story"
+
           />
           <CustomCard
             image={CardImage6}

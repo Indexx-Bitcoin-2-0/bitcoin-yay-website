@@ -7,7 +7,11 @@ import PopupComponent from "@/components/PopupComponent";
 import CustomButton2 from "./CustomButton2";
 import BIcon from "@/assets/images/logo.webp"; // Using the orange B icon
 import DownloadIcon from "@/assets/images/buttons/download-button.webp";
+import AppleIcon from "@/assets/images/apple_icon.webp";
+import PlaystoreIcon from "@/assets/images/playstore_icon.webp";
 import { X } from "lucide-react";
+import AppleQrCode from "@/assets/images/apple-qr.webp";
+import PlaystoreQrCode from "@/assets/images/playstore-qr.webp";
 
 interface JoinPopupProps {
   isOpen: boolean;
@@ -49,17 +53,44 @@ const JoinPopup: React.FC<JoinPopupProps> = ({
         {/* Buttons Section */}
         <div className="flex gap-10 w-full justify-center">
           <CustomButton2
-            image={DownloadIcon}
+            image={AppleIcon}
             text="Download on App Store"
             onClick={() => window.open("https://apps.apple.com/ph/app/bitcoin-yay/id6744868017", "_blank")}
-            imageStyling="w-16 h-16"
+            imageStyling="w-18"
           />
           <CustomButton2
-            image={DownloadIcon}
+            image={PlaystoreIcon}
             text="Get it on Google Play"
             onClick={() => window.open("https://play.google.com/store/apps/details?id=com.bitcoin2&hl=en", "_blank")}
-            imageStyling="w-16 h-16"
+            imageStyling="w-18"
           />
+        </div>
+        <div className="flex flex-row gap-10">
+          <div className="flex flex-col items-start justify-start mt-6">
+            <Link
+              href="https://apps.apple.com/ph/app/bitcoin-yay/id6744868017"
+              target="_blank"
+            >
+              <Image
+                src={AppleQrCode}
+                alt="App QR Code"
+                className="h-44 w-44 mt-2 text-amber-50 hover:scale-105 transition-transform duration-300 ease-in-out"
+              />
+            </Link>
+          </div>
+          <div className="flex flex-col items-start justify-start mt-6">
+
+            <Link
+              href="https://play.google.com/store/apps/details?id=com.bitcoin2&hl=en"
+              target="_blank"
+            >
+              <Image
+                src={PlaystoreQrCode}
+                alt="Google QR Code"
+                className="h-44 w-44 mt-2 text-amber-50 hover:scale-105 transition-transform duration-300 ease-in-out"
+              />
+            </Link>
+          </div>
         </div>
       </div>
     </PopupComponent>
