@@ -304,7 +304,7 @@ export default function HeroSection() {
       {/* Left Arrow */}
       <button
         onClick={handlePrevious}
-        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-20 text-white rounded-full p-3 md:p-4 transition-all duration-300 hover:scale-110"
+        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-20 text-white rounded-full p-3 md:p-4 transition-all duration-300 hover:scale-125 hover:cursor-pointer"
         aria-label="Previous slide"
       >
         <svg
@@ -326,7 +326,7 @@ export default function HeroSection() {
       {/* Right Arrow */}
       <button
         onClick={handleNext}
-        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-20  text-white p-3 md:p-4 transition-all duration-300 hover:scale-110"
+        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-20  text-white p-3 md:p-4 transition-all duration-300 hover:scale-125"
         aria-label="Next slide"
       >
         <svg

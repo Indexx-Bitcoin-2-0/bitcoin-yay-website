@@ -10,7 +10,7 @@ import NuclearPowerButtonImage from "@/assets/images/mining/nuclear-icon.webp";
 
 const PowerMiningPage = () => {
   return (
-    <div className="mx-auto mt-60 px-4 md:px-20 xl:px-40 relative max-w-[2000px]">
+    <div className="mx-auto mt-60 px-4 md:px-20 xl:px-40 relative max-w-8xl">
       <div className="flex flex-col items-center justify-center gap-20">
         <h1 className="text-5xl md:text-8xl font-bold">Power Mining</h1>
         <Image

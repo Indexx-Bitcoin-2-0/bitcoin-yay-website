@@ -277,6 +277,11 @@ const header_data = [
             href: "https://indexx.ai",
             openInNewTab: true,
           },
+          {
+            name: "WallStreet",
+            href: "https://wallstreet.indexx.ai",
+            openInNewTab: true,
+          },
         ],
       },
       {
