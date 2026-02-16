@@ -21,7 +21,7 @@ import UserDropdown from "./UserDropdown";
 import Data from "./data";
 import { useAuth } from "@/contexts/AuthContext";
 import LoginPopup from "@/components/LoginPopup";
-// import RegisterPopup from "@/components/RegisterPopup";
+import RegisterPopup from "@/components/RegisterPopup";
 import ReferralHandler from "@/components/ReferralHandler";
 import {
   Accordion,
@@ -45,7 +45,7 @@ import CustomButton2 from "@/components/CustomButton2";
 import PopupComponent from "@/components/PopupComponent";
 import PowerButtonImage from "@/assets/images/buttons/power-button.webp";
 import BuyNowButtonImage from "@/assets/images/buttons/buy-now-button.webp";
-import JoinPopup from "@/components/JoinPopup";
+// import JoinPopup from "@/components/JoinPopup";
 
 // Types for better type safety
 interface LinkItem {
@@ -1119,7 +1119,7 @@ const Navbar: React.FC = () => {
                 onClick={() => setIsRegisterPopupOpen(true)}
                 className="hover:text-primary text-tertiary cursor-pointer"
               >
-                Join
+                Register
               </button>
             </div>
           )}
@@ -1174,7 +1174,7 @@ const Navbar: React.FC = () => {
                   }}
                   className="hover:text-primary text-tertiary cursor-pointer"
                 >
-                  Join
+                  Register
                 </button>
               </div>
             )}
@@ -1262,7 +1262,7 @@ const Navbar: React.FC = () => {
       />
 
       {/* Register Popup */}
-      {/* <RegisterPopup
+      <RegisterPopup
         isOpen={isRegisterPopupOpen}
         onClose={() => setIsRegisterPopupOpen(false)}
         onRegisterSuccess={handleRegisterSuccess}
@@ -1271,13 +1271,13 @@ const Navbar: React.FC = () => {
           setIsLoginPopupOpen(true);
         }}
         referralCode={referralCode}
-      /> */}
+      />
 
       {/* Join Popup */}
-      <JoinPopup
+      {/* <JoinPopup
         isOpen={isRegisterPopupOpen}
         onClose={() => setIsRegisterPopupOpen(false)}
-      />
+      /> */}
     </nav>
   );
 };
