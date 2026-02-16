@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import axios, { AxiosError } from "axios";
@@ -40,6 +40,11 @@ interface FormErrors {
   general?: string; // For general form errors, e.g., from API
 }
 
+const AIRDROP_STATUS_URL =
+  "https://api.v1.indexx.ai/api/v1/inex/basic/airdrop-status";
+const AIRDROP_INACTIVE_MESSAGE =
+  "The airdrop has completed. Stay tuned for upcoming events.";
+
 const isValidTronAddress = (address: string): boolean => {
   if (!address.trim()) {
     return false;
@@ -61,6 +66,9 @@ export default function AirdropRegisterPage() {
   const [isRegistraionSuccessful, setIsRegistrationSuccessful] =
     useState<boolean>(false);
   const [isRegistrationClosed] = useState<boolean>(false);
+  const [isAirdropActive, setIsAirdropActive] = useState<boolean>(true);
+  const [airdropStatusLoading, setAirdropStatusLoading] =
+    useState<boolean>(true);
   const [errors, setErrors] = useState<FormErrors>({});
   const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
   const [isRegisterPopupOpen, setIsRegisterPopupOpen] =
@@ -110,6 +118,10 @@ export default function AirdropRegisterPage() {
     // Check if registration is closed first
     if (isRegistrationClosed) {
       setIsPopupOpen(true);
+      return;
+    }
+
+    if (!isAirdropActive) {
       return;
     }
 
@@ -178,6 +190,28 @@ export default function AirdropRegisterPage() {
   const copyReferralLink = (): void => {
     navigator.clipboard.writeText(userReferralLink);
   };
+
+  const isSubmitDisabled = !isAirdropActive || airdropStatusLoading;
+
+  useEffect(() => {
+    const fetchAirdropStatus = async () => {
+      try {
+        setAirdropStatusLoading(true);
+        const response = await axios.get(AIRDROP_STATUS_URL);
+        const isActive =
+          (response?.data as { data?: { active?: boolean } })?.data?.active;
+        if (typeof isActive === "boolean") {
+          setIsAirdropActive(isActive);
+        }
+      } catch (error) {
+        console.error("Failed to fetch airdrop status", error);
+      } finally {
+        setAirdropStatusLoading(false);
+      }
+    };
+
+    fetchAirdropStatus();
+  }, []);
   return (
     <div className="container mx-auto mt-60 flex flex-col justify-center items-center">
       {/* ###############  Bsckgroung Images   ############################# */}
@@ -517,32 +551,45 @@ export default function AirdropRegisterPage() {
             Gopher Airdrop with you. After you sign up, you’ll get your own
             referral link to share.
           </p> */}
-          <div className="flex justify-center mt-20">
-            {/* <button type="submit">
-              <Image
-                src={PointFingerButtonImage}
-                alt="Submit Button"
-                className="w-36 hover:scale-105 cursor-pointer"
+          <div className="flex flex-col items-center mt-20 gap-6">
+            {airdropStatusLoading && (
+              <p className="text-base md:text-lg text-tertiary">
+                Checking airdrop status...
+              </p>
+            )}
+            {!airdropStatusLoading && !isAirdropActive && (
+              <p className="text-lg md:text-2xl text-red-600 text-center font-semibold leading-tight">
+                {AIRDROP_INACTIVE_MESSAGE}
+              </p>
+            )}
+            <div className="flex justify-center">
+              {/* <button type="submit">
+                <Image
+                  src={PointFingerButtonImage}
+                  alt="Submit Button"
+                  className="w-36 hover:scale-105 cursor-pointer"
+                />
+              </button> */}
+              <CustomButton2
+                image={PointFingerButtonImage}
+                text="Submit"
+                disabled={isSubmitDisabled}
+                onClick={(e) => {
+                  e.preventDefault();
+                  // Create a synthetic form event to pass to handleSubmit
+                  const formEvent = {
+                    ...e,
+                    preventDefault: () => e.preventDefault(),
+                    currentTarget: e.currentTarget.closest(
+                      "form"
+                    ) as HTMLFormElement,
+                    target: e.currentTarget.closest("form") as HTMLFormElement,
+                  } as FormEvent<HTMLFormElement>;
+                  handleSubmit(formEvent);
+                }}
+                imageStyling="w-36"
               />
-            </button> */}
-            <CustomButton2
-              image={PointFingerButtonImage}
-              text="Submit"
-              onClick={(e) => {
-                e.preventDefault();
-                // Create a synthetic form event to pass to handleSubmit
-                const formEvent = {
-                  ...e,
-                  preventDefault: () => e.preventDefault(),
-                  currentTarget: e.currentTarget.closest(
-                    "form"
-                  ) as HTMLFormElement,
-                  target: e.currentTarget.closest("form") as HTMLFormElement,
-                } as FormEvent<HTMLFormElement>;
-                handleSubmit(formEvent);
-              }}
-              imageStyling="w-36"
-            />
+            </div>
           </div>
         </form>
       </div>
