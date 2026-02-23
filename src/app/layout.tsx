@@ -63,7 +63,7 @@ export default function RootLayout({
             <Suspense fallback={null}>
               <SignInTokenHandler />
             </Suspense>
-            {/* <NewYearAirdropPopupHandler /> */}
+            <NewYearAirdropPopupHandler />
             <ConditionalLayout>{children}</ConditionalLayout>
           </AuthProvider>
         </GoogleOAuthProvider>

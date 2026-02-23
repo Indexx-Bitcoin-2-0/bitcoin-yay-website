@@ -277,17 +277,18 @@ const header_data = [
             href: "https://indexx.ai",
             openInNewTab: true,
           },
-          {
-            name: "WallStreet",
-            href: "https://wallstreet.indexx.ai",
-            openInNewTab: true,
-          },
+
         ],
       },
       {
         heading: "Category",
         mainList: true,
         links: [
+          {
+            name: "WallStreet",
+            href: "https://wallstreet.indexx.ai",
+            openInNewTab: true,
+          },
           {
             name: "Lotto",
             href: "/btcy-index-relationship",

@@ -8,8 +8,8 @@ import CustomButton2 from "./CustomButton2";
 import LogoImage from "@/assets/images/main-logo.svg";
 import IndexxLogo from "@/assets/images/indexx.ai.svg";
 import RegisterButtonImage from "@/assets/images/buttons/register-button.webp";
-// Using one of the airdrop art images for the illustration
-import AirdropArt from "@/assets/images/btcy-airdrop/btcyairdroppopup.svg";
+// Using the same airdrop art as the airdrop page
+import AirdropArt from "@/assets/images/btcy-airdrop/btcyairdrop.png";
 
 interface NewYearAirdropPopupProps {
     isOpen: boolean;
@@ -52,14 +52,11 @@ const NewYearAirdropPopup: React.FC<NewYearAirdropPopupProps> = ({
 
                 {/* Main Headline */}
                 <div className="mb-6">
-                    <h1 className="text-white text-2xl md:text-3xl  font-bold mb-3">
-                        Bitcoin Yay
+                    <h1 className="text-white text-2xl md:text-3xl font-bold mb-3">
+                        WallStreet INEX Airdrop
                     </h1>
-                    <h2 className="text-primary text-5xl md:text-6xl  font-bold mb-3 leading-tight">
-                        New Year Airdrop
-                    </h2>
                     <p className="text-white text-xl md:text-2xl font-semibold">
-                        Is Live!
+                        Indexx Investment Share
                     </p>
                 </div>
 
@@ -75,16 +72,16 @@ const NewYearAirdropPopup: React.FC<NewYearAirdropPopupProps> = ({
                 {/* Airdrop Details */}
                 <div className="text-white space-y-2 md:space-y-3 mb-8">
                     <p className="text-base md:text-lg font-semibold">
-                        You will get a chance to Win  250 BTC (~$25)
+                        Win from a $50,000 USD Pool
                     </p>
                     <p className="text-base ">
-                        100 Winners
+                        Equal Share for All Eligible Participants
                     </p>
                     <p className="text-base ">
-                        Ends Jan 04, 2026
+                        Ends March 1, 2026
                     </p>
                     <p className="text-base  ">
-                        Distribution  Jan 05, 2026
+                        Distribution March 5, 2026
                     </p>
                 </div>
 

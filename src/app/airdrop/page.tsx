@@ -4,38 +4,35 @@ import Link from "next/link";
 import CustomButton2 from "@/components/CustomButton2";
 
 import ArtImage1 from "@/assets/images/btcy-airdrop/btcyairdrop.png"
-// import LottoLogo from "@/assets/images/lotto-airdrop/lotto-logo.webp";
-import ArtImage2 from "@/assets/images/wibs-airdrop/art-2.webp";
-// import ArtImage3 from "@/assets/images/lotto-airdrop/art-3.webp";
 import ArtImage4 from "@/assets/images/wibs-airdrop/art-4.webp";
-// import ArtImage5 from "@/assets/images/airdrop/art-5.webp";
-// import ArtImage6 from "@/assets/images/airdrop/art-6.webp";
+
 
 import CalendarArt from "@/assets/images/wibs-airdrop/calander-art.webp";
 
-import WhatYouGetImage1 from "@/assets/images/wibs-airdrop/what-you-get-1.webp";
-import WhatYouGetImage2 from "@/assets/images/tokenUpdatedImg.svg";
-import WhatYouGetImage3 from "@/assets/images/wibs-airdrop/what-you-get-3.webp";
-import WhatYouGetImage4 from "@/assets/images/wibs-airdrop/what-you-get-4.webp";
+import WhatYouGetImage1 from "@/assets/images/btcy-airdrop/register.png";
+import WhatYouGetImage2 from "@/assets/images/btcy-airdrop/mineToQualify.png";
+import WhatYouGetImage3 from "@/assets/images/btcy-airdrop/eligibilityReview.png";
+import WhatYouGetImage4 from "@/assets/images/btcy-airdrop/receiveYourShare.png";
+
 // import WorldMapImage from "@/assets/images/airdrop/political-map-world.webp";
 
 import RegisterButtonImage from "@/assets/images/buttons/register-button.webp";
-import CartButtonImage from "@/assets/images/buttons/cart-button.webp";
-import DownloadButtonImage from "@/assets/images/buttons/download-button.webp";
-// import PowerButtonImage from "@/assets/images/buttons/power-button.webp";
-// import PointFingerButtonImage from "@/assets/images/buttons/point-button.webp";
+import DownloadLogo from "@/assets/images/download-button.svg";
+import ThumbsUpImage from "@/assets/images/buttons/thumbs-up-button.webp";
+
+import WalletImage from "@/assets/images/buttons/price-tag-button.webp"; // Using price-tag as a wallet placeholder if dedicated wallet doesn't exist, wait, I saw cart-button and price-tag-button. The image shows a wallet. Let me check buttons again.
 
 import UserReviewCards from "@/components/UserReviewCards";
 import PrizeBreakdown from "@/components/PrizeBreakdown";
 
 export const metadata = {
-  title: "BTCY Loyalty Airdrop 2026 - Rewarding Our Active BTCY Miners",
+  title: "WallStreet INEX Airdrop & Indexx Investment Share",
   description:
-    "Join the BTCY Loyalty Airdrop and win from a 50,000 BTCY prize pool. Exclusive for active Bitcoin Yay miners. Register before February 8, 2026!",
+    "A mining-based qualification event connecting BTCY miners to the Indexx investment ecosystem. Mine 100 BTCY to qualify for a share of the $50,000 investment pool.",
   openGraph: {
-    title: "BTCY Loyalty Airdrop 2026 - Rewarding Our Active BTCY Miners",
+    title: "WallStreet INEX Airdrop & Indexx Investment Share",
     description:
-      "Join the BTCY Loyalty Airdrop and win from a 50,000 BTCY prize pool. Exclusive for active Bitcoin Yay miners. Register before February 8, 2026!",
+      "A mining-based qualification event connecting BTCY miners to the Indexx investment ecosystem. Mine 100 BTCY to qualify for a share of the $50,000 investment pool.",
   },
 };
 
@@ -45,25 +42,31 @@ export default function Airdrop() {
       <div className="relative flex flex-col lg:flex-row">
         <div className="mt-10 w-full lg:w-[90%] flex flex-col justify-items-center px-4 md:pl-20 xl:pl-30">
           <h2 className="text-[40px] md:text-7xl">
-            BTCY Loyalty Airdrop
+            WallStreet INEX
             <br />
-            {/* <span className="text-primary">Lotto Airdrop</span>! */}
+            Airdrop — Indexx
+            <br />
+            Investment Share
           </h2>
 
-          <p className="mt-10 text-2xl md:text-3xl text-primary">
-            Rewarding our most loyal Bitcoin Yay miners.
+          <p className="mt-10 text-2xl md:text-3xl text-primary font-medium">
+            A mining-based qualification event connecting BTCY miners to the Indexx investment ecosystem.
           </p>
           <p className="mt-4 text-xl">
-            Active BTCY miners can win from a 50,000 BTCY prize pool. Register now and keep mining to increase your chances.
+            Mine at least 100 BTCY between Feb 23 and March 1 to qualify. All eligible participants will receive an equal share of the $50,000 investment pool.
           </p>
 
-          <div className="font-bold mt-10 flex justify-center md:justify-start items-center md:items-start gap-10 md:gap-20">
+          <div className="font-bold mt-10 flex flex-col justify-center md:justify-start items-center md:items-start">
             <CustomButton2
               image={RegisterButtonImage}
               text="Join Airdrop Now"
               link="/airdrop/register"
               imageStyling="w-30"
             />
+            <div className="mt-4 text-sm text-left font-normal space-y-1">
+              <p>One account works across BTCY, WallStreet & Indexx , no new account required.</p>
+              <p className="text-[#FF8A00]">Warning: Any invalid email or Temporary email address will not be eligible for the airdrop.</p>
+            </div>
           </div>
         </div>
         <div className="relative mx-auto lg:mx-0">
@@ -136,50 +139,66 @@ export default function Airdrop() {
 
       <div className="mt-80 px-4 md:px-20 xl:px-20">
         <h2 className="text-6xl lg:text-8xl  text-center ">How It Works</h2>
-        <div className="mt-20 w-full mx-auto grid grid-cols-1 md:grid-cols-3 gap-20">
+        <div className="mt-20 w-full mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           <div className="max-w-100 text-center mx-auto">
             <div className=" h-70 flex justify-center items-center">
               <Image
                 src={WhatYouGetImage1}
-                alt="What you get 1"
+                alt="Register"
                 className="w-60"
-              />
-            </div>
-            <h4 className="mt-6 text-3xl font-semibold h-24 flex items-center justify-center">
-              Download & Register
-            </h4>
-            <p className="text-xl font-light">
-              Download the Bitcoin Yay app
-            </p>
-          </div>
-          <div className="max-w-100 text-center mx-auto">
-            <div className="h-70 flex justify-center items-center">
-              <Image
-                src={WhatYouGetImage2}
-                alt="What you get 1"
-                className="w-64"
               />
             </div>
             <h4 className="mt-6 text-3xl font-semibold h-24 flex items-center justify-center">
               Register
             </h4>
             <p className="text-xl font-light">
-              Submit the airdrop registration form
+              Complete the official airdrop registration using your BTCY-linked email.
+            </p>
+          </div>
+          <div className="max-w-100 text-center mx-auto">
+            <div className="h-70 flex justify-center items-center">
+              <Image
+                src={WhatYouGetImage2}
+                alt="Mine to Qualify"
+                className="w-64"
+              />
+            </div>
+            <h4 className="mt-6 text-3xl font-semibold h-24 flex items-center justify-center">
+              Mine to Qualify
+            </h4>
+            <p className="text-xl font-light">
+              Mine at least 100 BTCY between Feb 23 and March 1. Only mining activity within this window counts.
             </p>
           </div>
           <div className="max-w-100 text-center mx-auto">
             <div className=" h-70 flex justify-center items-center">
               <Image
-                src={WhatYouGetImage3}
-                alt="What you get 1"
+                src={ThumbsUpImage}
+                alt="Eligibility Review"
                 className="w-64"
               />
             </div>
             <h4 className="mt-6 text-3xl font-semibold h-24 flex items-center justify-center">
-              Wallet
+              Eligibility Review
             </h4>
             <p className="text-xl font-light">
-              Wait to receive your rewards            </p>
+              After the window closes, we verify your mined amount, account validity, and registration status.
+            </p>
+          </div>
+          <div className="max-w-100 text-center mx-auto">
+            <div className=" h-70 flex justify-center items-center">
+              <Image
+                src={WalletImage}
+                alt="Receive Your Share"
+                className="w-64"
+              />
+            </div>
+            <h4 className="mt-6 text-3xl font-semibold h-24 flex items-center justify-center">
+              Receive Your Share
+            </h4>
+            <p className="text-xl font-light">
+              All eligible participants receive an equal share of the $50,000 Indexx.ai investment pool on WallStreet.
+            </p>
           </div>
         </div>
       </div>
@@ -201,19 +220,19 @@ export default function Airdrop() {
         </h2>
         <div className="flex flex-wrap w-full justify-center items-start gap-20 mt-10 md:mt-30 px-4 md:px-10 xl:px-20">
           <div className="w-90 flex flex-col ">
-            <h3 className="text-[40px] md:text-5xl font-bold">February 2, 2026</h3>
+            <h3 className="text-[40px] md:text-5xl font-bold">Februrary 23 , 2026</h3>
             <p className="mt-2 md:mt-10 text-xl md:text-3xl">
               Campaign live — start registering
             </p>
           </div>
           <div className="w-90 flex flex-col ">
-            <h3 className="text-[40px] md:text-5xl font-bold">Until February 8, 2026</h3>
+            <h3 className="text-[40px] md:text-5xl font-bold">Until March 1, 2026</h3>
             <p className="mt-2 md:mt-10 text-xl md:text-3xl">
               Sign-up window closes
             </p>
           </div>{" "}
           <div className="w-90 flex flex-col ">
-            <h3 className="text-[40px] md:text-5xl font-bold">February 9, 2026</h3>
+            <h3 className="text-[40px] md:text-5xl font-bold">March 5, 2026</h3>
             <p className="mt-2 md:mt-10 text-xl md:text-3xl">
               Winners announced & BTCY distributed
             </p>
@@ -227,33 +246,29 @@ export default function Airdrop() {
             Eligibility & Rules
           </h2>
           <ul className="mt-10 list-disc pl-6 text-xl md:text-3xl flex flex-col gap-6 md:gap-10">
-            <li><strong>Must be an active BTCY miner</strong></li>
-            <li><strong>Registration required before snapshot</strong></li>
-            <li><strong>One account per user (multi-accounts disqualified)</strong></li>
-            <li><strong>Submit a valid TRON (TRC20) wallet address</strong></li>
+            <li>Log in with same E-mail on BTCY & WallStreet</li>
+            <li>Must be an active BTCY miner</li>
+            <li>Mine at least 100 BTCY between Feb 23 – March 1</li>
+            <li>Complete the official airdrop registration during the campaign period</li>
+            <li>Use a real, permanent email address</li>
+            <li>Maintain one unique account (no duplicates)</li>
           </ul>
           <div className="mx-auto md:mx-0 mt-10 flex justify-center md:justify-start items-center md:items-start gap-10 md:gap-20">
             <CustomButton2
-              image={RegisterButtonImage}
-              text="Join Airdrop Now"
-              link="/airdrop/register"
-              imageStyling="w-30"
+              image={DownloadLogo}
+              text="Download on App Store"
+              link="/#apple-store-download"
+              imageStyling="w-40"
             />
             <CustomButton2
-              image={DownloadButtonImage}
-              text="Download App"
-              link="/#apple-store-download"
-              imageStyling="w-30"
+              image={DownloadLogo}
+              text="Get it on Google Play"
+              link="/#google-play-download"
+              imageStyling="w-40"
             />
           </div>
         </div>
-        <div className="mt-10 flex-1 flex items-center justify-center">
-          <Image
-            src={ArtImage2}
-            alt="Airdrop Art 1"
-            className="w-80 md:w-140"
-          />
-        </div>
+
       </div>
 
       {/* <div className="flex flex-col lg:flex-row items-center lg:items-start gap-10 mt-60 px-4 md:px-10 xl:px-20">
@@ -454,21 +469,21 @@ export default function Airdrop() {
           FAQs
         </h2>
         <div className="text-tertiary mt-20 max-w-5xl">
-          <h5 className="mt-6 text-3xl font-bold">Q: Who can participate?</h5>
+          <h5 className="mt-6 text-3xl font-bold">Q: Is this a random giveaway?</h5>
           <p className="mt-4 text-lg">
-            A: Only active BTCY miners with a registered account.
+            A: No. You must mine at least 100 BTCY during the eligibility window to qualify.
           </p>
 
           <h5 className="mt-6 text-3xl font-bold">
-            Q: How are winners selected?
+            Q: Can I mine before Feb 23 and still qualify?
           </h5>
           <p className="mt-4 text-lg">
-            A: All winners will be randomly selected.
+            A: Only mining between Feb 23 and March 1 counts.
           </p>
 
-          <h5 className="mt-6 text-3xl font-bold">Q: What if I don’t win BTCY?</h5>
+          <h5 className="mt-6 text-3xl font-bold">Q: What happens if I use a temporary email?</h5>
           <p className="mt-4 text-lg">
-            A: You’ll still receive 7 days of Turbo Mining Power.
+            A: Accounts using fake or disposable emails will be disqualified.
           </p>
         </div>
       </div>
