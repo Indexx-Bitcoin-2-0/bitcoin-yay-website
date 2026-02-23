@@ -2,6 +2,8 @@ export const CONTACT_US_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/
 
 export const BTCY_LOYALTY_AIRDROP_REGISTER_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/basic/registerbtcyloyaltyairdrop`;
 
+export const WALLSTREET_INEX_AIRDROP_REGISTER_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/basic/registerwallstreetinexairdrop`;
+
 export const LOGIN_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/login`;
 
 export const LOGIN_WITH_TOKEN_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/loginWithToken`;

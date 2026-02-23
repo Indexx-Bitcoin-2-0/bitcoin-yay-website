@@ -1,11 +1,11 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import axios, { AxiosError } from "axios";
 
-import { BTCY_LOYALTY_AIRDROP_REGISTER_API_ROUTE } from "@/routes";
+import { WALLSTREET_INEX_AIRDROP_REGISTER_API_ROUTE } from "@/routes";
 import { getGmailAliasInfo } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -38,35 +38,28 @@ interface FormErrors {
   general?: string; // For general form errors, e.g., from API
 }
 
-const AIRDROP_STATUS_URL =
-  "https://api.v1.indexx.ai/api/v1/inex/basic/airdrop-status";
+const AIRDROP_END_DATE_UTC = "2026-03-01T23:59:59.999Z";
 const AIRDROP_INACTIVE_MESSAGE =
   "The airdrop has completed. Stay tuned for upcoming events.";
 
 export default function AirdropRegisterPage() {
   const [email, setEmail] = useState<string>("");
   const [username, setUsername] = useState<string>("");
-  const [referralLink, setReferralLink] = useState<string>("");
-  const [userReferralLink, setUserReferralLink] = useState<string>(
-    "bitcoinyay.com/referral="
-  );
-
   const [acceptTerms, setAcceptTerms] = useState<boolean>(false);
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
   const [isRegistraionSuccessful, setIsRegistrationSuccessful] =
     useState<boolean>(false);
   const [isRegistrationClosed] = useState<boolean>(false);
-  const [isAirdropActive, setIsAirdropActive] = useState<boolean>(true);
-  const [airdropStatusLoading, setAirdropStatusLoading] =
-    useState<boolean>(true);
+  const isAirdropActive = Date.now() <= new Date(AIRDROP_END_DATE_UTC).getTime();
   const [errors, setErrors] = useState<FormErrors>({});
   const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
   const [isRegisterPopupOpen, setIsRegisterPopupOpen] =
     useState<boolean>(false);
   const [isDownloadPopupOpen, setIsDownloadPopupOpen] =
     useState<boolean>(false);
+  const [showRegisterToClaimButton, setShowRegisterToClaimButton] =
+    useState<boolean>(true);
   const { isAuthenticated } = useAuth();
-
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
     const emailAliasInfo = getGmailAliasInfo(email);
@@ -119,20 +112,18 @@ export default function AirdropRegisterPage() {
     setFormSubmitted(true);
 
     try {
-      const res = await axios.post(BTCY_LOYALTY_AIRDROP_REGISTER_API_ROUTE, {
+      const res = await axios.post(WALLSTREET_INEX_AIRDROP_REGISTER_API_ROUTE, {
+        name: username.trim(),
         email: email.trim(),
-        userType: "participant",
-        referralCode: referralLink.trim(),
       });
 
       if (res.status === 200 || res.status === 201) {
         setIsRegistrationSuccessful(true);
-        setUserReferralLink(userReferralLink + res.data?.data?.referralCode);
+        setShowRegisterToClaimButton(true);
         // Reset form only on successful submission
         setEmail("");
         setUsername("");
         setAcceptTerms(false);
-        setReferralLink("");
       } else {
         setIsRegistrationSuccessful(false);
       }
@@ -140,9 +131,11 @@ export default function AirdropRegisterPage() {
       setFormSubmitted(false);
     } catch (error) {
       const axiosError = error as AxiosError;
+      const responseData = axiosError.response?.data as
+        | { message?: string; error?: string; data?: { message?: string } }
+        | undefined;
       const serverMessage =
-        (axiosError.response?.data as { data?: { message?: string } })?.data
-          ?.message;
+        responseData?.message || responseData?.error || responseData?.data?.message;
       const fallbackMessage =
         axiosError.message || "Network error or server unavailable. Please try again.";
       const generalMessage =
@@ -154,44 +147,21 @@ export default function AirdropRegisterPage() {
         axiosError.response?.status === 400 &&
         typeof generalMessage === "string" &&
         generalMessage.toLowerCase().includes("not registered");
+      const isDuplicateRegistrationError = axiosError.response?.status === 409;
 
       setIsRegistrationSuccessful(false);
       setErrors({ general: generalMessage });
+      setShowRegisterToClaimButton(!isDuplicateRegistrationError);
 
       if (shouldShowDownloadPopup) {
         setIsDownloadPopupOpen(true);
+      } else {
+        setIsPopupOpen(true);
       }
-
-      setIsPopupOpen(true);
       setFormSubmitted(false);
     }
   };
-
-  const copyReferralLink = (): void => {
-    navigator.clipboard.writeText(userReferralLink);
-  };
-
-  const isSubmitDisabled = !isAirdropActive || airdropStatusLoading;
-
-  useEffect(() => {
-    const fetchAirdropStatus = async () => {
-      try {
-        setAirdropStatusLoading(true);
-        const response = await axios.get(AIRDROP_STATUS_URL);
-        const isActive =
-          (response?.data as { data?: { active?: boolean } })?.data?.active;
-        if (typeof isActive === "boolean") {
-          setIsAirdropActive(isActive);
-        }
-      } catch (error) {
-        console.error("Failed to fetch airdrop status", error);
-      } finally {
-        setAirdropStatusLoading(false);
-      }
-    };
-
-    fetchAirdropStatus();
-  }, []);
+  const isSubmitDisabled = !isAirdropActive || !acceptTerms;
   return (
     <div className="container mx-auto mt-60 flex flex-col justify-center items-center">
       {/* ###############  Bsckgroung Images   ############################# */}
@@ -348,16 +318,18 @@ export default function AirdropRegisterPage() {
                   "We couldn’t find a registration on file for that email. Please register to continue."}
               </p>
               <div className="flex flex-col gap-4 w-full max-w-[260px] mt-10 px-4">
-                <CustomButton2
-                  image={RegisterButtonImage}
-                  text="Register to claim"
-                  imageStyling="w-22"
-                  widthClassName="w-full"
-                  onClick={() => {
-                    setIsPopupOpen(false);
-                    setIsRegisterPopupOpen(true);
-                  }}
-                />
+                {showRegisterToClaimButton && (
+                  <CustomButton2
+                    image={RegisterButtonImage}
+                    text="Register to claim"
+                    imageStyling="w-22"
+                    widthClassName="w-full"
+                    onClick={() => {
+                      setIsPopupOpen(false);
+                      setIsRegisterPopupOpen(true);
+                    }}
+                  />
+                )}
                 <CustomButton2
                   image={BackButton}
                   text="Back"
@@ -468,6 +440,9 @@ export default function AirdropRegisterPage() {
                 {errors.acceptTerms}
               </p>
             )}
+            {errors.general && (
+              <p className="text-red-600 text-base mt-2">{errors.general}</p>
+            )}
           </div>
 
           {/* <div className="mb-6 mt-20">
@@ -495,12 +470,7 @@ export default function AirdropRegisterPage() {
             referral link to share.
           </p> */}
           <div className="flex flex-col items-center mt-20 gap-6">
-            {airdropStatusLoading && (
-              <p className="text-base md:text-lg text-tertiary">
-                Checking airdrop status...
-              </p>
-            )}
-            {!airdropStatusLoading && !isAirdropActive && (
+            {!isAirdropActive && (
               <p className="text-lg md:text-2xl text-red-600 text-center font-semibold leading-tight">
                 {AIRDROP_INACTIVE_MESSAGE}
               </p>
