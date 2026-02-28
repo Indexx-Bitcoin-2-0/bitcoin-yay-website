@@ -62,7 +62,7 @@ export default function PaymentPopup({
     if (!order?.receiverAddress) return "";
     return sanitizeReceiverAddress(order.receiverAddress);
   }, [order?.receiverAddress]);
-  
+
   const formatTime = (s: number) => {
     const m = Math.floor(s / 60);
     const r = s % 60;
@@ -100,76 +100,112 @@ export default function PaymentPopup({
     run();
   }, [isOpen, sanitizedReceiverAddress]);
 
+  const handleCopyAddress = () => {
+    const address = sanitizedReceiverAddress || order.receiverAddress;
+    if (address) {
+      navigator.clipboard.writeText(address);
+      // Optional: Add a simple feedback if needed, although user specifically asked for implementation
+    }
+  };
+
   if (!order) return null;
   if (!isOpen) return null;
 
   return (
     <PopupComponent isOpen={isOpen} onClose={onClose}>
-      <div className="w-90 md:w-120 lg:w-160 p-4 md:p-6 xl:p-10 text-center">
-        <div>
-          <h1 className="text-xl md:text-2xl lg:3xl font-bold">Pay with QR Code</h1>
-          <p className="lg:text-xl text-tertiary mt-2">
-            Scan the QR with your wallet and send the exact amount.
-            <br />
-            This session expires in 10 minutes.
-          </p>
-        </div>
-
-        <div className="mt-4 flex items-center justify-center gap-2">
-          <Image src={icon} alt="icon" className="w-8 lg:w-10" />
-          <p className="text-2xl lg:text-3xl">{cryptoType} • {order.blockchain}</p>
-        </div>
-
-        <p className="mt-4 text-xl md:text-2xl">
-          Send <span className="font-bold">{order.amount}</span> {cryptoType}
-        </p>
-
-        {/* countdown */}
-        <div className="text-3xl font-semibold mt-2">{formatTime(timeLeft)}</div>
-
-        {/* QR */}
-        <div className="mt-4 flex items-center justify-center">
-          {qrSrc ? (
-            <Image
-              src={qrSrc}
-              alt="Payment QR"
-              width={300}
-              height={300}
-              className="w-64 h-64 lg:w-80 lg:h-80 rounded-md border border-bg3"
-            />
-          ) : (
-            <div className="w-64 h-64 md:w-80 md:h-80 rounded-md border border-bg3 animate-pulse" />
-          )}
-        </div>
-
-        {/* address + copy */}
-        <div className="mt-4 text-left">
-          <p className="text-sm md:text-base text-tertiary">Receiver address</p>
-          <div className="mt-2 flex items-center gap-2 bg-bg2 border border-bg3 rounded-md p-3 overflow-hidden">
-            <code className="text-xs md:text-sm break-all">
-              {sanitizedReceiverAddress || order.receiverAddress}
-            </code>
-            <button
-              className="ml-auto p-2 rounded hover:bg-bg"
-              onClick={() =>
-                navigator.clipboard.writeText(
-                  sanitizedReceiverAddress || order.receiverAddress,
-                )
-              }
-              title="Copy"
-            >
-              <Copy className="w-4 h-4" />
-            </button>
+      <div className="w-90 md:w-120 lg:w-160 p-4 md:p-6 xl:p-10 text-left">
+        <div className="space-y-6">
+          <div>
+            <p className="text-sm md:text-base leading-relaxed">
+              <span className="text-orange-500 font-bold">Step 1:</span>{" "}
+              <span className="text-secondary">Scan the QR with your wallet. OR</span>
+            </p>
+            <p className="text-sm md:text-base text-tertiary leading-relaxed mt-1">
+              Copy the receiver address below and paste it manually, then open your crypto wallet app and select {cryptoType} on the {order.blockchain} network. Paste the copied address into the recipient field, review the details, and confirm the transaction. After sending, return to this page and wait for automatic confirmation.
+            </p>
           </div>
 
-          {/* Optional instructions */}
-          {/* {order.message && (
-            <p className="mt-3 text-sm text-tertiary">{order.message}</p>
-          )} */}
+          <div>
+            <p className="text-sm md:text-base leading-relaxed">
+              <span className="text-orange-500 font-bold">Step 2:</span>{" "}
+              <span className="text-secondary">Enter and send the exact amount.</span>
+            </p>
+          </div>
+
+          <div>
+            <p className="text-sm md:text-base leading-relaxed">
+              <span className="text-orange-500 font-bold">Step 3:</span>{" "}
+              <span className="text-secondary">Confirm the transaction and wait 1–2 minutes</span>
+            </p>
+            <p className="text-sm md:text-base text-tertiary leading-relaxed mt-1">
+              Do not close this window until you see “Payment Successful” message.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-10 flex flex-col items-center">
+          <div className="flex items-center gap-2">
+            <Image src={icon} alt="icon" className="w-8 lg:w-10" />
+            <p className="text-xl md:text-2xl font-medium">{cryptoType} • {order.blockchain}</p>
+          </div>
+
+          <div className="flex items-center mt-4">
+            <p className="text-base font-medium">Send {cryptoType} using the {order.blockchain} blockchain</p>
+          </div>
+
+          {/* QR */}
+          <div className="mt-6">
+            {qrSrc ? (
+              <Image
+                src={qrSrc}
+                alt="Payment QR"
+                width={300}
+                height={300}
+                onClick={handleCopyAddress}
+                className="w-60 h-60 lg:w-72 lg:h-72 rounded-xl hover:scale-105 transition-all duration-300 cursor-pointer"
+              />
+            ) : (
+              <div className="w-60 h-60 lg:w-72 lg:h-72 rounded-xl bg-bg2 animate-pulse" />
+            )}
+            <p className="mt-4 text-center text-sm text-tertiary">Click or Scan the QR Code</p>
+          </div>
+
+          {/* countdown */}
+          <div className="text-2xl md:text-3xl font-bold mt-6">
+            Time Remaining: <span className="text-orange-500">{formatTime(timeLeft)}</span>
+          </div>
+        </div>
+
+        <div className="mt-10 space-y-6">
+          <div>
+            <p className="text-sm text-tertiary">Deposit</p>
+            <p className="text-lg md:text-xl font-bold mt-1">{order.amount} {cryptoType}</p>
+          </div>
+
+          <div>
+            <p className="text-sm text-tertiary">Network</p>
+            <p className="text-lg md:text-xl font-bold mt-1">{order.blockchain}</p>
+          </div>
+
+          <div>
+            <p className="text-sm text-tertiary">Receiver Address</p>
+            <div className="mt-2 flex items-start gap-3">
+              <code className="text-sm md:text-base font-bold break-all flex-1">
+                {sanitizedReceiverAddress || order.receiverAddress}
+              </code>
+              <button
+                className="shrink-0 p-1 text-primary hover:text-white transition-colors hover:cursor-pointer"
+                onClick={handleCopyAddress}
+                title="Copy"
+              >
+                <Copy className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Order id footer */}
-        <div className="mt-4 text-xs text-tertiary">Order: {order.orderId}</div>
+        <div className="mt-8 text-xs text-tertiary text-center">Order: {order.orderId}</div>
       </div>
     </PopupComponent>
   );
