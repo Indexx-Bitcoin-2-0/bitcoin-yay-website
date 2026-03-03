@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import NewYearAirdropPopup from "@/components/NewYearAirdropPopup";
+import HoliSalePopup from "@/components/HoliSalePopup";
 
 const NewYearAirdropPopupHandler = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -23,16 +23,16 @@ const NewYearAirdropPopupHandler = () => {
         }
 
         const checkPopupTiming = () => {
-            const newYearAirdropPopupClosed = localStorage.getItem(
-                "newYearAirdropPopupClosed"
+            const holiSalePopupClosed = localStorage.getItem(
+                "holiSalePopupClosed"
             );
             const now = new Date().getTime();
 
             // Show popup if it hasn't been closed before, or if it was closed more than 30 minutes ago
-            if (!newYearAirdropPopupClosed) {
+            if (!holiSalePopupClosed) {
                 setIsOpen(true);
             } else {
-                const lastClosedTime = parseInt(newYearAirdropPopupClosed);
+                const lastClosedTime = parseInt(holiSalePopupClosed);
                 const timeDifference = now - lastClosedTime;
                 const thirtyMinutesInMs = 30 * 60 * 1000; // 30 minutes in milliseconds
 
@@ -54,13 +54,13 @@ const NewYearAirdropPopupHandler = () => {
         setIsOpen(false);
         // Store current time in localStorage
         localStorage.setItem(
-            "newYearAirdropPopupClosed",
+            "holiSalePopupClosed",
             new Date().getTime().toString()
         );
     };
 
     return (
-        <NewYearAirdropPopup
+        <HoliSalePopup
             isOpen={isOpen}
             onClose={handleClose}
         />
@@ -68,4 +68,3 @@ const NewYearAirdropPopupHandler = () => {
 };
 
 export default NewYearAirdropPopupHandler;
-
