@@ -45,12 +45,22 @@ const AIRDROP_INACTIVE_MESSAGE =
 export default function AirdropRegisterPage() {
   const [email, setEmail] = useState<string>("");
   const [username, setUsername] = useState<string>("");
+  const [postLink, setPostLink] = useState<string>("");
+  const [walletAddress, setWalletAddress] = useState<string>("");
   const [acceptTerms, setAcceptTerms] = useState<boolean>(false);
   const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
   const [isRegistraionSuccessful, setIsRegistrationSuccessful] =
     useState<boolean>(false);
   const [isRegistrationClosed] = useState<boolean>(false);
   const isAirdropActive = Date.now() <= new Date(AIRDROP_END_DATE_UTC).getTime();
+  interface FormErrors {
+    email?: string;
+    username?: string;
+    postLink?: string;
+    walletAddress?: string;
+    acceptTerms?: string;
+    general?: string;
+  }
   const [errors, setErrors] = useState<FormErrors>({});
   const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
   const [isRegisterPopupOpen, setIsRegisterPopupOpen] =
@@ -77,6 +87,14 @@ export default function AirdropRegisterPage() {
       newErrors.username = "Name is required.";
     } else if (username.length < 3) {
       newErrors.username = "Name must be at least 3 characters long.";
+    }
+
+    if (!postLink.trim()) {
+      newErrors.postLink = "Post link is required.";
+    }
+
+    if (!walletAddress.trim()) {
+      newErrors.walletAddress = "Wallet address is required.";
     }
 
     if (!acceptTerms) {
@@ -115,6 +133,8 @@ export default function AirdropRegisterPage() {
       const res = await axios.post(WALLSTREET_INEX_AIRDROP_REGISTER_API_ROUTE, {
         name: username.trim(),
         email: email.trim(),
+        postLink: postLink.trim(),
+        walletAddress: walletAddress.trim(),
       });
 
       if (res.status === 200 || res.status === 201) {
@@ -123,6 +143,8 @@ export default function AirdropRegisterPage() {
         // Reset form only on successful submission
         setEmail("");
         setUsername("");
+        setPostLink("");
+        setWalletAddress("");
         setAcceptTerms(false);
       } else {
         setIsRegistrationSuccessful(false);
@@ -253,7 +275,7 @@ export default function AirdropRegisterPage() {
                 Congratulations!
               </h2>
               <p className="mt-6 max-w-100 lg:text-xl">
-                You have successfully registered for the WallStreet INEX Airdrop — Indexx Investment Share.
+                You have successfully registered for the bitcoin-yay Social Media Airdrop.
               </p>
 
               {/* <div className="mb-6 mt-2 lg:mt-8 w-full px-4 md:px-8 text-start">
@@ -312,7 +334,7 @@ export default function AirdropRegisterPage() {
           ) : (
             <div className="w-80 md:w-100 flex flex-col justify-center items-center text-center p-10">
               <Image src={InfoIcon} alt="Info Icon" className="w-22" />
-              <h3 className="text-5xl font-medium mt-6">Oops</h3>
+              <h3 className="text-3xl md:text-5xl font-medium mt-6">Oops</h3>
               <p className="mt-6">
                 {errors.general ||
                   "We couldn’t find a registration on file for that email. Please register to continue."}
@@ -349,29 +371,29 @@ export default function AirdropRegisterPage() {
           <Image
             src={BackArrowIcon1}
             alt="Back Arrow"
-            className="group-hover:hidden w-16 h-16 cursor-pointer"
+            className="group-hover:hidden w-12 h-12 md:w-16 md:h-16 cursor-pointer"
           />
           <Image
             src={BackArrowIcon2}
             alt="Back Arrow"
-            className="hidden group-hover:block w-16 h-16 cursor-pointer"
+            className="hidden group-hover:block w-12 h-12 md:w-16 md:h-16 cursor-pointer"
           />
         </Link>
       </div>
 
       {/* ###################   Main Content  ##################### */}
-      <div className="text-center flex flex-col items-center justify-center">
-        <h4 className="text-3xl font-semibold text-primary">Sign Up for the</h4>
-        <h2 className="mt-6 text-5xl md:text-7xl font-bold">
-          WallStreet INEX Airdrop —
+      <div className="text-center flex flex-col items-center justify-center px-4">
+        <h4 className="text-xl md:text-3xl font-semibold text-primary">Sign Up for the</h4>
+        <h2 className="mt-4 md:mt-6 text-4xl md:text-7xl lg:text-9xl ">
+          bitcoin-yay
           <br />
-          <span className="text-primary">Indexx Investment Share</span>
+          <span className="text-primary">Social Media Airdrop!</span>
         </h2>
-        <p className="mt-16 text-xl font-medium">
+        <p className="mt-8 md:mt-16 text-lg md:text-2xl font-medium max-w-4xl">
           To claim airdrop you need to be a Miner. Download the app and join now
           if you haven&apos;t already!
         </p>
-        <p className="mt-2 text-xl font-medium">
+        <p className="mt-2 md:mt-4 text-lg md:text-2xl font-medium">
           <Link
             href="/#apple-store-download"
             className="text-primary hover:underline hover:underline-offset-4 cursor-pointer"
@@ -386,7 +408,7 @@ export default function AirdropRegisterPage() {
           className="w-full p-8 flex flex-col justify-center max-w-3xl"
         >
           <div className="mb-6">
-            <label htmlFor="username" className="block text-bg3 text-xl mb-2">
+            <label htmlFor="username" className="block text-bg3 text-lg md:text-xl mb-2">
               Name
             </label>
             <input
@@ -420,6 +442,47 @@ export default function AirdropRegisterPage() {
             {formSubmitted && errors.email && (
               <p className="text-red-700 text-base mt-2">{errors.email}</p>
             )}
+          </div>
+
+          <div className="mb-6 focus-within:text-primary">
+            <label htmlFor="postLink" className="block text-bg3 text-xl mb-2">
+              Post Link
+            </label>
+            <input
+              type="text"
+              id="postLink"
+              className={
+                "w-full text-lg p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary"
+              }
+              placeholder="Submit your post link here"
+              value={postLink}
+              onChange={(e) => setPostLink(e.target.value)}
+            />
+            {formSubmitted && errors.postLink && (
+              <p className="text-red-700 text-base mt-2">{errors.postLink}</p>
+            )}
+          </div>
+
+          <div className="mb-6 focus-within:text-primary">
+            <label htmlFor="walletAddress" className="block text-bg3 text-xl mb-2">
+              Wallet Address
+            </label>
+            <input
+              type="text"
+              id="walletAddress"
+              className={
+                "w-full text-lg p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary"
+              }
+              placeholder="Enter your USDT wallet address"
+              value={walletAddress}
+              onChange={(e) => setWalletAddress(e.target.value)}
+            />
+            {formSubmitted && errors.walletAddress && (
+              <p className="text-red-700 text-base mt-2">{errors.walletAddress}</p>
+            )}
+            <p className="text-primary text-sm italic mt-2">
+              Note: If you don’t have a USDT wallet on the Ethereum Blockchain please create one
+            </p>
           </div>
 
           <div className="mb-6 items-center">

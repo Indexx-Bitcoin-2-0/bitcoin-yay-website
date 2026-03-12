@@ -9,11 +9,14 @@ import ArtImage4 from "@/assets/images/wibs-airdrop/art-4.webp";
 
 import CalendarArt from "@/assets/images/wibs-airdrop/calander-art.webp";
 
-import WhatYouGetImage1 from "@/assets/images/btcy-airdrop/register.png";
-import WhatYouGetImage2 from "@/assets/images/btcy-airdrop/mineToQualify.png";
-import WhatYouGetImage3 from "@/assets/images/btcy-airdrop/eligibilityReview.png";
-import WhatYouGetImage4 from "@/assets/images/btcy-airdrop/receiveYourShare.png";
 
+import howItWorksImage1 from "@/assets/images/airdrop/how_it_works_1.svg";
+import howItWorksImage2 from "@/assets/images/airdrop/how_it_works_2.svg";
+import howItWorksImage3 from "@/assets/images/airdrop/how_it_works_3.svg";
+import howItWorksImage4 from "@/assets/images/airdrop/how_it_works_4.svg";
+
+
+import socialMediaAirdropArt from "@/assets/images/airdrop/social_media_airdrop_art.png";
 // import WorldMapImage from "@/assets/images/airdrop/political-map-world.webp";
 
 import RegisterButtonImage from "@/assets/images/buttons/register-button.webp";
@@ -26,13 +29,13 @@ import UserReviewCards from "@/components/UserReviewCards";
 import PrizeBreakdown from "@/components/PrizeBreakdown";
 
 export const metadata = {
-  title: "WallStreet INEX Airdrop & Indexx Investment Share",
+  title: "BTCY Social Media Airdrop",
   description:
-    "A mining-based qualification event connecting BTCY miners to the Indexx investment ecosystem. Mine 100 BTCY to qualify for a share of the $50,000 investment pool.",
+    "Create a post about Bitcoin Yay, tag us, and submit your link for a chance to win USDT rewards.",
   openGraph: {
-    title: "WallStreet INEX Airdrop & Indexx Investment Share",
+    title: "BTCY Social Media Airdrop",
     description:
-      "A mining-based qualification event connecting BTCY miners to the Indexx investment ecosystem. Mine 100 BTCY to qualify for a share of the $50,000 investment pool.",
+      "Create a post about Bitcoin Yay, tag us, and submit your link for a chance to win USDT rewards.",
   },
 };
 
@@ -41,37 +44,34 @@ export default function Airdrop() {
     <div className="mx-auto mt-40 max-w-[1800px]">
       <div className="relative flex flex-col lg:flex-row">
         <div className="mt-10 w-full lg:w-[90%] flex flex-col justify-items-center px-4 md:pl-20 xl:pl-30">
-          <h2 className="text-[40px] md:text-7xl">
-            WallStreet INEX
+          <h2 className="text-[40px] md:text-8xl">
+            BTCY Social Media
             <br />
-            Airdrop — Indexx
-            <br />
-            Investment Share
+            Airdrop
           </h2>
 
-          <p className="mt-10 text-2xl md:text-3xl text-primary font-medium">
-            A mining-based qualification event connecting BTCY miners to the Indexx investment ecosystem.
+          <p className="mt-10 text-2xl md:text-4xl text-white font-medium">
+            Create a post about Bitcoin Yay, tag us, and submit your link for a chance to win USDT rewards.
           </p>
-          <p className="mt-4 text-xl">
-            Mine at least 100 BTCY between Feb 23 and March 1 to qualify. All eligible participants will receive an equal share of the $50,000 investment pool.
+          <p className="mt-4 text-2xl text-primary font-semibold">
+            The posts with the highest engagement will win.
+          </p>
+          <p className="mt-4 text-2xl text-white">
+            Help spread the word about Bitcoin Yay and get rewarded.
           </p>
 
-          <div className="font-bold mt-10 flex flex-col justify-center md:justify-start items-center md:items-start">
+          <div className="font-bold mt-10 flex flex-col justify-center md:justify-start items-center md:items-start text-center">
             <CustomButton2
               image={RegisterButtonImage}
               text="Join Airdrop Now"
               link="/airdrop/register"
               imageStyling="w-30"
             />
-            <div className="mt-4 text-sm text-left font-normal space-y-1">
-              <p>One account works across BTCY, WallStreet & Indexx , no new account required.</p>
-              <p className="text-[#FF8A00]">Warning: Any invalid email or Temporary email address will not be eligible for the airdrop.</p>
-            </div>
           </div>
         </div>
         <div className="relative mx-auto lg:mx-0">
           <Image
-            src={ArtImage1}
+            src={socialMediaAirdropArt}
             alt="Airdrop Art 1"
             className="w-90 md:w-140 lg:w-180 xl:w-240 mt-10"
           />
@@ -143,61 +143,61 @@ export default function Airdrop() {
           <div className="max-w-100 text-center mx-auto">
             <div className=" h-70 flex justify-center items-center">
               <Image
-                src={WhatYouGetImage1}
-                alt="Register"
-                className="w-60"
+                src={howItWorksImage1}
+                alt="Create a Post"
+                className="w-50"
               />
             </div>
             <h4 className="mt-6 text-3xl font-semibold h-24 flex items-center justify-center">
-              Register
+              Create a Post
             </h4>
             <p className="text-xl font-light">
-              Complete the official airdrop registration using your BTCY-linked email.
+              Create a social media post about Bitcoin Yay. Your post can be a video, meme, screenshot, or text.
             </p>
           </div>
           <div className="max-w-100 text-center mx-auto">
             <div className="h-70 flex justify-center items-center">
               <Image
-                src={WhatYouGetImage2}
-                alt="Mine to Qualify"
-                className="w-64"
+                src={howItWorksImage2}
+                alt="Tag Bitcoin Yay"
+                className="w-50"
               />
             </div>
             <h4 className="mt-6 text-3xl font-semibold h-24 flex items-center justify-center">
-              Mine to Qualify
+              Tag Bitcoin Yay
             </h4>
             <p className="text-xl font-light">
-              Mine at least 100 BTCY between Feb 23 and March 1. Only mining activity within this window counts.
+              Make sure your post tags the official Bitcoin Yay account so we can track it.
             </p>
           </div>
           <div className="max-w-100 text-center mx-auto">
             <div className=" h-70 flex justify-center items-center">
               <Image
-                src={ThumbsUpImage}
-                alt="Eligibility Review"
-                className="w-64"
+                src={howItWorksImage3}
+                alt="Submit Your Link"
+                className="w-50"
               />
             </div>
             <h4 className="mt-6 text-3xl font-semibold h-24 flex items-center justify-center">
-              Eligibility Review
+              Submit Your Link
             </h4>
             <p className="text-xl font-light">
-              After the window closes, we verify your mined amount, account validity, and registration status.
+              Register on the airdrop page and submit the link to your post.
             </p>
           </div>
           <div className="max-w-100 text-center mx-auto">
             <div className=" h-70 flex justify-center items-center">
               <Image
-                src={WalletImage}
-                alt="Receive Your Share"
-                className="w-64"
+                src={howItWorksImage4}
+                alt="Earn Engagement"
+                className="w-50"
               />
             </div>
             <h4 className="mt-6 text-3xl font-semibold h-24 flex items-center justify-center">
-              Receive Your Share
+              Earn Engagement
             </h4>
             <p className="text-xl font-light">
-              All eligible participants receive an equal share of the $50,000 Indexx.ai investment pool on WallStreet.
+              The posts with the highest engagement (likes, comments, shares, views) will win rewards.
             </p>
           </div>
         </div>
@@ -220,38 +220,37 @@ export default function Airdrop() {
         </h2>
         <div className="flex flex-wrap w-full justify-center items-start gap-20 mt-10 md:mt-30 px-4 md:px-10 xl:px-20">
           <div className="w-90 flex flex-col ">
-            <h3 className="text-[40px] md:text-5xl font-bold">Februrary 23 , 2026</h3>
-            <p className="mt-2 md:mt-10 text-xl md:text-3xl">
-              Campaign live — start registering
+            <h3 className="text-[40px] md:text-4xl font-bold text-center md:text-left">March 16 , 2026</h3>
+            <p className="mt-2 md:mt-10 text-xl md:text-3xl text-center md:text-left">
+              Campaign Start
             </p>
           </div>
           <div className="w-90 flex flex-col ">
-            <h3 className="text-[40px] md:text-5xl font-bold">Until March 1, 2026</h3>
-            <p className="mt-2 md:mt-10 text-xl md:text-3xl">
-              Sign-up window closes
+            <h3 className="text-[40px] md:text-4xl font-bold text-center md:text-left">Until March 30, 2026</h3>
+            <p className="mt-2 md:mt-10 text-xl md:text-3xl text-center md:text-left">
+              End of campaign period
             </p>
           </div>{" "}
           <div className="w-90 flex flex-col ">
-            <h3 className="text-[40px] md:text-5xl font-bold">March 5, 2026</h3>
-            <p className="mt-2 md:mt-10 text-xl md:text-3xl">
-              Winners announced & BTCY distributed
+            <h3 className="text-[40px] md:text-4xl font-bold text-center md:text-left">March 31, 2026</h3>
+            <p className="mt-2 md:mt-10 text-xl md:text-3xl text-center md:text-left">
+              Winners announced
             </p>
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row items-center gap-10 mt-60 px-4 md:px-10 xl:px-20">
+      <div className="flex  items-center justify-center gap-10 mt-60 px-4 md:px-10 xl:px-20">
         <div className="max-w-4xl flex flex-col items-start justify-center gap-4 mt-10 flex-1 px-4 md:px-20 xl:px-6">
           <h2 className="text-[40px] md:text-7xl xl:text-[100px] font-bold">
             Eligibility & Rules
           </h2>
-          <ul className="mt-10 list-disc pl-6 text-xl md:text-3xl flex flex-col gap-6 md:gap-10">
-            <li>Log in with same E-mail on BTCY & WallStreet</li>
-            <li>Must be an active BTCY miner</li>
-            <li>Mine at least 100 BTCY between Feb 23 – March 1</li>
-            <li>Complete the official airdrop registration during the campaign period</li>
-            <li>Use a real, permanent email address</li>
-            <li>Maintain one unique account (no duplicates)</li>
+          <ul className="mt-10 list-disc pl-6 text-xl md:text-3xl flex flex-col gap-6 md:gap-10 mx-auto md:mx-0">
+            <li>Only one entry per participant</li>
+            <li>Posts must tag Bitcoin Yay</li>
+            <li>Posts must remain public</li>
+            <li>Fake engagement (bots / purchased likes) will disqualify entries</li>
+            <li>Content must follow platform guidelines</li>
           </ul>
           <div className="mx-auto md:mx-0 mt-10 flex justify-center md:justify-start items-center md:items-start gap-10 md:gap-20">
             <CustomButton2
@@ -469,21 +468,21 @@ export default function Airdrop() {
           FAQs
         </h2>
         <div className="text-tertiary mt-20 max-w-5xl">
-          <h5 className="mt-6 text-3xl font-bold">Q: Is this a random giveaway?</h5>
-          <p className="mt-4 text-lg">
-            A: No. You must mine at least 100 BTCY during the eligibility window to qualify.
+          <h5 className="mt-6 text-3xl font-bold text-white">Q: What is the BTCY Social Media Airdrop?</h5>
+          <p className="mt-4 text-xl">
+            A: A campaign where users create posts about Bitcoin Yay and compete for rewards based on engagement.
           </p>
 
-          <h5 className="mt-6 text-3xl font-bold">
-            Q: Can I mine before Feb 23 and still qualify?
+          <h5 className="mt-6 text-3xl font-bold text-white">
+            Q: What kind of posts can I create?
           </h5>
-          <p className="mt-4 text-lg">
-            A: Only mining between Feb 23 and March 1 counts.
+          <p className="mt-4 text-xl">
+            A: Videos, memes, screenshots, text posts, threads, or educational content.
           </p>
 
-          <h5 className="mt-6 text-3xl font-bold">Q: What happens if I use a temporary email?</h5>
-          <p className="mt-4 text-lg">
-            A: Accounts using fake or disposable emails will be disqualified.
+          <h5 className="mt-6 text-3xl font-bold text-white">Q: Do I need to tag Bitcoin Yay?</h5>
+          <p className="mt-4 text-xl">
+            A: Yes. Your post must tag our official account.
           </p>
         </div>
       </div>
