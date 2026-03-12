@@ -473,7 +473,7 @@ export default function AirdropRegisterPage() {
               className={
                 "w-full text-lg p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary"
               }
-              placeholder="Enter your USDT wallet address"
+              placeholder="Enter your USDT ERC20 wallet address"
               value={walletAddress}
               onChange={(e) => setWalletAddress(e.target.value)}
             />

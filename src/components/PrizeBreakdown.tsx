@@ -23,12 +23,12 @@ export default function PrizeBreakdown() {
                 <div className="flex flex-col items-center text-center">
                     <Image src={pricePool1} alt="1st Place" className="w-60 md:w-80" />
                     <h4 className="mt-6 text-3xl font-bold">1st Place</h4>
-                    <p className="mt-2 text-xl font-medium text-gray-400">$25 USDT</p>
+                    <p className="mt-2 text-xl font-medium text-gray-400">$40 USDT</p>
                 </div>
                 <div className="flex flex-col items-center text-center">
                     <Image src={pricePool2} alt="2nd Place" className="w-50 md:w-70" />
                     <h4 className="mt-6 text-3xl font-bold">2nd Place</h4>
-                    <p className="mt-2 text-xl font-medium text-gray-400">$20 USDT</p>
+                    <p className="mt-2 text-xl font-medium text-gray-400">$25 USDT</p>
                 </div>
                 <div className="flex flex-col items-center text-center">
                     <Image src={pricePool3} alt="3rd Place" className="w-50 md:w-70" />
