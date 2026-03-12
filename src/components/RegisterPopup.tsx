@@ -5,15 +5,12 @@ import Image from "next/image";
 import axios from "axios";
 import PopupComponent from "@/components/PopupComponent";
 import SetPasswordPopup from "@/components/SetPasswordPopup";
-import EmailVerificationPopup from "@/components/EmailVerificationPopup";
 import SuccessRegistrationPopup from "@/components/SuccessRegistrationPopup";
 import { useAuth } from "@/contexts/AuthContext";
 import { getGmailAliasInfo } from "@/lib/utils";
 import {
   GOOGLE_REGISTER_API_ROUTE,
   REGISTER_API_ROUTE,
-  SEND_OTP_API_ROUTE,
-  VERIFY_OTP_API_ROUTE,
   CHECK_EMAIL_FOR_REGISTRATION_API_ROUTE,
   CHECK_USERNAME_FOR_REGISTRATION_API_ROUTE,
 } from "@/routes";
@@ -60,7 +57,6 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
     username: "",
     countryCode: "+1",
     country: "United States",
-    phoneNumber: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -72,10 +68,7 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
   const [showSetPassword, setShowSetPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [showEmailVerification, setShowEmailVerification] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
-  const [registrationEmail, setRegistrationEmail] = useState("");
-  const [registrationData, setRegistrationData] = useState<any>(null);
   const [isCheckingEmail, setIsCheckingEmail] = useState(false);
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
   const [emailAvailable, setEmailAvailable] = useState<boolean | null>(null);
@@ -218,10 +211,6 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
       newErrors.username = "Username is already taken or not validated.";
     }
 
-    if (!formData.phoneNumber.trim()) {
-      newErrors.phoneNumber = "Phone number is required.";
-    }
-
     if (!formData.email.trim()) {
       newErrors.email = "Email is required.";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
@@ -283,56 +272,66 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
     }
 
     try {
-      const registrationData = {
+      const payload = {
         firstName: formData.firstName.trim(),
         lastName: formData.lastName.trim(),
         username: formData.username.trim(),
         countryCode: formData.countryCode,
         country: formData.country,
-        phoneNumber: formData.phoneNumber.trim(),
         email: formData.email.trim(),
         password: formData.password,
         confirmPassword: formData.confirmPassword,
         referralCode: formData.referralCode.trim(),
       };
 
-      // First, send OTP to email for verification
-      const otpResponse = await axios.post(SEND_OTP_API_ROUTE, {
-        email: formData.email.trim(),
-        type: "New Register",
-        recaptchaToken,
-      });
+      const response = await axios.post(REGISTER_API_ROUTE, payload);
 
-      console.log("register otpResponse", otpResponse);
+      if (response.status === 200 || response.status === 201) {
+        const apiData = response.data.data || response.data;
 
-      if (otpResponse.status === 200) {
-        // Store registration data and email for verification
-        setRegistrationEmail(formData.email.trim());
-        setRegistrationData(registrationData);
+        const userData = {
+          email: formData.email.trim(),
+          name: `${formData.firstName} ${formData.lastName}`,
+          access_token: apiData.access_token || "temp-access-token-" + Date.now(),
+          refresh_token: apiData.refresh_token || "temp-refresh-token-" + Date.now(),
+          role: apiData.role || "Standard",
+          userType: apiData.userType || "Indexx Exchange",
+          shortToken: apiData.shortToken || "temp-short-token",
+        };
 
-        // Show email verification popup
-        setShowEmailVerification(true);
+        login(userData);
+        onClose();
+        setShowSuccessPopup(true);
+
+        setFormData({
+          firstName: "",
+          lastName: "",
+          username: "",
+          countryCode: "+1",
+          country: "United States",
+          email: "",
+          password: "",
+          confirmPassword: "",
+          referralCode: "",
+        });
       } else {
         setErrors({
           general:
-            otpResponse?.data?.message ||
-            otpResponse?.data?.data?.message ||
-            otpResponse?.data?.data ||
-            "Failed to send verification code. Please try again.",
+            response?.data?.message ||
+            response?.data?.data?.message ||
+            "Registration failed. Please try again.",
         });
       }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         const errorMessage =
+          extractApiMessage(error.response?.data) ||
           error.response?.data?.data ||
-          error.response?.data?.data?.message ||
           error.response?.data?.message ||
-          "Failed to send verification code. Please try again.";
+          "Registration failed. Please try again.";
         setErrors({ general: errorMessage });
       } else {
-        setErrors({
-          general: "Failed to send verification code. Please try again.",
-        });
+        setErrors({ general: "Registration failed. Please try again." });
       }
     } finally {
       setIsSubmitting(false);
@@ -457,111 +456,6 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
   const handleSkipPassword = () => {
     // User chose to skip setting password, just close the popup
     setShowSetPassword(false);
-  };
-
-  // Email verification handlers
-  const handleEmailVerified = async () => {
-    try {
-      const response = await axios.post(REGISTER_API_ROUTE, registrationData);
-
-      if (response.status === 200 || response.status === 201) {
-        // Extract user data from API response
-        const apiData = response.data.data || response.data;
-
-        const userData = {
-          email: registrationEmail,
-          name: `${formData.firstName} ${formData.lastName}`,
-          access_token:
-            apiData.access_token || "temp-access-token-" + Date.now(),
-          refresh_token:
-            apiData.refresh_token || "temp-refresh-token-" + Date.now(),
-          role: apiData.role || "Standard",
-          userType: apiData.userType || "Indexx Exchange",
-          shortToken: apiData.shortToken || "temp-short-token",
-        };
-
-        login(userData);
-        onClose();
-        setShowSuccessPopup(true);
-
-        // Reset form
-        setFormData({
-          firstName: "",
-          lastName: "",
-          username: "",
-          countryCode: "+1",
-          country: "United States",
-          phoneNumber: "",
-          email: "",
-          password: "",
-          confirmPassword: "",
-          referralCode: "",
-        });
-        setRegistrationEmail("");
-        setRegistrationData(null);
-        setShowEmailVerification(false);
-      } else {
-        // Close verification popup and show error on registration popup
-        setShowEmailVerification(false);
-        setErrors({
-          general: "Registration failed. Please try again.",
-        });
-      }
-    } catch (error: unknown) {
-      console.error("Registration error:", error);
-
-      // Close verification popup and show error on registration popup
-      setShowEmailVerification(false);
-
-      if (axios.isAxiosError(error)) {
-        const errorMessage =
-          extractApiMessage(error.response?.data) ||
-          "Registration failed. Please try again.";
-        setErrors({ general: errorMessage });
-      } else {
-        setErrors({ general: "Registration failed. Please try again." });
-      }
-    }
-  };
-
-  const handleResendRegistrationCode = async () => {
-    try {
-      const response = await axios.post(SEND_OTP_API_ROUTE, {
-        email: registrationEmail,
-        type: "New Register",
-      });
-
-      if (response.status === 200) {
-        console.log("Verification code resent to", registrationEmail);
-      } else {
-        setErrors({
-          general:
-            response?.data?.message ||
-            response?.data?.data?.message ||
-            response?.data?.data ||
-            "Failed to resend verification code. Please try again.",
-        });
-      }
-    } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        const errorMessage =
-          error.response?.data?.data ||
-          error.response?.data?.data?.message ||
-          error.response?.data?.message ||
-          "Failed to resend verification code. Please try again.";
-        setErrors({ general: errorMessage });
-      } else {
-        setErrors({
-          general: "Failed to send verification code. Please try again.",
-        });
-      }
-    }
-  };
-
-  const handleCloseEmailVerification = () => {
-    setShowEmailVerification(false);
-    setRegistrationEmail("");
-    setRegistrationData(null);
   };
 
   const handleCloseSuccessPopup = () => {
@@ -725,31 +619,6 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
                   </div>
                 )}
               </div>
-            </div>
-
-            {/* Phone Number */}
-            <div className="mb-2">
-              <label
-                htmlFor="phoneNumber"
-                className="block text-bg3 text-base mb-2"
-              >
-                Phone Number
-              </label>
-              <input
-                type="tel"
-                id="phoneNumber"
-                className="w-full text-base p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary bg-transparent"
-                value={formData.phoneNumber}
-                onChange={(e) =>
-                  handleInputChange("phoneNumber", e.target.value)
-                }
-                disabled={isSubmitting}
-              />
-              {errors.phoneNumber && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.phoneNumber}
-                </p>
-              )}
             </div>
 
             {/* Email */}
@@ -978,16 +847,6 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
         onClose={handleCloseSetPassword}
         onPasswordSet={handlePasswordSet}
         onSkip={handleSkipPassword}
-      />
-
-      {/* EmailVerificationPopup - shown after registration */}
-      <EmailVerificationPopup
-        isOpen={showEmailVerification}
-        onClose={handleCloseEmailVerification}
-        email={registrationEmail}
-        onVerified={handleEmailVerified}
-        onResendCode={handleResendRegistrationCode}
-        verificationApiRoute={VERIFY_OTP_API_ROUTE}
       />
 
       {/* SuccessRegistrationPopup - shown after successful registration */}
