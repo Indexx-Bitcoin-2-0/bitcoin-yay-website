@@ -5,7 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import axios, { AxiosError } from "axios";
 
-import { WALLSTREET_INEX_AIRDROP_REGISTER_API_ROUTE } from "@/routes";
+import { isAddress } from "viem";
+import { BTCY_SOCIAL_POST_AIRDROP_REGISTER_API_ROUTE } from "@/routes";
 import { getGmailAliasInfo } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -38,9 +39,6 @@ interface FormErrors {
   general?: string; // For general form errors, e.g., from API
 }
 
-const AIRDROP_END_DATE_UTC = "2026-03-01T23:59:59.999Z";
-const AIRDROP_INACTIVE_MESSAGE =
-  "The airdrop has completed. Stay tuned for upcoming events.";
 
 export default function AirdropRegisterPage() {
   const [email, setEmail] = useState<string>("");
@@ -52,7 +50,6 @@ export default function AirdropRegisterPage() {
   const [isRegistraionSuccessful, setIsRegistrationSuccessful] =
     useState<boolean>(false);
   const [isRegistrationClosed] = useState<boolean>(false);
-  const isAirdropActive = Date.now() <= new Date(AIRDROP_END_DATE_UTC).getTime();
   interface FormErrors {
     email?: string;
     username?: string;
@@ -95,6 +92,8 @@ export default function AirdropRegisterPage() {
 
     if (!walletAddress.trim()) {
       newErrors.walletAddress = "Wallet address is required.";
+    } else if (!isAddress(walletAddress.trim())) {
+      newErrors.walletAddress = "Please enter a valid Ethereum wallet address (e.g. 0x...).";
     }
 
     if (!acceptTerms) {
@@ -115,10 +114,6 @@ export default function AirdropRegisterPage() {
       return;
     }
 
-    if (!isAirdropActive) {
-      return;
-    }
-
     // Validate form before submission
     if (!validateForm()) {
       setFormSubmitted(true);
@@ -130,7 +125,7 @@ export default function AirdropRegisterPage() {
     setFormSubmitted(true);
 
     try {
-      const res = await axios.post(WALLSTREET_INEX_AIRDROP_REGISTER_API_ROUTE, {
+      const res = await axios.post(BTCY_SOCIAL_POST_AIRDROP_REGISTER_API_ROUTE, {
         name: username.trim(),
         email: email.trim(),
         postLink: postLink.trim(),
@@ -183,7 +178,7 @@ export default function AirdropRegisterPage() {
       setFormSubmitted(false);
     }
   };
-  const isSubmitDisabled = !isAirdropActive || !acceptTerms;
+  const isSubmitDisabled = !acceptTerms;
   return (
     <div className="container mx-auto mt-60 flex flex-col justify-center items-center">
       {/* ###############  Bsckgroung Images   ############################# */}
@@ -533,12 +528,7 @@ export default function AirdropRegisterPage() {
             referral link to share.
           </p> */}
           <div className="flex flex-col items-center mt-20 gap-6">
-            {!isAirdropActive && (
-              <p className="text-lg md:text-2xl text-red-600 text-center font-semibold leading-tight">
-                {AIRDROP_INACTIVE_MESSAGE}
-              </p>
-            )}
-            <div className="flex justify-center">
+<div className="flex justify-center">
               {/* <button type="submit">
                 <Image
                   src={PointFingerButtonImage}
