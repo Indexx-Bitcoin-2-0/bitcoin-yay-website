@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import axios, { AxiosError } from "axios";
@@ -66,7 +66,14 @@ export default function AirdropRegisterPage() {
     useState<boolean>(false);
   const [showRegisterToClaimButton, setShowRegisterToClaimButton] =
     useState<boolean>(true);
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
+
+  useEffect(() => {
+    const storedEmail = user?.email || localStorage.getItem("email") || "";
+    if (storedEmail) {
+      setEmail(storedEmail);
+    }
+  }, [user]);
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
     const emailAliasInfo = getGmailAliasInfo(email);
