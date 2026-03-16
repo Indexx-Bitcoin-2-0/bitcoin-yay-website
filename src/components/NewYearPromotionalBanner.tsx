@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import LogoImage from "@/assets/images/main-logo.svg";
 import IndexxLogo from "@/assets/images/indexx.ai.svg";
-import BellButtonImage from "@/assets/images/buttons/bell-button.webp";
+import CartButtonImage from "@/assets/images/buttons/cart-button.webp";
 import PromotionalArt from "@/assets/images/btcy-airdrop/btcyairdroppopup.svg";
 import CustomButton2 from "./CustomButton2";
 
@@ -40,18 +40,18 @@ const NewYearPromotionalBanner = () => {
 
                     {/* Middle - Promotional Text */}
                     <div className="flex-1 flex flex-col justify-center mb-6 md:mb-8">
-                        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary mb-1 md:mb-2">
-                            Mine 15× faster this New Year
+                        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-[#f28132] mb-1 md:mb-2">
+                            30% Bonus on Quantum Mining
                         </h1>
 
                         <p className="text-lg md:text-2xl text-white font-semibold mt-4">
-                            New Year Special: Unlock 15× faster mining Speed and maximize your rewards.
+                            Get 30% Extra BTCY on every purchase through Quantum Mining
                         </p>
                     </div>
 
                     {/* Bottom - Button and Disclaimer */}
                     <div className="flex flex-col items-center md:items-start">
-                        <CustomButton2 image={BellButtonImage} text="Subscribe" link="/new-year-boost" imageStyling="w-20" />
+                        <CustomButton2 image={CartButtonImage} text="Buy Now" link="/quantum-mining" imageStyling="w-20" />
                         <p className="text-white text-xs md:text-sm mt-3 md:mt-4 text-center md:text-left">
                             This is a Limited Time Offer.
                         </p>
