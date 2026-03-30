@@ -61,7 +61,7 @@ const NewYearAirdropPopupHandler = () => {
 
     return (
         <HoliSalePopup
-            isOpen={isOpen}
+            isOpen={false}
             onClose={handleClose}
         />
     );
