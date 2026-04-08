@@ -9,12 +9,14 @@ interface PopupProps {
   isOpen: boolean;
   onClose: () => void;
   children: ReactNode;
+  showCloseButton?: boolean;
 }
 
 const PopupComponent: React.FC<PopupProps> = ({
   isOpen,
   onClose,
   children,
+  showCloseButton = true,
 }) => {
   const popupRef = useRef<HTMLDivElement>(null);
 
@@ -43,16 +45,18 @@ const PopupComponent: React.FC<PopupProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center bg-[#68676763] overflow-y-auto">
       <div ref={popupRef} className="relative shadow-lg bg-bg z-100 mt-50 md:mt-50 ">
-        <button
-          onClick={onClose}
-          className="absolute -top-10 right-0 md:top-1 md:-right-14 flex items-center justify-center z-100"
-        >
-          <Image
-            src={CrossImage}
-            alt="Close"
-            className="w-10 h-8 hover:scale-110 cursor-pointer"
-          />
-        </button>
+        {showCloseButton && (
+          <button
+            onClick={onClose}
+            className="absolute -top-10 right-0 md:top-1 md:-right-14 flex items-center justify-center z-100"
+          >
+            <Image
+              src={CrossImage}
+              alt="Close"
+              className="w-10 h-8 hover:scale-110 cursor-pointer"
+            />
+          </button>
+        )}
         <div>{children}</div>
       </div>
     </div>

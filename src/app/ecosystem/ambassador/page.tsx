@@ -149,8 +149,7 @@ export default function Ambassador() {
             Ambassador
           </h1>
           <p className="mt-16 text-xl md:text-2xl lg:text-4xl max-w-4xl">
-            Earn Free subscriptions, unlock Pro mining power, and compete for
-            our exclusive Top Ambassador Prize.
+            Turn your network into a revenue engine. As an ambassador, unlock your own Mining Station to grow, track, and earn free subscriptions and a chance to compete for the exclusive Top Ambassador Prize.
           </p>
           <p className="mt-10 text-lg text-primary">
             First, sign up on the app and then you can register below.
@@ -163,6 +162,30 @@ export default function Ambassador() {
             />
           </div>
         </div>
+      </div>
+      {/* What you unlock section  */}
+      {/* Part 1.5 - Features */}
+      <div className="mt-40 md:mt-60 lg:mt-80 flex flex-col items-center justify-center px-4 max-w-6xl mx-auto text-center">
+        <h2 className="text-4xl md:text-6xl lg:text-8xl xl:text-[100px] font-bold text-primary leading-tight">
+          What You Unlock <br /> as an Ambassador
+        </h2>
+        <p className="mt-10 text-xl md:text-2xl lg:text-4xl text-tertiary max-w-4xl">
+          Beyond referrals, you gain access to your personal Mining Station your hub for growth and earnings.
+        </p>
+        <ul className="mt-12 text-lg md:text-xl lg:text-3xl text-tertiary flex flex-col items-start w-fit mx-auto gap-4">
+          <li className="flex items-center gap-4">
+            <span className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-white shrink-0"></span>
+            Build your own mining community
+          </li>
+          <li className="flex items-center gap-4">
+            <span className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-white shrink-0"></span>
+            Track activity and performance
+          </li>
+          <li className="flex items-center gap-4">
+            <span className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-white shrink-0"></span>
+            Earn advertising revenue allocation
+          </li>
+        </ul>
       </div>
 
       {/* Part 2 */}

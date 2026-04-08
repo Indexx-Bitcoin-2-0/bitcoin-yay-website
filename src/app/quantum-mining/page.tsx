@@ -25,6 +25,8 @@ import USDCIcon from "@/assets/images/quantum-mining/usdc.webp";
 import PaypalIcon from "@/assets/images/quantum-mining/paypal.webp";
 import USDIcon from "@/assets/images/quantum-mining/usd.webp";
 import BTCYIcon from "@/assets/images/quantum-mining/btcy-icon.webp";
+import WireTransferIcon from "@/assets/images/quantum-mining/wireTransfer.svg";
+import StripeIcon from "@/assets/images/quantum-mining/stripe.png";
 
 import FlagIcon from "@/assets/images/quantum-mining/american-flag.webp";
 import GlobeIcon from "@/assets/images/quantum-mining/globe-icon.webp";
@@ -35,6 +37,8 @@ import ButtonBorder from "@/assets/images/button-border.webp";
 import ButtonBorderActive from "@/assets/images/button-border-active.webp";
 import SuccessPopup from "./SuccessPopup";
 import UnsuccessPopup from "./UnsuccessPopup";
+import VerifyingPaymentPopup from "./VerifyingPaymentPopup";
+import CancelConfirmationPopup from "./CancelConfirmationPopup";
 
 import CardImage1 from "@/assets/images/home/card-1.webp";
 import CardImage2 from "@/assets/images/home/card-2.webp";
@@ -295,6 +299,8 @@ const QuantumMiningPage = () => {
   // Popups
   const [successOpen, setSuccessOpen] = useState(false);
   const [failOpen, setFailOpen] = useState(false);
+  const [isVerifyingPopupOpen, setIsVerifyingPopupOpen] = useState(false);
+  const [isCancelConfirmOpen, setIsCancelConfirmOpen] = useState(false);
 
   // Socket
   const socketRef = useRef<unknown>(null);
@@ -340,6 +346,7 @@ const QuantumMiningPage = () => {
         upsertLatestSignal(signal);
       }
       setIsPaymentPopupOpen(false);
+      setIsVerifyingPopupOpen(false);
       setFailOpen(false);
       setSuccessOpen(true);
       setActiveOrder(null);
@@ -568,6 +575,7 @@ const QuantumMiningPage = () => {
             status: signal.status || "EXPIRED",
           });
           setIsPaymentPopupOpen(false);
+          setIsVerifyingPopupOpen(false);
           setActiveOrder(null);
           activeOrderRef.current = null;
           setPendingOrderId(null);
@@ -788,24 +796,7 @@ const QuantumMiningPage = () => {
           Buy BTCY
         </h2>
 
-        {/* Funding Progress */}
-        {/* <div className="mb-8 mt-10">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-lg md:text-2xl xl:text-3xl">USD Raised</span>
-            <span className="text-lg md:text-2xl xl:text-3xl">
-              556,435.925 / 750,000
-            </span>
-          </div>
-          <div className="w-full bg-secondary rounded-full h-6 relative">
-            <div
-              className="bg-orange-500 h-6 rounded-full"
-              style={{ width: "79.3%" }}
-            ></div>
-            <span className="absolute inset-0 flex items-center justify-center text-sm font-medium">
-              79.3%
-            </span>
-          </div>
-        </div> */}
+
 
         {/* Exchange Rate */}
         <div className="mb-8">
@@ -815,12 +806,14 @@ const QuantumMiningPage = () => {
         </div>
 
         {/* Payment Options */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-2 mb-8 justify-items-center">
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-2 md:gap-2 mb-8 justify-items-center">
           {[
             { name: "USDT", icon: USDTIcon },
             { name: "USDC", icon: USDCIcon },
             { name: "PayPal", icon: PaypalIcon },
             { name: "USD", icon: USDIcon },
+            { name: "Wire Transfer", icon: WireTransferIcon },
+            { name: "Stripe", icon: StripeIcon },
           ].map((option) => {
             const name = option.name as PaymentOption;
             const isSelected = name === selectedPaymentOption;
@@ -830,16 +823,16 @@ const QuantumMiningPage = () => {
                 className="relative cursor-pointer transition-all duration-200"
                 onClick={() => setSelectedPaymentOption(name)}
               >
-                <Image
+                {/* <Image
                   src={isSelected ? ButtonBorderActive : ButtonBorder}
                   alt={isSelected ? "Button Border Active" : "Button Border"}
                   className="w-32 md:w-38 lg:w-44"
-                />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+                /> */}
+                <div className="group flex flex-col items-center">
                   <span className="mb-2">
-                    <Image src={option.icon} alt={name} className="w-10 h-10" />
+                    <Image src={option.icon} alt={name} className={`${name === "Wire Transfer" ? "w-20" : "w-10"} h-10`} />
                   </span>
-                  <span className="text-lg">{name}</span>
+                  <span className={`text-lg group-hover:text-primary ${isSelected ? "text-primary" : ""}`}>{name}</span>
                 </div>
               </div>
             );
@@ -1335,10 +1328,30 @@ const QuantumMiningPage = () => {
       <PaymentPopup
         isOpen={isPaymentPopupOpen}
         onClose={() => setIsPaymentPopupOpen(false)}
+        onPaymentConfirmed={() => {
+          setIsPaymentPopupOpen(false);
+          setIsVerifyingPopupOpen(true);
+        }}
+        onCancel={() => setIsCancelConfirmOpen(true)}
         cryptoType={selectedPaymentOption}
         order={activeOrder}
         closeOnOutsideClick={false}
         closeOnEsc={false}
+      />
+
+      <CancelConfirmationPopup
+        isOpen={isCancelConfirmOpen}
+        onClose={() => setIsCancelConfirmOpen(false)}
+        onStay={() => setIsCancelConfirmOpen(false)}
+        onCancel={() => {
+          setIsCancelConfirmOpen(false);
+          setIsPaymentPopupOpen(false);
+        }}
+      />
+
+      <VerifyingPaymentPopup
+        isOpen={isVerifyingPopupOpen}
+        onClose={() => setIsVerifyingPopupOpen(false)}
       />
 
       <LoginPopup

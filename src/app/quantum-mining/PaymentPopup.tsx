@@ -7,7 +7,10 @@ import QRCode from "qrcode";
 import PopupComponent from "@/components/PopupComponent";
 import USDTIcon from "@/assets/images/quantum-mining/tether.webp";
 import USDCIcon from "@/assets/images/quantum-mining/usdc.webp";
-import { Copy } from "lucide-react";
+import { Copy, Check } from "lucide-react";
+import CustomButton2 from "@/components/CustomButton2";
+import CheckMarkButtonImage from "@/assets/images/buttons/check-mark-button.webp";
+import CancelOrderImage from "@/assets/images/buttons/cancelOrder.svg";
 
 type CryptoOrderData = {
   orderId: string;
@@ -24,16 +27,21 @@ export default function PaymentPopup({
   onClose,
   cryptoType,
   order,
+  onPaymentConfirmed,
+  onCancel,
 }: {
   isOpen: boolean;
   onClose: () => void;
   cryptoType: "USDT" | "USDC" | string;
   order: CryptoOrderData | null;
+  onPaymentConfirmed?: () => void;
+  onCancel?: () => void;
   closeOnOutsideClick?: boolean;
   closeOnEsc?: boolean;
 }) {
   const [now, setNow] = useState<Date>(new Date());
   const [qrSrc, setQrSrc] = useState<string>("");
+  const [copied, setCopied] = useState(false);
 
   const icon = cryptoType === "USDT" ? USDTIcon : USDCIcon;
   // Strip schemes/query params so QR scan only provides the raw address.
@@ -104,7 +112,8 @@ export default function PaymentPopup({
     const address = sanitizedReceiverAddress || order.receiverAddress;
     if (address) {
       navigator.clipboard.writeText(address);
-      // Optional: Add a simple feedback if needed, although user specifically asked for implementation
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     }
   };
 
@@ -112,38 +121,10 @@ export default function PaymentPopup({
   if (!isOpen) return null;
 
   return (
-    <PopupComponent isOpen={isOpen} onClose={onClose}>
+    <PopupComponent isOpen={isOpen} onClose={onClose} >
       <div className="w-90 md:w-120 lg:w-160 p-4 md:p-6 xl:p-10 text-left">
-        <div className="space-y-6">
-          <div>
-            <p className="text-sm md:text-base leading-relaxed">
-              <span className="text-orange-500 font-bold">Step 1:</span>{" "}
-              <span className="text-secondary">Scan the QR with your wallet. OR</span>
-            </p>
-            <p className="text-sm md:text-base text-tertiary leading-relaxed mt-1">
-              Copy the receiver address below and paste it manually, then open your crypto wallet app and select {cryptoType} on the {order.blockchain} network. Paste the copied address into the recipient field, review the details, and confirm the transaction. After sending, return to this page and wait for automatic confirmation.
-            </p>
-          </div>
 
-          <div>
-            <p className="text-sm md:text-base leading-relaxed">
-              <span className="text-orange-500 font-bold">Step 2:</span>{" "}
-              <span className="text-secondary">Enter and send the exact amount.</span>
-            </p>
-          </div>
-
-          <div>
-            <p className="text-sm md:text-base leading-relaxed">
-              <span className="text-orange-500 font-bold">Step 3:</span>{" "}
-              <span className="text-secondary">Confirm the transaction and wait 1–2 minutes</span>
-            </p>
-            <p className="text-sm md:text-base text-tertiary leading-relaxed mt-1">
-              Do not close this window until you see “Payment Successful” message.
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-10 flex flex-col items-center">
+        <div className="mt-2 flex flex-col items-center">
           <div className="flex items-center gap-2">
             <Image src={icon} alt="icon" className="w-8 lg:w-10" />
             <p className="text-xl md:text-2xl font-medium">{cryptoType} • {order.blockchain}</p>
@@ -167,13 +148,16 @@ export default function PaymentPopup({
             ) : (
               <div className="w-60 h-60 lg:w-72 lg:h-72 rounded-xl bg-bg2 animate-pulse" />
             )}
-            <p className="mt-4 text-center text-sm text-tertiary">Click or Scan the QR Code</p>
+            <p className="mt-4 text-center text-sm text-tertiary">
+              Click or Scan the QR Code
+              {copied && <span className="text-green-500 ml-2 animate-pulse">Copied!</span>}
+            </p>
           </div>
 
           {/* countdown */}
-          <div className="text-2xl md:text-3xl font-bold mt-6">
+          {/* <div className="text-2xl md:text-3xl font-bold mt-6">
             Time Remaining: <span className="text-orange-500">{formatTime(timeLeft)}</span>
-          </div>
+          </div> */}
         </div>
 
         <div className="mt-10 space-y-6">
@@ -198,14 +182,64 @@ export default function PaymentPopup({
                 onClick={handleCopyAddress}
                 title="Copy"
               >
-                <Copy className="w-5 h-5" />
+                {copied ? (
+                  <Check className="w-5 h-5 text-green-500" />
+                ) : (
+                  <Copy className="w-5 h-5" />
+                )}
               </button>
             </div>
           </div>
         </div>
 
+        <div className="space-y-6 mt-10">
+          <div>
+            <p className="text-sm md:text-base leading-relaxed">
+              <span className="text-orange-500 font-bold">Step 1:</span>{" "}
+              <span className="text-secondary">Scan the QR with your wallet. OR</span>
+            </p>
+            <p className="text-sm md:text-base text-tertiary leading-relaxed mt-1">
+              Copy the receiver address and paste it manually, then open your crypto wallet app and select {cryptoType} on the {order.blockchain} network. Paste the copied address into the recipient field, review the details, and confirm the transaction. After sending, return to this page and wait for automatic confirmation.
+            </p>
+          </div>
+
+          <div>
+            <p className="text-sm md:text-base leading-relaxed">
+              <span className="text-orange-500 font-bold">Step 2:</span>{" "}
+              <span className="text-secondary">Enter and send the exact amount.</span>
+            </p>
+          </div>
+
+          <div>
+            <p className="text-sm md:text-base leading-relaxed">
+              <span className="text-orange-500 font-bold">Step 3:</span>{" "}
+              <span className="text-secondary">Confirm the transaction and wait 1–2 minutes</span>
+            </p>
+
+          </div>
+        </div>
+
         {/* Order id footer */}
-        <div className="mt-8 text-xs text-tertiary text-center">Order: {order.orderId}</div>
+        <div className="mt-8 text-xs text-tertiary text-left">Order: {order.orderId}</div>
+
+        {/* Action Buttons */}
+        <div className="mt-10 flex items-start justify-around gap-6 md:gap-10">
+          <CustomButton2
+            image={CheckMarkButtonImage}
+            text="Payment Confirmed"
+            onClick={() => {
+              if (onPaymentConfirmed) onPaymentConfirmed();
+              console.log("Payment confirmed by user");
+            }}
+            imageStyling="w-24 md:w-30"
+          />
+          {/* <CustomButton2
+            image={CancelOrderImage}
+            text="Cancel order"
+            onClick={onCancel || onClose}
+            imageStyling="w-24 md:w-30"
+          /> */}
+        </div>
       </div>
     </PopupComponent>
   );
