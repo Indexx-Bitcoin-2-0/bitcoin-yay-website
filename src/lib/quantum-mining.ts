@@ -2,12 +2,29 @@ import { io, Socket } from "socket.io-client";
 import axios from "axios";
 import {
   QUANTUM_BUY_ORDER_API_ROUTE,
+  QUANTUM_CRYPTO_CHECK_PAYMENT_API_ROUTE,
+  QUANTUM_CRYPTO_CHECK_PAYMENT_BY_TX_API_ROUTE,
+  QUANTUM_CANCEL_ORDER_API_ROUTE,
   QUANTUM_USER_ORDER_API_ROUTE,
   COINGECKO_PRICE_API_ROUTE,
 } from "@/routes";
 
 // Types
-export type PaymentOption = "USDT" | "USDC" | "PayPal" | "USD";
+export type PaymentOption =
+  | "USDT"
+  | "USDC"
+  | "PayPal"
+  | "USD"
+  | "Wire Transfer"
+  | "Stripe";
+
+export type QuantumCurrencyIn =
+  | "USDT"
+  | "USDC"
+  | "USD"
+  | "PayPal"
+  | "WireTransfer"
+  | "Stripe";
 
 export type CryptoOrderData = {
   orderId: string;
@@ -31,17 +48,24 @@ export type PaypalOrderData = {
   modified: string;
 };
 
-export type CreateOrderResponse =
-  | { status: 200; data: CryptoOrderData }
-  | { status: 200; data: PaypalOrderData };
+export type StripeOrderData = {
+  sessionId: string;
+  url: string;
+};
+
+export type CreateOrderResponse = {
+  status: number;
+  data: CryptoOrderData | PaypalOrderData | StripeOrderData | Record<string, unknown>;
+};
 
 export type CreateOrderData = {
   email: string;
-  currencyIn: PaymentOption;
+  currencyIn: QuantumCurrencyIn;
   currencyOut: "BTCY";
   amount: number;
   outAmount: number;
   blockchain?: "Ethereum" | "Solana";
+  paymentMethod?: "crypto" | "paypal" | "card" | "WireTransfer" | "Stripe";
 };
 
 export type GetUserOrderData = {
@@ -76,6 +100,50 @@ export type QuantumOrdersUpdatePayload =
   | Record<string, unknown>
   | Array<Record<string, unknown>>;
 
+export type CheckQuantumCryptoPaymentData = {
+  orderId: string;
+  paymentType: "USDT" | "USDC";
+  amount: number;
+  addressPaidTo: string;
+};
+
+export type CheckQuantumCryptoPaymentByTxData = {
+  orderId: string;
+  txHash: string;
+};
+
+export type CancelQuantumOrderData = {
+  orderId: string;
+};
+
+export type QuantumCryptoPaymentCheckResult = {
+  orderId: string;
+  paymentReceived: boolean;
+  status?: string;
+  attempts?: number;
+  message?: string;
+  txHash?: string;
+  existingOrderId?: string;
+  [key: string]: unknown;
+};
+
+export type QuantumCancelOrderResult = {
+  orderId: string;
+  status?: string;
+  message?: string;
+  [key: string]: unknown;
+};
+
+export type QuantumCryptoPaymentCheckResponse = {
+  status: number;
+  data: QuantumCryptoPaymentCheckResult;
+};
+
+export type QuantumCancelOrderResponse = {
+  status: number;
+  data: QuantumCancelOrderResult;
+};
+
 // Socket event types
 export type SocketEventHandlers = {
   onConnect?: (socketId: string) => void;
@@ -104,6 +172,72 @@ export async function createQuantumOrder(
     return response.data;
   } catch (error) {
     console.error("Create quantum order error:", error);
+    throw error;
+  }
+}
+
+/**
+ * Triggers a blockchain payment check for a pending crypto quantum order
+ */
+export async function checkQuantumCryptoPayment(
+  data: CheckQuantumCryptoPaymentData
+): Promise<QuantumCryptoPaymentCheckResponse> {
+  try {
+    const response = await axios.post<QuantumCryptoPaymentCheckResponse>(
+      QUANTUM_CRYPTO_CHECK_PAYMENT_API_ROUTE,
+      data,
+      {
+        validateStatus: () => true,
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Check quantum crypto payment error:", error);
+    throw error;
+  }
+}
+
+/**
+ * Checks a crypto quantum order against a provided transaction hash
+ */
+export async function checkQuantumCryptoPaymentByTx(
+  data: CheckQuantumCryptoPaymentByTxData
+): Promise<QuantumCryptoPaymentCheckResponse> {
+  try {
+    const response = await axios.post<QuantumCryptoPaymentCheckResponse>(
+      QUANTUM_CRYPTO_CHECK_PAYMENT_BY_TX_API_ROUTE,
+      data,
+      {
+        validateStatus: () => true,
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Check quantum crypto payment by tx error:", error);
+    throw error;
+  }
+}
+
+/**
+ * Cancels a pending crypto quantum order
+ */
+export async function cancelQuantumOrder(
+  data: CancelQuantumOrderData
+): Promise<QuantumCancelOrderResponse> {
+  try {
+    const response = await axios.post<QuantumCancelOrderResponse>(
+      QUANTUM_CANCEL_ORDER_API_ROUTE,
+      data,
+      {
+        validateStatus: () => true,
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Cancel quantum order error:", error);
     throw error;
   }
 }
@@ -228,6 +362,10 @@ export function processPayPalReturn(
 } {
   const status = url.searchParams.get("status");
   const token = url.searchParams.get("token");
+  const orderIdFromQuery =
+    url.searchParams.get("orderId") ||
+    url.searchParams.get("order_id") ||
+    url.searchParams.get("orderID");
 
   if (!status) {
     return { status: "none" };
@@ -238,22 +376,28 @@ export function processPayPalReturn(
     window.history.replaceState({}, "", url.origin + url.pathname);
   }
 
+  const stash = (() => {
+    try {
+      return JSON.parse(sessionStorage.getItem("qm_paypal_order") || "{}");
+    } catch {
+      return {};
+    }
+  })();
+
+  const resolvedOrderId = orderIdFromQuery || token || stash?.orderId || "";
+
   if (status === "cancel") {
-    return { status: "cancel" };
+    return {
+      status: "cancel",
+      orderId: resolvedOrderId || undefined,
+      token: token || undefined,
+      email: userEmail || stash?.email || undefined,
+    };
   }
 
   if (status === "success") {
-    // Get email + fallback orderId from stash if needed
-    const stash = (() => {
-      try {
-        return JSON.parse(sessionStorage.getItem("qm_paypal_order") || "{}");
-      } catch {
-        return {};
-      }
-    })();
-
     const emailForLookup = userEmail || stash?.email || "";
-    const orderIdForLookup = token || stash?.orderId || "";
+    const orderIdForLookup = resolvedOrderId;
 
     return {
       status: "success",
@@ -297,7 +441,10 @@ export function isCryptoPayment(option: PaymentOption): boolean {
 /**
  * Converts payment option to currency format expected by API
  */
-export function optionToCurrencyIn(opt: PaymentOption): PaymentOption {
+export function optionToCurrencyIn(opt: PaymentOption): QuantumCurrencyIn {
+  if (opt === "Wire Transfer") {
+    return "WireTransfer";
+  }
   return opt;
 }
 

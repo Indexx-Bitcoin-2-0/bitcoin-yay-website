@@ -39,7 +39,6 @@ export default function PaymentPopup({
   closeOnOutsideClick?: boolean;
   closeOnEsc?: boolean;
 }) {
-  const [now, setNow] = useState<Date>(new Date());
   const [qrSrc, setQrSrc] = useState<string>("");
   const [copied, setCopied] = useState(false);
 
@@ -58,37 +57,10 @@ export default function PaymentPopup({
     return withoutParams;
   };
 
-  // countdown based on server expiresAt (10 mins)
-  const timeLeft = useMemo(() => {
-    if (!order?.expiresAt) return 0;
-    const end = new Date(order.expiresAt).getTime();
-    const diffSec = Math.ceil((end - now.getTime()) / 1000); // ceil avoids instant 9:59
-    return Math.max(0, diffSec);
-  }, [order?.expiresAt, now]);
-
   const sanitizedReceiverAddress = useMemo(() => {
     if (!order?.receiverAddress) return "";
     return sanitizeReceiverAddress(order.receiverAddress);
   }, [order?.receiverAddress]);
-
-  const formatTime = (s: number) => {
-    const m = Math.floor(s / 60);
-    const r = s % 60;
-    return `${m}:${r.toString().padStart(2, "0")}`;
-  };
-
-  // tick every second when open
-  useEffect(() => {
-    if (!isOpen) return;
-    const id = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(id);
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (isOpen && order?.expiresAt) {
-      setNow(new Date());
-    }
-  }, [isOpen, order?.orderId, order?.expiresAt]);
 
 
   // generate QR of the address (simple + widely supported)
@@ -121,7 +93,7 @@ export default function PaymentPopup({
   if (!isOpen) return null;
 
   return (
-    <PopupComponent isOpen={isOpen} onClose={onClose} >
+    <PopupComponent isOpen={isOpen} onClose={onCancel || onClose}>
       <div className="w-90 md:w-120 lg:w-160 p-4 md:p-6 xl:p-10 text-left">
 
         <div className="mt-2 flex flex-col items-center">
@@ -199,7 +171,11 @@ export default function PaymentPopup({
               <span className="text-secondary">Scan the QR with your wallet. OR</span>
             </p>
             <p className="text-sm md:text-base text-tertiary leading-relaxed mt-1">
-              Copy the receiver address and paste it manually, then open your crypto wallet app and select {cryptoType} on the {order.blockchain} network. Paste the copied address into the recipient field, review the details, and confirm the transaction. After sending, return to this page and wait for automatic confirmation.
+              Copy the receiver address and paste it manually, then open your
+              crypto wallet app and select {cryptoType} on the {order.blockchain}{" "}
+              network. Paste the copied address into the recipient field, review
+              the details, and confirm the transaction. After sending, return to
+              this page and tap Payment Confirmed so we can verify the transfer.
             </p>
           </div>
 
@@ -233,12 +209,12 @@ export default function PaymentPopup({
             }}
             imageStyling="w-24 md:w-30"
           />
-          {/* <CustomButton2
+          <CustomButton2
             image={CancelOrderImage}
             text="Cancel order"
             onClick={onCancel || onClose}
             imageStyling="w-24 md:w-30"
-          /> */}
+          />
         </div>
       </div>
     </PopupComponent>
