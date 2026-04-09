@@ -65,7 +65,7 @@ export type CreateOrderData = {
   amount: number;
   outAmount: number;
   blockchain?: "Ethereum" | "Solana";
-  env?: "test" | "main";
+  env?: "test";
   paymentMethod?: "crypto" | "paypal" | "card" | "WireTransfer" | "Stripe";
 };
 
@@ -168,11 +168,9 @@ export async function createQuantumOrder(
     const env =
       data.env ??
       (typeof window !== "undefined" &&
-      (window.location.hostname === "test.bitcoinyay.com"
+      window.location.hostname === "test.bitcoinyay.com"
         ? "test"
-        : window.location.hostname === "bitcoinyay.com"
-          ? "main"
-          : undefined));
+        : "main");
     const payload = env ? { ...data, env } : data;
 
     const response = await axios.post<CreateOrderResponse>(
