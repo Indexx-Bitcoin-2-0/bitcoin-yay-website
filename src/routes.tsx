@@ -63,6 +63,9 @@ export const FORGOT_PASSWORD_RESET_API_ROUTE = `${process.env.NEXT_PUBLIC_API_UR
 
 // Quantum Mining Routes
 export const QUANTUM_BUY_ORDER_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/order/createOrderForQuantum`;
+export const QUANTUM_CRYPTO_CHECK_PAYMENT_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/order/quantum/crypto/check-payment`;
+export const QUANTUM_CRYPTO_CHECK_PAYMENT_BY_TX_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/order/quantum/crypto/check-payment-by-tx`;
+export const QUANTUM_CANCEL_ORDER_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/order/quantum/cancel`;
 
 export const QUANTUM_USER_ORDER_API_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/getUserOrder`;
 

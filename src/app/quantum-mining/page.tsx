@@ -32,10 +32,7 @@ import StripeIcon from "@/assets/images/quantum-mining/stripe.png";
 import FlagIcon from "@/assets/images/quantum-mining/american-flag.webp";
 import GlobeIcon from "@/assets/images/quantum-mining/globe-icon.webp";
 
-import NoteButtonImage from "@/assets/images/buttons/note-button.webp";
 import CartButtonImage from "@/assets/images/buttons/cart-button.webp";
-import ButtonBorder from "@/assets/images/button-border.webp";
-import ButtonBorderActive from "@/assets/images/button-border-active.webp";
 import SuccessPopup from "./SuccessPopup";
 import UnsuccessPopup from "./UnsuccessPopup";
 import VerifyingPaymentPopup from "./VerifyingPaymentPopup";
@@ -50,6 +47,9 @@ import {
   PaymentOption,
   CryptoOrderData,
   createQuantumOrder,
+  checkQuantumCryptoPayment,
+  checkQuantumCryptoPaymentByTx,
+  cancelQuantumOrder,
   getUserOrder,
   fetchPrices,
   createQuantumSocket,
@@ -63,6 +63,7 @@ import {
   validateOrderData,
   SocketEventHandlers,
   QuantumOrderSocketPayload,
+  QuantumCryptoPaymentCheckResult,
 } from "@/lib/quantum-mining";
 
 
@@ -275,6 +276,91 @@ const isCompletedStatus = (status?: string) => {
   );
 };
 
+const PAYMENT_OPTIONS = [
+  {
+    name: "USDT",
+    icon: USDTIcon,
+    optionIconClassName: "w-10 h-10",
+    inputIconClassName: "w-10 h-10",
+  },
+  {
+    name: "USDC",
+    icon: USDCIcon,
+    optionIconClassName: "w-10 h-10",
+    inputIconClassName: "w-10 h-10",
+  },
+  {
+    name: "PayPal",
+    icon: PaypalIcon,
+    optionIconClassName: "w-10 h-10",
+    inputIconClassName: "w-10 h-10",
+  },
+  {
+    name: "USD",
+    icon: USDIcon,
+    optionIconClassName: "w-10 h-10",
+    inputIconClassName: "w-14 h-10",
+  },
+  {
+    name: "Wire Transfer",
+    icon: WireTransferIcon,
+    optionIconClassName: "w-20 h-10",
+    inputIconClassName: "w-20 h-10",
+  },
+  {
+    name: "Stripe",
+    icon: StripeIcon,
+    optionIconClassName: "w-10 h-10",
+    inputIconClassName: "w-10 h-10",
+  },
+] as const;
+
+const AUTO_CHECK_DURATION_MS = 2 * 60 * 1000;
+const AUTO_CHECK_INTERVAL_MS = 10 * 1000;
+
+const sleep = (ms: number) =>
+  new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+
+const getMessageFromResult = (value: unknown, fallback: string) => {
+  if (value && typeof value === "object") {
+    const record = value as Record<string, unknown>;
+    if (typeof record.message === "string" && record.message.trim()) {
+      return record.message;
+    }
+  }
+  return fallback;
+};
+
+const getCryptoPaymentLabel = (order: CryptoOrderData): "USDT" | "USDC" =>
+  order.paymentMethod.toUpperCase() as "USDT" | "USDC";
+
+const buildCryptoOrderSignal = (
+  order: CryptoOrderData,
+  raw: unknown,
+  overrides: Partial<OrderSignal> = {}
+): OrderSignal => {
+  const paymentType = getCryptoPaymentLabel(order);
+
+  return {
+    orderId: order.orderId,
+    amount: order.amount,
+    currency: paymentType,
+    paymentType,
+    orderType: "Quantum",
+    raw,
+    ...overrides,
+  };
+};
+
+const isConfirmedQuantumPayment = (
+  result?: QuantumCryptoPaymentCheckResult
+) => {
+  if (!result) return false;
+  return result.paymentReceived || isCompletedStatus(result.status);
+};
+
 const QuantumMiningPage = () => {
   const { user } = useAuth();
 
@@ -303,11 +389,18 @@ const QuantumMiningPage = () => {
   const [failOpen, setFailOpen] = useState(false);
   const [isVerifyingPopupOpen, setIsVerifyingPopupOpen] = useState(false);
   const [isCancelConfirmOpen, setIsCancelConfirmOpen] = useState(false);
+  const [failRequiresTxHash, setFailRequiresTxHash] = useState(false);
+  const [failureMessage, setFailureMessage] = useState<string>();
+  const [isTxVerificationSubmitting, setIsTxVerificationSubmitting] =
+    useState(false);
+  const [cancelError, setCancelError] = useState<string>();
+  const [isCancellingOrder, setIsCancellingOrder] = useState(false);
 
   // Socket
   const socketRef = useRef<unknown>(null);
   const activeOrderRef = useRef<CryptoOrderData | null>(null);
   const pendingOrderIdRef = useRef<string | null>(null);
+  const verificationRunIdRef = useRef(0);
 
   const handledReturnRef = useRef(false);
 
@@ -342,14 +435,41 @@ const QuantumMiningPage = () => {
     return Array.from(ids);
   }, []);
 
+  const openGenericFailure = useCallback((message?: string) => {
+    verificationRunIdRef.current += 1;
+    setIsPaymentPopupOpen(false);
+    setIsVerifyingPopupOpen(false);
+    setFailRequiresTxHash(false);
+    setFailureMessage(message);
+    setIsTxVerificationSubmitting(false);
+    setFailOpen(true);
+  }, []);
+
+  const openTxHashFallback = useCallback((message?: string) => {
+    verificationRunIdRef.current += 1;
+    setIsPaymentPopupOpen(false);
+    setIsVerifyingPopupOpen(false);
+    setFailRequiresTxHash(true);
+    setFailureMessage(message);
+    setIsTxVerificationSubmitting(false);
+    setFailOpen(true);
+  }, []);
+
   const finalizeOrder = useCallback(
     (signal?: OrderSignal) => {
       if (signal) {
         upsertLatestSignal(signal);
       }
+      verificationRunIdRef.current += 1;
       setIsPaymentPopupOpen(false);
       setIsVerifyingPopupOpen(false);
       setFailOpen(false);
+      setFailRequiresTxHash(false);
+      setFailureMessage(undefined);
+      setIsTxVerificationSubmitting(false);
+      setIsCancelConfirmOpen(false);
+      setCancelError(undefined);
+      setIsCancellingOrder(false);
       setSuccessOpen(true);
       setActiveOrder(null);
       setPendingOrderId(null);
@@ -357,7 +477,7 @@ const QuantumMiningPage = () => {
       pendingOrderIdRef.current = null;
       clearPayPalOrderData();
     },
-    [upsertLatestSignal, clearPayPalOrderData]
+    [upsertLatestSignal]
   );
 
   useEffect(() => {
@@ -379,16 +499,50 @@ const QuantumMiningPage = () => {
 
     // Fast-fail on cancel
     if (result.status === "cancel") {
-      setFailOpen(true);
-      // optional: clear stash
-      clearPayPalOrderData();
+      (async () => {
+        try {
+          if (result.orderId) {
+            const response = await cancelQuantumOrder({
+              orderId: result.orderId,
+            });
+            const cancelResult = response.data;
+            upsertLatestSignal({
+              orderId: result.orderId,
+              status: cancelResult.status || "OrderCancelled",
+              orderType: "Quantum",
+              raw: cancelResult,
+            });
+            openGenericFailure(
+              getMessageFromResult(
+                cancelResult,
+                "The payment was cancelled before completion."
+              )
+            );
+          } else {
+            openGenericFailure("The payment was cancelled before completion.");
+          }
+        } catch (error) {
+          console.error("cancelQuantumOrder failed:", error);
+          openGenericFailure(
+            error instanceof Error
+              ? error.message
+              : "The payment was cancelled before completion."
+          );
+        } finally {
+          setActiveOrder(null);
+          setPendingOrderId(null);
+          activeOrderRef.current = null;
+          pendingOrderIdRef.current = null;
+          clearPayPalOrderData();
+        }
+      })();
       return;
     }
 
     // Success path -> fetch order details from backend (capture is already done server-side)
     if (result.status === "success") {
       if (!result.email || !result.orderId) {
-        setFailOpen(true);
+        openGenericFailure("We couldn't verify the payment details for this order.");
         clearPayPalOrderData();
         return;
       }
@@ -460,21 +614,23 @@ const QuantumMiningPage = () => {
           if (isCompletedStatus(normalizedStatus)) {
             finalizeOrder(withStatus);
           } else {
-            setFailOpen(true);
+            openGenericFailure(
+              "We couldn't confirm this payment. Please try again."
+            );
             setPendingOrderId(null);
             pendingOrderIdRef.current = null;
             clearPayPalOrderData();
           }
         } catch (e) {
           console.error("getUserOrder failed:", e);
-          setFailOpen(true);
+          openGenericFailure("We couldn't fetch the latest order status.");
           setPendingOrderId(null);
           pendingOrderIdRef.current = null;
           clearPayPalOrderData();
         }
       })();
     }
-  }, [finalizeOrder, upsertLatestSignal, user?.email]);
+  }, [finalizeOrder, openGenericFailure, upsertLatestSignal, user?.email]);
 
   const handlePayAmountChange = (value: string) => {
     setPayAmount(value);
@@ -576,12 +732,19 @@ const QuantumMiningPage = () => {
             ...signal,
             status: signal.status || "EXPIRED",
           });
+          verificationRunIdRef.current += 1;
           setIsPaymentPopupOpen(false);
           setIsVerifyingPopupOpen(false);
+          setIsCancelConfirmOpen(false);
+          setCancelError(undefined);
+          setIsCancellingOrder(false);
           setActiveOrder(null);
           activeOrderRef.current = null;
           setPendingOrderId(null);
           pendingOrderIdRef.current = null;
+          setFailRequiresTxHash(false);
+          setFailureMessage("This order expired before the payment was confirmed.");
+          setIsTxVerificationSubmitting(false);
           setFailOpen(true);
           clearPayPalOrderData();
         }
@@ -617,6 +780,229 @@ const QuantumMiningPage = () => {
     hasNumericPayAmount && numericPayAmount < MIN_PURCHASE_AMOUNT_USD;
   const isBuyDisabled =
     !hasNumericPayAmount || isBelowMinimumAmount || !!errors.payAmount;
+  const selectedPaymentVisual =
+    PAYMENT_OPTIONS.find((option) => option.name === selectedPaymentOption) ??
+    PAYMENT_OPTIONS[0];
+
+  const handleOpenCancelConfirmation = useCallback(() => {
+    if (!activeOrderRef.current) {
+      setIsPaymentPopupOpen(false);
+      return;
+    }
+    setCancelError(undefined);
+    setIsCancelConfirmOpen(true);
+  }, []);
+
+  const handleStartCryptoVerification = useCallback(async () => {
+    const order = activeOrderRef.current;
+    if (!order) return;
+
+    const runId = verificationRunIdRef.current + 1;
+    verificationRunIdRef.current = runId;
+
+    setCancelError(undefined);
+    setFailureMessage(undefined);
+    setFailRequiresTxHash(false);
+    setFailOpen(false);
+    setIsTxVerificationSubmitting(false);
+    setIsCancelConfirmOpen(false);
+    setIsPaymentPopupOpen(false);
+    setIsVerifyingPopupOpen(true);
+
+    const startedAt = Date.now();
+
+    while (verificationRunIdRef.current === runId) {
+      try {
+        const response = await checkQuantumCryptoPayment({
+          orderId: order.orderId,
+          paymentType: getCryptoPaymentLabel(order),
+          amount: order.amount,
+          addressPaidTo: order.receiverAddress,
+        });
+        if (verificationRunIdRef.current !== runId) return;
+        const result = response.data;
+        const nextStatus =
+          result.status || (result.paymentReceived ? "COMPLETED" : "PENDING");
+
+        upsertLatestSignal(
+          buildCryptoOrderSignal(order, result, {
+            status: nextStatus,
+          })
+        );
+
+        if (isConfirmedQuantumPayment(result)) {
+          finalizeOrder(
+            buildCryptoOrderSignal(order, result, {
+              status: result.status || "COMPLETED",
+            })
+          );
+          return;
+        }
+
+        if (response.status >= 400) {
+          openTxHashFallback(
+            getMessageFromResult(
+              result,
+              "Automatic verification failed. Enter your transaction hash to continue."
+            )
+          );
+          return;
+        }
+      } catch (error) {
+        if (verificationRunIdRef.current !== runId) return;
+        const message =
+          error instanceof Error
+            ? error.message
+            : "Automatic verification failed. Enter your transaction hash to continue.";
+        openTxHashFallback(message);
+        return;
+      }
+
+      const elapsedMs = Date.now() - startedAt;
+      if (elapsedMs >= AUTO_CHECK_DURATION_MS) {
+        break;
+      }
+
+      await sleep(
+        Math.min(AUTO_CHECK_INTERVAL_MS, AUTO_CHECK_DURATION_MS - elapsedMs)
+      );
+    }
+
+    if (verificationRunIdRef.current !== runId) return;
+
+    openTxHashFallback(
+      "We couldn't automatically detect your payment within 2 minutes. Enter your transaction hash to continue."
+    );
+  }, [finalizeOrder, openTxHashFallback, upsertLatestSignal]);
+
+  const handleSubmitTxHash = useCallback(
+    async (txHash: string) => {
+      const order = activeOrderRef.current;
+      if (!order) {
+        openGenericFailure("No active order found for transaction verification.");
+        return;
+      }
+
+      const runId = verificationRunIdRef.current + 1;
+      verificationRunIdRef.current = runId;
+
+      setFailureMessage(undefined);
+      setIsTxVerificationSubmitting(true);
+
+      try {
+        const response = await checkQuantumCryptoPaymentByTx({
+          orderId: order.orderId,
+          txHash,
+        });
+        if (verificationRunIdRef.current !== runId) return;
+        const result = response.data;
+        const nextStatus =
+          result.status || (result.paymentReceived ? "COMPLETED" : "PENDING");
+
+        upsertLatestSignal(
+          buildCryptoOrderSignal(order, result, {
+            status: nextStatus,
+          })
+        );
+
+        if (isConfirmedQuantumPayment(result)) {
+          setFailOpen(false);
+          finalizeOrder(
+            buildCryptoOrderSignal(order, result, {
+              status: result.status || "COMPLETED",
+            })
+          );
+          return;
+        }
+
+        setFailureMessage(
+          getMessageFromResult(
+            result,
+            "We couldn't verify this transaction hash yet. Please check it and try again."
+          )
+        );
+      } catch (error) {
+        if (verificationRunIdRef.current !== runId) return;
+        setFailureMessage(
+          error instanceof Error
+            ? error.message
+            : "Failed to verify the transaction hash. Please try again."
+        );
+      } finally {
+        if (verificationRunIdRef.current === runId) {
+          setIsTxVerificationSubmitting(false);
+        }
+      }
+    },
+    [finalizeOrder, openGenericFailure, upsertLatestSignal]
+  );
+
+  const handleCancelActiveOrder = useCallback(async () => {
+    const order = activeOrderRef.current;
+    if (!order?.orderId) {
+      setIsCancelConfirmOpen(false);
+      setIsPaymentPopupOpen(false);
+      setIsVerifyingPopupOpen(false);
+      return;
+    }
+
+    setCancelError(undefined);
+    setIsCancellingOrder(true);
+
+    try {
+      const response = await cancelQuantumOrder({
+        orderId: order.orderId,
+      });
+      const result = response.data;
+      const message = getMessageFromResult(
+        result,
+        "Unable to cancel this order."
+      );
+
+      if (response.status === 200) {
+        verificationRunIdRef.current += 1;
+        upsertLatestSignal(
+          buildCryptoOrderSignal(order, result, {
+            status: result.status || "OrderCancelled",
+          })
+        );
+        setIsCancelConfirmOpen(false);
+        setIsPaymentPopupOpen(false);
+        setIsVerifyingPopupOpen(false);
+        setFailOpen(false);
+        setFailRequiresTxHash(false);
+        setFailureMessage(undefined);
+        setIsTxVerificationSubmitting(false);
+        setActiveOrder(null);
+        setPendingOrderId(null);
+        activeOrderRef.current = null;
+        pendingOrderIdRef.current = null;
+        return;
+      }
+
+      if (
+        response.status === 400 &&
+        message.toLowerCase().includes("completed orders cannot be cancelled")
+      ) {
+        finalizeOrder(
+          buildCryptoOrderSignal(order, result, {
+            status: "COMPLETED",
+          })
+        );
+        return;
+      }
+
+      setCancelError(message);
+    } catch (error) {
+      setCancelError(
+        error instanceof Error
+          ? error.message
+          : "Failed to cancel the order. Please try again."
+      );
+    } finally {
+      setIsCancellingOrder(false);
+    }
+  }, [finalizeOrder, upsertLatestSignal]);
 
   // MAIN BUY HANDLER: calls API first, then either redirect (paypal/usd) or open popup (crypto)
   const handleBuyNow = async () => {
@@ -635,7 +1021,15 @@ const QuantumMiningPage = () => {
       return;
     }
 
+    verificationRunIdRef.current += 1;
     setFailOpen(false);
+    setFailRequiresTxHash(false);
+    setFailureMessage(undefined);
+    setIsTxVerificationSubmitting(false);
+    setIsVerifyingPopupOpen(false);
+    setIsCancelConfirmOpen(false);
+    setCancelError(undefined);
+    setIsCancellingOrder(false);
     setSuccessOpen(false);
     setLatestOrderSignal(null);
 
@@ -647,6 +1041,18 @@ const QuantumMiningPage = () => {
         currencyOut: "BTCY" as const,
         amount: Number(payAmount), // user-entered USD
         outAmount: Number(getAmount) || 0, // BTCY amount (UI computed)
+        ...(selectedPaymentOption === "PayPal" && {
+          paymentMethod: "paypal" as const,
+        }),
+        ...(selectedPaymentOption === "Stripe" && {
+          paymentMethod: "card" as const,
+        }),
+        ...(selectedPaymentOption === "Wire Transfer" && {
+          paymentType: "wiretransfer" as const,
+        }),
+        ...(isCryptoPayment(selectedPaymentOption) && {
+          paymentMethod: "crypto" as const,
+        }),
         ...(isCryptoPayment(selectedPaymentOption) && {
           blockchain: selectedNetwork,
         }),
@@ -721,6 +1127,26 @@ const QuantumMiningPage = () => {
         return;
       }
 
+      if (selectedPaymentOption === "Stripe") {
+        const checkoutUrl =
+          typeof data?.url === "string" ? (data.url as string) : "";
+        if (!checkoutUrl) {
+          throw new Error("Missing Stripe checkout URL.");
+        }
+        window.location.href = checkoutUrl;
+        return;
+      }
+
+      if (selectedPaymentOption === "Wire Transfer") {
+        openGenericFailure(
+          getMessageFromResult(
+            data,
+            "Wire transfer checkout is not available in this flow yet."
+          )
+        );
+        return;
+      }
+
       // Else crypto: open popup with address + qr
       const order: CryptoOrderData = {
         orderId: data.orderId as string,
@@ -753,7 +1179,11 @@ const QuantumMiningPage = () => {
       setErrors({});
     } catch (err: unknown) {
       console.error("Order create failed", err);
-      setFailOpen(true);
+      openGenericFailure(
+        err instanceof Error
+          ? err.message
+          : "Failed to create the order. Please try again."
+      );
       setPendingOrderId(null);
       pendingOrderIdRef.current = null;
     }
@@ -814,14 +1244,7 @@ const QuantumMiningPage = () => {
 
         {/* Payment Options */}
         <div className="grid grid-cols-2 md:grid-cols-6 gap-2 md:gap-2 mb-8 justify-items-center">
-          {[
-            { name: "USDT", icon: USDTIcon },
-            { name: "USDC", icon: USDCIcon },
-            { name: "PayPal", icon: PaypalIcon },
-            { name: "USD", icon: USDIcon },
-            { name: "Wire Transfer", icon: WireTransferIcon },
-            { name: "Stripe", icon: StripeIcon },
-          ].map((option) => {
+          {PAYMENT_OPTIONS.map((option) => {
             const name = option.name as PaymentOption;
             const isSelected = name === selectedPaymentOption;
             return (
@@ -830,16 +1253,19 @@ const QuantumMiningPage = () => {
                 className="relative cursor-pointer transition-all duration-200"
                 onClick={() => setSelectedPaymentOption(name)}
               >
-                {/* <Image
-                  src={isSelected ? ButtonBorderActive : ButtonBorder}
-                  alt={isSelected ? "Button Border Active" : "Button Border"}
-                  className="w-32 md:w-38 lg:w-44"
-                /> */}
                 <div className="group flex flex-col items-center">
                   <span className="mb-2">
-                    <Image src={option.icon} alt={name} className={`${name === "Wire Transfer" ? "w-20" : "w-10"} h-10`} />
+                    <Image
+                      src={option.icon}
+                      alt={name}
+                      className={option.optionIconClassName}
+                    />
                   </span>
-                  <span className={`text-lg group-hover:text-primary ${isSelected ? "text-primary" : ""}`}>{name}</span>
+                  <span
+                    className={`text-lg group-hover:text-primary ${isSelected ? "text-primary" : ""}`}
+                  >
+                    {name}
+                  </span>
                 </div>
               </div>
             );
@@ -905,19 +1331,11 @@ const QuantumMiningPage = () => {
               />
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                 <span>
-                  {selectedPaymentOption === "USDT" ? (
-                    <Image src={USDTIcon} alt="USDT" className="w-10 h-10" />
-                  ) : selectedPaymentOption === "USDC" ? (
-                    <Image src={USDCIcon} alt="USDC" className="w-10 h-10" />
-                  ) : selectedPaymentOption === "PayPal" ? (
-                    <Image
-                      src={PaypalIcon}
-                      alt="PayPal"
-                      className="w-10 h-10"
-                    />
-                  ) : (
-                    <Image src={USDIcon} alt="USD" className="w-14 h-10" />
-                  )}
+                  <Image
+                    src={selectedPaymentVisual.icon}
+                    alt={selectedPaymentVisual.name}
+                    className={selectedPaymentVisual.inputIconClassName}
+                  />
                 </span>
               </div>
             </div>
@@ -1293,7 +1711,7 @@ const QuantumMiningPage = () => {
               <AccordionContent className="text-base md:text-lg text-tertiary my-4">
                 Quantum Mining is aimed at users who:
                 <ul className="list-disc pl-5 space-y-1 mt-2">
-                  <li>Don't want to tap and mine every day</li>
+                  <li>Don&apos;t want to tap and mine every day</li>
                   <li>Prefer buying tokens directly instead of grinding nuggets</li>
                   <li>Want to take advantage of early pricing and limited-time discounts (like the 12:12 10% off sale) while understanding the high risk and speculative nature of pre-launch tokens.</li>
                 </ul>
@@ -1334,12 +1752,9 @@ const QuantumMiningPage = () => {
 
       <PaymentPopup
         isOpen={isPaymentPopupOpen}
-        onClose={() => setIsPaymentPopupOpen(false)}
-        onPaymentConfirmed={() => {
-          setIsPaymentPopupOpen(false);
-          setIsVerifyingPopupOpen(true);
-        }}
-        onCancel={() => setIsCancelConfirmOpen(true)}
+        onClose={handleOpenCancelConfirmation}
+        onPaymentConfirmed={handleStartCryptoVerification}
+        onCancel={handleOpenCancelConfirmation}
         cryptoType={selectedPaymentOption}
         order={activeOrder}
         closeOnOutsideClick={false}
@@ -1355,17 +1770,28 @@ const QuantumMiningPage = () => {
 
       <CancelConfirmationPopup
         isOpen={isCancelConfirmOpen}
-        onClose={() => setIsCancelConfirmOpen(false)}
-        onStay={() => setIsCancelConfirmOpen(false)}
-        onCancel={() => {
+        onClose={() => {
+          if (isCancellingOrder) return;
+          setCancelError(undefined);
           setIsCancelConfirmOpen(false);
-          setIsPaymentPopupOpen(false);
         }}
+        onStay={() => {
+          if (isCancellingOrder) return;
+          setCancelError(undefined);
+          setIsCancelConfirmOpen(false);
+        }}
+        onCancel={handleCancelActiveOrder}
+        isCancelling={isCancellingOrder}
+        errorMessage={cancelError}
       />
 
       <VerifyingPaymentPopup
         isOpen={isVerifyingPopupOpen}
-        onClose={() => setIsVerifyingPopupOpen(false)}
+        onClose={() => {
+          if (isCancellingOrder) return;
+          setIsCancelConfirmOpen(false);
+          setIsVerifyingPopupOpen(false);
+        }}
       />
 
       <LoginPopup
@@ -1380,7 +1806,19 @@ const QuantumMiningPage = () => {
         onClose={handleCloseSuccess}
         orderSummary={latestOrderSignal || undefined}
       />
-      <UnsuccessPopup isOpen={failOpen} onClose={() => setFailOpen(false)} />
+      <UnsuccessPopup
+        isOpen={failOpen}
+        onClose={() => {
+          setFailOpen(false);
+          setFailureMessage(undefined);
+          setFailRequiresTxHash(false);
+          setIsTxVerificationSubmitting(false);
+        }}
+        onSubmitTxHash={failRequiresTxHash ? handleSubmitTxHash : undefined}
+        isSubmitting={isTxVerificationSubmitting}
+        errorMessage={failureMessage}
+        orderId={activeOrder?.orderId || pendingOrderId || undefined}
+      />
     </div>
   );
 };

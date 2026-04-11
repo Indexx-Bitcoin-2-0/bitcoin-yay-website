@@ -25,10 +25,10 @@ export default function VerifyingPaymentPopup({
         </h2>
 
         <p className="text-lg md:text-xl text-tertiary mb-2">
-          We are verifying your transaction.
+          We are checking the blockchain for your transaction.
         </p>
         <p className="text-lg md:text-xl text-tertiary mb-8">
-          This usually takes 1–2 minutes.
+          This can take up to 2 minutes.
         </p>
 
         <p className="text-base md:text-lg text-orange-500 font-medium">

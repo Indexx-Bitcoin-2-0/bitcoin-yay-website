@@ -10,11 +10,15 @@ export default function CancelConfirmationPopup({
   onClose,
   onStay,
   onCancel,
+  isCancelling = false,
+  errorMessage,
 }: {
   isOpen: boolean;
   onClose: () => void;
   onStay: () => void;
   onCancel: () => void;
+  isCancelling?: boolean;
+  errorMessage?: string;
 }) {
   return (
     <PopupComponent isOpen={isOpen} onClose={onClose}>
@@ -28,17 +32,27 @@ export default function CancelConfirmationPopup({
           <p>If you’ve already sent the payment, leaving this page may delay confirmation.</p>
         </div>
 
+        {errorMessage && (
+          <p className="mb-8 text-sm md:text-base text-red-500">{errorMessage}</p>
+        )}
+
         <div className="flex items-start justify-around w-full gap-6 md:gap-10">
           <CustomButton2
             image={CheckMarkButtonImage}
             text="Stay on this page"
-            onClick={onStay}
+            onClick={() => {
+              if (isCancelling) return;
+              onStay();
+            }}
             imageStyling="w-24 md:w-32 lg:w-40"
           />
           <CustomButton2
             image={CancelOrderImage}
-            text="Cancel Payment"
-            onClick={onCancel}
+            text={isCancelling ? "Cancelling..." : "Cancel Payment"}
+            onClick={() => {
+              if (isCancelling) return;
+              onCancel();
+            }}
             imageStyling="w-24 md:w-32 lg:w-40"
           />
         </div>
