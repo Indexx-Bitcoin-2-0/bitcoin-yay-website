@@ -127,6 +127,12 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
                     >
                         My Plan Detail
                     </Link>
+                    <Link
+                        href="/order-history"
+                        className="w-full py-2 text-center text-gray-300 font-semibold hover:text-primary hover:cursor-pointer rounded-xl transition-all duration-200"
+                    >
+                        Order History
+                    </Link>
                     <button
                         onClick={onLogout}
                         className="w-full py-2 text-center text-gray-300 font-semibold hover:text-primary hover:cursor-pointer rounded-xl transition-all duration-200"
