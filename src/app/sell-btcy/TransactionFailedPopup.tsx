@@ -3,8 +3,8 @@
 import React from "react";
 import PopupComponent from "@/components/PopupComponent";
 import CustomButton2 from "@/components/CustomButton2";
-import retryButton from "@/assets/images/buttons/retry-button.webp";
-import failedIcon from "@/assets/images/icons/cross-icon.webp";
+import customerSupport from "@/assets/images/buttons/customer_support.svg"
+import failedIcon from '@/assets/images/failed_icon.svg'
 interface TransactionFailedPopupProps {
   isOpen: boolean;
   onClose: () => void;
@@ -19,7 +19,7 @@ const TransactionFailedPopup: React.FC<TransactionFailedPopupProps> = ({
       <div className="w-[90vw] md:w-[600px] p-8 md:p-12 flex flex-col items-center justify-center text-center">
         {/* Big Orange X */}
         <div className="mb-8">
-          <img src={failedIcon.src} alt="Failed" className="w-34 h-34 text-primary mb-[-30px]" />
+          <img src={failedIcon?.src} alt="Failed" className="w-34 h-34 text-primary mb-[-30px]" />
         </div>
 
         <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-6">
@@ -34,8 +34,8 @@ const TransactionFailedPopup: React.FC<TransactionFailedPopupProps> = ({
         <div className="flex flex-col items-center justify-center">
 
           <CustomButton2
-            image={retryButton}
-            text="Try Again"
+            image={customerSupport}
+            text="Complete KYC"
             onClick={() => {
               console.log("Contacting Support...");
               onClose();
