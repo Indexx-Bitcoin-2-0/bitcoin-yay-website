@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/accordion";
 import CustomButton2 from "@/components/CustomButton2";
 import PaymentPopup from "./PaymentPopup";
+import WireTransferPopup from "./WireTransferPopup";
 import LoginPopup from "@/components/LoginPopup";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -286,6 +287,7 @@ const QuantumMiningPage = () => {
   );
   const [isNetworkDropdownOpen, setIsNetworkDropdownOpen] = useState(false);
   const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
+  const [isWireTransferPopupOpen, setIsWireTransferPopupOpen] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
   const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
   const [btcyPrice, setBtcyPrice] = useState(0);
@@ -741,9 +743,14 @@ const QuantumMiningPage = () => {
         orderType: "Quantum",
         raw: order,
       });
-      setActiveOrder(order);
+
+      if (selectedPaymentOption === "Wire Transfer") {
+        setIsWireTransferPopupOpen(true);
+      } else {
+        setActiveOrder(order);
+        setIsPaymentPopupOpen(true);
+      }
       setErrors({});
-      setIsPaymentPopupOpen(true);
     } catch (err: unknown) {
       console.error("Order create failed", err);
       setFailOpen(true);
@@ -1157,7 +1164,7 @@ const QuantumMiningPage = () => {
               <li>Paypal</li>
               <li>USD credit/debit card</li>
               <li>
-                USD bank wire <ComingSoonBadge />
+                USD bank wire
               </li>
             </ul>
           </div>
@@ -1175,7 +1182,7 @@ const QuantumMiningPage = () => {
                 Local currencies: EUR, GBP, JPY, AED, INR <ComingSoonBadge />
               </li>
               <li>
-                Bank wires (SWIFT/SEPA) <ComingSoonBadge />
+                Bank wires (SWIFT/SEPA)
               </li>
               <li>
                 Local methods: Alipay, UPI, M-Pesa <ComingSoonBadge />
@@ -1337,6 +1344,13 @@ const QuantumMiningPage = () => {
         order={activeOrder}
         closeOnOutsideClick={false}
         closeOnEsc={false}
+      />
+
+      <WireTransferPopup
+        isOpen={isWireTransferPopupOpen}
+        onClose={() => setIsWireTransferPopupOpen(false)}
+        payAmount={payAmount}
+        wireOrderId={pendingOrderId}
       />
 
       <CancelConfirmationPopup

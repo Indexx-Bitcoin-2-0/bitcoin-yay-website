@@ -7,7 +7,7 @@ import {
 } from "@/routes";
 
 // Types
-export type PaymentOption = "USDT" | "USDC" | "PayPal" | "USD";
+export type PaymentOption = "USDT" | "USDC" | "PayPal" | "USD" | "Wire Transfer";
 
 export type CryptoOrderData = {
   orderId: string;
