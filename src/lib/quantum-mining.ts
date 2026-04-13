@@ -53,9 +53,31 @@ export type StripeOrderData = {
   url: string;
 };
 
+export type WireTransferOrderData = {
+  _id?: string;
+  orderId: string;
+  status?: string;
+  paymentType?: string;
+  orderType?: string;
+  breakdown?: {
+    inCurrenyName?: string;
+    inAmount?: number;
+    outCurrencyName?: string;
+    outAmount?: number;
+    finalAmountAfterDiscount?: number;
+    [key: string]: unknown;
+  };
+  [key: string]: unknown;
+};
+
 export type CreateOrderResponse = {
   status: number;
-  data: CryptoOrderData | PaypalOrderData | StripeOrderData | Record<string, unknown>;
+  data:
+    | CryptoOrderData
+    | PaypalOrderData
+    | StripeOrderData
+    | WireTransferOrderData
+    | Record<string, unknown>;
 };
 
 export type CreateOrderData = {
@@ -67,6 +89,7 @@ export type CreateOrderData = {
   blockchain?: "Ethereum" | "Solana";
   env?: "test";
   paymentMethod?: "crypto" | "paypal" | "card" | "WireTransfer" | "Stripe";
+  paymentType?: "wiretransfer";
 };
 
 export type GetUserOrderData = {
@@ -165,12 +188,16 @@ export async function createQuantumOrder(
   data: CreateOrderData
 ): Promise<CreateOrderResponse> {
   try {
+    const hostname =
+      typeof window !== "undefined" ? window.location.hostname : "";
+    const isTestHost =
+      hostname === "test.bitcoinyay.com" ||
+      hostname === "localhost" ||
+      hostname === "127.0.0.1" ||
+      hostname === "::1";
     const env =
       data.env ??
-      (typeof window !== "undefined" &&
-        window.location.hostname === "test.bitcoinyay.com"
-        ? "test"
-        : "main");
+      (isTestHost ? "test" : "main");
     const payload = env ? { ...data, env } : data;
 
     const response = await axios.post<CreateOrderResponse>(
@@ -393,7 +420,9 @@ export function processPayPalReturn(
     }
   })();
 
-  const resolvedOrderId = orderIdFromQuery || token || stash?.orderId || "";
+  // PayPal may return only a token in the URL, but our APIs expect the
+  // platform order id. Do not treat the PayPal token as a quantum order id.
+  const resolvedOrderId = orderIdFromQuery || stash?.orderId || "";
 
   if (status === "cancel") {
     return {

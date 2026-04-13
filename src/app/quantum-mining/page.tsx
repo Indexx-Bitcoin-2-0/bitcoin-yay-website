@@ -438,6 +438,7 @@ const QuantumMiningPage = () => {
   const openGenericFailure = useCallback((message?: string) => {
     verificationRunIdRef.current += 1;
     setIsPaymentPopupOpen(false);
+    setIsWireTransferPopupOpen(false);
     setIsVerifyingPopupOpen(false);
     setFailRequiresTxHash(false);
     setFailureMessage(message);
@@ -448,6 +449,7 @@ const QuantumMiningPage = () => {
   const openTxHashFallback = useCallback((message?: string) => {
     verificationRunIdRef.current += 1;
     setIsPaymentPopupOpen(false);
+    setIsWireTransferPopupOpen(false);
     setIsVerifyingPopupOpen(false);
     setFailRequiresTxHash(true);
     setFailureMessage(message);
@@ -462,6 +464,7 @@ const QuantumMiningPage = () => {
       }
       verificationRunIdRef.current += 1;
       setIsPaymentPopupOpen(false);
+      setIsWireTransferPopupOpen(false);
       setIsVerifyingPopupOpen(false);
       setFailOpen(false);
       setFailRequiresTxHash(false);
@@ -734,6 +737,7 @@ const QuantumMiningPage = () => {
           });
           verificationRunIdRef.current += 1;
           setIsPaymentPopupOpen(false);
+          setIsWireTransferPopupOpen(false);
           setIsVerifyingPopupOpen(false);
           setIsCancelConfirmOpen(false);
           setCancelError(undefined);
@@ -1028,6 +1032,7 @@ const QuantumMiningPage = () => {
     setIsTxVerificationSubmitting(false);
     setIsVerifyingPopupOpen(false);
     setIsCancelConfirmOpen(false);
+    setIsWireTransferPopupOpen(false);
     setCancelError(undefined);
     setIsCancellingOrder(false);
     setSuccessOpen(false);
@@ -1073,24 +1078,14 @@ const QuantumMiningPage = () => {
         if (!approve) throw new Error("Missing PayPal approval link.");
 
         // Persist for return page
-        const tokenFromLink = (() => {
-          try {
-            const u = new URL(approve);
-            return u.searchParams.get("token") || undefined;
-          } catch {
-            return undefined;
-          }
-        })();
-
         const stash = {
           email: user.email,
-          // PayPal order id can be one of: token, data.id, data.paypalId
+          // Persist only the platform order id. PayPal token/id values are not
+          // interchangeable with the quantum order id used by our APIs.
           orderId:
-            tokenFromLink ||
-            (data?.id as string) ||
-            (data?.paypalId as string) ||
-            (data?.orderId as string) ||
-            "",
+            typeof data?.orderId === "string" || typeof data?.orderId === "number"
+              ? String(data.orderId)
+              : "",
         };
         storePayPalOrderData(stash);
 
@@ -1138,12 +1133,52 @@ const QuantumMiningPage = () => {
       }
 
       if (selectedPaymentOption === "Wire Transfer") {
-        openGenericFailure(
-          getMessageFromResult(
-            data,
-            "Wire transfer checkout is not available in this flow yet."
-          )
+        const wireOrderIdValue = data?.orderId;
+        const wireOrderId =
+          typeof wireOrderIdValue === "string" ||
+          typeof wireOrderIdValue === "number"
+            ? String(wireOrderIdValue)
+            : "";
+        if (!wireOrderId) {
+          throw new Error("Missing wire transfer order ID.");
+        }
+
+        const breakdown =
+          typeof data?.breakdown === "object" && data.breakdown !== null
+            ? (data.breakdown as Record<string, unknown>)
+            : null;
+        const breakdownCurrency =
+          typeof breakdown?.inCurrenyName === "string" &&
+          breakdown.inCurrenyName.trim()
+            ? breakdown.inCurrenyName
+            : "USD";
+        const breakdownAmount = toNumeric(
+          breakdown?.finalAmountAfterDiscount ?? breakdown?.inAmount ?? payload.amount
         );
+        const paymentTypeValue =
+          typeof data?.paymentType === "string" && data.paymentType.trim()
+            ? data.paymentType
+            : selectedPaymentOption;
+
+        setActiveOrder(null);
+        activeOrderRef.current = null;
+        setPendingOrderId(wireOrderId);
+        pendingOrderIdRef.current = wireOrderId;
+        upsertLatestSignal({
+          ...buildOrderSignal(data, wireOrderId, data),
+          orderId: wireOrderId,
+          status:
+            (typeof data?.status === "string" && data.status) || "Quoted",
+          amount: breakdownAmount,
+          currency: breakdownCurrency,
+          paymentType: paymentTypeValue,
+          orderType:
+            (typeof data?.orderType === "string" && data.orderType) ||
+            "Quantum",
+          raw: data,
+        });
+        setIsWireTransferPopupOpen(true);
+        setErrors({});
         return;
       }
 
@@ -1170,12 +1205,8 @@ const QuantumMiningPage = () => {
         raw: order,
       });
 
-      if (selectedPaymentOption === "Wire Transfer") {
-        setIsWireTransferPopupOpen(true);
-      } else {
-        setActiveOrder(order);
-        setIsPaymentPopupOpen(true);
-      }
+      setActiveOrder(order);
+      setIsPaymentPopupOpen(true);
       setErrors({});
     } catch (err: unknown) {
       console.error("Order create failed", err);
