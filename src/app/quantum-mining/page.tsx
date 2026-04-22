@@ -59,6 +59,7 @@ import {
   SocketEventHandlers,
   QuantumOrderSocketPayload,
 } from "@/lib/quantum-mining";
+import { analytics } from "@/lib/analytics";
 
 
 interface Errors {
@@ -303,6 +304,11 @@ const QuantumMiningPage = () => {
 
   const handledReturnRef = useRef(false);
 
+  // Track Page View
+  useEffect(() => {
+    analytics.trackPageView("Quantum Mining");
+  }, []);
+
   useEffect(() => {
     activeOrderRef.current = activeOrder;
   }, [activeOrder]);
@@ -342,6 +348,11 @@ const QuantumMiningPage = () => {
       setIsPaymentPopupOpen(false);
       setFailOpen(false);
       setSuccessOpen(true);
+      analytics.trackPurchaseComplete({
+        order_id: signal?.orderId || pendingOrderIdRef.current || "unknown",
+        amount: signal?.amount || Number(payAmount) || 0,
+        currency: signal?.currency || selectedPaymentOption || "USD",
+      });
       setActiveOrder(null);
       setPendingOrderId(null);
       activeOrderRef.current = null;
@@ -371,6 +382,7 @@ const QuantumMiningPage = () => {
     // Fast-fail on cancel
     if (result.status === "cancel") {
       setFailOpen(true);
+      analytics.trackError("PayPal Cancelled", "PayPal Return");
       // optional: clear stash
       clearPayPalOrderData();
       return;
@@ -380,6 +392,7 @@ const QuantumMiningPage = () => {
     if (result.status === "success") {
       if (!result.email || !result.orderId) {
         setFailOpen(true);
+        analytics.trackError("Missing PayPal Details", "PayPal Success Return");
         clearPayPalOrderData();
         return;
       }
@@ -452,6 +465,7 @@ const QuantumMiningPage = () => {
             finalizeOrder(withStatus);
           } else {
             setFailOpen(true);
+            analytics.trackError(`Incomplete Status: ${normalizedStatus}`, "Fetch PayPal Order");
             setPendingOrderId(null);
             pendingOrderIdRef.current = null;
             clearPayPalOrderData();
@@ -459,6 +473,7 @@ const QuantumMiningPage = () => {
         } catch (e) {
           console.error("getUserOrder failed:", e);
           setFailOpen(true);
+          analytics.trackError("Fetch Order API Failed", "Fetch PayPal Order");
           setPendingOrderId(null);
           pendingOrderIdRef.current = null;
           clearPayPalOrderData();
@@ -573,6 +588,7 @@ const QuantumMiningPage = () => {
           setPendingOrderId(null);
           pendingOrderIdRef.current = null;
           setFailOpen(true);
+          analytics.trackError("Order Expired", "Socket: Order Expired");
           clearPayPalOrderData();
         }
       },
@@ -622,12 +638,19 @@ const QuantumMiningPage = () => {
     if (!user?.email) {
       setIsLoginPopupOpen(true);
       setIsPaymentPopupOpen(false);
+      analytics.trackPopupOpen("Login Popup (Required for Buy)");
       return;
     }
 
     setFailOpen(false);
     setSuccessOpen(false);
     setLatestOrderSignal(null);
+
+    analytics.trackBuyIntent({
+      amount: Number(payAmount),
+      currency: selectedPaymentOption,
+      network: isCryptoPayment(selectedPaymentOption) ? selectedNetwork : undefined,
+    });
 
     try {
       // Build payload "based on the above data"
@@ -677,6 +700,12 @@ const QuantumMiningPage = () => {
             "",
         };
         storePayPalOrderData(stash);
+
+        analytics.trackOrderCreated({
+          order_id: stash.orderId,
+          amount: Number(payAmount),
+          currency: selectedPaymentOption,
+        });
 
         if (stash.orderId) {
           setPendingOrderId(stash.orderId);
@@ -736,9 +765,16 @@ const QuantumMiningPage = () => {
       setActiveOrder(order);
       setErrors({});
       setIsPaymentPopupOpen(true);
+      analytics.trackPopupOpen("Crypto Payment Modal");
+      analytics.trackOrderCreated({
+        order_id: order.orderId,
+        amount: order.amount,
+        currency: selectedPaymentOption,
+      });
     } catch (err: unknown) {
       console.error("Order create failed", err);
       setFailOpen(true);
+      analytics.trackError("Create Order API Failed", "handleBuyNow");
       setPendingOrderId(null);
       pendingOrderIdRef.current = null;
     }
@@ -898,7 +934,7 @@ const QuantumMiningPage = () => {
             <div className="relative">
               <input
                 type="number"
-                className="w-full px-4 py-3 border border-bg3 rounded-lg text-lg focus:outline-none focus:border-primary hover:border-primary "
+                className="w-full px-4 py-3 border border-bg3 rounded-lg text-lg focus:outline-none focus:border-primary hover:border-primary [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 placeholder="0"
                 value={payAmount}
                 onChange={(e) => handlePayAmountChange(e.target.value)}
@@ -931,7 +967,7 @@ const QuantumMiningPage = () => {
             <div className="relative">
               <input
                 type="number"
-                className="w-full px-4 py-3 border border-bg3 rounded-lg text-lg focus:outline-none focus:border-primary hover:border-primary "
+                className="w-full px-4 py-3 border border-bg3 rounded-lg text-lg focus:outline-none focus:border-primary hover:border-primary [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 placeholder="0"
                 value={getAmount}
                 onChange={(e) => setGetAmount(e.target.value)}
