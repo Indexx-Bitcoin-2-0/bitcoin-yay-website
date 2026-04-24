@@ -307,13 +307,23 @@ export function optionToCurrencyIn(opt: PaymentOption): PaymentOption {
 export const MIN_PURCHASE_AMOUNT_USD = 10;
 
 /**
- * Calculates BTCY amount from USD amount
+ * Calculates base BTCY amount from USD amount
+ */
+export function calculateBaseBTCYAmount(
+  usdAmount: number,
+  btcyPrice: number
+): number {
+  return usdAmount / btcyPrice;
+}
+
+/**
+ * Calculates BTCY amount from USD amount with 30% UI bonus
  */
 export function calculateBTCYAmount(
   usdAmount: number,
   btcyPrice: number
 ): number {
-  return usdAmount / btcyPrice;
+  return calculateBaseBTCYAmount(usdAmount, btcyPrice) * 1.3;
 }
 
 /**

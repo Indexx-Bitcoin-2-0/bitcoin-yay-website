@@ -53,6 +53,7 @@ import {
   clearPayPalOrderData,
   isCryptoPayment,
   optionToCurrencyIn,
+  calculateBaseBTCYAmount,
   calculateBTCYAmount,
   MIN_PURCHASE_AMOUNT_USD,
   validateOrderData,
@@ -653,13 +654,17 @@ const QuantumMiningPage = () => {
     });
 
     try {
+      const outAmount = btcyPrice > 0
+        ? calculateBaseBTCYAmount(Number(payAmount), btcyPrice)
+        : 0;
+
       // Build payload "based on the above data"
       const payload = {
         email: user.email,
         currencyIn: optionToCurrencyIn(selectedPaymentOption), // "USDT"|"USDC"|"PayPal"|"USD"
         currencyOut: "BTCY" as const,
         amount: Number(payAmount), // user-entered USD
-        outAmount: Number(getAmount) || 0, // BTCY amount (UI computed)
+        outAmount, // base BTCY amount without 30% UI bonus
         ...(isCryptoPayment(selectedPaymentOption) && {
           blockchain: selectedNetwork,
         }),
@@ -963,7 +968,9 @@ const QuantumMiningPage = () => {
           </div>
 
           <div>
-            <label className="block text-xl mb-2">You Get</label>
+            <label className="block text-xl mb-2">
+              You Get (30 % BTCY bonus added)
+            </label>
             <div className="relative">
               <input
                 type="number"
