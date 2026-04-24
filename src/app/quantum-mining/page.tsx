@@ -42,7 +42,6 @@ import CardImage1 from "@/assets/images/home/card-1.webp";
 import CardImage2 from "@/assets/images/home/card-2.webp";
 import CardImage3 from "@/assets/images/home/card-3.webp";
 
-
 import {
   PaymentOption,
   CryptoOrderData,
@@ -65,7 +64,6 @@ import {
   QuantumOrderSocketPayload,
   QuantumCryptoPaymentCheckResult,
 } from "@/lib/quantum-mining";
-
 
 interface Errors {
   payAmount?: string;
@@ -161,7 +159,9 @@ const buildOrderSignal = (
   if (typeof nestedAmount === "object" && nestedAmount !== null) {
     const nested = nestedAmount as Record<string, unknown>;
     if (amount === undefined) {
-      const nestedValue = toNumeric(nested.value ?? nested.total ?? nested.amount);
+      const nestedValue = toNumeric(
+        nested.value ?? nested.total ?? nested.amount
+      );
       if (nestedValue !== undefined) {
         amount = nestedValue;
       }
@@ -380,9 +380,8 @@ const QuantumMiningPage = () => {
   // Active order (crypto only)
   const [activeOrder, setActiveOrder] = useState<CryptoOrderData | null>(null);
   const [pendingOrderId, setPendingOrderId] = useState<string | null>(null);
-  const [latestOrderSignal, setLatestOrderSignal] = useState<OrderSignal | null>(
-    null
-  );
+  const [latestOrderSignal, setLatestOrderSignal] =
+    useState<OrderSignal | null>(null);
 
   // Popups
   const [successOpen, setSuccessOpen] = useState(false);
@@ -545,7 +544,9 @@ const QuantumMiningPage = () => {
     // Success path -> fetch order details from backend (capture is already done server-side)
     if (result.status === "success") {
       if (!result.email || !result.orderId) {
-        openGenericFailure("We couldn't verify the payment details for this order.");
+        openGenericFailure(
+          "We couldn't verify the payment details for this order."
+        );
         clearPayPalOrderData();
         return;
       }
@@ -747,7 +748,9 @@ const QuantumMiningPage = () => {
           setPendingOrderId(null);
           pendingOrderIdRef.current = null;
           setFailRequiresTxHash(false);
-          setFailureMessage("This order expired before the payment was confirmed.");
+          setFailureMessage(
+            "This order expired before the payment was confirmed."
+          );
           setIsTxVerificationSubmitting(false);
           setFailOpen(true);
           clearPayPalOrderData();
@@ -883,7 +886,9 @@ const QuantumMiningPage = () => {
     async (txHash: string) => {
       const order = activeOrderRef.current;
       if (!order) {
-        openGenericFailure("No active order found for transaction verification.");
+        openGenericFailure(
+          "No active order found for transaction verification."
+        );
         return;
       }
 
@@ -1083,7 +1088,8 @@ const QuantumMiningPage = () => {
           // Persist only the platform order id. PayPal token/id values are not
           // interchangeable with the quantum order id used by our APIs.
           orderId:
-            typeof data?.orderId === "string" || typeof data?.orderId === "number"
+            typeof data?.orderId === "string" ||
+            typeof data?.orderId === "number"
               ? String(data.orderId)
               : "",
         };
@@ -1099,10 +1105,11 @@ const QuantumMiningPage = () => {
             typeof data?.orderCurrency === "string" && data.orderCurrency
               ? (data.orderCurrency as string)
               : selectedPaymentOption === "USD"
-                ? "USD"
-                : undefined;
+              ? "USD"
+              : undefined;
           const orderTypeValue =
-            (typeof data?.orderType === "string" && data.orderType) || "Quantum";
+            (typeof data?.orderType === "string" && data.orderType) ||
+            "Quantum";
           const paymentTypeValue =
             (typeof data?.paymentType === "string" && data.paymentType) ||
             selectedPaymentOption;
@@ -1153,7 +1160,9 @@ const QuantumMiningPage = () => {
             ? breakdown.inCurrenyName
             : "USD";
         const breakdownAmount = toNumeric(
-          breakdown?.finalAmountAfterDiscount ?? breakdown?.inAmount ?? payload.amount
+          breakdown?.finalAmountAfterDiscount ??
+            breakdown?.inAmount ??
+            payload.amount
         );
         const paymentTypeValue =
           typeof data?.paymentType === "string" && data.paymentType.trim()
@@ -1167,8 +1176,7 @@ const QuantumMiningPage = () => {
         upsertLatestSignal({
           ...buildOrderSignal(data, wireOrderId, data),
           orderId: wireOrderId,
-          status:
-            (typeof data?.status === "string" && data.status) || "Quoted",
+          status: (typeof data?.status === "string" && data.status) || "Quoted",
           amount: breakdownAmount,
           currency: breakdownCurrency,
           paymentType: paymentTypeValue,
@@ -1230,15 +1238,14 @@ const QuantumMiningPage = () => {
       <div className="flex flex-col-reverse lg:flex-row">
         <div className="mt-10 md:mt-20 w-full lg:w-[90%] flex flex-col justify-items-center">
           <h1 className="text-[40px] md:text-7xl  font-bold  lg:leading-28">
-            Own BTCY — Before It <br />Gets Listed
-
+            Own BTCY — Before It <br />
+            Gets Listed
           </h1>
 
           <p className="mt-10 text-2xl md:text-3xl max-w-3xl">
             No mining required. Buy BTCY directly at an early-stage price.
             <br />
             BTCY is a pre-listed digital asset connected with Indexx.ai
-
           </p>
         </div>
 
@@ -1263,8 +1270,6 @@ const QuantumMiningPage = () => {
         <h2 className="text-3xl md:text-4xl xl:text-8xl font-bold text-center mb-8">
           Buy BTCY
         </h2>
-
-
 
         {/* Exchange Rate */}
         <div className="mb-8">
@@ -1293,7 +1298,9 @@ const QuantumMiningPage = () => {
                     />
                   </span>
                   <span
-                    className={`text-lg group-hover:text-primary ${isSelected ? "text-primary" : ""}`}
+                    className={`text-lg group-hover:text-primary ${
+                      isSelected ? "text-primary" : ""
+                    }`}
                   >
                     {name}
                   </span>
@@ -1376,7 +1383,9 @@ const QuantumMiningPage = () => {
           </div>
 
           <div>
-            <label className="block text-xl mb-2">You Get</label>
+            <label className="block text-xl mb-2">
+              You Get (30 % BTCY bonus added)
+            </label>
             <div className="relative">
               <input
                 type="number"
@@ -1396,8 +1405,9 @@ const QuantumMiningPage = () => {
 
         {/* Buy Now Button */}
         <div
-          className={`flex justify-center mt-20 ${isBuyDisabled ? "pointer-events-none opacity-60" : ""
-            }`}
+          className={`flex justify-center mt-20 ${
+            isBuyDisabled ? "pointer-events-none opacity-60" : ""
+          }`}
           aria-disabled={isBuyDisabled}
         >
           <CustomButton2
@@ -1411,7 +1421,6 @@ const QuantumMiningPage = () => {
           />
         </div>
       </div>
-
 
       {/* Benefits Section - Three Cards */}
       <div className="mx-auto mt-40 md:mt-60 px-4 md:px-8 lg:px-20 xl:px-40 relative max-w-[2000px]">
@@ -1479,7 +1488,10 @@ const QuantumMiningPage = () => {
                 1. Skip Daily Mining – Get BTCY Instantly
               </h3>
               <p className="text-base md:text-lg lg:text-xl text-gray-300 leading-relaxed">
-                Quantum Mining is for people who don&apos;t want to tap and mine every day. Instead of slowly collecting nuggets, you can buy BTCY tokens directly in the pre-sale and lock in your position immediately.
+                Quantum Mining is for people who don&apos;t want to tap and mine
+                every day. Instead of slowly collecting nuggets, you can buy
+                BTCY tokens directly in the pre-sale and lock in your position
+                immediately.
               </p>
             </div>
 
@@ -1489,7 +1501,11 @@ const QuantumMiningPage = () => {
                 2.Buy While the Price Is Low (Christmas Discount)
               </h3>
               <p className="text-base md:text-lg lg:text-xl text-gray-300 leading-relaxed">
-                With the Christmas Discount, you get 10% off your BTCY token purchase for a limited time. You’re entering at an early stage, before launch and before potential future price movements once BTCY is live and tradable (if and when it gets listed). </p>
+                With the Christmas Discount, you get 10% off your BTCY token
+                purchase for a limited time. You’re entering at an early stage,
+                before launch and before potential future price movements once
+                BTCY is live and tradable (if and when it gets listed).{" "}
+              </p>
             </div>
 
             {/* Benefit 3 */}
@@ -1498,13 +1514,16 @@ const QuantumMiningPage = () => {
                 3. Aligned with Bitcoin – Pegged Ratio
               </h3>
               <p className="text-base md:text-lg lg:text-xl text-gray-300 leading-relaxed">
-                BTCY is designed with a target peg of 1,000,000 BTCY = 1 BTC, connecting the ecosystem to Bitcoin&apos;s price. Quantum Mining lets you participate in that vision early—while understanding that the peg, listing, and future market price are not guaranteed and can change.
+                BTCY is designed with a target peg of 1,000,000 BTCY = 1 BTC,
+                connecting the ecosystem to Bitcoin&apos;s price. Quantum Mining
+                lets you participate in that vision early—while understanding
+                that the peg, listing, and future market price are not
+                guaranteed and can change.
               </p>
             </div>
           </div>
         </div>
       </div>
-
 
       <div className="flex flex-col lg:flex-row items-center justify-center gap-20 mt-80">
         <Image
@@ -1596,8 +1615,6 @@ const QuantumMiningPage = () => {
         </div>
       </div>
 
-
-
       <div className="mt-40">
         <h2 className="text-4xl md:text-6xl xl:text-8xl font-bold text-center">
           Register and Purchase BTCY
@@ -1612,9 +1629,7 @@ const QuantumMiningPage = () => {
               <li>USDT / USDC</li>
               <li>Paypal</li>
               <li>USD credit/debit card</li>
-              <li>
-                USD bank wire
-              </li>
+              <li>USD bank wire</li>
             </ul>
           </div>
           <div className="w-full lg:w-1/2">
@@ -1630,9 +1645,7 @@ const QuantumMiningPage = () => {
               <li>
                 Local currencies: EUR, GBP, JPY, AED, INR <ComingSoonBadge />
               </li>
-              <li>
-                Bank wires (SWIFT/SEPA)
-              </li>
+              <li>Bank wires (SWIFT/SEPA)</li>
               <li>
                 Local methods: Alipay, UPI, M-Pesa <ComingSoonBadge />
               </li>
@@ -1640,7 +1653,6 @@ const QuantumMiningPage = () => {
           </div>
         </div>
       </div>
-
 
       {/* FAQs section */}
       <div className="my-80 flex flex-col items-center justify-center px-4 max-w-[1000px] mx-auto">
@@ -1651,7 +1663,7 @@ const QuantumMiningPage = () => {
           <Image src={ArtImage5} alt="Art Image 5" className="w-54" />
         </div>
         <h3 className="text-xl md:text-2xl lg:text-3xl font-semibold text-primary text-center mb-12 md:mb-16">
-          Quantum Mining, BTCY &  Christmas Discount
+          Quantum Mining, BTCY & Christmas Discount
         </h3>
 
         {/* FAQ Accordions */}
@@ -1665,7 +1677,10 @@ const QuantumMiningPage = () => {
                 What is Quantum Mining?
               </AccordionTrigger>
               <AccordionContent className="text-base md:text-lg text-tertiary my-4">
-                Quantum Mining is our pre-sale route for BTCY. Instead of mining nuggets inside the app and converting later, you buy BTCY tokens directly before launch. It’s designed for users who want to secure tokens upfront rather than tap and mine daily.
+                Quantum Mining is our pre-sale route for BTCY. Instead of mining
+                nuggets inside the app and converting later, you buy BTCY tokens
+                directly before launch. It’s designed for users who want to
+                secure tokens upfront rather than tap and mine daily.
               </AccordionContent>
             </AccordionItem>
 
@@ -1678,8 +1693,17 @@ const QuantumMiningPage = () => {
               </AccordionTrigger>
               <AccordionContent className="text-base md:text-lg text-tertiary my-4">
                 <ul className="list-disc pl-5 space-y-2">
-                  <li><strong>Power Mining:</strong> You mine nuggets in the app faster and with longer sessions, then later convert those nuggets into BTCY via Alchemy when the feature is live.</li>
-                  <li><strong>Quantum Mining:</strong> You skip nuggets entirely and purchase BTCY tokens directly as a pre-sale. It’s about getting tokens now rather than grinding daily mining sessions.</li>
+                  <li>
+                    <strong>Power Mining:</strong> You mine nuggets in the app
+                    faster and with longer sessions, then later convert those
+                    nuggets into BTCY via Alchemy when the feature is live.
+                  </li>
+                  <li>
+                    <strong>Quantum Mining:</strong> You skip nuggets entirely
+                    and purchase BTCY tokens directly as a pre-sale. It’s about
+                    getting tokens now rather than grinding daily mining
+                    sessions.
+                  </li>
                 </ul>
               </AccordionContent>
             </AccordionItem>
@@ -1692,7 +1716,11 @@ const QuantumMiningPage = () => {
                 What exactly am I buying with Quantum Mining?
               </AccordionTrigger>
               <AccordionContent className="text-base md:text-lg text-tertiary my-4">
-                You are purchasing an allocation of BTCY tokens in advance, under our pre-sale terms. These tokens are not yet listed or tradable on public exchanges. They will be delivered/activated according to the project’s launch and token release schedule, subject to the platform’s terms and any applicable regulations.
+                You are purchasing an allocation of BTCY tokens in advance,
+                under our pre-sale terms. These tokens are not yet listed or
+                tradable on public exchanges. They will be delivered/activated
+                according to the project’s launch and token release schedule,
+                subject to the platform’s terms and any applicable regulations.
               </AccordionContent>
             </AccordionItem>
 
@@ -1704,7 +1732,12 @@ const QuantumMiningPage = () => {
                 What does the 1,000,000 BTCY = 1 BTC ratio mean?
               </AccordionTrigger>
               <AccordionContent className="text-base md:text-lg text-tertiary my-4">
-                This ratio is a target peg used inside the Bitcoin Yay ecosystem to conceptually link BTCY to Bitcoin (1,000,000 BTCY representing the value of 1 BTC in the design). It is not a guaranteed exchange rate and does not mean you can always swap 1,000,000 BTCY for 1 BTC. Actual market prices, if and when BTCY lists, will depend on supply, demand, and market conditions.
+                This ratio is a target peg used inside the Bitcoin Yay ecosystem
+                to conceptually link BTCY to Bitcoin (1,000,000 BTCY
+                representing the value of 1 BTC in the design). It is not a
+                guaranteed exchange rate and does not mean you can always swap
+                1,000,000 BTCY for 1 BTC. Actual market prices, if and when BTCY
+                lists, will depend on supply, demand, and market conditions.
               </AccordionContent>
             </AccordionItem>
 
@@ -1716,7 +1749,9 @@ const QuantumMiningPage = () => {
                 Is BTCY listed on any exchange right now?
               </AccordionTrigger>
               <AccordionContent className="text-base md:text-lg text-tertiary my-4">
-                No. BTCY is not currently listed on any exchange. Quantum Mining is a pre-launch token purchase. Future listings, if they happen, will be announced separately and are not guaranteed.
+                No. BTCY is not currently listed on any exchange. Quantum Mining
+                is a pre-launch token purchase. Future listings, if they happen,
+                will be announced separately and are not guaranteed.
               </AccordionContent>
             </AccordionItem>
 
@@ -1728,7 +1763,10 @@ const QuantumMiningPage = () => {
                 Does Quantum Mining guarantee that BTCY will go up in value?
               </AccordionTrigger>
               <AccordionContent className="text-base md:text-lg text-tertiary my-4">
-                No. There is no guarantee that BTCY will increase in value, be listed on exchanges, or be tradeable in your region. Crypto tokens are highly volatile, and you should assume you can lose some or all of the funds you commit.
+                No. There is no guarantee that BTCY will increase in value, be
+                listed on exchanges, or be tradeable in your region. Crypto
+                tokens are highly volatile, and you should assume you can lose
+                some or all of the funds you commit.
               </AccordionContent>
             </AccordionItem>
 
@@ -1743,8 +1781,14 @@ const QuantumMiningPage = () => {
                 Quantum Mining is aimed at users who:
                 <ul className="list-disc pl-5 space-y-1 mt-2">
                   <li>Don&apos;t want to tap and mine every day</li>
-                  <li>Prefer buying tokens directly instead of grinding nuggets</li>
-                  <li>Want to take advantage of early pricing and limited-time discounts (like the 12:12 10% off sale) while understanding the high risk and speculative nature of pre-launch tokens.</li>
+                  <li>
+                    Prefer buying tokens directly instead of grinding nuggets
+                  </li>
+                  <li>
+                    Want to take advantage of early pricing and limited-time
+                    discounts (like the 12:12 10% off sale) while understanding
+                    the high risk and speculative nature of pre-launch tokens.
+                  </li>
                 </ul>
               </AccordionContent>
             </AccordionItem>
@@ -1754,14 +1798,18 @@ const QuantumMiningPage = () => {
               className="border border-bg3 rounded-lg px-6 bg-transparent"
             >
               <AccordionTrigger className="text-left text-xl md:text-2xl font-bold text-tertiary hover:no-underline flex items-center justify-between">
-                Can I still mine for free or use Power Mining if I choose Quantum Mining?
+                Can I still mine for free or use Power Mining if I choose
+                Quantum Mining?
               </AccordionTrigger>
               <AccordionContent className="text-base md:text-lg text-tertiary my-4">
                 Yes. Quantum Mining is optional. You can still:
                 <ul className="list-disc pl-5 space-y-1 mt-2">
                   <li>Mine for free inside the app</li>
                   <li>Upgrade to Power Mining for faster nugget earning</li>
-                  <li>Or combine all three: free mining, Power Mining, and Quantum Mining depending on your strategy and risk appetite.</li>
+                  <li>
+                    Or combine all three: free mining, Power Mining, and Quantum
+                    Mining depending on your strategy and risk appetite.
+                  </li>
                 </ul>
               </AccordionContent>
             </AccordionItem>
@@ -1774,7 +1822,13 @@ const QuantumMiningPage = () => {
                 Where do my purchased BTCY tokens and withdrawn nuggets go?
               </AccordionTrigger>
               <AccordionContent className="text-base md:text-lg text-tertiary my-4">
-                Your BTCY app account is directly linked to your Indexx.ai asset wallet. When you buy BTCY through Quantum Mining or withdraw mined nuggets via Alchemy, the resulting BTCY tokens are sent to your Indexx.ai asset wallet automatically. You can log into Indexx.ai using your Bitcoin Yay (BTCY) account, view your BTCY balance there, and use any supported features on the exchange once BTCY is live and available.
+                Your BTCY app account is directly linked to your Indexx.ai asset
+                wallet. When you buy BTCY through Quantum Mining or withdraw
+                mined nuggets via Alchemy, the resulting BTCY tokens are sent to
+                your Indexx.ai asset wallet automatically. You can log into
+                Indexx.ai using your Bitcoin Yay (BTCY) account, view your BTCY
+                balance there, and use any supported features on the exchange
+                once BTCY is live and available.
               </AccordionContent>
             </AccordionItem>
           </Accordion>

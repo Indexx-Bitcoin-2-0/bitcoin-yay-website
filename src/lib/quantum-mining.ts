@@ -180,7 +180,6 @@ export type SocketEventHandlers = {
   onOrdersUpdate?: (data: QuantumOrdersUpdatePayload) => void;
 };
 
-
 /**
  * Creates a quantum mining order
  */
@@ -195,9 +194,7 @@ export async function createQuantumOrder(
       hostname === "localhost" ||
       hostname === "127.0.0.1" ||
       hostname === "::1";
-    const env =
-      data.env ??
-      (isTestHost ? "test" : "main");
+    const env = data.env ?? (isTestHost ? "test" : "main");
     const payload = env ? { ...data, env } : data;
 
     const response = await axios.post<CreateOrderResponse>(
@@ -286,7 +283,9 @@ export async function getUserOrder(
 ): Promise<GetUserOrderResponse> {
   try {
     const response = await axios.get(
-      `${QUANTUM_USER_ORDER_API_ROUTE}/${encodeURIComponent(data.email)}/${encodeURIComponent(data.orderId)}`
+      `${QUANTUM_USER_ORDER_API_ROUTE}/${encodeURIComponent(
+        data.email
+      )}/${encodeURIComponent(data.orderId)}`
     );
 
     return {
@@ -296,8 +295,10 @@ export async function getUserOrder(
   } catch (error: unknown) {
     console.error("Get user order error:", error);
     return {
-      status: (error as { response?: { status?: number } }).response?.status || 500,
-      error: error instanceof Error ? error.message : "Failed to fetch user order",
+      status:
+        (error as { response?: { status?: number } }).response?.status || 500,
+      error:
+        error instanceof Error ? error.message : "Failed to fetch user order",
     };
   }
 }
@@ -489,7 +490,7 @@ export function optionToCurrencyIn(opt: PaymentOption): QuantumCurrencyIn {
 /**
  * Minimum USD amount allowed for a purchase
  */
-export const MIN_PURCHASE_AMOUNT_USD = 10;
+export const MIN_PURCHASE_AMOUNT_USD = 1;
 
 /**
  * Calculates BTCY amount from USD amount
@@ -498,7 +499,9 @@ export function calculateBTCYAmount(
   usdAmount: number,
   btcyPrice: number
 ): number {
-  return usdAmount / btcyPrice;
+  const baseAmount = usdAmount / btcyPrice;
+  const bonusAmount = baseAmount * 1.3;
+  return bonusAmount;
 }
 
 /**
