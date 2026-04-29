@@ -172,6 +172,13 @@ const header_data = [
     hasMegaDrop: false,
   },
   {
+    mainTextDesktop: "Sell BTCY",
+    mainTextMob: "Sell BTCY",
+    active: false,
+    href: "/sell-btcy",
+    hasMegaDrop: false,
+  },
+  {
     mainTextDesktop: "Chains",
     mainTextMob: "Chains",
     active: false,
