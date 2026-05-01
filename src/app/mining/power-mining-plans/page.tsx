@@ -11,6 +11,7 @@ import { PROVIDER_LABELS } from "@/constants/paymentProviders";
 import {
   purchaseSubscription,
   validateCoupon,
+  CouponValidationResponse,
   PaymentProvider,
   SubscriptionPurchasePayload,
 } from "@/lib/subscriptions";
@@ -84,6 +85,8 @@ const PowerMiningPlansPage = () => {
     useState<"idle" | "valid" | "error">("idle");
   const [couponValidationMessage, setCouponValidationMessage] =
     useState<string | null>(null);
+  const [couponValidation, setCouponValidation] =
+    useState<CouponValidationResponse | null>(null);
   const [couponValidationLoading, setCouponValidationLoading] =
     useState(false);
 
@@ -100,6 +103,7 @@ const PowerMiningPlansPage = () => {
     if (couponValidationStatus !== "idle") {
       setCouponValidationStatus("idle");
       setCouponValidationMessage(null);
+      setCouponValidation(null);
     }
   };
 
@@ -108,12 +112,14 @@ const PowerMiningPlansPage = () => {
     if (!trimmedCoupon) {
       setCouponValidationStatus("idle");
       setCouponValidationMessage(null);
+      setCouponValidation(null);
       return true;
     }
 
     setCouponValidationLoading(true);
     try {
       const validation = await validateCoupon(getPlanKey(), trimmedCoupon);
+      setCouponValidation(validation);
       setCouponValidationStatus("valid");
       setCouponValidationMessage(
         `Coupon applied (${validation.couponCode}): ${validation.couponDescription ??
@@ -123,6 +129,7 @@ const PowerMiningPlansPage = () => {
       return true;
     } catch (error) {
       setCouponValidationStatus("error");
+      setCouponValidation(null);
       setCouponValidationMessage(
         error instanceof Error ? error.message : "Coupon validation failed."
       );
@@ -143,6 +150,16 @@ const PowerMiningPlansPage = () => {
     if (couponValidationStatus !== "idle") {
       setCouponValidationStatus("idle");
       setCouponValidationMessage(null);
+      setCouponValidation(null);
+    }
+  };
+
+  const handlePlanChange = (planId: "electric" | "turbo" | "nuclear") => {
+    setSelectedPlanId(planId);
+    if (couponValidationStatus !== "idle") {
+      setCouponValidationStatus("idle");
+      setCouponValidationMessage(null);
+      setCouponValidation(null);
     }
   };
 
@@ -390,7 +407,7 @@ const PowerMiningPlansPage = () => {
                 {PLANS.map((plan) => (
                   <div
                     key={plan.id}
-                    onClick={() => setSelectedPlanId(plan.id as "electric" | "turbo" | "nuclear")}
+                    onClick={() => handlePlanChange(plan.id as "electric" | "turbo" | "nuclear")}
                     className={`
                       relative flex items-center justify-between p-6 rounded-xl border-1 cursor-pointer transition-all duration-300
                       ${selectedPlanId === plan.id
@@ -505,6 +522,10 @@ const PowerMiningPlansPage = () => {
         onSelectPaymentMethod={handlePaymentMethodSelect}
         planName={selectedPlan.name}
         subscriptionAmount={currentPrice}
+        couponCode={couponValidation?.couponCode}
+        discountPercent={couponValidation?.discountPercent}
+        discountAmount={couponValidation?.discountAmount}
+        finalAmount={couponValidation?.finalPrice}
       />
     </div>
   );

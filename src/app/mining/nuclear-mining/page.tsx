@@ -14,6 +14,7 @@ import { PROVIDER_LABELS } from "@/constants/paymentProviders";
 import {
   purchaseSubscription,
   validateCoupon,
+  CouponValidationResponse,
   PaymentProvider,
   SubscriptionPurchasePayload,
 } from "@/lib/subscriptions";
@@ -51,6 +52,8 @@ const NuclearMiningPage = () => {
     useState<"idle" | "valid" | "error">("idle");
   const [couponValidationMessage, setCouponValidationMessage] =
     useState<string | null>(null);
+  const [couponValidation, setCouponValidation] =
+    useState<CouponValidationResponse | null>(null);
   const [couponValidationLoading, setCouponValidationLoading] =
     useState(false);
   const getPlanKey = () =>
@@ -64,6 +67,7 @@ const NuclearMiningPage = () => {
     if (couponValidationStatus !== "idle") {
       setCouponValidationStatus("idle");
       setCouponValidationMessage(null);
+      setCouponValidation(null);
     }
   };
 
@@ -72,12 +76,14 @@ const NuclearMiningPage = () => {
     if (!trimmedCoupon) {
       setCouponValidationStatus("idle");
       setCouponValidationMessage(null);
+      setCouponValidation(null);
       return true;
     }
 
     setCouponValidationLoading(true);
     try {
       const validation = await validateCoupon(getPlanKey(), trimmedCoupon);
+      setCouponValidation(validation);
       setCouponValidationStatus("valid");
       setCouponValidationMessage(
         `Coupon applied (${validation.couponCode}): ${validation.couponDescription ??
@@ -87,6 +93,7 @@ const NuclearMiningPage = () => {
       return true;
     } catch (error) {
       setCouponValidationStatus("error");
+      setCouponValidation(null);
       setCouponValidationMessage(
         error instanceof Error ? error.message : "Coupon validation failed."
       );
@@ -107,6 +114,7 @@ const NuclearMiningPage = () => {
     if (couponValidationStatus !== "idle") {
       setCouponValidationStatus("idle");
       setCouponValidationMessage(null);
+      setCouponValidation(null);
     }
   };
 
@@ -404,6 +412,10 @@ const NuclearMiningPage = () => {
         onSelectPaymentMethod={handlePaymentMethodSelect}
         planName={PLAN_NAME}
         subscriptionAmount={currentPrice}
+        couponCode={couponValidation?.couponCode}
+        discountPercent={couponValidation?.discountPercent}
+        discountAmount={couponValidation?.discountAmount}
+        finalAmount={couponValidation?.finalPrice}
       />
 
       <div className="text-base mt-40 flex flex-col gap-20 max-w-5xl leading-8 mb-40">
