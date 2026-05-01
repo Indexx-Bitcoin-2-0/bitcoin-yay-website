@@ -20,10 +20,7 @@ interface PaymentMethodPopupProps {
     onSelectPaymentMethod: (method: PaymentMethod) => void;
     planName?: string;
     subscriptionAmount?: number;
-    discountPercent?: number;
-    discountAmount?: number;
     finalAmount?: number;
-    couponCode?: string;
 }
 
 const formatCurrency = (value: number) =>
@@ -38,19 +35,17 @@ const PaymentMethodPopup: React.FC<PaymentMethodPopupProps> = ({
     onSelectPaymentMethod,
     planName,
     subscriptionAmount,
-    discountPercent,
-    discountAmount,
     finalAmount,
-    couponCode,
 }) => {
     const hasDiscount =
         finalAmount !== undefined &&
         subscriptionAmount !== undefined &&
-        discountAmount !== undefined &&
-        discountAmount > 0;
-    const displayAmount = hasDiscount ? finalAmount : subscriptionAmount;
-    const amountLabel =
-        displayAmount !== undefined ? ` • ${formatCurrency(displayAmount)}` : "";
+        finalAmount < subscriptionAmount;
+    const amountLabel = hasDiscount
+        ? ""
+        : subscriptionAmount !== undefined
+            ? ` • ${formatCurrency(subscriptionAmount)}`
+            : "";
     const planLabel =
         planName || subscriptionAmount !== undefined
             ? `${planName ?? "Subscription"}${amountLabel}`
@@ -185,33 +180,18 @@ const PaymentMethodPopup: React.FC<PaymentMethodPopupProps> = ({
                 </p>
                 {planLabel && (
                     <p className="text-sm md:text-base text-tertiary text-center mb-6">
-                        {planLabel}
+                        <span>{planLabel}</span>
+                        {hasDiscount && (
+                            <span className="ml-2 inline-flex items-center gap-2">
+                                <span className="text-white/60 line-through">
+                                    {formatCurrency(subscriptionAmount)}
+                                </span>
+                                <span className="font-semibold text-white">
+                                    {formatCurrency(finalAmount)}
+                                </span>
+                            </span>
+                        )}
                     </p>
-                )}
-                {hasDiscount && (
-                    <div className="mb-6 rounded-lg border border-primary/40 bg-primary/10 p-4">
-                        <div className="flex items-center justify-between gap-4 text-sm md:text-base">
-                            <span className="text-tertiary">Original price</span>
-                            <span className="text-white/70 line-through">
-                                {formatCurrency(subscriptionAmount)}
-                            </span>
-                        </div>
-                        <div className="mt-2 flex items-center justify-between gap-4 text-sm md:text-base">
-                            <span className="text-tertiary">
-                                Discount applied{couponCode ? ` (${couponCode})` : ""}
-                            </span>
-                            <span className="font-semibold text-green-400">
-                                -{formatCurrency(discountAmount)}
-                                {discountPercent !== undefined ? ` (${discountPercent}% off)` : ""}
-                            </span>
-                        </div>
-                        <div className="mt-3 flex items-center justify-between gap-4 border-t border-white/10 pt-3">
-                            <span className="text-base font-semibold text-white">You pay</span>
-                            <span className="text-xl font-bold text-white">
-                                {formatCurrency(finalAmount)}
-                            </span>
-                        </div>
-                    </div>
                 )}
 
                 <div className="flex flex-col gap-4">

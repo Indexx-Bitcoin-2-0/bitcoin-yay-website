@@ -410,9 +410,6 @@ const ElectricMiningPage = () => {
         onSelectPaymentMethod={handlePaymentMethodSelect}
         planName={PLAN_NAME}
         subscriptionAmount={currentPrice}
-        couponCode={couponValidation?.couponCode}
-        discountPercent={couponValidation?.discountPercent}
-        discountAmount={couponValidation?.discountAmount}
         finalAmount={couponValidation?.finalPrice}
       />
 
