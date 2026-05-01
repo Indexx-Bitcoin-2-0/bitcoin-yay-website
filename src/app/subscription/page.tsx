@@ -403,6 +403,10 @@ export default function SubscriptionPage() {
                     email: user.email,
                     provider: planPaymentProvider,
                 });
+                if (result.approvalUrl) {
+                    window.location.href = result.approvalUrl;
+                    return;
+                }
                 setPlanChangeFeedback({
                     type: "info",
                     message:

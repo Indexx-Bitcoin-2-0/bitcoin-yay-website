@@ -88,7 +88,7 @@ export interface ChangePlanPayload {
 export interface ChangePlanResponse {
   success: boolean;
   message: string;
-  data: {
+  data?: {
     key: string;
     name: string;
     amount: number;
@@ -96,6 +96,8 @@ export interface ChangePlanResponse {
     miningSpeed: number;
     stripePriceId: string;
   };
+  approvalUrl?: string;
+  paypalSubscriptionId?: string;
 }
 
 const LOCAL_SUBSCRIPTIONS_BASE_URL = "/api/subscriptions";
