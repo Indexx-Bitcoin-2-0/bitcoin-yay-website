@@ -16,15 +16,18 @@ export async function POST(request: Request) {
   try {
     const payload = await request.json();
     const response = await axios.post(
-      `${SUBSCRIPTIONS_BASE_URL}/purchase`,
+      `${SUBSCRIPTIONS_BASE_URL}/purchase-test`,
       payload,
       {
         timeout: 180000,
       }
     );
 
+    console.log("Subscription purchase proxy response:", response.data);
+
     return NextResponse.json(response.data, { status: response.status });
   } catch (err) {
+    console.log("Subscription purchase proxy error:", err);
     const error = err as AxiosError;
     console.error("Subscription purchase proxy error:", error.message);
 
