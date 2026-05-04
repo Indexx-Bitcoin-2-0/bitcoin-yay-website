@@ -196,7 +196,9 @@ export async function fetchSubscriptionHistory(
   const result = await response.json().catch(() => null);
   if (!response.ok || !result) {
     const errorMessage =
-      result?.error || result?.message || "Unable to load subscription history.";
+      result?.error ||
+      result?.message ||
+      "Unable to load subscription history.";
     throw new Error(errorMessage);
   }
 
@@ -217,7 +219,9 @@ export async function changeSubscriptionPlan(
   const result = await response.json().catch(() => null);
   if (!response.ok || !result) {
     const errorMessage =
-      result?.error || result?.message || "Unable to change the subscription plan.";
+      result?.error ||
+      result?.message ||
+      "Unable to change the subscription plan.";
     throw new Error(errorMessage);
   }
 
@@ -229,7 +233,9 @@ export async function fetchUserSubscriptionPlan(
   email: string
 ): Promise<MiningSubscriptionPlan | null> {
   const response = await fetch(
-    `${MINING_SUBSCRIPTION_PLAN_URL}/${coinSymbol}/${encodeURIComponent(email)}`,
+    `${MINING_SUBSCRIPTION_PLAN_URL}/${coinSymbol}/${encodeURIComponent(
+      email
+    )}`,
     {
       method: "GET",
     }
@@ -238,7 +244,9 @@ export async function fetchUserSubscriptionPlan(
   const result = await response.json().catch(() => null);
   if (!response.ok || !result) {
     const errorMessage =
-      result?.error || result?.message || "Unable to load the mining subscription plan.";
+      result?.error ||
+      result?.message ||
+      "Unable to load the mining subscription plan.";
     throw new Error(errorMessage);
   }
 
