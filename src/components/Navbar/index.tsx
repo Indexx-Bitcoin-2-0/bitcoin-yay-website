@@ -73,8 +73,9 @@ interface HeaderItem {
 // Extract backdrop component for readability
 const Backdrop = memo(({ visible }: { visible: boolean }) => (
   <div
-    className={`fixed left-0 w-full top-30 z-[10] backdrop-blur-md transition-opacity duration-300 delay-100 bg-black/50 ${visible ? "opacity-100 h-screen" : "opacity-0 h-0"
-      }`}
+    className={`fixed left-0 w-full top-30 z-[10] backdrop-blur-md transition-opacity duration-300 delay-100 bg-black/50 ${
+      visible ? "opacity-100 h-screen" : "opacity-0 h-0"
+    }`}
   />
 ));
 
@@ -111,8 +112,9 @@ const DropdownLink = memo(
       <a
         href={link.href}
         target={link.openInNewTab ? "_blank" : undefined}
-        className={`${isMainList ? "text-[25px] font-semibold" : "text-xs mt-4"
-          } text-tertiary block relative after:absolute after:left-0 after:-bottom-1 after:w-5 after:h-[3px] after:bg-primary after:opacity-0 hover:after:opacity-100 after:transition-opacity after:duration-300`}
+        className={`${
+          isMainList ? "text-[25px] font-semibold" : "text-xs mt-4"
+        } text-tertiary block relative after:absolute after:left-0 after:-bottom-1 after:w-5 after:h-[3px] after:bg-primary after:opacity-0 hover:after:opacity-100 after:transition-opacity after:duration-300`}
       >
         {link.name}
       </a>
@@ -186,21 +188,21 @@ const BalanceWidget = memo(
       description: string;
       descriptionId: string;
     }> = [
-        {
-          type: "nugget",
-          label: "BTCY Nugget",
-          value: nuggetBalance,
-          description: balanceCopy.utilities.nuggetBody,
-          descriptionId: nuggetDescriptionId,
-        },
-        {
-          type: "token",
-          label: "BTCY Token",
-          value: tokenBalance,
-          description: balanceCopy.utilities.tokenBody,
-          descriptionId: tokenDescriptionId,
-        },
-      ];
+      {
+        type: "nugget",
+        label: "BTCY Nugget",
+        value: nuggetBalance,
+        description: balanceCopy.utilities.nuggetBody,
+        descriptionId: nuggetDescriptionId,
+      },
+      {
+        type: "token",
+        label: "BTCY Token",
+        value: tokenBalance,
+        description: balanceCopy.utilities.tokenBody,
+        descriptionId: tokenDescriptionId,
+      },
+    ];
 
     const containerClasses =
       layout === "vertical"
@@ -239,8 +241,9 @@ const BalanceWidget = memo(
                 type="button"
                 onClick={handleClick}
                 onKeyDown={handleKeyDown}
-                className={`group relative flex flex-1 flex-col items-start gap-1 px-2 py-1 text-left text-tertiary transition-colors duration-150 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-bg ${layout === "vertical" ? "w-full" : "min-w-[140px]"} ${isLoading ? "cursor-wait" : "cursor-pointer"
-                  }`}
+                className={`group relative flex flex-1 flex-col items-start gap-1 px-2 py-1 text-left text-tertiary transition-colors duration-150 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-bg ${
+                  layout === "vertical" ? "w-full" : "min-w-[140px]"
+                } ${isLoading ? "cursor-wait" : "cursor-pointer"}`}
                 aria-label={`View details about ${item.label}`}
                 aria-describedby={item.descriptionId}
               >
@@ -275,10 +278,7 @@ const BalanceWidget = memo(
           })}
         </div>
         {errorMessage ? (
-          <p
-            role="status"
-            className="mt-2 text-xs font-medium text-red-400"
-          >
+          <p role="status" className="mt-2 text-xs font-medium text-red-400">
             {errorMessage}
           </p>
         ) : null}
@@ -320,11 +320,10 @@ const BalanceInfoModal: React.FC<BalanceInfoModalProps> = ({
       }
 
       if (event.key === "Tab" && dialogRef.current) {
-        const focusableElements = dialogRef.current.querySelectorAll<
-          HTMLElement
-        >(
-          'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
-        );
+        const focusableElements =
+          dialogRef.current.querySelectorAll<HTMLElement>(
+            'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+          );
 
         if (!focusableElements.length) {
           event.preventDefault();
@@ -506,34 +505,58 @@ const Navbar: React.FC = () => {
     setIsRegisterPopupOpen(true);
   }, []);
 
-  // Compute active state dynamically based on current path
   const headerData = useMemo<HeaderItem[]>(() => {
     if (currentPath === "/coming-soon") {
       return Data;
     }
 
     const isPathActive = (path: string): boolean => {
-      if (path === "/") {
-        return currentPath === "/";
-      }
+      if (path === "/") return currentPath === "/";
       return currentPath.startsWith(path);
     };
 
     return Data.map((item) => {
-      let active = isPathActive(item.href);
+      console.log(balances.nugget);
+      let updatedItem = { ...item };
 
-      if (!active && item.dropDownContent) {
-        active = item.dropDownContent.some((section) =>
+      if (item.mainTextDesktop === "Alchemy" && item.dropDownContent) {
+        updatedItem.dropDownContent = item.dropDownContent.map((section) => {
+          if (section.heading === "Explore Alchemy") {
+            return {
+              ...section,
+              links: section.links.map((link) => {
+                if (link.name === "Alchemy Trade") {
+                  return {
+                    ...link,
+                    href:
+                      balances.nugget > 100000
+                        ? "/alchemy-trade"
+                        : "/coming-soon",
+                  };
+                }
+                return link;
+              }),
+            };
+          }
+          return section;
+        });
+      }
+
+      // ✅ Active state logic
+      let active = isPathActive(updatedItem.href);
+
+      if (!active && updatedItem.dropDownContent) {
+        active = updatedItem.dropDownContent.some((section) =>
           section.links.some((link) => isPathActive(link.href))
         );
       }
 
       return {
-        ...item,
+        ...updatedItem,
         active,
       };
     });
-  }, [currentPath]);
+  }, [currentPath, balances.nugget]);
 
   // Optimized resize handler with debounce
   useEffect(() => {
@@ -638,7 +661,6 @@ const Navbar: React.FC = () => {
     return () => observer.disconnect();
   }, []);
 
-
   useEffect(() => {
     if (!isAuthenticated) {
       setActiveBalanceModal(null);
@@ -720,7 +742,9 @@ const Navbar: React.FC = () => {
   const syncNuggetTicker = useCallback(() => {
     const nextValue = calculateDisplayedNugget();
     setBalances((previous) =>
-      previous.nugget === nextValue ? previous : { ...previous, nugget: nextValue }
+      previous.nugget === nextValue
+        ? previous
+        : { ...previous, nugget: nextValue }
     );
   }, [calculateDisplayedNugget]);
 
@@ -770,17 +794,17 @@ const Navbar: React.FC = () => {
       setBalanceError(null);
 
       try {
-        const [
-          miningResult,
-          statusResult,
-          withdrawnResult,
-          tokenResult,
-        ] = await Promise.allSettled([
-          getUserMiningBalance(user.email),
-          getMiningStatus(user.email),
-          getUserWalletBalance(user.email, BTCY_SYMBOL, WITHDRAWN_WALLET_NETWORK),
-          getUserWalletBalance(user.email, BTCY_SYMBOL, TOKEN_WALLET_NETWORK),
-        ]);
+        const [miningResult, statusResult, withdrawnResult, tokenResult] =
+          await Promise.allSettled([
+            getUserMiningBalance(user.email),
+            getMiningStatus(user.email),
+            getUserWalletBalance(
+              user.email,
+              BTCY_SYMBOL,
+              WITHDRAWN_WALLET_NETWORK
+            ),
+            getUserWalletBalance(user.email, BTCY_SYMBOL, TOKEN_WALLET_NETWORK),
+          ]);
 
         if (isCancelled) return;
 
@@ -837,7 +861,10 @@ const Navbar: React.FC = () => {
 
         if (statusResult.status === "fulfilled") {
           const statusData = statusResult.value.data;
-          const resolvedRate = Math.max(0, toSafeNumber(statusData?.miningRate));
+          const resolvedRate = Math.max(
+            0,
+            toSafeNumber(statusData?.miningRate)
+          );
           const startTimestamp =
             statusData?.sessionStartTime ?? statusData?.lastClaimTime ?? null;
           const startTimeMs = startTimestamp
@@ -847,8 +874,8 @@ const Navbar: React.FC = () => {
           const endTimeMs = endTimestamp
             ? new Date(endTimestamp).getTime()
             : startTimeMs
-              ? startTimeMs + MINING_SESSION_DURATION_HOURS * HOUR_IN_MS
-              : null;
+            ? startTimeMs + MINING_SESSION_DURATION_HOURS * HOUR_IN_MS
+            : null;
 
           const miningActive =
             Boolean(statusData?.isMiningActive) &&
@@ -973,7 +1000,7 @@ const Navbar: React.FC = () => {
           {isMobile ? <MobileLogo /> : <Logo />}
 
           {/* Mobile Balance Widget - Center */}
-          {(isAuthenticated && user) ? (
+          {isAuthenticated && user ? (
             <div className="flex-1 flex justify-center xl:hidden px-2">
               <BalanceWidget
                 nuggetBalance={balances.nugget}
@@ -986,7 +1013,9 @@ const Navbar: React.FC = () => {
                 className="max-w-[280px]"
               />
             </div>
-          ) : ""}
+          ) : (
+            ""
+          )}
 
           {/* Mobile menu toggle button */}
           <button
@@ -1038,8 +1067,9 @@ const Navbar: React.FC = () => {
                 <a
                   href={element.href}
                   target={element.openInNewTab ? "_blank" : undefined}
-                  className={`text-sm font-normal transition-all duration-300 hover:text-primary ${element.active ? "text-primary" : "text-tertiary"
-                    } group-hover:text-primary`}
+                  className={`text-sm font-normal transition-all duration-300 hover:text-primary ${
+                    element.active ? "text-primary" : "text-tertiary"
+                  } group-hover:text-primary`}
                   onMouseEnter={() =>
                     updateBackDropVisibility(
                       !element.hasMegaDrop ? "" : "enter"
@@ -1062,11 +1092,12 @@ const Navbar: React.FC = () => {
                     <div className="flex w-full justify-between h-auto my-10 px-[20px] pl-[210px]">
                       {element.dropDownContent?.map((section, elemIdx) => (
                         <div
-                          className={`w-[calc(25%-30px)] leading-[35px] flex flex-col ${section.mainList &&
+                          className={`w-[calc(25%-30px)] leading-[35px] flex flex-col ${
+                            section.mainList &&
                             element.mainTextDesktop !== "Eco"
-                            ? "min-w-100"
-                            : "min-w-60"
-                            }`}
+                              ? "min-w-100"
+                              : "min-w-60"
+                          }`}
                           key={elemIdx}
                         >
                           <header className="text-xs font-medium my-6">
@@ -1127,8 +1158,9 @@ const Navbar: React.FC = () => {
 
         {/* Mobile Menu */}
         <div
-          className={`absolute left-0 top-32 w-full p-8 bg-bg shadow-lg transform z-20 ${menuOpen ? "translate-y-0" : "-translate-y-[130%]"
-            }  xl:hidden max-h-[calc(100vh-150px)] overflow-y-auto`}
+          className={`absolute left-0 top-32 w-full p-8 bg-bg shadow-lg transform z-20 ${
+            menuOpen ? "translate-y-0" : "-translate-y-[130%]"
+          }  xl:hidden max-h-[calc(100vh-150px)] overflow-y-auto`}
         >
           {/* Auth Section (Mobile) */}
           <div className="mb-6">
@@ -1206,8 +1238,9 @@ const Navbar: React.FC = () => {
                             <Link
                               key={linkIdx}
                               href={link.href}
-                              className={`block text-lg my-3 hover:text-primary ${section.mainList ? "font-bold text-xl" : ""
-                                }`}
+                              className={`block text-lg my-3 hover:text-primary ${
+                                section.mainList ? "font-bold text-xl" : ""
+                              }`}
                               onClick={closeMobileMenu}
                             >
                               {link.name}
