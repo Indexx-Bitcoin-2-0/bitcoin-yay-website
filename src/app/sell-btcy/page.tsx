@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
+import axios from "axios";
 
 import CustomButton2 from "@/components/CustomButton2";
 import {
@@ -11,62 +12,128 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-// Placeholders for the images to match the screenshot
-// Given the repo structure, utilizing some existing assets
 import HeroArtImage from "@/assets/images/sell_Art.svg";
 import CartButtonImage from "@/assets/images/buttons/cart-button.webp";
 import HowItWorksArt from "@/assets/images/quantum-mining/art-4.webp";
 import ArtImage5 from "@/assets/images/quantum-mining/art-5.webp";
+
 import KycVerificationPopup from "./KycVerificationPopup";
 import SellStatusPopup from "./SellStatusPopup";
 import TransactionFailedPopup from "./TransactionFailedPopup";
 
+import { useAuth } from "@/contexts/AuthContext";
+import { SELL_BTCY_CREATE_ORDER_ROUTE } from "@/routes";
+import { fetchPrices } from "@/lib/quantum-mining";
+
+// TODO: Adjust this import path to match where your fetchPrices function is located
+
+// Define the valid network types globally for clarity
+type NetworkType = "ethereum" | "solana";
+type CurrencyType = "USDT" | "USDC";
+
 export default function SellBtcyPage() {
   const [btcyAmount, setBtcyAmount] = useState("");
   const [usdtAddress, setUsdtAddress] = useState("");
+
+  const [network, setNetwork] = useState<NetworkType>("ethereum");
+  const [currency, setCurrency] = useState<CurrencyType>("USDT");
+
+  // State to hold the dynamic live price
+  const [btcyPrice, setBtcyPrice] = useState<number>(0);
+
   const [isKycPopupOpen, setIsKycPopupOpen] = useState(false);
   const [isSellStatusPopupOpen, setIsSellStatusPopupOpen] = useState(false);
-  const [isTransactionFailedPopupOpen, setIsTransactionFailedPopupOpen] = useState(false);
+  const [isTransactionFailedPopupOpen, setIsTransactionFailedPopupOpen] =
+    useState(false);
 
-  // Mock state for user KYC status
-  const [isKycCompleted, setIsKycCompleted] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  const handleSellRequest = (e?: React.FormEvent) => {
+  const { user } = useAuth();
+  const [isKycCompleted] = useState(true);
+
+  const currencyOptions: Record<NetworkType, CurrencyType[]> = {
+    ethereum: ["USDT", "USDC"],
+    solana: ["USDT", "USDC"],
+  };
+
+  // Fetch the live price when the component mounts
+  useEffect(() => {
+    const loadPrices = async () => {
+      try {
+        const { btcyPrice } = await fetchPrices();
+        setBtcyPrice(btcyPrice);
+      } catch (error) {
+        console.error("Failed to fetch live BTCY price:", error);
+      }
+    };
+    loadPrices();
+  }, []);
+
+  // Calculate the converted amount based on live price
+  const expectedReceiveAmount = btcyAmount ? Number(btcyAmount) * btcyPrice : 0;
+
+  const handleSellRequest = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    console.log("Sell requested:", { btcyAmount, usdtAddress });
 
-    // Logic to demonstrate Error popup
-    if (Number(btcyAmount) < 100) {
+    if (!btcyAmount || !usdtAddress || Number(btcyAmount) < 1) {
       setIsTransactionFailedPopupOpen(true);
       return;
     }
 
-    if (isKycCompleted) {
-      setIsSellStatusPopupOpen(true);
-    } else {
+    if (!isKycCompleted) {
       setIsKycPopupOpen(true);
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const payload = {
+        email: user?.email,
+        btcyAmount: Number(btcyAmount),
+        // Adding the dynamically converted USDT/USDC amount to the payload
+        receiveAmount: expectedReceiveAmount,
+        receiveCurrency: currency,
+        destinationWallet: usdtAddress,
+        network,
+      };
+
+      const res = await axios.post(SELL_BTCY_CREATE_ORDER_ROUTE, payload);
+
+      console.log("SELL ORDER RESPONSE:", res.data);
+
+      if (res.data?.status === 200) {
+        setIsSellStatusPopupOpen(true);
+      } else {
+        setIsTransactionFailedPopupOpen(true);
+      }
+    } catch (error) {
+      console.error("Sell Order Error:", error);
+      setIsTransactionFailedPopupOpen(true);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen">
-      {/* Hero Banner Section */}
+      {/* Hero Section */}
       <div className="mx-auto mt-40 md:mt-60 px-4 md:px-8 lg:px-20 xl:px-40 relative max-w-[2000px]">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12">
-          {/* Left Content */}
           <div className="flex-3 w-full lg:w-auto">
             <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold text-white leading-tight mb-6 md:mb-10">
-              Sell BTCY — Convert<br />to USDT Instantly
+              Sell BTCY — Convert
+              <br />
+              to {currency} Instantly
             </h1>
             <p className="text-xl md:text-2xl text-[#EAEAEA] mb-8 md:mb-10 max-w-xl">
-              Add your USDT wallet address on the BNB smart chain.
+              Add your {currency} wallet address on the selected network.
             </p>
             <p className="text-lg md:text-xl text-primary font-medium">
               Only verified users can sell BTCY.
             </p>
           </div>
 
-          {/* Right Illustration */}
           <div className="flex-2 w-full lg:w-auto flex items-center justify-center lg:justify-end">
             <Image
               src={HeroArtImage}
@@ -78,70 +145,108 @@ export default function SellBtcyPage() {
       </div>
 
       {/* Form Section */}
-      <div className="mt-40 border-0 md:border-1 border-bg2 rounded-2xl p-8 md:p-12 max-w-5xl mx-3  md:mx-auto ">
+      <div className="mt-40 border-0 md:border-1 border-bg2 rounded-2xl p-8 md:p-12 max-w-5xl mx-3 md:mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
             Sell Request Form
           </h2>
           <p className="text-xl md:text-2xl text-white font-medium mb-4">
-            1 BTCY = $0.1
+            {/* Displaying dynamic price fallback */}1 BTCY = $
+            {btcyPrice > 0 ? btcyPrice.toFixed(4) : "Loading..."}
           </p>
           <p className="text-lg md:text-xl text-primary font-bold">
             Your BTCY Balance: 25,450 BTCY Token
           </p>
         </div>
 
-        <form onSubmit={handleSellRequest} className="mx-auto flex flex-col gap-8 md:gap-10">
-          {/* BTCY Amount Field */}
+        <form
+          onSubmit={handleSellRequest}
+          className="mx-auto flex flex-col gap-8 md:gap-10"
+        >
+          {/* BTCY Amount */}
           <div className="flex flex-col gap-3">
-            <label htmlFor="btcyAmount" className="text-sm md:text-base text-gray-300 font-medium ml-2">
-              BTCY Amount
-            </label>
             <input
-              id="btcyAmount"
               type="number"
               value={btcyAmount}
               onChange={(e) => setBtcyAmount(e.target.value)}
-              placeholder="Enter the amount of BTCY you want to sell from your available balance"
-              className="w-full px-4 py-3 border border-bg3 rounded-lg text-lg focus:outline-none focus:border-primary hover:border-primary "
+              placeholder="Enter BTCY amount"
+              className="w-full px-4 py-3 border border-bg3 rounded-lg text-lg bg-transparent text-white focus:outline-none"
             />
-            <div className="flex flex-wrap items-center gap-4 ml-2 mt-1">
-              <span className="text-sm text-primary">Available: 25,450 BTCY</span>
-              <span className="text-sm text-primary">Minimum: 100 BTCY</span>
-            </div>
+            {btcyAmount && (
+              <span className="text-sm text-gray-400 ml-2">
+                You will receive roughly:{" "}
+                <strong className="text-white">
+                  ${expectedReceiveAmount.toFixed(2)} {currency}
+                </strong>
+              </span>
+            )}
           </div>
 
-          {/* USDT Deposit Address Field */}
+          {/* Network Selection */}
           <div className="flex flex-col gap-3">
-            <label htmlFor="usdtAddress" className="text-sm md:text-base text-gray-300 font-medium ml-2">
-              USDT Deposit Address
-            </label>
-            <input
-              id="usdtAddress"
-              type="text"
-              value={usdtAddress}
-              onChange={(e) => setUsdtAddress(e.target.value)}
-              placeholder="Paste your USDT deposit address"
-              className="w-full px-4 py-3 border border-bg3 rounded-lg text-lg focus:outline-none focus:border-primary hover:border-primary "
-            />
+            <label className="text-sm text-gray-300 ml-2">Select Network</label>
+            <select
+              value={network}
+              onChange={(e) => {
+                setNetwork(e.target.value as NetworkType);
+                setCurrency("USDT"); // Reset currency to default when network changes
+              }}
+              className="w-full px-4 py-3 border border-bg3 rounded-lg text-lg bg-transparent text-white focus:outline-none appearance-none"
+            >
+              <option value="ethereum" className="bg-[#1a1a1a]">
+                Ethereum
+              </option>
+              <option value="solana" className="bg-[#1a1a1a]">
+                Solana
+              </option>
+            </select>
           </div>
 
-          {/* Submit Button */}
+          {/* Currency Selection */}
+          <div className="flex flex-col gap-3">
+            <label className="text-sm text-gray-300 ml-2">
+              Select Currency
+            </label>
+            <select
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value as CurrencyType)}
+              className="w-full px-4 py-3 border border-bg3 rounded-lg text-lg bg-transparent text-white focus:outline-none appearance-none"
+            >
+              {currencyOptions[network].map((coin) => (
+                <option key={coin} value={coin} className="bg-[#1a1a1a]">
+                  {coin}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Address */}
+          <input
+            type="text"
+            value={usdtAddress}
+            onChange={(e) => setUsdtAddress(e.target.value)}
+            placeholder={
+              network === "ethereum"
+                ? `Enter ${currency} address`
+                : `Enter ${currency} Solana address`
+            }
+            className="w-full px-4 py-3 border border-bg3 rounded-lg text-lg bg-transparent text-white focus:outline-none"
+          />
+
+          {/* Button */}
           <div className="flex flex-col items-center justify-center mt-6">
             <CustomButton2
               image={CartButtonImage}
-              text="Sell Now"
-              onClick={() => {
-                handleSellRequest();
-              }}
+              text={loading ? "Processing..." : "Sell Now"}
+              onClick={handleSellRequest}
               imageStyling="w-40"
             />
             <p className="text-sm md:text-base text-gray-400 text-center max-w-xl leading-relaxed">
-              You need to complete KYC before you can sell BTCY. This helps keep your account secure and allows withdrawals.
+              You need to complete KYC before you can sell BTCY. This helps keep
+              your account secure and allows withdrawals.
             </p>
           </div>
         </form>
-
       </div>
 
       {/* How it works Section */}
@@ -197,7 +302,11 @@ export default function SellBtcyPage() {
         </div>
 
         <div className="space-y-6">
-          <Accordion type="single" collapsible className="w-full flex flex-col gap-4 md:gap-6">
+          <Accordion
+            type="single"
+            collapsible
+            className="w-full flex flex-col gap-4 md:gap-6"
+          >
             <AccordionItem
               value="item-1"
               className="border border-[#2D2D2D]  rounded-2xl px-6 md:px-8"
@@ -257,13 +366,13 @@ export default function SellBtcyPage() {
       <SellStatusPopup
         isOpen={isSellStatusPopupOpen}
         onClose={() => setIsSellStatusPopupOpen(false)}
-        usdtAmount={btcyAmount ? Number(btcyAmount) * 0.1 : 14.26562}
+        usdtAmount={expectedReceiveAmount}
       />
 
       <TransactionFailedPopup
         isOpen={isTransactionFailedPopupOpen}
         onClose={() => setIsTransactionFailedPopupOpen(false)}
       />
-    </div >
+    </div>
   );
 }
