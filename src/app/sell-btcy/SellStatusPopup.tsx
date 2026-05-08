@@ -24,12 +24,11 @@ const SellStatusPopup: React.FC<SellStatusPopupProps> = ({
           Amount
         </h2>
         <p className="text-3xl md:text-4xl font-bold text-[#EAEAEA] mb-12">
-          {usdtAmount} USDT
+          {usdtAmount.toFixed(2)} USDT
         </p>
 
         {/* Timeline Container */}
         <div className="w-full max-w-sm pl-4 relative">
-
           {/* Step 1 */}
           <div className="relative flex items-start mb-10 group">
             {/* Orange Line connecting 1 and 2 */}
@@ -40,7 +39,9 @@ const SellStatusPopup: React.FC<SellStatusPopupProps> = ({
             </div>
 
             <div className="flex flex-col">
-              <p className="text-lg md:text-xl text-white font-medium">Selling request submitted</p>
+              <p className="text-lg md:text-xl text-white font-medium">
+                Selling request submitted
+              </p>
               <p className="text-sm text-gray-400 mt-1">09/01/2024, 21:19:27</p>
             </div>
           </div>
@@ -55,8 +56,12 @@ const SellStatusPopup: React.FC<SellStatusPopupProps> = ({
             </div>
 
             <div className="flex flex-col">
-              <p className="text-lg md:text-xl text-white font-medium">Selling request submitted</p>
-              <p className="text-sm text-gray-400 mt-1">You have one minute to cancel</p>
+              <p className="text-lg md:text-xl text-white font-medium">
+                Selling request submitted
+              </p>
+              <p className="text-sm text-gray-400 mt-1">
+                You have one minute to cancel
+              </p>
             </div>
           </div>
 
@@ -67,11 +72,12 @@ const SellStatusPopup: React.FC<SellStatusPopupProps> = ({
 
             <div className="relative z-10 flex-shrink-0 w-8 h-8  flex items-center justify-center mr-6">
               <Image src={pendingIcon} alt="BTCY Icon" width={50} height={50} />
-
             </div>
 
             <div className="flex flex-col mt-[-2px]">
-              <p className="text-lg md:text-xl text-white font-medium">Selling request submitted</p>
+              <p className="text-lg md:text-xl text-white font-medium">
+                Selling request submitted
+              </p>
             </div>
           </div>
 
@@ -85,7 +91,6 @@ const SellStatusPopup: React.FC<SellStatusPopupProps> = ({
               <p className="text-lg md:text-xl text-white font-medium">Sent</p>
             </div>
           </div>
-
         </div>
       </div>
     </PopupComponent>

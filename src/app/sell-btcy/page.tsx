@@ -50,6 +50,8 @@ export default function SellBtcyPage() {
 
   const { user } = useAuth();
   const [isKycCompleted] = useState(true);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [apiError, setApiError] = useState("");
 
   const currencyOptions: Record<NetworkType, CurrencyType[]> = {
     ethereum: ["USDT", "USDC"],
@@ -75,11 +77,14 @@ export default function SellBtcyPage() {
   const handleSellRequest = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
 
-    if (!btcyAmount || !usdtAddress || Number(btcyAmount) < 1) {
+    // 1. Basic Front-end Validation
+    if (!btcyAmount || !usdtAddress || Number(btcyAmount) <= 0) {
+      setApiError("Please enter a valid amount and wallet address.");
       setIsTransactionFailedPopupOpen(true);
       return;
     }
 
+    // 2. KYC Check
     if (!isKycCompleted) {
       setIsKycPopupOpen(true);
       return;
@@ -87,28 +92,40 @@ export default function SellBtcyPage() {
 
     try {
       setLoading(true);
+      setApiError(""); // Clear previous errors
 
       const payload = {
         email: user?.email,
         btcyAmount: Number(btcyAmount),
-        // Adding the dynamically converted USDT/USDC amount to the payload
         receiveAmount: expectedReceiveAmount,
         receiveCurrency: currency,
         destinationWallet: usdtAddress,
         network,
       };
 
+      // We use axios.post
       const res = await axios.post(SELL_BTCY_CREATE_ORDER_ROUTE, payload);
 
-      console.log("SELL ORDER RESPONSE:", res.data);
-
+      // 3. Handle Success (Status 200)
       if (res.data?.status === 200) {
         setIsSellStatusPopupOpen(true);
       } else {
+        // Handle cases where status is not 200 but no exception was thrown
+        setApiError(
+          res.data?.data?.message || "Transaction could not be processed."
+        );
         setIsTransactionFailedPopupOpen(true);
       }
-    } catch (error) {
-      console.error("Sell Order Error:", error);
+    } catch (err: any) {
+      // 4. Capture Alchemy Validation Errors (400, 403, 500)
+      console.error("Sell Order Error:", err);
+
+      const serverMessage =
+        err.response?.data?.data?.message || err.response?.data?.message;
+
+      setApiError(
+        serverMessage || "Network error. Please check your connection."
+      );
       setIsTransactionFailedPopupOpen(true);
     } finally {
       setLoading(false);
@@ -372,6 +389,7 @@ export default function SellBtcyPage() {
       <TransactionFailedPopup
         isOpen={isTransactionFailedPopupOpen}
         onClose={() => setIsTransactionFailedPopupOpen(false)}
+        errorMessage={apiError}
       />
     </div>
   );
