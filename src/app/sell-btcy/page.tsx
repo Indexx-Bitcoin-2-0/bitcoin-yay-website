@@ -3,8 +3,11 @@
 import { useState, useEffect, type FormEvent } from "react";
 import Image from "next/image";
 import axios from "axios";
+import { PublicKey } from "@solana/web3.js";
+import { isAddress } from "viem";
 
 import CustomButton2 from "@/components/CustomButton2";
+import LoginPopup from "@/components/LoginPopup";
 import {
   Accordion,
   AccordionContent,
@@ -24,10 +27,36 @@ import TransactionFailedPopup from "./TransactionFailedPopup";
 import { useAuth } from "@/contexts/AuthContext";
 import { SELL_BTCY_CREATE_ORDER_ROUTE } from "@/routes";
 import { fetchPrices } from "@/lib/quantum-mining";
+import { getUserBTCYBalance } from "@/lib/alchemy";
 
 // Define the valid network types globally for clarity
 type NetworkType = "ethereum" | "solana";
 type CurrencyType = "USDT" | "USDC";
+
+const isValidSolanaAddress = (address: string) => {
+  try {
+    new PublicKey(address);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const isValidDestinationAddress = (address: string, network: NetworkType) => {
+  if (network === "ethereum") {
+    return isAddress(address);
+  }
+
+  return isValidSolanaAddress(address);
+};
+
+const getAddressValidationMessage = (
+  currency: CurrencyType,
+  network: NetworkType
+) =>
+  network === "ethereum"
+    ? `Enter a valid Ethereum address for ${currency}.`
+    : `Enter a valid Solana address for ${currency}.`;
 
 export default function SellBtcyPage() {
   const [btcyAmount, setBtcyAmount] = useState("");
@@ -40,13 +69,19 @@ export default function SellBtcyPage() {
   const [btcyPrice, setBtcyPrice] = useState<number>(0);
 
   const [isKycPopupOpen, setIsKycPopupOpen] = useState(false);
+  const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
   const [isSellStatusPopupOpen, setIsSellStatusPopupOpen] = useState(false);
   const [isTransactionFailedPopupOpen, setIsTransactionFailedPopupOpen] =
     useState(false);
 
   const [loading, setLoading] = useState(false);
+  const [balanceLoading, setBalanceLoading] = useState(false);
+  const [btcyBalance, setBtcyBalance] = useState<number | null>(null);
+  const [sellError, setSellError] = useState<string | null>(null);
+  const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
+  const [addressTouched, setAddressTouched] = useState(false);
 
-  const { user } = useAuth();
+  const { user, isLoading: isAuthLoading } = useAuth();
   const [isKycCompleted] = useState(true);
 
   const currencyOptions: Record<NetworkType, CurrencyType[]> = {
@@ -67,14 +102,131 @@ export default function SellBtcyPage() {
     loadPrices();
   }, []);
 
+  useEffect(() => {
+    let isActive = true;
+
+    const loadBtcyBalance = async () => {
+      if (isAuthLoading) {
+        return;
+      }
+
+      if (!user?.email) {
+        setBtcyBalance(null);
+        setBalanceLoading(false);
+        return;
+      }
+
+      setBalanceLoading(true);
+      try {
+        const response = await getUserBTCYBalance(user.email);
+        if (!isActive) return;
+
+        setBtcyBalance(
+          response.data?.totalBTCYBalance ?? response.data?.balance ?? 0
+        );
+      } catch (error) {
+        if (!isActive) return;
+        console.error("Failed to fetch BTCY balance:", error);
+        setBtcyBalance(null);
+      } finally {
+        if (isActive) {
+          setBalanceLoading(false);
+        }
+      }
+    };
+
+    loadBtcyBalance();
+
+    return () => {
+      isActive = false;
+    };
+  }, [user?.email, isAuthLoading]);
+
   // Calculate the converted amount based on live price
   const expectedReceiveAmount = btcyAmount ? Number(btcyAmount) * btcyPrice : 0;
+  const formattedBtcyBalance =
+    btcyBalance !== null
+      ? btcyBalance.toLocaleString("en-US", {
+          maximumFractionDigits: 8,
+        })
+      : null;
+  const balanceLabel = user?.email
+    ? `Your BTCY Balance: ${
+        balanceLoading ? "Loading..." : (formattedBtcyBalance ?? "Unavailable")
+      } BTCY Token`
+    : "Log in to view your BTCY token balance.";
+  const requestedBtcyAmount = Number(btcyAmount);
+  const destinationWallet = usdtAddress.trim();
+
+  const getAmountValidationError = (showRequiredError: boolean) => {
+    if (!btcyAmount) {
+      return showRequiredError ? "Enter a valid BTCY amount." : null;
+    }
+
+    if (Number.isNaN(requestedBtcyAmount) || requestedBtcyAmount < 1) {
+      return "Enter a valid BTCY amount.";
+    }
+
+    if (btcyBalance !== null && requestedBtcyAmount > btcyBalance) {
+      return `Amount exceeds your available balance of ${
+        formattedBtcyBalance ?? "0"
+      } BTCY.`;
+    }
+
+    return null;
+  };
+
+  const getAddressValidationErrorForField = (showRequiredError: boolean) => {
+    if (!destinationWallet) {
+      return showRequiredError
+        ? `Enter your ${currency} destination wallet address.`
+        : null;
+    }
+
+    if (!isValidDestinationAddress(destinationWallet, network)) {
+      return getAddressValidationMessage(currency, network);
+    }
+
+    return null;
+  };
+
+  const amountError = getAmountValidationError(hasAttemptedSubmit);
+  const addressError = getAddressValidationErrorForField(
+    hasAttemptedSubmit || addressTouched
+  );
 
   const handleSellRequest = async (e?: FormEvent<HTMLFormElement>) => {
     if (e) e.preventDefault();
+    if (loading) return;
 
-    if (!btcyAmount || !usdtAddress || Number(btcyAmount) < 1) {
-      setIsTransactionFailedPopupOpen(true);
+    setHasAttemptedSubmit(true);
+    setSellError(null);
+
+    if (isAuthLoading) {
+      setSellError("Checking your login status. Please wait.");
+      return;
+    }
+
+    if (!user?.email) {
+      setIsLoginPopupOpen(true);
+      return;
+    }
+
+    if (balanceLoading) {
+      setSellError("Checking your BTCY balance. Please wait.");
+      return;
+    }
+
+    if (btcyBalance === null) {
+      setSellError(
+        "Unable to read your BTCY balance. Please refresh or log in again."
+      );
+      return;
+    }
+
+    const nextAmountError = getAmountValidationError(true);
+    const nextAddressError = getAddressValidationErrorForField(true);
+    if (nextAmountError || nextAddressError) {
       return;
     }
 
@@ -87,12 +239,12 @@ export default function SellBtcyPage() {
       setLoading(true);
 
       const payload = {
-        email: user?.email,
-        btcyAmount: Number(btcyAmount),
+        email: user.email,
+        btcyAmount: requestedBtcyAmount,
         // Adding the dynamically converted USDT/USDC amount to the payload
         receiveAmount: expectedReceiveAmount,
         receiveCurrency: currency,
-        destinationWallet: usdtAddress,
+        destinationWallet,
         network,
       };
 
@@ -153,7 +305,7 @@ export default function SellBtcyPage() {
             {btcyPrice > 0 ? btcyPrice.toFixed(4) : "Loading..."}
           </p>
           <p className="text-lg md:text-xl text-primary font-bold">
-            Your BTCY Balance: 25,450 BTCY Token
+            {balanceLabel}
           </p>
         </div>
 
@@ -166,10 +318,19 @@ export default function SellBtcyPage() {
             <input
               type="number"
               value={btcyAmount}
-              onChange={(e) => setBtcyAmount(e.target.value)}
+              max={btcyBalance ?? undefined}
+              onChange={(e) => {
+                setBtcyAmount(e.target.value);
+                setSellError(null);
+              }}
               placeholder="Enter BTCY amount"
-              className="w-full px-4 py-3 border border-bg3 rounded-lg text-lg bg-transparent text-white focus:outline-none"
+              className={`w-full px-4 py-3 border rounded-lg text-lg bg-transparent text-white focus:outline-none ${
+                amountError ? "border-red-500" : "border-bg3"
+              }`}
             />
+            {amountError && (
+              <span className="text-sm text-red-400 ml-2">{amountError}</span>
+            )}
             {btcyAmount && (
               <span className="text-sm text-gray-400 ml-2">
                 You will receive roughly:{" "}
@@ -219,20 +380,36 @@ export default function SellBtcyPage() {
           </div>
 
           {/* Address */}
-          <input
-            type="text"
-            value={usdtAddress}
-            onChange={(e) => setUsdtAddress(e.target.value)}
-            placeholder={
-              network === "ethereum"
-                ? `Enter ${currency} address`
-                : `Enter ${currency} Solana address`
-            }
-            className="w-full px-4 py-3 border border-bg3 rounded-lg text-lg bg-transparent text-white focus:outline-none"
-          />
+          <div className="flex flex-col gap-2">
+            <input
+              type="text"
+              value={usdtAddress}
+              onBlur={() => setAddressTouched(true)}
+              onChange={(e) => {
+                setUsdtAddress(e.target.value);
+                setSellError(null);
+              }}
+              placeholder={
+                network === "ethereum"
+                  ? `Enter ${currency} address`
+                  : `Enter ${currency} Solana address`
+              }
+              className={`w-full px-4 py-3 border rounded-lg text-lg bg-transparent text-white focus:outline-none ${
+                addressError ? "border-red-500" : "border-bg3"
+              }`}
+            />
+            {addressError && (
+              <span className="text-sm text-red-400 ml-2">{addressError}</span>
+            )}
+          </div>
 
           {/* Button */}
           <div className="flex flex-col items-center justify-center mt-6">
+            {sellError && (
+              <p className="mb-4 text-sm md:text-base text-red-400 text-center max-w-xl">
+                {sellError}
+              </p>
+            )}
             <CustomButton2
               image={CartButtonImage}
               text={loading ? "Processing..." : "Sell Now"}
@@ -371,6 +548,13 @@ export default function SellBtcyPage() {
       <TransactionFailedPopup
         isOpen={isTransactionFailedPopupOpen}
         onClose={() => setIsTransactionFailedPopupOpen(false)}
+      />
+
+      <LoginPopup
+        isOpen={isLoginPopupOpen}
+        onRegisterClick={() => setIsLoginPopupOpen(false)}
+        onClose={() => setIsLoginPopupOpen(false)}
+        onLoginSuccess={() => setIsLoginPopupOpen(false)}
       />
     </div>
   );
