@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import Image from "next/image";
 import axios from "axios";
 
@@ -12,7 +12,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-import HeroArtImage from "@/assets/images/sell_Art.svg";
+import HeroArtImage from "@/assets/images/salesPageArt.svg";
 import CartButtonImage from "@/assets/images/buttons/cart-button.webp";
 import HowItWorksArt from "@/assets/images/quantum-mining/art-4.webp";
 import ArtImage5 from "@/assets/images/quantum-mining/art-5.webp";
@@ -24,8 +24,6 @@ import TransactionFailedPopup from "./TransactionFailedPopup";
 import { useAuth } from "@/contexts/AuthContext";
 import { SELL_BTCY_CREATE_ORDER_ROUTE } from "@/routes";
 import { fetchPrices } from "@/lib/quantum-mining";
-
-// TODO: Adjust this import path to match where your fetchPrices function is located
 
 // Define the valid network types globally for clarity
 type NetworkType = "ethereum" | "solana";
@@ -72,7 +70,7 @@ export default function SellBtcyPage() {
   // Calculate the converted amount based on live price
   const expectedReceiveAmount = btcyAmount ? Number(btcyAmount) * btcyPrice : 0;
 
-  const handleSellRequest = async (e?: React.FormEvent) => {
+  const handleSellRequest = async (e?: FormEvent<HTMLFormElement>) => {
     if (e) e.preventDefault();
 
     if (!btcyAmount || !usdtAddress || Number(btcyAmount) < 1) {
@@ -238,8 +236,9 @@ export default function SellBtcyPage() {
             <CustomButton2
               image={CartButtonImage}
               text={loading ? "Processing..." : "Sell Now"}
-              onClick={handleSellRequest}
+              onClick={() => handleSellRequest()}
               imageStyling="w-40"
+              disabled={loading}
             />
             <p className="text-sm md:text-base text-gray-400 text-center max-w-xl leading-relaxed">
               You need to complete KYC before you can sell BTCY. This helps keep
