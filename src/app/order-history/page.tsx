@@ -1,69 +1,97 @@
 "use client";
 
-import { useState } from "react";
-import { Search, ArrowDownUp, ChevronDown } from "lucide-react";
-import { CustomHeading } from "@/components/CustomTypography";
+import { useEffect, useState } from "react";
+import { Search, ArrowDownUp } from "lucide-react";
 
-const mockOrders = [
-  {
-    id: "3287479",
-    date: "26 February, 2026",
-    type: "Buy",
-    btcyAmount: "700 BTCY",
-    usdtAmount: "$8,354.83",
-    walletAddress: "0x8F3...92Kd",
-    status: "Completed",
-  },
-  {
-    id: "2356375",
-    date: "23 January, 2026",
-    type: "Sell",
-    btcyAmount: "100 BTCY",
-    usdtAmount: "$6,893.82",
-    walletAddress: "0x6Aa...71Pc",
-    status: "Completed",
-  },
-  {
-    id: "1787678",
-    date: "10 December, 2025",
-    type: "Sell",
-    btcyAmount: "1,000 BTCY",
-    usdtAmount: "$10,556.51",
-    walletAddress: "0x4Ce...18Lm",
-    status: "Processing",
-  },
-  {
-    id: "0567889",
-    date: "7 November, 2025",
-    type: "Buy",
-    btcyAmount: "2500 BTCY",
-    usdtAmount: "$9,555.38",
-    walletAddress: "0x6Aa...71Pc",
-    status: "Completed",
-  },
-  {
-    id: "2345678",
-    date: "18 October, 2025",
-    type: "Buy",
-    btcyAmount: "300 BTCY",
-    usdtAmount: "$7,798.26",
-    walletAddress: "0x4A7...92Kd",
-    status: "Processing",
-  },
-];
+import { useAuth } from "@/contexts/AuthContext";
+import { BTCY_ORDER_HISTORY_ROUTE } from "@/routes";
+
+type BtcyOrder = {
+  orderid: string;
+  date: string;
+  type: "Buy" | "Sell" | string;
+  btcyAmount: string;
+  usdtAmount: string;
+  walletAddress: string;
+  status: string;
+  rate?: number;
+};
 
 export default function OrderHistory() {
   const [activeTab, setActiveTab] = useState("All Orders");
   const [searchQuery, setSearchQuery] = useState("");
+  const [orders, setOrders] = useState<BtcyOrder[]>([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
+  const [ordersError, setOrdersError] = useState<string | null>(null);
+  const { user, isLoading: isAuthLoading } = useAuth();
 
-  const filteredOrders = mockOrders.filter((order) => {
+  useEffect(() => {
+    let isActive = true;
+
+    const fetchOrders = async () => {
+      if (isAuthLoading) {
+        return;
+      }
+
+      if (!user?.email) {
+        setOrders([]);
+        setOrdersError(null);
+        setOrdersLoading(false);
+        return;
+      }
+
+      setOrdersLoading(true);
+      setOrdersError(null);
+
+      try {
+        const response = await fetch(
+          `${BTCY_ORDER_HISTORY_ROUTE}/${encodeURIComponent(user.email)}`
+        );
+        const result: unknown = await response.json();
+
+        if (!response.ok) {
+          throw new Error("Unable to load BTCY order history.");
+        }
+
+        if (!Array.isArray(result)) {
+          throw new Error("BTCY order history response was invalid.");
+        }
+
+        if (isActive) {
+          setOrders(result as BtcyOrder[]);
+        }
+      } catch (error) {
+        if (!isActive) return;
+        console.error("Failed to fetch BTCY order history:", error);
+        setOrders([]);
+        setOrdersError(
+          error instanceof Error
+            ? error.message
+            : "Unable to load BTCY order history."
+        );
+      } finally {
+        if (isActive) {
+          setOrdersLoading(false);
+        }
+      }
+    };
+
+    fetchOrders();
+
+    return () => {
+      isActive = false;
+    };
+  }, [user?.email, isAuthLoading]);
+
+  const filteredOrders = orders.filter((order) => {
     const matchesTab =
       activeTab === "All Orders" ||
       (activeTab === "Buy BTCY" && order.type === "Buy") ||
       (activeTab === "Sell BTCY" && order.type === "Sell");
+    const normalizedSearch = searchQuery.toLowerCase();
     const matchesSearch =
-      order.id.includes(searchQuery) ||
-      order.walletAddress.toLowerCase().includes(searchQuery.toLowerCase());
+      order.orderid.toLowerCase().includes(normalizedSearch) ||
+      order.walletAddress.toLowerCase().includes(normalizedSearch);
     return matchesTab && matchesSearch;
   });
 
@@ -141,10 +169,34 @@ export default function OrderHistory() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/[0.03]">
-                {filteredOrders.length > 0 ? (
+                {ordersLoading || isAuthLoading ? (
+                  <tr>
+                    <td colSpan={7} className="py-20 text-center">
+                      <span className="text-white/30 font-medium">
+                        Loading order history...
+                      </span>
+                    </td>
+                  </tr>
+                ) : ordersError ? (
+                  <tr>
+                    <td colSpan={7} className="py-20 text-center">
+                      <span className="text-red-400 font-medium">
+                        {ordersError}
+                      </span>
+                    </td>
+                  </tr>
+                ) : !user?.email ? (
+                  <tr>
+                    <td colSpan={7} className="py-20 text-center">
+                      <span className="text-white/30 font-medium">
+                        Log in to view your BTCY order history.
+                      </span>
+                    </td>
+                  </tr>
+                ) : filteredOrders.length > 0 ? (
                   filteredOrders.map((order) => (
-                    <tr key={order.id} className="hover:bg-white/[0.015] transition-colors group">
-                      <td className="py-6 px-8 text-sm md:text-base font-semibold text-white/80">{order.id}</td>
+                    <tr key={order.orderid} className="hover:bg-white/[0.015] transition-colors group">
+                      <td className="py-6 px-8 text-sm md:text-base font-semibold text-white/80">{order.orderid}</td>
                       <td className="py-6 px-8 text-sm text-white/50">{order.date}</td>
                       <td className="py-6 px-8 text-sm text-white/70">{order.type}</td>
                       <td className="py-6 px-8 text-sm md:text-lg font-bold text-primary">{order.btcyAmount}</td>

@@ -74,3 +74,4 @@ export const COINGECKO_PRICE_API_ROUTE =
   "https://api.coingecko.com/api/v3/simple/price";
 
 export const SELL_BTCY_CREATE_ORDER_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/sell-btcy/createSellOrder`;
+export const BTCY_ORDER_HISTORY_ROUTE = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/order/btcy/orders`;
