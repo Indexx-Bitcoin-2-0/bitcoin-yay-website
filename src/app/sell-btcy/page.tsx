@@ -27,11 +27,57 @@ import TransactionFailedPopup from "./TransactionFailedPopup";
 import { useAuth } from "@/contexts/AuthContext";
 import { SELL_BTCY_CREATE_ORDER_ROUTE } from "@/routes";
 import { fetchPrices } from "@/lib/quantum-mining";
-import { getUserBTCYBalance } from "@/lib/alchemy";
+import { getUserWalletBalance } from "@/lib/alchemy";
 
 // Define the valid network types globally for clarity
 type NetworkType = "ethereum" | "solana";
 type CurrencyType = "USDT" | "USDC";
+
+const DEFAULT_SELL_FAILURE_MESSAGE =
+  "Something went wrong while processing your request. Please try again. If the issue continues, contact customer support.";
+const BTCY_SYMBOL = "BTCY";
+const TOKEN_WALLET_NETWORK = "Ying Yang Chain";
+
+const getSellOrderFailureMessage = (error: unknown) => {
+  if (axios.isAxiosError(error)) {
+    const responseData = error.response?.data;
+    const message =
+      responseData?.data?.message ??
+      responseData?.message ??
+      error.message;
+
+    return typeof message === "string" && message.trim()
+      ? message
+      : DEFAULT_SELL_FAILURE_MESSAGE;
+  }
+
+  if (error instanceof Error && error.message.trim()) {
+    return error.message;
+  }
+
+  return DEFAULT_SELL_FAILURE_MESSAGE;
+};
+
+const getSellOrderResponseMessage = (responseData: unknown) => {
+  if (
+    responseData &&
+    typeof responseData === "object" &&
+    "data" in responseData
+  ) {
+    const nestedData = responseData.data;
+    if (
+      nestedData &&
+      typeof nestedData === "object" &&
+      "message" in nestedData &&
+      typeof nestedData.message === "string" &&
+      nestedData.message.trim()
+    ) {
+      return nestedData.message;
+    }
+  }
+
+  return DEFAULT_SELL_FAILURE_MESSAGE;
+};
 
 const isValidSolanaAddress = (address: string) => {
   try {
@@ -73,6 +119,9 @@ export default function SellBtcyPage() {
   const [isSellStatusPopupOpen, setIsSellStatusPopupOpen] = useState(false);
   const [isTransactionFailedPopupOpen, setIsTransactionFailedPopupOpen] =
     useState(false);
+  const [transactionFailedMessage, setTransactionFailedMessage] = useState(
+    DEFAULT_SELL_FAILURE_MESSAGE
+  );
 
   const [loading, setLoading] = useState(false);
   const [balanceLoading, setBalanceLoading] = useState(false);
@@ -118,12 +167,20 @@ export default function SellBtcyPage() {
 
       setBalanceLoading(true);
       try {
-        const response = await getUserBTCYBalance(user.email);
+        const response = await getUserWalletBalance(
+          user.email,
+          BTCY_SYMBOL,
+          TOKEN_WALLET_NETWORK
+        );
         if (!isActive) return;
 
-        setBtcyBalance(
-          response.data?.totalBTCYBalance ?? response.data?.balance ?? 0
-        );
+        if (response.error) {
+          console.error("Failed to fetch BTCY token balance:", response.error);
+          setBtcyBalance(null);
+          return;
+        }
+
+        setBtcyBalance(response.data?.balance ?? 0);
       } catch (error) {
         if (!isActive) return;
         console.error("Failed to fetch BTCY balance:", error);
@@ -151,9 +208,9 @@ export default function SellBtcyPage() {
         })
       : null;
   const balanceLabel = user?.email
-    ? `Your BTCY Balance: ${
+    ? `Your BTCY Token Balance: ${
         balanceLoading ? "Loading..." : (formattedBtcyBalance ?? "Unavailable")
-      } BTCY Token`
+      } BTCY`
     : "Log in to view your BTCY token balance.";
   const requestedBtcyAmount = Number(btcyAmount);
   const destinationWallet = usdtAddress.trim();
@@ -201,6 +258,7 @@ export default function SellBtcyPage() {
 
     setHasAttemptedSubmit(true);
     setSellError(null);
+    setTransactionFailedMessage(DEFAULT_SELL_FAILURE_MESSAGE);
 
     if (isAuthLoading) {
       setSellError("Checking your login status. Please wait.");
@@ -219,7 +277,7 @@ export default function SellBtcyPage() {
 
     if (btcyBalance === null) {
       setSellError(
-        "Unable to read your BTCY balance. Please refresh or log in again."
+        "Unable to read your BTCY token balance. Please refresh or log in again."
       );
       return;
     }
@@ -255,10 +313,12 @@ export default function SellBtcyPage() {
       if (res.data?.status === 200) {
         setIsSellStatusPopupOpen(true);
       } else {
+        setTransactionFailedMessage(getSellOrderResponseMessage(res.data));
         setIsTransactionFailedPopupOpen(true);
       }
     } catch (error) {
       console.error("Sell Order Error:", error);
+      setTransactionFailedMessage(getSellOrderFailureMessage(error));
       setIsTransactionFailedPopupOpen(true);
     } finally {
       setLoading(false);
@@ -548,6 +608,7 @@ export default function SellBtcyPage() {
       <TransactionFailedPopup
         isOpen={isTransactionFailedPopupOpen}
         onClose={() => setIsTransactionFailedPopupOpen(false)}
+        message={transactionFailedMessage}
       />
 
       <LoginPopup

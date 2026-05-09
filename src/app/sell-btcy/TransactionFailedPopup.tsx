@@ -8,11 +8,13 @@ import failedIcon from '@/assets/images/failed_icon.svg'
 interface TransactionFailedPopupProps {
   isOpen: boolean;
   onClose: () => void;
+  message?: string;
 }
 
 const TransactionFailedPopup: React.FC<TransactionFailedPopupProps> = ({
   isOpen,
   onClose,
+  message = "Something went wrong while processing your request. Please try again. If the issue continues, contact customer support.",
 }) => {
   return (
     <PopupComponent isOpen={isOpen} onClose={onClose}>
@@ -27,19 +29,15 @@ const TransactionFailedPopup: React.FC<TransactionFailedPopupProps> = ({
         </h2>
 
         <p className="text-lg md:text-xl text-[#EAEAEA] mb-12 max-w-lg mx-auto">
-          Something went wrong while processing your request. Please try again.
-          If the issue continues, contact customer support.
+          {message}
         </p>
 
         <div className="flex flex-col items-center justify-center">
 
           <CustomButton2
             image={customerSupport}
-            text="Complete KYC"
-            onClick={() => {
-              console.log("Contacting Support...");
-              onClose();
-            }}
+            text="Contact Support"
+            link="/support/#contact-us"
             imageStyling="w-24 md:w-32 mb-[-5px]"
           />
         </div>
