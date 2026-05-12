@@ -24,16 +24,14 @@ import CustomButton2 from "@/components/CustomButton2";
 import { useAuth } from "@/contexts/AuthContext";
 import LoginPopup from "@/components/LoginPopup";
 import {
+  AlchemyRuntimeConfig,
   getUserBTCYBalance,
+  getAlchemyConfig,
   processAlchemyConversion,
   saveClickConvertSessionState,
   getClickConvertSessionState,
   ClickConvertSessionState,
 } from "@/lib/alchemy";
-import {
-  getMinimumBalanceMessage,
-  getMinimumBTCYBalanceForAlchemy,
-} from "@/app/alchemy/constants";
 import { getAuthenticatedWalletUrl } from "@/lib/authenticated-wallet";
 import {
   fetchActiveLiquidityPool,
@@ -47,11 +45,10 @@ import MegaPathIcon from "@/assets/images/alchemy/mega_path.svg";
 import AlchemyGatewayIcon from "@/assets/images/alchemy/AlchemyGateway.svg";
 import DownArrowIcon from '@/assets/images/alchemy/downArrow.svg'
 import StartAlchemyImage from "@/assets/images/alchemy/startAlchemySVG.svg";
-const MAX_NUGGET_INPUT = 1000;
+const FALLBACK_MIN_NUGGET_INPUT = 1000;
+const FALLBACK_MAX_NUGGET_INPUT = 5000;
+const FALLBACK_MINED_NUGGETS_REQUIRED = 50000;
 const WALLET_OVERVIEW_BASE_URL = "https://cex.indexx.ai/wallet/overview";
-const MAX_NUGGET_INPUT_MESSAGE = `You can only convert up to ${MAX_NUGGET_INPUT.toLocaleString(
-  "en-US"
-)} BTCY per session.`;
 
 export default function AlchemyPage() {
   const { user, isLoading: isAuthLoading } = useAuth();
@@ -68,6 +65,9 @@ export default function AlchemyPage() {
   const [balanceError, setBalanceError] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [limitWarning, setLimitWarning] = useState<string | null>(null);
+  const [alchemyConfig, setAlchemyConfig] = useState<AlchemyRuntimeConfig | null>(null);
+  const [configLoading, setConfigLoading] = useState(true);
+  const [configError, setConfigError] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [walletUrl, setWalletUrl] = useState(WALLET_OVERVIEW_BASE_URL);
   const popupTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -89,7 +89,22 @@ export default function AlchemyPage() {
     100,
     Math.round((poolCurrent / Math.max(poolTarget, 1)) * 100)
   );
-  const alchemyUnlockLimit = getMinimumBTCYBalanceForAlchemy(user?.email);
+  const minNuggetInput =
+    alchemyConfig?.v2InputAmount ??
+    alchemyConfig?.minTokenRequired ??
+    FALLBACK_MIN_NUGGET_INPUT;
+  const maxNuggetInput =
+    alchemyConfig?.maxInputLimit ??
+    alchemyConfig?.defaultInputLimit ??
+    FALLBACK_MAX_NUGGET_INPUT;
+  const alchemyUnlockLimit =
+    alchemyConfig?.v2MinimumMinedDefault ?? FALLBACK_MINED_NUGGETS_REQUIRED;
+  const maxNuggetInputMessage = `You can convert between ${minNuggetInput.toLocaleString(
+    "en-US"
+  )} and ${maxNuggetInput.toLocaleString("en-US")} BTCY per session.`;
+  const minimumBalanceMessage = `You need at least ${alchemyUnlockLimit.toLocaleString(
+    "en-US"
+  )} BTCY to start an Alchemy`;
 
   const handleLoginSuccess = () => setIsLoginPopupOpen(false);
   const handleCloseLoginPopup = () => setIsLoginPopupOpen(false);
@@ -105,13 +120,13 @@ export default function AlchemyPage() {
     }
 
     const numericValue = Number(digitsOnly);
-    const clampedValue = Math.min(numericValue, MAX_NUGGET_INPUT);
-    const limitExceeded = numericValue > MAX_NUGGET_INPUT;
+    const clampedValue = Math.min(numericValue, maxNuggetInput);
+    const limitExceeded = numericValue > maxNuggetInput;
 
     setNuggetInput(String(clampedValue));
 
     if (limitExceeded) {
-      setLimitWarning(MAX_NUGGET_INPUT_MESSAGE);
+      setLimitWarning(maxNuggetInputMessage);
       if (limitWarningTimerRef.current) {
         clearTimeout(limitWarningTimerRef.current);
       }
@@ -149,6 +164,52 @@ export default function AlchemyPage() {
       }
     };
     fetchPrices();
+  }, []);
+
+  useEffect(() => {
+    let isActive = true;
+
+    const loadAlchemyConfig = async () => {
+      setConfigLoading(true);
+      setConfigError(null);
+      try {
+        const response = await getAlchemyConfig();
+        if (!isActive) return;
+
+        if (!response.success || !response.config) {
+          throw new Error(response.error || "Failed to fetch alchemy config");
+        }
+
+        setAlchemyConfig({
+          ...response.config,
+          maxInputLimit:
+            response.maxInputLimit ??
+            response.config.maxInputLimit ??
+            response.config.defaultInputLimit,
+          maxInputLimitLabel:
+            response.maxInputLimitLabel ?? response.config.maxInputLimitLabel,
+        });
+      } catch (error) {
+        if (!isActive) return;
+        console.error("Failed to load alchemy config:", error);
+        setAlchemyConfig(null);
+        setConfigError(
+          error instanceof Error
+            ? error.message
+            : "Unable to load alchemy config."
+        );
+      } finally {
+        if (isActive) {
+          setConfigLoading(false);
+        }
+      }
+    };
+
+    loadAlchemyConfig();
+
+    return () => {
+      isActive = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -212,15 +273,13 @@ export default function AlchemyPage() {
         const totalBalance =
           response.data?.totalBTCYBalance ?? response.data?.balance ?? 0;
 
-        const requiredBalance = getMinimumBTCYBalanceForAlchemy(user?.email);
-
         setUserBalance(totalBalance);
-        if (totalBalance < requiredBalance) {
-          setBalanceError(getMinimumBalanceMessage(user?.email));
+        if (totalBalance < alchemyUnlockLimit) {
+          setBalanceError(minimumBalanceMessage);
         } else {
           setBalanceError(null);
         }
-      } catch (error) {
+      } catch {
         if (!isActive) return;
         setBalanceError(
           "Unable to read your BTCY balance. Please refresh or log in again."
@@ -237,7 +296,7 @@ export default function AlchemyPage() {
     return () => {
       isActive = false;
     };
-  }, [user, isAuthLoading]);
+  }, [user, isAuthLoading, alchemyUnlockLimit, minimumBalanceMessage]);
 
   useEffect(() => {
     let isActive = true;
@@ -313,7 +372,27 @@ export default function AlchemyPage() {
     setStatusMessage(null);
 
     if (limitWarning) {
-      setFormError(MAX_NUGGET_INPUT_MESSAGE);
+      setFormError(maxNuggetInputMessage);
+      return;
+    }
+
+    if (configLoading) {
+      setFormError("Checking the current Alchemy configuration. Please wait...");
+      return;
+    }
+
+    if (configError || !alchemyConfig) {
+      setFormError(
+        configError || "Unable to verify the current Alchemy configuration."
+      );
+      return;
+    }
+
+    if (alchemyConfig.status !== "OPEN" || alchemyConfig.disabled) {
+      setFormError(
+        alchemyConfig.disabledMessage ||
+          "Alchemy is currently closed. Please try again later."
+      );
       return;
     }
 
@@ -332,9 +411,8 @@ export default function AlchemyPage() {
       return;
     }
 
-    const requiredBalance = getMinimumBTCYBalanceForAlchemy(user?.email);
-    if (userBalance < requiredBalance) {
-      setFormError(getMinimumBalanceMessage(user?.email));
+    if (userBalance < alchemyUnlockLimit) {
+      setFormError(minimumBalanceMessage);
       return;
     }
 
@@ -349,8 +427,8 @@ export default function AlchemyPage() {
       return;
     }
 
-    if (amount > MAX_NUGGET_INPUT) {
-      setFormError(MAX_NUGGET_INPUT_MESSAGE);
+    if (amount < minNuggetInput || amount > maxNuggetInput) {
+      setFormError(maxNuggetInputMessage);
       return;
     }
 
@@ -511,7 +589,9 @@ export default function AlchemyPage() {
             inputMode="numeric"
             value={nuggetInput}
             onChange={(e) => handleNuggetInputChange(e.target.value)}
-            placeholder="Enter Nuggets Amount"
+            placeholder={`Enter ${minNuggetInput.toLocaleString(
+              "en-US"
+            )}-${maxNuggetInput.toLocaleString("en-US")} Nuggets`}
             className="mt-10 w-full rounded-2xl bg-bg2/70 border border-bg2 px-6 py-4 text-center text-xl text-white placeholder:text-tertiary focus:outline-none focus:ring-2 focus:ring-primary"
           />
           {limitWarning && (
@@ -547,7 +627,8 @@ export default function AlchemyPage() {
           <p className="mt-6 text-base md:text-lg text-red-500 text-center max-w-2xl mx-auto">
             Alchemy unlocks after you mine{" "}
             {alchemyUnlockLimit.toLocaleString("en-US")} Bitcoin-Yay nuggets. Then
-            you can convert any amount you want.
+            you can convert between {minNuggetInput.toLocaleString("en-US")} and{" "}
+            {maxNuggetInput.toLocaleString("en-US")} BTCY per session.
           </p>
 
           {(formError || balanceError || statusMessage) && (

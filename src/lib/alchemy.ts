@@ -12,7 +12,7 @@ import {
   GET_USER_WALLET_BALANCE_API_ROUTE,
 } from "@/routes";
 
-export const ALCHEMY_DISABLED = true;
+export const ALCHEMY_DISABLED = false;
 
 const ensureAlchemyEnabled = (): void => {
   if (ALCHEMY_DISABLED) {
@@ -112,6 +112,23 @@ export interface AlchemyConfigItem {
   probabilities: Record<string, number>;
 }
 
+export interface AlchemyRuntimeConfig {
+  status?: string;
+  disabled?: boolean;
+  disabledMessage?: string;
+  minTokenRequired?: number;
+  userDailyLimit?: number;
+  totalDailyLimit?: number;
+  cooldownMinutes?: number;
+  defaultInputLimit?: number;
+  restrictedInputLimit?: number;
+  maxInputLimit?: number;
+  maxInputLimitLabel?: string;
+  v2InputAmount?: number;
+  v2MinimumMinedDefault?: number;
+  v2MinimumMinedSpecial?: number;
+}
+
 export interface AlchemyConfigResponse {
   success: boolean;
   message?: string;
@@ -123,6 +140,9 @@ export interface AlchemyConfigResponse {
     nuclear: AlchemyConfigItem[];
     quantum: AlchemyConfigItem[];
   };
+  config?: AlchemyRuntimeConfig;
+  maxInputLimit?: number;
+  maxInputLimitLabel?: string;
   error?: string;
 }
 
@@ -257,12 +277,29 @@ const extractApiErrorMessage = (payload: any): string | null => {
 };
 
 const formatAlchemyCooldownMessage = (message: string): string | null => {
-  const match = message.match(/Next session available on ([\dTZ:\-+.]+)/i);
-  if (!match || !match[1]) {
+  const minuteMatch = message.match(/please wait\s+(\d+)\s+minutes?/i);
+  if (minuteMatch?.[1]) {
+    const totalMinutes = Number(minuteMatch[1]);
+    if (!Number.isNaN(totalMinutes)) {
+      const days = Math.floor(totalMinutes / 1440);
+      const hours = Math.floor((totalMinutes % 1440) / 60);
+      const minutes = totalMinutes % 60;
+      const parts = [
+        days > 0 ? `${days} day${days === 1 ? "" : "s"}` : null,
+        hours > 0 ? `${hours} hour${hours === 1 ? "" : "s"}` : null,
+        minutes > 0 ? `${minutes} minute${minutes === 1 ? "" : "s"}` : null,
+      ].filter(Boolean);
+
+      return `Cooldown active. Please wait ${parts.join(", ")}.`;
+    }
+  }
+
+  const dateMatch = message.match(/Next session available on ([\dTZ:\-+.]+)/i);
+  if (!dateMatch || !dateMatch[1]) {
     return null;
   }
 
-  const isoString = match[1].replace(/[.,;:]+$/, "");
+  const isoString = dateMatch[1].replace(/[.,;:]+$/, "");
   const nextAttempt = new Date(isoString);
   if (Number.isNaN(nextAttempt.getTime())) {
     return null;
@@ -402,22 +439,15 @@ export async function completeAlchemyProcess(
 export async function getAlchemyConfig(): Promise<AlchemyConfigResponse> {
   try {
     ensureAlchemyEnabled();
-    const accessToken = getAccessToken();
-    console.log("log", accessToken)
-    if (!accessToken) {
-      throw new Error("No access token found. Please login first.");
-    }
 
     const response = await fetch(ALCHEMY_CONFIG_API_ROUTE, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
       },
     });
 
     const result = await parseJsonSafe(response);
-    console.log("result", result)
     if (!response.ok) {
       throw new Error(result.error || "Failed to fetch alchemy config");
     }
@@ -427,9 +457,11 @@ export async function getAlchemyConfig(): Promise<AlchemyConfigResponse> {
       message: result.message,
       status: result.status,
       session: result.session,
+      config: result.config,
+      maxInputLimit: result.maxInputLimit,
+      maxInputLimitLabel: result.maxInputLimitLabel,
     };
   } catch (error) {
-    console.log("Get alchemy config error:", error);
     console.error("Get alchemy config error:", error);
     return {
       success: false,
