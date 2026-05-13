@@ -53,8 +53,8 @@ import {
   fetchPrices,
   createQuantumSocket,
   processPayPalReturn,
-  storePayPalOrderData,
-  clearPayPalOrderData,
+  storeQuantumPaymentOrderData,
+  clearQuantumPaymentOrderData,
   isCryptoPayment,
   optionToCurrencyIn,
   calculateBTCYAmount,
@@ -477,7 +477,7 @@ const QuantumMiningPage = () => {
       setPendingOrderId(null);
       activeOrderRef.current = null;
       pendingOrderIdRef.current = null;
-      clearPayPalOrderData();
+      clearQuantumPaymentOrderData();
     },
     [upsertLatestSignal]
   );
@@ -535,7 +535,7 @@ const QuantumMiningPage = () => {
           setPendingOrderId(null);
           activeOrderRef.current = null;
           pendingOrderIdRef.current = null;
-          clearPayPalOrderData();
+          clearQuantumPaymentOrderData();
         }
       })();
       return;
@@ -547,7 +547,7 @@ const QuantumMiningPage = () => {
         openGenericFailure(
           "We couldn't verify the payment details for this order."
         );
-        clearPayPalOrderData();
+        clearQuantumPaymentOrderData();
         return;
       }
 
@@ -623,14 +623,14 @@ const QuantumMiningPage = () => {
             );
             setPendingOrderId(null);
             pendingOrderIdRef.current = null;
-            clearPayPalOrderData();
+            clearQuantumPaymentOrderData();
           }
         } catch (e) {
           console.error("getUserOrder failed:", e);
           openGenericFailure("We couldn't fetch the latest order status.");
           setPendingOrderId(null);
           pendingOrderIdRef.current = null;
-          clearPayPalOrderData();
+          clearQuantumPaymentOrderData();
         }
       })();
     }
@@ -753,7 +753,7 @@ const QuantumMiningPage = () => {
           );
           setIsTxVerificationSubmitting(false);
           setFailOpen(true);
-          clearPayPalOrderData();
+          clearQuantumPaymentOrderData();
         }
       },
       onOrdersUpdate: (data) => {
@@ -1093,7 +1093,7 @@ const QuantumMiningPage = () => {
               ? String(data.orderId)
               : "",
         };
-        storePayPalOrderData(stash);
+        storeQuantumPaymentOrderData(stash);
 
         if (stash.orderId) {
           setPendingOrderId(stash.orderId);
@@ -1135,6 +1135,20 @@ const QuantumMiningPage = () => {
         if (!checkoutUrl) {
           throw new Error("Missing Stripe checkout URL.");
         }
+
+        const stripeOrderId =
+          typeof data?.orderId === "string" || typeof data?.orderId === "number"
+            ? String(data.orderId)
+            : "";
+        if (stripeOrderId) {
+          storeQuantumPaymentOrderData({
+            email: user.email,
+            orderId: stripeOrderId,
+          });
+          setPendingOrderId(stripeOrderId);
+          pendingOrderIdRef.current = stripeOrderId;
+        }
+
         window.location.href = checkoutUrl;
         return;
       }
@@ -1842,8 +1856,6 @@ const QuantumMiningPage = () => {
         onCancel={handleOpenCancelConfirmation}
         cryptoType={selectedPaymentOption}
         order={activeOrder}
-        closeOnOutsideClick={false}
-        closeOnEsc={false}
       />
 
       <WireTransferPopup

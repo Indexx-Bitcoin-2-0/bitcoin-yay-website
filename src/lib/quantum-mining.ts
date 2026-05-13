@@ -416,7 +416,7 @@ export function processPayPalReturn(
 
   const stash = (() => {
     try {
-      return JSON.parse(sessionStorage.getItem("qm_paypal_order") || "{}");
+      return JSON.parse(sessionStorage.getItem("qm_payment_order") || "{}");
     } catch {
       return {};
     }
@@ -451,23 +451,23 @@ export function processPayPalReturn(
 }
 
 /**
- * Stores PayPal order data in session storage
+ * Stores external payment order data in session storage for redirect returns.
  */
-export function storePayPalOrderData(data: {
+export function storeQuantumPaymentOrderData(data: {
   email: string;
   orderId: string;
 }): void {
   if (typeof window !== "undefined") {
-    sessionStorage.setItem("qm_paypal_order", JSON.stringify(data));
+    sessionStorage.setItem("qm_payment_order", JSON.stringify(data));
   }
 }
 
 /**
- * Removes PayPal order data from session storage
+ * Removes external payment order data from session storage.
  */
-export function clearPayPalOrderData(): void {
+export function clearQuantumPaymentOrderData(): void {
   if (typeof window !== "undefined") {
-    sessionStorage.removeItem("qm_paypal_order");
+    sessionStorage.removeItem("qm_payment_order");
   }
 }
 
