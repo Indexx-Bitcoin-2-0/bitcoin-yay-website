@@ -29,10 +29,12 @@ const formatAmount = (amount?: number) => {
 export default function SuccessPopup({
   isOpen,
   onClose,
+  walletUrl,
   orderSummary,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  walletUrl: string;
   orderSummary?: OrderSummary;
 }) {
   const details = (() => {
@@ -130,7 +132,7 @@ export default function SuccessPopup({
             <CustomButton2
               image={EyeButtonImage}
               text="View wallet"
-              onClick={() => { }}
+              link={walletUrl}
               imageStyling="w-30"
             />
           </div>

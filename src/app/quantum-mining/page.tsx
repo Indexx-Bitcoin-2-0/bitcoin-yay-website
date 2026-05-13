@@ -37,10 +37,13 @@ import SuccessPopup from "./SuccessPopup";
 import UnsuccessPopup from "./UnsuccessPopup";
 import VerifyingPaymentPopup from "./VerifyingPaymentPopup";
 import CancelConfirmationPopup from "./CancelConfirmationPopup";
+import { getAuthenticatedWalletUrl } from "@/lib/authenticated-wallet";
 
 import CardImage1 from "@/assets/images/home/card-1.webp";
 import CardImage2 from "@/assets/images/home/card-2.webp";
 import CardImage3 from "@/assets/images/home/card-3.webp";
+
+const WALLET_OVERVIEW_BASE_URL = "https://cex.indexx.ai/wallet/overview";
 
 import {
   PaymentOption,
@@ -394,6 +397,7 @@ const QuantumMiningPage = () => {
     useState(false);
   const [cancelError, setCancelError] = useState<string>();
   const [isCancellingOrder, setIsCancellingOrder] = useState(false);
+  const [walletUrl, setWalletUrl] = useState(WALLET_OVERVIEW_BASE_URL);
 
   // Socket
   const socketRef = useRef<unknown>(null);
@@ -410,6 +414,23 @@ const QuantumMiningPage = () => {
   useEffect(() => {
     pendingOrderIdRef.current = pendingOrderId;
   }, [pendingOrderId]);
+
+  useEffect(() => {
+    let isActive = true;
+
+    const buildWalletLink = async () => {
+      const url = await getAuthenticatedWalletUrl(WALLET_OVERVIEW_BASE_URL);
+      if (isActive) {
+        setWalletUrl(url);
+      }
+    };
+
+    buildWalletLink();
+
+    return () => {
+      isActive = false;
+    };
+  }, [user]);
 
   const upsertLatestSignal = useCallback((signal: OrderSignal) => {
     setLatestOrderSignal((prev) => {
@@ -1901,6 +1922,7 @@ const QuantumMiningPage = () => {
       <SuccessPopup
         isOpen={successOpen}
         onClose={handleCloseSuccess}
+        walletUrl={walletUrl}
         orderSummary={latestOrderSignal || undefined}
       />
       <UnsuccessPopup
