@@ -1,5 +1,6 @@
 import { io, Socket } from "socket.io-client";
 import axios from "axios";
+import { API_BASE_URL } from "@/lib/api-config";
 import {
   QUANTUM_BUY_ORDER_API_ROUTE,
   QUANTUM_CRYPTO_CHECK_PAYMENT_API_ROUTE,
@@ -335,7 +336,7 @@ export function createQuantumSocket(
   email: string,
   handlers: SocketEventHandlers = {}
 ): Socket {
-  const socket = io(process.env.NEXT_PUBLIC_API_URL as string, {
+  const socket = io(API_BASE_URL, {
     path: "/socket.io/",
     transports: ["websocket"],
     auth: { email },

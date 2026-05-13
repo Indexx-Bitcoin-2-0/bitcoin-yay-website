@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import axios, { AxiosError } from "axios";
+import { buildApiUrl } from "@/lib/api-config";
 
-const SUBSCRIPTIONS_BASE_URL = process.env.NEXT_PUBLIC_API_URL
-  ? `${process.env.NEXT_PUBLIC_API_URL}/api/v1/bitcoinyay/subscriptions`
-  : "";
+const SUBSCRIPTIONS_BASE_URL = buildApiUrl("/api/v1/bitcoinyay/subscriptions");
 
 export async function POST(request: Request) {
   if (!SUBSCRIPTIONS_BASE_URL) {

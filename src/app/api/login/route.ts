@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import axios, { AxiosError } from "axios";
+import { API_BASE_URL } from "@/lib/api-config";
 
 interface DeleteAccountResponse {
   message?: string;
@@ -18,7 +19,7 @@ export async function POST(request: Request) {
     }
 
     const response = await axios.post<DeleteAccountResponse>(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/login`,
+      `${API_BASE_URL}/api/v1/inex/user/login`,
       { email, password }
     );
 

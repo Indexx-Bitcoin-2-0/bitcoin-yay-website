@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "@/lib/api-config";
 
 import CustomButton2 from "@/components/CustomButton2";
 import {
@@ -77,7 +78,7 @@ export default function Ambassador() {
 
         // Make API call
         const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/inex/user/ambassadors`,
+          `${API_BASE_URL}/api/v1/inex/user/ambassadors`,
           requestData,
           {
             headers: {

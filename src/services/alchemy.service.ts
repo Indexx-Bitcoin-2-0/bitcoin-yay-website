@@ -1,3 +1,5 @@
+import { buildApiUrl } from "@/lib/api-config";
+
 export interface ActiveLiquidityPoolResponse {
   current?: number;
   currentLiquidity?: number;
@@ -24,7 +26,7 @@ export interface NormalizedActiveLiquidityPool {
 }
 
 const ALCHEMY_ACTIVE_POOL_URL =
-  "https://api.v1.indexx.ai/api/v2/bitcoinyay/alchemy/liquidity/pools/active";
+  buildApiUrl("/api/v2/bitcoinyay/alchemy/liquidity/pools/active");
 
 const STATUS_MESSAGES: Record<number, string> = {
   400: "Could not read the liquidity pool – the request was malformed.",
