@@ -29,58 +29,76 @@ import TransactionFailedPopup from "./TransactionFailedPopup";
 
 import { useAuth } from "@/contexts/AuthContext";
 import { SELL_BTCY_CREATE_ORDER_ROUTE } from "@/routes";
+import { getAuthenticatedWalletUrl } from "@/lib/authenticated-wallet";
 import { fetchPrices } from "@/lib/quantum-mining";
 import { getUserWalletBalance } from "@/lib/alchemy";
 
 // Define the valid network types globally for clarity
-type NetworkType = "ethereum" | "solana";
+type NetworkType = "bnb" | "ethereum" | "solana";
 type CurrencyType = "USDT" | "USDC";
 
 const DEFAULT_SELL_FAILURE_MESSAGE =
   "Something went wrong while processing your request. Please try again. If the issue continues, contact customer support.";
+const DEFAULT_KYC_MESSAGE =
+  "To sell BTCY and receive USDT, you need to complete identity verification (KYC).";
 const BTCY_SYMBOL = "BTCY";
 const TOKEN_WALLET_NETWORK = "Ying Yang Chain";
-const MIN_SELL_BTCY = 100;
+const MIN_SELL_USD = 10;
+const KYC_ACCOUNT_URL = "https://cex.indexx.ai/indexx-exchange/account";
 
-const getSellOrderFailureMessage = (error: unknown) => {
-  if (axios.isAxiosError(error)) {
-    const responseData = error.response?.data;
-    const message =
-      responseData?.data?.message ??
-      responseData?.message ??
-      error.message;
-
-    return typeof message === "string" && message.trim()
-      ? message
-      : DEFAULT_SELL_FAILURE_MESSAGE;
-  }
-
-  if (error instanceof Error && error.message.trim()) {
-    return error.message;
-  }
-
-  return DEFAULT_SELL_FAILURE_MESSAGE;
-};
-
-const getSellOrderResponseMessage = (responseData: unknown) => {
+const getSellOrderPayloadData = (responseData: unknown) => {
   if (
     responseData &&
     typeof responseData === "object" &&
     "data" in responseData
   ) {
-    const nestedData = responseData.data;
-    if (
-      nestedData &&
-      typeof nestedData === "object" &&
-      "message" in nestedData &&
-      typeof nestedData.message === "string" &&
-      nestedData.message.trim()
-    ) {
-      return nestedData.message;
-    }
+    return responseData.data;
+  }
+
+  return null;
+};
+
+const getSellOrderResponseMessage = (responseData: unknown) => {
+  const payloadData = getSellOrderPayloadData(responseData);
+
+  if (
+    payloadData &&
+    typeof payloadData === "object" &&
+    "message" in payloadData &&
+    typeof payloadData.message === "string" &&
+    payloadData.message.trim()
+  ) {
+    return payloadData.message;
+  }
+
+  if (
+    responseData &&
+    typeof responseData === "object" &&
+    "message" in responseData &&
+    typeof responseData.message === "string" &&
+    responseData.message.trim()
+  ) {
+    return responseData.message;
   }
 
   return DEFAULT_SELL_FAILURE_MESSAGE;
+};
+
+const isKycBlockedSellOrderResponse = (responseData: unknown) =>
+  getSellOrderResponseMessage(responseData).toLowerCase().includes("kyc");
+
+const getKycPopupMessage = (responseData: unknown) => {
+  const message = getSellOrderResponseMessage(responseData);
+  const normalizedMessage = message.toLowerCase();
+
+  if (
+    normalizedMessage.includes("review") ||
+    normalizedMessage.includes("pending")
+  ) {
+    return DEFAULT_KYC_MESSAGE;
+  }
+
+  return message;
 };
 
 const isValidSolanaAddress = (address: string) => {
@@ -93,7 +111,7 @@ const isValidSolanaAddress = (address: string) => {
 };
 
 const isValidDestinationAddress = (address: string, network: NetworkType) => {
-  if (network === "ethereum") {
+  if (network === "bnb" || network === "ethereum") {
     return isAddress(address);
   }
 
@@ -104,7 +122,9 @@ const getAddressValidationMessage = (
   currency: CurrencyType,
   network: NetworkType
 ) =>
-  network === "ethereum"
+  network === "bnb"
+    ? `Enter a valid BNB Smart Chain address for ${currency}.`
+    : network === "ethereum"
     ? `Enter a valid Ethereum address for ${currency}.`
     : `Enter a valid Solana address for ${currency}.`;
 
@@ -112,7 +132,7 @@ export default function SellBtcyPage() {
   const [btcyAmount, setBtcyAmount] = useState("");
   const [usdtAddress, setUsdtAddress] = useState("");
 
-  const [network] = useState<NetworkType>("ethereum");
+  const [network] = useState<NetworkType>("bnb");
   const [currency] = useState<CurrencyType>("USDT");
 
   // State to hold the dynamic live price
@@ -126,6 +146,7 @@ export default function SellBtcyPage() {
   const [transactionFailedMessage, setTransactionFailedMessage] = useState(
     DEFAULT_SELL_FAILURE_MESSAGE
   );
+  const [kycMessage, setKycMessage] = useState<string | undefined>();
 
   const [loading, setLoading] = useState(false);
   const [balanceLoading, setBalanceLoading] = useState(false);
@@ -135,7 +156,6 @@ export default function SellBtcyPage() {
   const [addressTouched, setAddressTouched] = useState(false);
 
   const { user, isLoading: isAuthLoading } = useAuth();
-  const [isKycCompleted] = useState(true);
 
   // Fetch the live price when the component mounts
   useEffect(() => {
@@ -200,6 +220,14 @@ export default function SellBtcyPage() {
 
   // Calculate the converted amount based on live price
   const expectedReceiveAmount = btcyAmount ? Number(btcyAmount) * btcyPrice : 0;
+  const minimumSellBtcy = btcyPrice > 0 ? MIN_SELL_USD / btcyPrice : null;
+  const formattedMinimumSellBtcy =
+    minimumSellBtcy !== null
+      ? minimumSellBtcy.toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })
+      : "Loading...";
   const formattedBtcyBalance =
     btcyBalance !== null
       ? btcyBalance.toLocaleString("en-US", {
@@ -222,8 +250,12 @@ export default function SellBtcyPage() {
       return "Enter a valid BTCY amount.";
     }
 
-    if (requestedBtcyAmount < MIN_SELL_BTCY) {
-      return `Minimum sell amount is ${MIN_SELL_BTCY} BTCY.`;
+    if (btcyPrice <= 0) {
+      return "BTCY price is loading. Please wait.";
+    }
+
+    if (expectedReceiveAmount < MIN_SELL_USD) {
+      return `Minimum sell amount is ${formattedMinimumSellBtcy} BTCY, worth $${MIN_SELL_USD}.`;
     }
 
     if (btcyBalance !== null && requestedBtcyAmount > btcyBalance) {
@@ -289,11 +321,6 @@ export default function SellBtcyPage() {
       return;
     }
 
-    if (!isKycCompleted) {
-      setIsKycPopupOpen(true);
-      return;
-    }
-
     try {
       setLoading(true);
 
@@ -313,17 +340,36 @@ export default function SellBtcyPage() {
 
       if (res.data?.status === 200) {
         setIsSellStatusPopupOpen(true);
+      } else if (isKycBlockedSellOrderResponse(res.data)) {
+        setKycMessage(getKycPopupMessage(res.data));
+        setIsKycPopupOpen(true);
       } else {
-        setTransactionFailedMessage(getSellOrderResponseMessage(res.data));
+        setTransactionFailedMessage(DEFAULT_SELL_FAILURE_MESSAGE);
         setIsTransactionFailedPopupOpen(true);
       }
     } catch (error) {
       console.error("Sell Order Error:", error);
-      setTransactionFailedMessage(getSellOrderFailureMessage(error));
+      if (axios.isAxiosError(error)) {
+        const responseData = error.response?.data;
+        if (isKycBlockedSellOrderResponse(responseData)) {
+          setKycMessage(getKycPopupMessage(responseData));
+          setIsKycPopupOpen(true);
+          return;
+        }
+      }
+
+      setTransactionFailedMessage(DEFAULT_SELL_FAILURE_MESSAGE);
       setIsTransactionFailedPopupOpen(true);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCompleteKyc = async () => {
+    const url = await getAuthenticatedWalletUrl(KYC_ACCOUNT_URL, {
+      includeBuyToken: false,
+    });
+    window.location.href = url;
   };
 
   return (
@@ -419,7 +465,7 @@ export default function SellBtcyPage() {
               </span>
               <span className="text-gray-300">
                 <span className="text-primary font-semibold">Minimum:</span>{" "}
-                {MIN_SELL_BTCY} BTCY
+                {formattedMinimumSellBtcy} BTCY (${MIN_SELL_USD} worth)
               </span>
             </div>
             {amountError && (
@@ -602,6 +648,8 @@ export default function SellBtcyPage() {
       <KycVerificationPopup
         isOpen={isKycPopupOpen}
         onClose={() => setIsKycPopupOpen(false)}
+        message={kycMessage}
+        onCompleteKyc={handleCompleteKyc}
       />
 
       <SellStatusPopupV2

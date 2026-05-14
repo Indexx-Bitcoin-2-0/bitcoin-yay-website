@@ -7,6 +7,7 @@ export interface ShortTokenResponse {
   status?: number;
   data?: {
     signInToken?: string;
+    shortToken?: string;
   };
   signInToken?: string;
   error?: string;
@@ -34,7 +35,14 @@ export async function getUserShortToken(email: string): Promise<ShortTokenRespon
   }
 }
 
-export async function getAuthenticatedWalletUrl(baseUrl: string): Promise<string> {
+type AuthenticatedWalletUrlOptions = {
+  includeBuyToken?: boolean;
+};
+
+export async function getAuthenticatedWalletUrl(
+  baseUrl: string,
+  options: AuthenticatedWalletUrlOptions = {}
+): Promise<string> {
   const authData = getAuthData();
 
   if (!authData?.email) {
@@ -44,6 +52,7 @@ export async function getAuthenticatedWalletUrl(baseUrl: string): Promise<string
   const shortTokenResponse = await getUserShortToken(authData.email);
   const signInToken =
     shortTokenResponse?.data?.signInToken ||
+    shortTokenResponse?.data?.shortToken ||
     shortTokenResponse?.signInToken ||
     authData.shortToken ||
     authData.access_token;
@@ -53,7 +62,11 @@ export async function getAuthenticatedWalletUrl(baseUrl: string): Promise<string
   }
 
   const separator = baseUrl.includes("?") ? "&" : "?";
-  const buyTokenSegment = baseUrl.includes("buyToken") ? "" : "&buyToken=INEX";
+  const shouldIncludeBuyToken = options.includeBuyToken ?? true;
+  const buyTokenSegment =
+    shouldIncludeBuyToken && !baseUrl.includes("buyToken")
+      ? "&buyToken=INEX"
+      : "";
 
   return `${baseUrl}${separator}signInToken=${encodeURIComponent(signInToken)}${buyTokenSegment}`;
 }

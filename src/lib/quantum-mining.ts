@@ -23,6 +23,7 @@ export type QuantumCurrencyIn =
   | "USDT"
   | "USDC"
   | "USD"
+  | "CreditCard"
   | "PayPal"
   | "WireTransfer"
   | "Stripe";
@@ -485,6 +486,9 @@ export function optionToCurrencyIn(opt: PaymentOption): QuantumCurrencyIn {
   if (opt === "Wire Transfer") {
     return "WireTransfer";
   }
+  if (opt === "USD") {
+    return "CreditCard";
+  }
   return opt;
 }
 
@@ -500,9 +504,7 @@ export function calculateBTCYAmount(
   usdAmount: number,
   btcyPrice: number
 ): number {
-  const baseAmount = usdAmount / btcyPrice;
-  const bonusAmount = baseAmount * 1.3;
-  return bonusAmount;
+  return usdAmount / btcyPrice;
 }
 
 /**

@@ -1069,7 +1069,7 @@ const QuantumMiningPage = () => {
       // Build payload "based on the above data"
       const payload = {
         email: user.email,
-        currencyIn: optionToCurrencyIn(selectedPaymentOption), // "USDT"|"USDC"|"PayPal"|"USD"
+        currencyIn: optionToCurrencyIn(selectedPaymentOption),
         currencyOut: "BTCY" as const,
         amount: Number(payAmount), // user-entered USD
         outAmount: Number(getAmount) || 0, // BTCY amount (UI computed)
@@ -1439,7 +1439,7 @@ const QuantumMiningPage = () => {
 
           <div>
             <label className="block text-xl mb-2">
-              You Get (30 % BTCY bonus added)
+              You Get
             </label>
             <div className="relative">
               <input
