@@ -18,12 +18,13 @@ import {
 // Placeholders for the images to match the screenshot
 // Given the repo structure, utilizing some existing assets
 import HeroArtImage from "@/assets/images/sell_Art.svg";
-import SellButtonImage from "@/assets/images/buttons/sellBtcy.svg";
+import SellButtonImage from "@/assets/images/buttons/price-tag-button.webp";
+import OrderHistoryButtonImage from "@/assets/images/buttons/note-button.webp";
 import HowItWorksArt from "@/assets/images/quantum-mining/art-4.webp";
 import ArtImage5 from "@/assets/images/quantum-mining/art-5.webp";
 
 import KycVerificationPopup from "./KycVerificationPopup";
-import SellStatusPopup from "./SellStatusPopup";
+import SellStatusPopupV2 from "./SellStatusPopupV2";
 import TransactionFailedPopup from "./TransactionFailedPopup";
 
 import { useAuth } from "@/contexts/AuthContext";
@@ -39,6 +40,7 @@ const DEFAULT_SELL_FAILURE_MESSAGE =
   "Something went wrong while processing your request. Please try again. If the issue continues, contact customer support.";
 const BTCY_SYMBOL = "BTCY";
 const TOKEN_WALLET_NETWORK = "Ying Yang Chain";
+const MIN_SELL_BTCY = 100;
 
 const getSellOrderFailureMessage = (error: unknown) => {
   if (axios.isAxiosError(error)) {
@@ -110,8 +112,8 @@ export default function SellBtcyPage() {
   const [btcyAmount, setBtcyAmount] = useState("");
   const [usdtAddress, setUsdtAddress] = useState("");
 
-  const [network, setNetwork] = useState<NetworkType>("ethereum");
-  const [currency, setCurrency] = useState<CurrencyType>("USDT");
+  const [network] = useState<NetworkType>("ethereum");
+  const [currency] = useState<CurrencyType>("USDT");
 
   // State to hold the dynamic live price
   const [btcyPrice, setBtcyPrice] = useState<number>(0);
@@ -134,11 +136,6 @@ export default function SellBtcyPage() {
 
   const { user, isLoading: isAuthLoading } = useAuth();
   const [isKycCompleted] = useState(true);
-
-  const currencyOptions: Record<NetworkType, CurrencyType[]> = {
-    ethereum: ["USDT", "USDC"],
-    solana: ["USDT", "USDC"],
-  };
 
   // Fetch the live price when the component mounts
   useEffect(() => {
@@ -223,6 +220,10 @@ export default function SellBtcyPage() {
 
     if (Number.isNaN(requestedBtcyAmount) || requestedBtcyAmount < 1) {
       return "Enter a valid BTCY amount.";
+    }
+
+    if (requestedBtcyAmount < MIN_SELL_BTCY) {
+      return `Minimum sell amount is ${MIN_SELL_BTCY} BTCY.`;
     }
 
     if (btcyBalance !== null && requestedBtcyAmount > btcyBalance) {
@@ -339,9 +340,27 @@ export default function SellBtcyPage() {
             <p className="text-xl md:text-2xl text-[#EAEAEA] mb-8 md:mb-10 max-w-xl">
               Add your {currency} wallet address on the selected network.
             </p>
-            <p className="text-lg md:text-xl text-primary font-medium">
+            <p className="text-lg md:text-xl text-primary font-medium mb-8 md:mb-10">
               Only verified users can sell BTCY.
             </p>
+            <div className="flex flex-row items-start gap-10">
+              <CustomButton2
+                image={SellButtonImage}
+                text="Sell Now"
+                onClick={() => {
+                  document
+                    .getElementById("sell-request-form")
+                    ?.scrollIntoView({ behavior: "smooth", block: "start" });
+                }}
+                imageStyling="w-24"
+              />
+              <CustomButton2
+                image={OrderHistoryButtonImage}
+                text="Order History"
+                link="/order-history"
+                imageStyling="w-24"
+              />
+            </div>
           </div>
 
           <div className="flex-2 w-full lg:w-auto flex items-center justify-center lg:justify-end">
@@ -355,7 +374,10 @@ export default function SellBtcyPage() {
       </div>
 
       {/* Form Section */}
-      <div className="mt-40 border-0 md:border-1 border-bg2 rounded-2xl p-8 md:p-12 max-w-5xl mx-3 md:mx-auto">
+      <div
+        id="sell-request-form"
+        className="mt-40 border-0 md:border-1 border-bg2 rounded-2xl p-8 md:p-12 max-w-5xl mx-3 md:mx-auto scroll-mt-32"
+      >
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
             Sell Request Form
@@ -375,6 +397,9 @@ export default function SellBtcyPage() {
         >
           {/* BTCY Amount */}
           <div className="flex flex-col gap-3">
+            <label className="text-base md:text-lg font-semibold text-white ml-2">
+              BTCY Amount
+            </label>
             <input
               type="number"
               value={btcyAmount}
@@ -383,10 +408,20 @@ export default function SellBtcyPage() {
                 setBtcyAmount(e.target.value);
                 setSellError(null);
               }}
-              placeholder="Enter BTCY amount"
+              placeholder="Enter the amount of BTCY you want to sell from your available balance"
               className={`w-full px-4 py-3 border rounded-lg text-lg bg-transparent text-white focus:outline-none ${amountError ? "border-red-500" : "border-bg3"
                 }`}
             />
+            <div className="flex flex-wrap items-center gap-x-8 gap-y-2 ml-2 text-sm md:text-base">
+              <span className="text-gray-300">
+                <span className="text-primary font-semibold">Available:</span>{" "}
+                {formattedBtcyBalance ?? "0"} BTCY
+              </span>
+              <span className="text-gray-300">
+                <span className="text-primary font-semibold">Minimum:</span>{" "}
+                {MIN_SELL_BTCY} BTCY
+              </span>
+            </div>
             {amountError && (
               <span className="text-sm text-red-400 ml-2">{amountError}</span>
             )}
@@ -400,46 +435,11 @@ export default function SellBtcyPage() {
             )}
           </div>
 
-          {/* Network Selection */}
-          <div className="flex flex-col gap-3">
-            <label className="text-sm text-gray-300 ml-2">Select Network</label>
-            <select
-              value={network}
-              onChange={(e) => {
-                setNetwork(e.target.value as NetworkType);
-                setCurrency("USDT"); // Reset currency to default when network changes
-              }}
-              className="w-full px-4 py-3 border border-bg3 rounded-lg text-lg bg-transparent text-white focus:outline-none appearance-none"
-            >
-              <option value="ethereum" className="bg-[#1a1a1a]">
-                Ethereum
-              </option>
-              <option value="solana" className="bg-[#1a1a1a]">
-                Solana
-              </option>
-            </select>
-          </div>
-
-          {/* Currency Selection */}
-          <div className="flex flex-col gap-3">
-            <label className="text-sm text-gray-300 ml-2">
-              Select Currency
-            </label>
-            <select
-              value={currency}
-              onChange={(e) => setCurrency(e.target.value as CurrencyType)}
-              className="w-full px-4 py-3 border border-bg3 rounded-lg text-lg bg-transparent text-white focus:outline-none appearance-none"
-            >
-              {currencyOptions[network].map((coin) => (
-                <option key={coin} value={coin} className="bg-[#1a1a1a]">
-                  {coin}
-                </option>
-              ))}
-            </select>
-          </div>
-
           {/* Address */}
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-3">
+            <label className="text-base md:text-lg font-semibold text-white ml-2">
+              Your USDT Deposit Address on BNB Smart Chain
+            </label>
             <input
               type="text"
               value={usdtAddress}
@@ -448,17 +448,22 @@ export default function SellBtcyPage() {
                 setUsdtAddress(e.target.value);
                 setSellError(null);
               }}
-              placeholder={
-                network === "ethereum"
-                  ? `Enter ${currency} address`
-                  : `Enter ${currency} Solana address`
-              }
+              placeholder="Paste your USDT deposit address"
               className={`w-full px-4 py-3 border rounded-lg text-lg bg-transparent text-white focus:outline-none ${addressError ? "border-red-500" : "border-bg3"
                 }`}
             />
             {addressError && (
               <span className="text-sm text-red-400 ml-2">{addressError}</span>
             )}
+            <div className="mt-2 ml-2 text-sm md:text-base leading-relaxed">
+              <p className="text-primary font-semibold">
+                How to get your USDT deposit address:
+              </p>
+              <p className="text-gray-300">
+                Open your wallet or exchange → select USDT → tap Deposit → choose
+                BNB Smart Chain (BEP-20) → copy the address → paste it here
+              </p>
+            </div>
           </div>
 
           {/* Button */}
@@ -599,10 +604,11 @@ export default function SellBtcyPage() {
         onClose={() => setIsKycPopupOpen(false)}
       />
 
-      <SellStatusPopup
+      <SellStatusPopupV2
         isOpen={isSellStatusPopupOpen}
         onClose={() => setIsSellStatusPopupOpen(false)}
         usdtAmount={expectedReceiveAmount}
+        currency={currency}
       />
 
       <TransactionFailedPopup

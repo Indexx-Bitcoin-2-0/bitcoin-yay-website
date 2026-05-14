@@ -33,6 +33,7 @@ import FlagIcon from "@/assets/images/quantum-mining/american-flag.webp";
 import GlobeIcon from "@/assets/images/quantum-mining/globe-icon.webp";
 
 import CartButtonImage from "@/assets/images/buttons/cart-button.webp";
+import OrderHistoryButtonImage from "@/assets/images/buttons/note-button.webp";
 import SuccessPopup from "./SuccessPopup";
 import UnsuccessPopup from "./UnsuccessPopup";
 import VerifyingPaymentPopup from "./VerifyingPaymentPopup";
@@ -1282,6 +1283,25 @@ const QuantumMiningPage = () => {
             <br />
             BTCY is a pre-listed digital asset connected with Indexx.ai
           </p>
+
+          <div className="mt-10 flex flex-row items-start gap-16">
+            <CustomButton2
+              image={CartButtonImage}
+              text="Buy BTCY"
+              onClick={() => {
+                document
+                  .getElementById("buy-btcy")
+                  ?.scrollIntoView({ behavior: "smooth", block: "start" });
+              }}
+              imageStyling="w-24"
+            />
+            <CustomButton2
+              image={OrderHistoryButtonImage}
+              text="Order History"
+              link="/order-history"
+              imageStyling="w-24"
+            />
+          </div>
         </div>
 
         <div className="xl:mt-26 flex justify-center items-center relative">
@@ -1300,7 +1320,7 @@ const QuantumMiningPage = () => {
 
       <div
         id="buy-btcy"
-        className="mt-40 border-0 md:border-1 border-bg2 rounded-2xl p-8 md:p-12 max-w-5xl mx-auto"
+        className="mt-40 border-0 md:border-1 border-bg2 rounded-2xl p-8 md:p-12 max-w-5xl mx-auto scroll-mt-32"
       >
         <h2 className="text-3xl md:text-4xl xl:text-8xl font-bold text-center mb-8">
           Buy BTCY
