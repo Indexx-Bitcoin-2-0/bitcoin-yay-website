@@ -17,7 +17,7 @@ type Step = "form" | "success";
 interface SellFormData {
   btcyAmount: string;
   receiveAddress: string; // Changed from usdtAddress to be generic
-  network: "SOLANA" | "ETH" | "BNB";
+  network: "SOLANA" | "ETH" | "binance";
   receiveCurrency: "USDT" | "USDC"; // Added currency selector
 }
 
@@ -96,7 +96,7 @@ const getAddressValidationMessage = (
   currency: SellFormData["receiveCurrency"],
   network: SellFormData["network"]
 ) =>
-  network === "BNB"
+  network === "binance"
     ? `Enter a valid BNB Smart Chain address for ${currency}.`
     : network === "ETH"
     ? `Enter a valid Ethereum address for ${currency}.`
@@ -119,7 +119,7 @@ export default function SellPage() {
   const [formData, setFormData] = useState<SellFormData>({
     btcyAmount: "",
     receiveAddress: "",
-    network: "BNB",
+    network: "binance",
     receiveCurrency: "USDT", // Default to USDT
   });
 
@@ -346,10 +346,10 @@ export default function SellPage() {
                     <button
                       type="button"
                       onClick={() =>
-                        setFormData({ ...formData, network: "BNB" })
+                        setFormData({ ...formData, network: "binance" })
                       }
                       className={`flex-1 py-2 rounded-lg border transition-colors ${
-                        formData.network === "BNB"
+                        formData.network === "binance"
                           ? "bg-[#ff6b00] text-white border-[#ff6b00]"
                           : "bg-[#121212] border-white/10 hover:border-white/30"
                       }`}
@@ -399,7 +399,7 @@ export default function SellPage() {
                   <p className="text-[11px] text-gray-500 mt-2">
                     Ensure this address supports {formData.receiveCurrency} on
                     the{" "}
-                    {formData.network === "BNB"
+                    {formData.network === "binance"
                       ? "BNB Smart Chain (BEP-20)"
                       : formData.network === "ETH"
                       ? "Ethereum (ERC-20)"

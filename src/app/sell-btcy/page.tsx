@@ -34,7 +34,7 @@ import { fetchPrices } from "@/lib/quantum-mining";
 import { getUserWalletBalance } from "@/lib/alchemy";
 
 // Define the valid network types globally for clarity
-type NetworkType = "bnb" | "ethereum" | "solana";
+type NetworkType = "binance" | "ethereum" | "solana";
 type CurrencyType = "USDT" | "USDC";
 
 const DEFAULT_SELL_FAILURE_MESSAGE =
@@ -111,7 +111,7 @@ const isValidSolanaAddress = (address: string) => {
 };
 
 const isValidDestinationAddress = (address: string, network: NetworkType) => {
-  if (network === "bnb" || network === "ethereum") {
+  if (network === "binance" || network === "ethereum") {
     return isAddress(address);
   }
 
@@ -122,7 +122,7 @@ const getAddressValidationMessage = (
   currency: CurrencyType,
   network: NetworkType
 ) =>
-  network === "bnb"
+  network === "binance"
     ? `Enter a valid BNB Smart Chain address for ${currency}.`
     : network === "ethereum"
     ? `Enter a valid Ethereum address for ${currency}.`
@@ -132,7 +132,7 @@ export default function SellBtcyPage() {
   const [btcyAmount, setBtcyAmount] = useState("");
   const [usdtAddress, setUsdtAddress] = useState("");
 
-  const [network] = useState<NetworkType>("bnb");
+  const [network] = useState<NetworkType>("binance");
   const [currency] = useState<CurrencyType>("USDT");
 
   // State to hold the dynamic live price
