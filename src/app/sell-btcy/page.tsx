@@ -303,18 +303,6 @@ export default function SellBtcyPage() {
       return;
     }
 
-    if (balanceLoading) {
-      setSellError("Checking your BTCY balance. Please wait.");
-      return;
-    }
-
-    if (btcyBalance === null) {
-      setSellError(
-        "Unable to read your BTCY token balance. Please refresh or log in again."
-      );
-      return;
-    }
-
     const nextAmountError = getAmountValidationError(true);
     const nextAddressError = getAddressValidationErrorForField(true);
     if (nextAmountError || nextAddressError) {
