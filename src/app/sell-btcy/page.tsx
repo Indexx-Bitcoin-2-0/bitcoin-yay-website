@@ -15,8 +15,10 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-import HeroArtImage from "@/assets/images/salesPageArt.svg";
-import CartButtonImage from "@/assets/images/buttons/cart-button.webp";
+// Placeholders for the images to match the screenshot
+// Given the repo structure, utilizing some existing assets
+import HeroArtImage from "@/assets/images/sell_Art.svg";
+import SellButtonImage from "@/assets/images/buttons/sellBtcy.svg";
 import HowItWorksArt from "@/assets/images/quantum-mining/art-4.webp";
 import ArtImage5 from "@/assets/images/quantum-mining/art-5.webp";
 
@@ -204,13 +206,12 @@ export default function SellBtcyPage() {
   const formattedBtcyBalance =
     btcyBalance !== null
       ? btcyBalance.toLocaleString("en-US", {
-          maximumFractionDigits: 8,
-        })
+        maximumFractionDigits: 8,
+      })
       : null;
   const balanceLabel = user?.email
-    ? `Your BTCY Token Balance: ${
-        balanceLoading ? "Loading..." : (formattedBtcyBalance ?? "Unavailable")
-      } BTCY`
+    ? `Your BTCY Token Balance: ${balanceLoading ? "Loading..." : (formattedBtcyBalance ?? "Unavailable")
+    } BTCY`
     : "Log in to view your BTCY token balance.";
   const requestedBtcyAmount = Number(btcyAmount);
   const destinationWallet = usdtAddress.trim();
@@ -225,9 +226,8 @@ export default function SellBtcyPage() {
     }
 
     if (btcyBalance !== null && requestedBtcyAmount > btcyBalance) {
-      return `Amount exceeds your available balance of ${
-        formattedBtcyBalance ?? "0"
-      } BTCY.`;
+      return `Amount exceeds your available balance of ${formattedBtcyBalance ?? "0"
+        } BTCY.`;
     }
 
     return null;
@@ -384,9 +384,8 @@ export default function SellBtcyPage() {
                 setSellError(null);
               }}
               placeholder="Enter BTCY amount"
-              className={`w-full px-4 py-3 border rounded-lg text-lg bg-transparent text-white focus:outline-none ${
-                amountError ? "border-red-500" : "border-bg3"
-              }`}
+              className={`w-full px-4 py-3 border rounded-lg text-lg bg-transparent text-white focus:outline-none ${amountError ? "border-red-500" : "border-bg3"
+                }`}
             />
             {amountError && (
               <span className="text-sm text-red-400 ml-2">{amountError}</span>
@@ -454,9 +453,8 @@ export default function SellBtcyPage() {
                   ? `Enter ${currency} address`
                   : `Enter ${currency} Solana address`
               }
-              className={`w-full px-4 py-3 border rounded-lg text-lg bg-transparent text-white focus:outline-none ${
-                addressError ? "border-red-500" : "border-bg3"
-              }`}
+              className={`w-full px-4 py-3 border rounded-lg text-lg bg-transparent text-white focus:outline-none ${addressError ? "border-red-500" : "border-bg3"
+                }`}
             />
             {addressError && (
               <span className="text-sm text-red-400 ml-2">{addressError}</span>
@@ -471,9 +469,11 @@ export default function SellBtcyPage() {
               </p>
             )}
             <CustomButton2
-              image={CartButtonImage}
+              image={SellButtonImage}
               text={loading ? "Processing..." : "Sell Now"}
-              onClick={() => handleSellRequest()}
+              onClick={() => {
+                handleSellRequest();
+              }}
               imageStyling="w-40"
               disabled={loading}
             />
