@@ -481,7 +481,6 @@ export default function SellBtcyPage() {
                 <strong className="text-white">
                   ${expectedReceiveAmount.toFixed(2)} {currency}
                 </strong>
-                <span className="text-gray-500"> after 3% deduction</span>
               </span>
             )}
             <span className="text-xs md:text-sm text-gray-500 ml-2">
