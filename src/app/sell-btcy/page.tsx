@@ -125,8 +125,8 @@ const getAddressValidationMessage = (
   network === "binance"
     ? `Enter a valid BNB Smart Chain address for ${currency}.`
     : network === "ethereum"
-    ? `Enter a valid Ethereum address for ${currency}.`
-    : `Enter a valid Solana address for ${currency}.`;
+      ? `Enter a valid Ethereum address for ${currency}.`
+      : `Enter a valid Solana address for ${currency}.`;
 
 export default function SellBtcyPage() {
   const [btcyAmount, setBtcyAmount] = useState("");
@@ -467,6 +467,9 @@ export default function SellBtcyPage() {
                 </strong>
               </span>
             )}
+            <span className="text-xs md:text-sm text-gray-500 ml-2">
+              Amount shown is the final {currency} you&apos;ll receive, including a 3% transaction fee.
+            </span>
           </div>
 
           {/* Address */}

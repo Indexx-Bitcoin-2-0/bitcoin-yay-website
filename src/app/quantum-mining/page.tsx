@@ -1111,7 +1111,7 @@ const QuantumMiningPage = () => {
           // interchangeable with the quantum order id used by our APIs.
           orderId:
             typeof data?.orderId === "string" ||
-            typeof data?.orderId === "number"
+              typeof data?.orderId === "number"
               ? String(data.orderId)
               : "",
         };
@@ -1127,8 +1127,8 @@ const QuantumMiningPage = () => {
             typeof data?.orderCurrency === "string" && data.orderCurrency
               ? (data.orderCurrency as string)
               : selectedPaymentOption === "USD"
-              ? "USD"
-              : undefined;
+                ? "USD"
+                : undefined;
           const orderTypeValue =
             (typeof data?.orderType === "string" && data.orderType) ||
             "Quantum";
@@ -1179,7 +1179,7 @@ const QuantumMiningPage = () => {
         const wireOrderIdValue = data?.orderId;
         const wireOrderId =
           typeof wireOrderIdValue === "string" ||
-          typeof wireOrderIdValue === "number"
+            typeof wireOrderIdValue === "number"
             ? String(wireOrderIdValue)
             : "";
         if (!wireOrderId) {
@@ -1192,13 +1192,13 @@ const QuantumMiningPage = () => {
             : null;
         const breakdownCurrency =
           typeof breakdown?.inCurrenyName === "string" &&
-          breakdown.inCurrenyName.trim()
+            breakdown.inCurrenyName.trim()
             ? breakdown.inCurrenyName
             : "USD";
         const breakdownAmount = toNumeric(
           breakdown?.finalAmountAfterDiscount ??
-            breakdown?.inAmount ??
-            payload.amount
+          breakdown?.inAmount ??
+          payload.amount
         );
         const paymentTypeValue =
           typeof data?.paymentType === "string" && data.paymentType.trim()
@@ -1353,9 +1353,8 @@ const QuantumMiningPage = () => {
                     />
                   </span>
                   <span
-                    className={`text-lg group-hover:text-primary ${
-                      isSelected ? "text-primary" : ""
-                    }`}
+                    className={`text-lg group-hover:text-primary ${isSelected ? "text-primary" : ""
+                      }`}
                   >
                     {name}
                   </span>
@@ -1455,14 +1454,17 @@ const QuantumMiningPage = () => {
                 </span>
               </div>
             </div>
+            <p className="text-xs md:text-sm text-gray-500 mt-2">
+              BTCY shown is the final amount you&apos;ll receive after a{" "}
+              3% transaction fee has been applied.
+            </p>
           </div>
         </div>
 
         {/* Buy Now Button */}
         <div
-          className={`flex justify-center mt-20 ${
-            isBuyDisabled ? "pointer-events-none opacity-60" : ""
-          }`}
+          className={`flex justify-center mt-20 ${isBuyDisabled ? "pointer-events-none opacity-60" : ""
+            }`}
           aria-disabled={isBuyDisabled}
         >
           <CustomButton2
