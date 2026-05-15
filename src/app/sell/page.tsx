@@ -4,17 +4,103 @@ import { useState } from "react";
 import axios from "axios";
 import Image from "next/image";
 import cion from "../../../public/coin.png";
+import { PublicKey } from "@solana/web3.js";
+import { isAddress } from "viem";
 import { useAuth } from "@/contexts/AuthContext";
 import { SELL_BTCY_CREATE_ROUTE } from "@/routes";
+import { getAuthenticatedWalletUrl } from "@/lib/authenticated-wallet";
+import KycVerificationPopup from "../sell-btcy/KycVerificationPopup";
+import TransactionFailedPopup from "../sell-btcy/TransactionFailedPopup";
 
 type Step = "form" | "success";
 
 interface SellFormData {
   btcyAmount: string;
   receiveAddress: string; // Changed from usdtAddress to be generic
-  network: "SOLANA" | "ETH";
+  network: "SOLANA" | "ETH" | "binance";
   receiveCurrency: "USDT" | "USDC"; // Added currency selector
 }
+
+const KYC_ACCOUNT_URL = "https://cex.indexx.ai/indexx-exchange/account";
+const BTCY_PRICE_USD = 0.1;
+const MIN_SELL_USD = 10;
+const MIN_SELL_BTCY = MIN_SELL_USD / BTCY_PRICE_USD;
+const DEFAULT_KYC_MESSAGE =
+  "To sell BTCY and receive USDT, you need to complete identity verification (KYC).";
+const DEFAULT_SELL_FAILURE_MESSAGE =
+  "Something went wrong while processing your request. Please try again. If the issue continues, contact customer support.";
+
+const getSellOrderMessage = (responseData: unknown) => {
+  if (
+    responseData &&
+    typeof responseData === "object" &&
+    "data" in responseData
+  ) {
+    const data = responseData.data;
+    if (
+      data &&
+      typeof data === "object" &&
+      "message" in data &&
+      typeof data.message === "string" &&
+      data.message.trim()
+    ) {
+      return data.message;
+    }
+  }
+
+  if (
+    responseData &&
+    typeof responseData === "object" &&
+    "message" in responseData &&
+    typeof responseData.message === "string" &&
+    responseData.message.trim()
+  ) {
+    return responseData.message;
+  }
+
+  return "Server error occurred.";
+};
+
+const isKycBlockedSellOrderResponse = (responseData: unknown) =>
+  getSellOrderMessage(responseData).toLowerCase().includes("kyc");
+
+const getKycPopupMessage = (responseData: unknown) => {
+  const message = getSellOrderMessage(responseData);
+  const normalizedMessage = message.toLowerCase();
+
+  if (
+    normalizedMessage.includes("review") ||
+    normalizedMessage.includes("pending")
+  ) {
+    return DEFAULT_KYC_MESSAGE;
+  }
+
+  return message;
+};
+
+const isValidSolanaAddress = (address: string) => {
+  try {
+    new PublicKey(address);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const isValidDestinationAddress = (
+  address: string,
+  network: SellFormData["network"]
+) => (network === "SOLANA" ? isValidSolanaAddress(address) : isAddress(address));
+
+const getAddressValidationMessage = (
+  currency: SellFormData["receiveCurrency"],
+  network: SellFormData["network"]
+) =>
+  network === "binance"
+    ? `Enter a valid BNB Smart Chain address for ${currency}.`
+    : network === "ETH"
+    ? `Enter a valid Ethereum address for ${currency}.`
+    : `Enter a valid Solana address for ${currency}.`;
 
 export default function SellPage() {
   const { user } = useAuth();
@@ -25,11 +111,15 @@ export default function SellPage() {
   const [step, setStep] = useState<Step>("form");
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState("");
+  const [isKycPopupOpen, setIsKycPopupOpen] = useState(false);
+  const [kycMessage, setKycMessage] = useState<string | undefined>();
+  const [isTransactionFailedPopupOpen, setIsTransactionFailedPopupOpen] =
+    useState(false);
   const [orderId, setOrderId] = useState("");
   const [formData, setFormData] = useState<SellFormData>({
     btcyAmount: "",
     receiveAddress: "",
-    network: "SOLANA",
+    network: "binance",
     receiveCurrency: "USDT", // Default to USDT
   });
 
@@ -44,13 +134,31 @@ export default function SellPage() {
       return;
     }
 
+    const btcyAmount = Number(formData.btcyAmount);
+    if (Number.isNaN(btcyAmount) || btcyAmount < MIN_SELL_BTCY) {
+      setFormError(
+        `Minimum sell amount is ${MIN_SELL_BTCY.toLocaleString("en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })} BTCY, worth $${MIN_SELL_USD}.`
+      );
+      return;
+    }
+
+    if (!isValidDestinationAddress(formData.receiveAddress, formData.network)) {
+      setFormError(
+        getAddressValidationMessage(formData.receiveCurrency, formData.network)
+      );
+      return;
+    }
+
     setLoading(true);
     setFormError("");
 
     try {
       const res = await axios.post(SELL_BTCY_CREATE_ROUTE, {
         email: user.email,
-        btcyAmount: Number(formData.btcyAmount),
+        btcyAmount,
         receiveCurrency: formData.receiveCurrency, // Now dynamic
         destinationWallet: formData.receiveAddress, // Using the dynamic address field
         network: formData.network,
@@ -59,14 +167,36 @@ export default function SellPage() {
       if (res.data.status === 200) {
         setOrderId(res.data.data.orderId);
         setStep("success");
+      } else if (isKycBlockedSellOrderResponse(res.data)) {
+        setKycMessage(getKycPopupMessage(res.data));
+        setIsKycPopupOpen(true);
+      } else {
+        setIsTransactionFailedPopupOpen(true);
       }
-    } catch (err: any) {
-      setFormError(
-        err.response?.data?.data?.message || "Server error occurred."
-      );
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        const responseData = err.response?.data;
+        if (isKycBlockedSellOrderResponse(responseData)) {
+          setKycMessage(getKycPopupMessage(responseData));
+          setIsKycPopupOpen(true);
+          return;
+        }
+
+        setIsTransactionFailedPopupOpen(true);
+        return;
+      }
+
+      setIsTransactionFailedPopupOpen(true);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCompleteKyc = async () => {
+    const url = await getAuthenticatedWalletUrl(KYC_ACCOUNT_URL, {
+      includeBuyToken: false,
+    });
+    window.location.href = url;
   };
 
   return (
@@ -143,7 +273,14 @@ export default function SellPage() {
                       <span className="text-[#ff6b00]">{btcyBalance}</span>
                     </span>
                     <span>
-                      Min: <span className="text-[#ff6b00]">100</span>
+                      Min:{" "}
+                      <span className="text-[#ff6b00]">
+                        {MIN_SELL_BTCY.toLocaleString("en-US", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}{" "}
+                        BTCY (${MIN_SELL_USD} worth)
+                      </span>
                     </span>
                   </div>
                 </div>
@@ -209,6 +346,20 @@ export default function SellPage() {
                     <button
                       type="button"
                       onClick={() =>
+                        setFormData({ ...formData, network: "binance" })
+                      }
+                      className={`flex-1 py-2 rounded-lg border transition-colors ${
+                        formData.network === "binance"
+                          ? "bg-[#ff6b00] text-white border-[#ff6b00]"
+                          : "bg-[#121212] border-white/10 hover:border-white/30"
+                      }`}
+                    >
+                      BNB
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
                         setFormData({ ...formData, network: "ETH" })
                       }
                       className={`flex-1 py-2 rounded-lg border transition-colors ${
@@ -248,7 +399,9 @@ export default function SellPage() {
                   <p className="text-[11px] text-gray-500 mt-2">
                     Ensure this address supports {formData.receiveCurrency} on
                     the{" "}
-                    {formData.network === "ETH"
+                    {formData.network === "binance"
+                      ? "BNB Smart Chain (BEP-20)"
+                      : formData.network === "ETH"
                       ? "Ethereum (ERC-20)"
                       : "Solana"}{" "}
                     network.
@@ -300,6 +453,17 @@ export default function SellPage() {
           </div>
         )}
       </div>
+      <KycVerificationPopup
+        isOpen={isKycPopupOpen}
+        onClose={() => setIsKycPopupOpen(false)}
+        message={kycMessage}
+        onCompleteKyc={handleCompleteKyc}
+      />
+      <TransactionFailedPopup
+        isOpen={isTransactionFailedPopupOpen}
+        onClose={() => setIsTransactionFailedPopupOpen(false)}
+        message={DEFAULT_SELL_FAILURE_MESSAGE}
+      />
     </div>
   );
 }

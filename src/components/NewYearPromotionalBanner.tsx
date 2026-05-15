@@ -77,4 +77,3 @@ const NewYearPromotionalBanner = () => {
 };
 
 export default NewYearPromotionalBanner;
-
