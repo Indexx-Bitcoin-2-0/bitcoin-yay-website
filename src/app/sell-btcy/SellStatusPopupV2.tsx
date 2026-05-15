@@ -46,8 +46,8 @@ const SellStatusPopupV2: React.FC<SellStatusPopupV2Props> = ({
           Your sell request has been submitted successfully and is now being processed.
         </p>
         <p className="text-base md:text-lg text-gray-300 leading-relaxed mb-3">
-          It will be completed within{" "}
-          <span className="text-white font-semibold">24 to 48 hours</span>, and you&apos;ll receive an email confirmation once the {currency} is sent.
+          It will be completed{" "}
+          <span className="text-white font-semibold">within 3 working days</span>, and you&apos;ll receive an email confirmation once the {currency} is sent.
         </p>
         <p className="text-base md:text-lg text-gray-300 leading-relaxed mb-8">
           You can track your order anytime on the{" "}
