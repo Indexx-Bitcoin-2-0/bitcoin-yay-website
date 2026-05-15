@@ -496,6 +496,12 @@ export function optionToCurrencyIn(opt: PaymentOption): QuantumCurrencyIn {
  * Minimum USD amount allowed for a purchase
  */
 export const MIN_PURCHASE_AMOUNT_USD = 1;
+export const RECEIVED_AMOUNT_DEDUCTION_RATE = 0.03;
+export const RECEIVED_AMOUNT_MULTIPLIER = 1 - RECEIVED_AMOUNT_DEDUCTION_RATE;
+
+export function applyReceivedAmountDeduction(amount: number): number {
+  return amount * RECEIVED_AMOUNT_MULTIPLIER;
+}
 
 /**
  * Calculates BTCY amount from USD amount
@@ -504,7 +510,8 @@ export function calculateBTCYAmount(
   usdAmount: number,
   btcyPrice: number
 ): number {
-  return usdAmount / btcyPrice;
+  if (btcyPrice <= 0) return 0;
+  return applyReceivedAmountDeduction(usdAmount / btcyPrice);
 }
 
 /**

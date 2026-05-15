@@ -41,6 +41,9 @@ const SellStatusPopupV2: React.FC<SellStatusPopupV2Props> = ({
         <p className="text-2xl md:text-3xl font-bold text-primary mb-6">
           {usdtAmount.toFixed(2)} {currency}
         </p>
+        <p className="text-sm md:text-base text-gray-400 mb-6">
+          Amount shown after 3% deduction.
+        </p>
 
         <p className="text-base md:text-lg text-[#EAEAEA] leading-relaxed mb-3">
           Your sell request has been submitted successfully and is now being processed.

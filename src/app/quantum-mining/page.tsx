@@ -701,6 +701,18 @@ const QuantumMiningPage = () => {
   }, []);
 
   useEffect(() => {
+    const trimmed = payAmount.trim();
+    const numericValue = Number(payAmount);
+
+    if (trimmed && !Number.isNaN(numericValue)) {
+      const btcyAmount = calculateBTCYAmount(numericValue, btcyPrice);
+      setGetAmount(btcyAmount.toFixed(2));
+    } else {
+      setGetAmount("");
+    }
+  }, [btcyPrice, payAmount]);
+
+  useEffect(() => {
     if (!user?.email) return;
 
     const socketHandlers: SocketEventHandlers = {
@@ -1066,13 +1078,15 @@ const QuantumMiningPage = () => {
     setLatestOrderSignal(null);
 
     try {
+      const outAmount = calculateBTCYAmount(Number(payAmount), btcyPrice);
+
       // Build payload "based on the above data"
       const payload = {
         email: user.email,
         currencyIn: optionToCurrencyIn(selectedPaymentOption),
         currencyOut: "BTCY" as const,
         amount: Number(payAmount), // user-entered USD
-        outAmount: Number(getAmount) || 0, // BTCY amount (UI computed)
+        outAmount,
         ...(selectedPaymentOption === "PayPal" && {
           paymentMethod: "paypal" as const,
         }),
@@ -1438,7 +1452,7 @@ const QuantumMiningPage = () => {
 
           <div>
             <label className="block text-xl mb-2">
-              You Get
+              You Get <span className="text-tertiary">(after 3% deduction)</span>
             </label>
             <div className="relative">
               <input
@@ -1446,7 +1460,7 @@ const QuantumMiningPage = () => {
                 className="w-full px-4 py-3 border border-bg3 rounded-lg text-lg focus:outline-none focus:border-primary hover:border-primary "
                 placeholder="0"
                 value={getAmount}
-                onChange={(e) => setGetAmount(e.target.value)}
+                readOnly
               />
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                 <span className="text-primary text-xl">
