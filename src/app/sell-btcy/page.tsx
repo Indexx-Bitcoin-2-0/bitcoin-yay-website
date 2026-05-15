@@ -30,7 +30,11 @@ import TransactionFailedPopup from "./TransactionFailedPopup";
 import { useAuth } from "@/contexts/AuthContext";
 import { SELL_BTCY_CREATE_ORDER_ROUTE } from "@/routes";
 import { getAuthenticatedWalletUrl } from "@/lib/authenticated-wallet";
-import { fetchPrices } from "@/lib/quantum-mining";
+import {
+  applyReceivedAmountDeduction,
+  fetchPrices,
+  RECEIVED_AMOUNT_MULTIPLIER,
+} from "@/lib/quantum-mining";
 import { getUserWalletBalance } from "@/lib/alchemy";
 
 // Define the valid network types globally for clarity
@@ -219,8 +223,16 @@ export default function SellBtcyPage() {
   }, [user?.email, isAuthLoading]);
 
   // Calculate the converted amount based on live price
-  const expectedReceiveAmount = btcyAmount ? Number(btcyAmount) * btcyPrice : 0;
-  const minimumSellBtcy = btcyPrice > 0 ? MIN_SELL_USD / btcyPrice : null;
+  const expectedGrossReceiveAmount = btcyAmount
+    ? Number(btcyAmount) * btcyPrice
+    : 0;
+  const expectedReceiveAmount = applyReceivedAmountDeduction(
+    expectedGrossReceiveAmount
+  );
+  const minimumSellBtcy =
+    btcyPrice > 0
+      ? MIN_SELL_USD / (btcyPrice * RECEIVED_AMOUNT_MULTIPLIER)
+      : null;
   const formattedMinimumSellBtcy =
     minimumSellBtcy !== null
       ? minimumSellBtcy.toLocaleString("en-US", {
@@ -469,6 +481,7 @@ export default function SellBtcyPage() {
                 <strong className="text-white">
                   ${expectedReceiveAmount.toFixed(2)} {currency}
                 </strong>
+                <span className="text-gray-500"> after 3% deduction</span>
               </span>
             )}
           </div>
