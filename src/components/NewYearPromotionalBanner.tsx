@@ -1,10 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import LogoImage from "@/assets/images/main-logo.svg";
 import IndexxLogo from "@/assets/images/indexx.ai.svg";
 import CartButtonImage from "@/assets/images/buttons/cart-button.webp";
+import SellButtonImage from "@/assets/images/buttons/price-tag-button.webp";
 import PromotionalArt from "@/assets/images/btcy-airdrop/btcyairdroppopup.svg";
 import CustomButton2 from "./CustomButton2";
 
@@ -41,19 +41,22 @@ const NewYearPromotionalBanner = () => {
                     {/* Middle - Promotional Text */}
                     <div className="flex-1 flex flex-col justify-center mb-6 md:mb-8">
                         <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-[#f28132] mb-1 md:mb-2">
-                            30% Bonus on Quantum Mining
+                            SELL IS LIVE — TRADE BTCY NOW
                         </h1>
 
                         <p className="text-lg md:text-2xl text-white font-semibold mt-4">
-                            Get 30% Extra BTCY on every purchase through Quantum Mining
+                            Only Quantum Mining buyers can sell. Buy today, sell today — BTCY is finally tradable.
                         </p>
                     </div>
 
-                    {/* Bottom - Button and Disclaimer */}
+                    {/* Bottom - Buttons and Disclaimer */}
                     <div className="flex flex-col items-center md:items-start">
-                        <CustomButton2 image={CartButtonImage} text="Buy Now" link="/quantum-mining" imageStyling="w-20" />
+                        <div className="flex flex-row items-center gap-4">
+                            <CustomButton2 image={CartButtonImage} text="Buy Now" link="/quantum-mining" imageStyling="w-20" />
+                            <CustomButton2 image={SellButtonImage} text="Sell Now" link="/sell-btcy" imageStyling="w-20" />
+                        </div>
                         <p className="text-white text-xs md:text-sm mt-3 md:mt-4 text-center md:text-left">
-                            This is a Limited Time Offer.
+                            Sell access exclusive to Quantum Mining buyers for now. More coming soon!
                         </p>
                     </div>
                 </div>
@@ -74,4 +77,3 @@ const NewYearPromotionalBanner = () => {
 };
 
 export default NewYearPromotionalBanner;
-

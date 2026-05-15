@@ -8,6 +8,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import LoginPopup from "@/components/LoginPopup";
+import { API_BASE_URL } from "@/lib/api-config";
 
 export default function Proposals() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -37,7 +38,7 @@ export default function Proposals() {
   const fetchProposals = async () => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/dao/listProposal`
+        `${API_BASE_URL}/api/v1/dao/listProposal`
       );
       const data = response.data?.data || [];
 
@@ -332,7 +333,7 @@ export default function Proposals() {
     setVoteMessage(null); // Reset message
     try {
       await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/dao/voteProposal`,
+        `${API_BASE_URL}/api/v1/dao/voteProposal`,
         {
           proposalId: votingProposalId,
           vote,

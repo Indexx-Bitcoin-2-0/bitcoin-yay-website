@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/accordion";
 import CustomButton2 from "@/components/CustomButton2";
 import PaymentPopup from "./PaymentPopup";
+import WireTransferPopup from "./WireTransferPopup";
 import LoginPopup from "@/components/LoginPopup";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -25,32 +26,39 @@ import USDCIcon from "@/assets/images/quantum-mining/usdc.webp";
 import PaypalIcon from "@/assets/images/quantum-mining/paypal.webp";
 import USDIcon from "@/assets/images/quantum-mining/usd.webp";
 import BTCYIcon from "@/assets/images/quantum-mining/btcy-icon.webp";
+import WireTransferIcon from "@/assets/images/quantum-mining/wireTransfer.svg";
+import StripeIcon from "@/assets/images/quantum-mining/stripe.png";
 
 import FlagIcon from "@/assets/images/quantum-mining/american-flag.webp";
 import GlobeIcon from "@/assets/images/quantum-mining/globe-icon.webp";
 
-import NoteButtonImage from "@/assets/images/buttons/note-button.webp";
 import CartButtonImage from "@/assets/images/buttons/cart-button.webp";
-import ButtonBorder from "@/assets/images/button-border.webp";
-import ButtonBorderActive from "@/assets/images/button-border-active.webp";
+import OrderHistoryButtonImage from "@/assets/images/buttons/note-button.webp";
 import SuccessPopup from "./SuccessPopup";
 import UnsuccessPopup from "./UnsuccessPopup";
+import VerifyingPaymentPopup from "./VerifyingPaymentPopup";
+import CancelConfirmationPopup from "./CancelConfirmationPopup";
+import { getAuthenticatedWalletUrl } from "@/lib/authenticated-wallet";
 
 import CardImage1 from "@/assets/images/home/card-1.webp";
 import CardImage2 from "@/assets/images/home/card-2.webp";
 import CardImage3 from "@/assets/images/home/card-3.webp";
 
+const WALLET_OVERVIEW_BASE_URL = "https://cex.indexx.ai/wallet/overview";
 
 import {
   PaymentOption,
   CryptoOrderData,
   createQuantumOrder,
+  checkQuantumCryptoPayment,
+  checkQuantumCryptoPaymentByTx,
+  cancelQuantumOrder,
   getUserOrder,
   fetchPrices,
   createQuantumSocket,
   processPayPalReturn,
-  storePayPalOrderData,
-  clearPayPalOrderData,
+  storeQuantumPaymentOrderData,
+  clearQuantumPaymentOrderData,
   isCryptoPayment,
   optionToCurrencyIn,
   calculateBaseBTCYAmount,
@@ -59,9 +67,9 @@ import {
   validateOrderData,
   SocketEventHandlers,
   QuantumOrderSocketPayload,
+  QuantumCryptoPaymentCheckResult,
 } from "@/lib/quantum-mining";
 import { analytics } from "@/lib/analytics";
-
 
 interface Errors {
   payAmount?: string;
@@ -157,7 +165,9 @@ const buildOrderSignal = (
   if (typeof nestedAmount === "object" && nestedAmount !== null) {
     const nested = nestedAmount as Record<string, unknown>;
     if (amount === undefined) {
-      const nestedValue = toNumeric(nested.value ?? nested.total ?? nested.amount);
+      const nestedValue = toNumeric(
+        nested.value ?? nested.total ?? nested.amount
+      );
       if (nestedValue !== undefined) {
         amount = nestedValue;
       }
@@ -272,6 +282,91 @@ const isCompletedStatus = (status?: string) => {
   );
 };
 
+const PAYMENT_OPTIONS = [
+  {
+    name: "USDT",
+    icon: USDTIcon,
+    optionIconClassName: "w-10 h-10",
+    inputIconClassName: "w-10 h-10",
+  },
+  {
+    name: "USDC",
+    icon: USDCIcon,
+    optionIconClassName: "w-10 h-10",
+    inputIconClassName: "w-10 h-10",
+  },
+  {
+    name: "PayPal",
+    icon: PaypalIcon,
+    optionIconClassName: "w-10 h-10",
+    inputIconClassName: "w-10 h-10",
+  },
+  {
+    name: "USD",
+    icon: USDIcon,
+    optionIconClassName: "w-10 h-10",
+    inputIconClassName: "w-14 h-10",
+  },
+  {
+    name: "Wire Transfer",
+    icon: WireTransferIcon,
+    optionIconClassName: "w-20 h-10",
+    inputIconClassName: "w-20 h-10",
+  },
+  {
+    name: "Stripe",
+    icon: StripeIcon,
+    optionIconClassName: "w-10 h-10",
+    inputIconClassName: "w-10 h-10",
+  },
+] as const;
+
+const AUTO_CHECK_DURATION_MS = 2 * 60 * 1000;
+const AUTO_CHECK_INTERVAL_MS = 10 * 1000;
+
+const sleep = (ms: number) =>
+  new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+
+const getMessageFromResult = (value: unknown, fallback: string) => {
+  if (value && typeof value === "object") {
+    const record = value as Record<string, unknown>;
+    if (typeof record.message === "string" && record.message.trim()) {
+      return record.message;
+    }
+  }
+  return fallback;
+};
+
+const getCryptoPaymentLabel = (order: CryptoOrderData): "USDT" | "USDC" =>
+  order.paymentMethod.toUpperCase() as "USDT" | "USDC";
+
+const buildCryptoOrderSignal = (
+  order: CryptoOrderData,
+  raw: unknown,
+  overrides: Partial<OrderSignal> = {}
+): OrderSignal => {
+  const paymentType = getCryptoPaymentLabel(order);
+
+  return {
+    orderId: order.orderId,
+    amount: order.amount,
+    currency: paymentType,
+    paymentType,
+    orderType: "Quantum",
+    raw,
+    ...overrides,
+  };
+};
+
+const isConfirmedQuantumPayment = (
+  result?: QuantumCryptoPaymentCheckResult
+) => {
+  if (!result) return false;
+  return result.paymentReceived || isCompletedStatus(result.status);
+};
+
 const QuantumMiningPage = () => {
   const { user } = useAuth();
 
@@ -284,24 +379,34 @@ const QuantumMiningPage = () => {
   );
   const [isNetworkDropdownOpen, setIsNetworkDropdownOpen] = useState(false);
   const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
+  const [isWireTransferPopupOpen, setIsWireTransferPopupOpen] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
   const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
   const [btcyPrice, setBtcyPrice] = useState(0);
   // Active order (crypto only)
   const [activeOrder, setActiveOrder] = useState<CryptoOrderData | null>(null);
   const [pendingOrderId, setPendingOrderId] = useState<string | null>(null);
-  const [latestOrderSignal, setLatestOrderSignal] = useState<OrderSignal | null>(
-    null
-  );
+  const [latestOrderSignal, setLatestOrderSignal] =
+    useState<OrderSignal | null>(null);
 
   // Popups
   const [successOpen, setSuccessOpen] = useState(false);
   const [failOpen, setFailOpen] = useState(false);
+  const [isVerifyingPopupOpen, setIsVerifyingPopupOpen] = useState(false);
+  const [isCancelConfirmOpen, setIsCancelConfirmOpen] = useState(false);
+  const [failRequiresTxHash, setFailRequiresTxHash] = useState(false);
+  const [failureMessage, setFailureMessage] = useState<string>();
+  const [isTxVerificationSubmitting, setIsTxVerificationSubmitting] =
+    useState(false);
+  const [cancelError, setCancelError] = useState<string>();
+  const [isCancellingOrder, setIsCancellingOrder] = useState(false);
+  const [walletUrl, setWalletUrl] = useState(WALLET_OVERVIEW_BASE_URL);
 
   // Socket
   const socketRef = useRef<unknown>(null);
   const activeOrderRef = useRef<CryptoOrderData | null>(null);
   const pendingOrderIdRef = useRef<string | null>(null);
+  const verificationRunIdRef = useRef(0);
 
   const handledReturnRef = useRef(false);
 
@@ -317,6 +422,23 @@ const QuantumMiningPage = () => {
   useEffect(() => {
     pendingOrderIdRef.current = pendingOrderId;
   }, [pendingOrderId]);
+
+  useEffect(() => {
+    let isActive = true;
+
+    const buildWalletLink = async () => {
+      const url = await getAuthenticatedWalletUrl(WALLET_OVERVIEW_BASE_URL);
+      if (isActive) {
+        setWalletUrl(url);
+      }
+    };
+
+    buildWalletLink();
+
+    return () => {
+      isActive = false;
+    };
+  }, [user]);
 
   const upsertLatestSignal = useCallback((signal: OrderSignal) => {
     setLatestOrderSignal((prev) => {
@@ -341,13 +463,44 @@ const QuantumMiningPage = () => {
     return Array.from(ids);
   }, []);
 
+  const openGenericFailure = useCallback((message?: string) => {
+    verificationRunIdRef.current += 1;
+    setIsPaymentPopupOpen(false);
+    setIsWireTransferPopupOpen(false);
+    setIsVerifyingPopupOpen(false);
+    setFailRequiresTxHash(false);
+    setFailureMessage(message);
+    setIsTxVerificationSubmitting(false);
+    setFailOpen(true);
+  }, []);
+
+  const openTxHashFallback = useCallback((message?: string) => {
+    verificationRunIdRef.current += 1;
+    setIsPaymentPopupOpen(false);
+    setIsWireTransferPopupOpen(false);
+    setIsVerifyingPopupOpen(false);
+    setFailRequiresTxHash(true);
+    setFailureMessage(message);
+    setIsTxVerificationSubmitting(false);
+    setFailOpen(true);
+  }, []);
+
   const finalizeOrder = useCallback(
     (signal?: OrderSignal) => {
       if (signal) {
         upsertLatestSignal(signal);
       }
+      verificationRunIdRef.current += 1;
       setIsPaymentPopupOpen(false);
+      setIsWireTransferPopupOpen(false);
+      setIsVerifyingPopupOpen(false);
       setFailOpen(false);
+      setFailRequiresTxHash(false);
+      setFailureMessage(undefined);
+      setIsTxVerificationSubmitting(false);
+      setIsCancelConfirmOpen(false);
+      setCancelError(undefined);
+      setIsCancellingOrder(false);
       setSuccessOpen(true);
       analytics.trackPurchaseComplete({
         order_id: signal?.orderId || pendingOrderIdRef.current || "unknown",
@@ -358,9 +511,9 @@ const QuantumMiningPage = () => {
       setPendingOrderId(null);
       activeOrderRef.current = null;
       pendingOrderIdRef.current = null;
-      clearPayPalOrderData();
+      clearQuantumPaymentOrderData();
     },
-    [upsertLatestSignal, clearPayPalOrderData]
+    [upsertLatestSignal]
   );
 
   useEffect(() => {
@@ -382,19 +535,53 @@ const QuantumMiningPage = () => {
 
     // Fast-fail on cancel
     if (result.status === "cancel") {
-      setFailOpen(true);
-      analytics.trackError("PayPal Cancelled", "PayPal Return");
-      // optional: clear stash
-      clearPayPalOrderData();
+      (async () => {
+        try {
+          if (result.orderId) {
+            const response = await cancelQuantumOrder({
+              orderId: result.orderId,
+            });
+            const cancelResult = response.data;
+            upsertLatestSignal({
+              orderId: result.orderId,
+              status: cancelResult.status || "OrderCancelled",
+              orderType: "Quantum",
+              raw: cancelResult,
+            });
+            openGenericFailure(
+              getMessageFromResult(
+                cancelResult,
+                "The payment was cancelled before completion."
+              )
+            );
+          } else {
+            openGenericFailure("The payment was cancelled before completion.");
+          }
+        } catch (error) {
+          console.error("cancelQuantumOrder failed:", error);
+          openGenericFailure(
+            error instanceof Error
+              ? error.message
+              : "The payment was cancelled before completion."
+          );
+        } finally {
+          setActiveOrder(null);
+          setPendingOrderId(null);
+          activeOrderRef.current = null;
+          pendingOrderIdRef.current = null;
+          clearQuantumPaymentOrderData();
+        }
+      })();
       return;
     }
 
     // Success path -> fetch order details from backend (capture is already done server-side)
     if (result.status === "success") {
       if (!result.email || !result.orderId) {
-        setFailOpen(true);
-        analytics.trackError("Missing PayPal Details", "PayPal Success Return");
-        clearPayPalOrderData();
+        openGenericFailure(
+          "We couldn't verify the payment details for this order."
+        );
+        clearQuantumPaymentOrderData();
         return;
       }
 
@@ -465,23 +652,23 @@ const QuantumMiningPage = () => {
           if (isCompletedStatus(normalizedStatus)) {
             finalizeOrder(withStatus);
           } else {
-            setFailOpen(true);
-            analytics.trackError(`Incomplete Status: ${normalizedStatus}`, "Fetch PayPal Order");
+            openGenericFailure(
+              "We couldn't confirm this payment. Please try again."
+            );
             setPendingOrderId(null);
             pendingOrderIdRef.current = null;
-            clearPayPalOrderData();
+            clearQuantumPaymentOrderData();
           }
         } catch (e) {
           console.error("getUserOrder failed:", e);
-          setFailOpen(true);
-          analytics.trackError("Fetch Order API Failed", "Fetch PayPal Order");
+          openGenericFailure("We couldn't fetch the latest order status.");
           setPendingOrderId(null);
           pendingOrderIdRef.current = null;
-          clearPayPalOrderData();
+          clearQuantumPaymentOrderData();
         }
       })();
     }
-  }, [finalizeOrder, upsertLatestSignal, user?.email]);
+  }, [finalizeOrder, openGenericFailure, upsertLatestSignal, user?.email]);
 
   const handlePayAmountChange = (value: string) => {
     setPayAmount(value);
@@ -524,6 +711,18 @@ const QuantumMiningPage = () => {
     };
     fetchPricesData();
   }, []);
+
+  useEffect(() => {
+    const trimmed = payAmount.trim();
+    const numericValue = Number(payAmount);
+
+    if (trimmed && !Number.isNaN(numericValue)) {
+      const btcyAmount = calculateBTCYAmount(numericValue, btcyPrice);
+      setGetAmount(btcyAmount.toFixed(2));
+    } else {
+      setGetAmount("");
+    }
+  }, [btcyPrice, payAmount]);
 
   useEffect(() => {
     if (!user?.email) return;
@@ -583,14 +782,24 @@ const QuantumMiningPage = () => {
             ...signal,
             status: signal.status || "EXPIRED",
           });
+          verificationRunIdRef.current += 1;
           setIsPaymentPopupOpen(false);
+          setIsWireTransferPopupOpen(false);
+          setIsVerifyingPopupOpen(false);
+          setIsCancelConfirmOpen(false);
+          setCancelError(undefined);
+          setIsCancellingOrder(false);
           setActiveOrder(null);
           activeOrderRef.current = null;
           setPendingOrderId(null);
           pendingOrderIdRef.current = null;
+          setFailRequiresTxHash(false);
+          setFailureMessage(
+            "This order expired before the payment was confirmed."
+          );
+          setIsTxVerificationSubmitting(false);
           setFailOpen(true);
-          analytics.trackError("Order Expired", "Socket: Order Expired");
-          clearPayPalOrderData();
+          clearQuantumPaymentOrderData();
         }
       },
       onOrdersUpdate: (data) => {
@@ -624,6 +833,231 @@ const QuantumMiningPage = () => {
     hasNumericPayAmount && numericPayAmount < MIN_PURCHASE_AMOUNT_USD;
   const isBuyDisabled =
     !hasNumericPayAmount || isBelowMinimumAmount || !!errors.payAmount;
+  const selectedPaymentVisual =
+    PAYMENT_OPTIONS.find((option) => option.name === selectedPaymentOption) ??
+    PAYMENT_OPTIONS[0];
+
+  const handleOpenCancelConfirmation = useCallback(() => {
+    if (!activeOrderRef.current) {
+      setIsPaymentPopupOpen(false);
+      return;
+    }
+    setCancelError(undefined);
+    setIsCancelConfirmOpen(true);
+  }, []);
+
+  const handleStartCryptoVerification = useCallback(async () => {
+    const order = activeOrderRef.current;
+    if (!order) return;
+
+    const runId = verificationRunIdRef.current + 1;
+    verificationRunIdRef.current = runId;
+
+    setCancelError(undefined);
+    setFailureMessage(undefined);
+    setFailRequiresTxHash(false);
+    setFailOpen(false);
+    setIsTxVerificationSubmitting(false);
+    setIsCancelConfirmOpen(false);
+    setIsPaymentPopupOpen(false);
+    setIsVerifyingPopupOpen(true);
+
+    const startedAt = Date.now();
+
+    while (verificationRunIdRef.current === runId) {
+      try {
+        const response = await checkQuantumCryptoPayment({
+          orderId: order.orderId,
+          paymentType: getCryptoPaymentLabel(order),
+          amount: order.amount,
+          addressPaidTo: order.receiverAddress,
+        });
+        if (verificationRunIdRef.current !== runId) return;
+        const result = response.data;
+        const nextStatus =
+          result.status || (result.paymentReceived ? "COMPLETED" : "PENDING");
+
+        upsertLatestSignal(
+          buildCryptoOrderSignal(order, result, {
+            status: nextStatus,
+          })
+        );
+
+        if (isConfirmedQuantumPayment(result)) {
+          finalizeOrder(
+            buildCryptoOrderSignal(order, result, {
+              status: result.status || "COMPLETED",
+            })
+          );
+          return;
+        }
+
+        if (response.status >= 400) {
+          openTxHashFallback(
+            getMessageFromResult(
+              result,
+              "Automatic verification failed. Enter your transaction hash to continue."
+            )
+          );
+          return;
+        }
+      } catch (error) {
+        if (verificationRunIdRef.current !== runId) return;
+        const message =
+          error instanceof Error
+            ? error.message
+            : "Automatic verification failed. Enter your transaction hash to continue.";
+        openTxHashFallback(message);
+        return;
+      }
+
+      const elapsedMs = Date.now() - startedAt;
+      if (elapsedMs >= AUTO_CHECK_DURATION_MS) {
+        break;
+      }
+
+      await sleep(
+        Math.min(AUTO_CHECK_INTERVAL_MS, AUTO_CHECK_DURATION_MS - elapsedMs)
+      );
+    }
+
+    if (verificationRunIdRef.current !== runId) return;
+
+    openTxHashFallback(
+      "We couldn't automatically detect your payment within 2 minutes. Enter your transaction hash to continue."
+    );
+  }, [finalizeOrder, openTxHashFallback, upsertLatestSignal]);
+
+  const handleSubmitTxHash = useCallback(
+    async (txHash: string) => {
+      const order = activeOrderRef.current;
+      if (!order) {
+        openGenericFailure(
+          "No active order found for transaction verification."
+        );
+        return;
+      }
+
+      const runId = verificationRunIdRef.current + 1;
+      verificationRunIdRef.current = runId;
+
+      setFailureMessage(undefined);
+      setIsTxVerificationSubmitting(true);
+
+      try {
+        const response = await checkQuantumCryptoPaymentByTx({
+          orderId: order.orderId,
+          txHash,
+        });
+        if (verificationRunIdRef.current !== runId) return;
+        const result = response.data;
+        const nextStatus =
+          result.status || (result.paymentReceived ? "COMPLETED" : "PENDING");
+
+        upsertLatestSignal(
+          buildCryptoOrderSignal(order, result, {
+            status: nextStatus,
+          })
+        );
+
+        if (isConfirmedQuantumPayment(result)) {
+          setFailOpen(false);
+          finalizeOrder(
+            buildCryptoOrderSignal(order, result, {
+              status: result.status || "COMPLETED",
+            })
+          );
+          return;
+        }
+
+        setFailureMessage(
+          getMessageFromResult(
+            result,
+            "We couldn't verify this transaction hash yet. Please check it and try again."
+          )
+        );
+      } catch (error) {
+        if (verificationRunIdRef.current !== runId) return;
+        setFailureMessage(
+          error instanceof Error
+            ? error.message
+            : "Failed to verify the transaction hash. Please try again."
+        );
+      } finally {
+        if (verificationRunIdRef.current === runId) {
+          setIsTxVerificationSubmitting(false);
+        }
+      }
+    },
+    [finalizeOrder, openGenericFailure, upsertLatestSignal]
+  );
+
+  const handleCancelActiveOrder = useCallback(async () => {
+    const order = activeOrderRef.current;
+    if (!order?.orderId) {
+      setIsCancelConfirmOpen(false);
+      setIsPaymentPopupOpen(false);
+      setIsVerifyingPopupOpen(false);
+      return;
+    }
+
+    setCancelError(undefined);
+    setIsCancellingOrder(true);
+
+    try {
+      const response = await cancelQuantumOrder({
+        orderId: order.orderId,
+      });
+      const result = response.data;
+      const message = getMessageFromResult(
+        result,
+        "Unable to cancel this order."
+      );
+
+      if (response.status === 200) {
+        verificationRunIdRef.current += 1;
+        upsertLatestSignal(
+          buildCryptoOrderSignal(order, result, {
+            status: result.status || "OrderCancelled",
+          })
+        );
+        setIsCancelConfirmOpen(false);
+        setIsPaymentPopupOpen(false);
+        setIsVerifyingPopupOpen(false);
+        setFailOpen(false);
+        setFailRequiresTxHash(false);
+        setFailureMessage(undefined);
+        setIsTxVerificationSubmitting(false);
+        setActiveOrder(null);
+        setPendingOrderId(null);
+        activeOrderRef.current = null;
+        pendingOrderIdRef.current = null;
+        return;
+      }
+
+      if (
+        response.status === 400 &&
+        message.toLowerCase().includes("completed orders cannot be cancelled")
+      ) {
+        finalizeOrder(
+          buildCryptoOrderSignal(order, result, {
+            status: "COMPLETED",
+          })
+        );
+        return;
+      }
+
+      setCancelError(message);
+    } catch (error) {
+      setCancelError(
+        error instanceof Error
+          ? error.message
+          : "Failed to cancel the order. Please try again."
+      );
+    } finally {
+      setIsCancellingOrder(false);
+    }
+  }, [finalizeOrder, upsertLatestSignal]);
 
   // MAIN BUY HANDLER: calls API first, then either redirect (paypal/usd) or open popup (crypto)
   const handleBuyNow = async () => {
@@ -643,7 +1077,16 @@ const QuantumMiningPage = () => {
       return;
     }
 
+    verificationRunIdRef.current += 1;
     setFailOpen(false);
+    setFailRequiresTxHash(false);
+    setFailureMessage(undefined);
+    setIsTxVerificationSubmitting(false);
+    setIsVerifyingPopupOpen(false);
+    setIsCancelConfirmOpen(false);
+    setIsWireTransferPopupOpen(false);
+    setCancelError(undefined);
+    setIsCancellingOrder(false);
     setSuccessOpen(false);
     setLatestOrderSignal(null);
 
@@ -654,17 +1097,27 @@ const QuantumMiningPage = () => {
     });
 
     try {
-      const outAmount = btcyPrice > 0
-        ? calculateBaseBTCYAmount(Number(payAmount), btcyPrice)
-        : 0;
+      const outAmount = calculateBTCYAmount(Number(payAmount), btcyPrice);
 
       // Build payload "based on the above data"
       const payload = {
         email: user.email,
-        currencyIn: optionToCurrencyIn(selectedPaymentOption), // "USDT"|"USDC"|"PayPal"|"USD"
+        currencyIn: optionToCurrencyIn(selectedPaymentOption),
         currencyOut: "BTCY" as const,
         amount: Number(payAmount), // user-entered USD
-        outAmount, // base BTCY amount without 30% UI bonus
+        outAmount,
+        ...(selectedPaymentOption === "PayPal" && {
+          paymentMethod: "paypal" as const,
+        }),
+        ...(selectedPaymentOption === "Stripe" && {
+          paymentMethod: "card" as const,
+        }),
+        ...(selectedPaymentOption === "Wire Transfer" && {
+          paymentType: "wiretransfer" as const,
+        }),
+        ...(isCryptoPayment(selectedPaymentOption) && {
+          paymentMethod: "crypto" as const,
+        }),
         ...(isCryptoPayment(selectedPaymentOption) && {
           blockchain: selectedNetwork,
         }),
@@ -685,26 +1138,17 @@ const QuantumMiningPage = () => {
         if (!approve) throw new Error("Missing PayPal approval link.");
 
         // Persist for return page
-        const tokenFromLink = (() => {
-          try {
-            const u = new URL(approve);
-            return u.searchParams.get("token") || undefined;
-          } catch {
-            return undefined;
-          }
-        })();
-
         const stash = {
           email: user.email,
-          // PayPal order id can be one of: token, data.id, data.paypalId
+          // Persist only the platform order id. PayPal token/id values are not
+          // interchangeable with the quantum order id used by our APIs.
           orderId:
-            tokenFromLink ||
-            (data?.id as string) ||
-            (data?.paypalId as string) ||
-            (data?.orderId as string) ||
-            "",
+            typeof data?.orderId === "string" ||
+              typeof data?.orderId === "number"
+              ? String(data.orderId)
+              : "",
         };
-        storePayPalOrderData(stash);
+        storeQuantumPaymentOrderData(stash);
 
         analytics.trackOrderCreated({
           order_id: stash.orderId,
@@ -725,7 +1169,8 @@ const QuantumMiningPage = () => {
                 ? "USD"
                 : undefined;
           const orderTypeValue =
-            (typeof data?.orderType === "string" && data.orderType) || "Quantum";
+            (typeof data?.orderType === "string" && data.orderType) ||
+            "Quantum";
           const paymentTypeValue =
             (typeof data?.paymentType === "string" && data.paymentType) ||
             selectedPaymentOption;
@@ -742,6 +1187,81 @@ const QuantumMiningPage = () => {
         }
 
         window.location.href = approve;
+        return;
+      }
+
+      if (selectedPaymentOption === "Stripe") {
+        const checkoutUrl =
+          typeof data?.url === "string" ? (data.url as string) : "";
+        if (!checkoutUrl) {
+          throw new Error("Missing Stripe checkout URL.");
+        }
+
+        const stripeOrderId =
+          typeof data?.orderId === "string" || typeof data?.orderId === "number"
+            ? String(data.orderId)
+            : "";
+        if (stripeOrderId) {
+          storeQuantumPaymentOrderData({
+            email: user.email,
+            orderId: stripeOrderId,
+          });
+          setPendingOrderId(stripeOrderId);
+          pendingOrderIdRef.current = stripeOrderId;
+        }
+
+        window.location.href = checkoutUrl;
+        return;
+      }
+
+      if (selectedPaymentOption === "Wire Transfer") {
+        const wireOrderIdValue = data?.orderId;
+        const wireOrderId =
+          typeof wireOrderIdValue === "string" ||
+            typeof wireOrderIdValue === "number"
+            ? String(wireOrderIdValue)
+            : "";
+        if (!wireOrderId) {
+          throw new Error("Missing wire transfer order ID.");
+        }
+
+        const breakdown =
+          typeof data?.breakdown === "object" && data.breakdown !== null
+            ? (data.breakdown as Record<string, unknown>)
+            : null;
+        const breakdownCurrency =
+          typeof breakdown?.inCurrenyName === "string" &&
+            breakdown.inCurrenyName.trim()
+            ? breakdown.inCurrenyName
+            : "USD";
+        const breakdownAmount = toNumeric(
+          breakdown?.finalAmountAfterDiscount ??
+          breakdown?.inAmount ??
+          payload.amount
+        );
+        const paymentTypeValue =
+          typeof data?.paymentType === "string" && data.paymentType.trim()
+            ? data.paymentType
+            : selectedPaymentOption;
+
+        setActiveOrder(null);
+        activeOrderRef.current = null;
+        setPendingOrderId(wireOrderId);
+        pendingOrderIdRef.current = wireOrderId;
+        upsertLatestSignal({
+          ...buildOrderSignal(data, wireOrderId, data),
+          orderId: wireOrderId,
+          status: (typeof data?.status === "string" && data.status) || "Quoted",
+          amount: breakdownAmount,
+          currency: breakdownCurrency,
+          paymentType: paymentTypeValue,
+          orderType:
+            (typeof data?.orderType === "string" && data.orderType) ||
+            "Quantum",
+          raw: data,
+        });
+        setIsWireTransferPopupOpen(true);
+        setErrors({});
         return;
       }
 
@@ -767,19 +1287,17 @@ const QuantumMiningPage = () => {
         orderType: "Quantum",
         raw: order,
       });
+
       setActiveOrder(order);
-      setErrors({});
       setIsPaymentPopupOpen(true);
-      analytics.trackPopupOpen("Crypto Payment Modal");
-      analytics.trackOrderCreated({
-        order_id: order.orderId,
-        amount: order.amount,
-        currency: selectedPaymentOption,
-      });
+      setErrors({});
     } catch (err: unknown) {
       console.error("Order create failed", err);
-      setFailOpen(true);
-      analytics.trackError("Create Order API Failed", "handleBuyNow");
+      openGenericFailure(
+        err instanceof Error
+          ? err.message
+          : "Failed to create the order. Please try again."
+      );
       setPendingOrderId(null);
       pendingOrderIdRef.current = null;
     }
@@ -795,16 +1313,34 @@ const QuantumMiningPage = () => {
       <div className="flex flex-col-reverse lg:flex-row">
         <div className="mt-10 md:mt-20 w-full lg:w-[90%] flex flex-col justify-items-center">
           <h1 className="text-[40px] md:text-7xl  font-bold  lg:leading-28">
-            Own BTCY — Before It <br />Gets Listed
-
+            Own BTCY — Before It <br />
+            Gets Listed
           </h1>
 
           <p className="mt-10 text-2xl md:text-3xl max-w-3xl">
             No mining required. Buy BTCY directly at an early-stage price.
             <br />
             BTCY is a pre-listed digital asset connected with Indexx.ai
-
           </p>
+
+          <div className="mt-10 flex flex-row items-start gap-16">
+            <CustomButton2
+              image={CartButtonImage}
+              text="Buy BTCY"
+              onClick={() => {
+                document
+                  .getElementById("buy-btcy")
+                  ?.scrollIntoView({ behavior: "smooth", block: "start" });
+              }}
+              imageStyling="w-24"
+            />
+            <CustomButton2
+              image={OrderHistoryButtonImage}
+              text="Order History"
+              link="/order-history"
+              imageStyling="w-24"
+            />
+          </div>
         </div>
 
         <div className="xl:mt-26 flex justify-center items-center relative">
@@ -823,30 +1359,11 @@ const QuantumMiningPage = () => {
 
       <div
         id="buy-btcy"
-        className="mt-40 border-2 border-bg3 rounded-2xl p-8 md:p-12 max-w-5xl mx-auto"
+        className="mt-40 border-0 md:border-1 border-bg2 rounded-2xl p-8 md:p-12 max-w-5xl mx-auto scroll-mt-32"
       >
         <h2 className="text-3xl md:text-4xl xl:text-8xl font-bold text-center mb-8">
           Buy BTCY
         </h2>
-
-        {/* Funding Progress */}
-        {/* <div className="mb-8 mt-10">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-lg md:text-2xl xl:text-3xl">USD Raised</span>
-            <span className="text-lg md:text-2xl xl:text-3xl">
-              556,435.925 / 750,000
-            </span>
-          </div>
-          <div className="w-full bg-secondary rounded-full h-6 relative">
-            <div
-              className="bg-orange-500 h-6 rounded-full"
-              style={{ width: "79.3%" }}
-            ></div>
-            <span className="absolute inset-0 flex items-center justify-center text-sm font-medium">
-              79.3%
-            </span>
-          </div>
-        </div> */}
 
         {/* Exchange Rate */}
         <div className="mb-8">
@@ -856,13 +1373,8 @@ const QuantumMiningPage = () => {
         </div>
 
         {/* Payment Options */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-2 mb-8 justify-items-center">
-          {[
-            { name: "USDT", icon: USDTIcon },
-            { name: "USDC", icon: USDCIcon },
-            { name: "PayPal", icon: PaypalIcon },
-            { name: "USD", icon: USDIcon },
-          ].map((option) => {
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-2 md:gap-2 mb-8 justify-items-center">
+          {PAYMENT_OPTIONS.map((option) => {
             const name = option.name as PaymentOption;
             const isSelected = name === selectedPaymentOption;
             return (
@@ -871,16 +1383,20 @@ const QuantumMiningPage = () => {
                 className="relative cursor-pointer transition-all duration-200"
                 onClick={() => setSelectedPaymentOption(name)}
               >
-                <Image
-                  src={isSelected ? ButtonBorderActive : ButtonBorder}
-                  alt={isSelected ? "Button Border Active" : "Button Border"}
-                  className="w-32 md:w-38 lg:w-44"
-                />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+                <div className="group flex flex-col items-center">
                   <span className="mb-2">
-                    <Image src={option.icon} alt={name} className="w-10 h-10" />
+                    <Image
+                      src={option.icon}
+                      alt={name}
+                      className={option.optionIconClassName}
+                    />
                   </span>
-                  <span className="text-lg">{name}</span>
+                  <span
+                    className={`text-lg group-hover:text-primary ${isSelected ? "text-primary" : ""
+                      }`}
+                  >
+                    {name}
+                  </span>
                 </div>
               </div>
             );
@@ -946,19 +1462,11 @@ const QuantumMiningPage = () => {
               />
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                 <span>
-                  {selectedPaymentOption === "USDT" ? (
-                    <Image src={USDTIcon} alt="USDT" className="w-10 h-10" />
-                  ) : selectedPaymentOption === "USDC" ? (
-                    <Image src={USDCIcon} alt="USDC" className="w-10 h-10" />
-                  ) : selectedPaymentOption === "PayPal" ? (
-                    <Image
-                      src={PaypalIcon}
-                      alt="PayPal"
-                      className="w-10 h-10"
-                    />
-                  ) : (
-                    <Image src={USDIcon} alt="USD" className="w-14 h-10" />
-                  )}
+                  <Image
+                    src={selectedPaymentVisual.icon}
+                    alt={selectedPaymentVisual.name}
+                    className={selectedPaymentVisual.inputIconClassName}
+                  />
                 </span>
               </div>
             </div>
@@ -969,7 +1477,7 @@ const QuantumMiningPage = () => {
 
           <div>
             <label className="block text-xl mb-2">
-              You Get (30 % BTCY bonus added)
+              You Get <span className="text-tertiary">(after 3% deduction)</span>
             </label>
             <div className="relative">
               <input
@@ -977,7 +1485,7 @@ const QuantumMiningPage = () => {
                 className="w-full px-4 py-3 border border-bg3 rounded-lg text-lg focus:outline-none focus:border-primary hover:border-primary [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 placeholder="0"
                 value={getAmount}
-                onChange={(e) => setGetAmount(e.target.value)}
+                readOnly
               />
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                 <span className="text-primary text-xl">
@@ -985,6 +1493,10 @@ const QuantumMiningPage = () => {
                 </span>
               </div>
             </div>
+            <p className="text-xs md:text-sm text-gray-500 mt-2">
+              BTCY shown is the final amount you&apos;ll receive after a{" "}
+              3% transaction fee has been applied.
+            </p>
           </div>
         </div>
 
@@ -1005,7 +1517,6 @@ const QuantumMiningPage = () => {
           />
         </div>
       </div>
-
 
       {/* Benefits Section - Three Cards */}
       <div className="mx-auto mt-40 md:mt-60 px-4 md:px-8 lg:px-20 xl:px-40 relative max-w-[2000px]">
@@ -1073,7 +1584,10 @@ const QuantumMiningPage = () => {
                 1. Skip Daily Mining – Get BTCY Instantly
               </h3>
               <p className="text-base md:text-lg lg:text-xl text-gray-300 leading-relaxed">
-                Quantum Mining is for people who don&apos;t want to tap and mine every day. Instead of slowly collecting nuggets, you can buy BTCY tokens directly in the pre-sale and lock in your position immediately.
+                Quantum Mining is for people who don&apos;t want to tap and mine
+                every day. Instead of slowly collecting nuggets, you can buy
+                BTCY tokens directly in the pre-sale and lock in your position
+                immediately.
               </p>
             </div>
 
@@ -1083,7 +1597,11 @@ const QuantumMiningPage = () => {
                 2.Buy While the Price Is Low (Christmas Discount)
               </h3>
               <p className="text-base md:text-lg lg:text-xl text-gray-300 leading-relaxed">
-                With the Christmas Discount, you get 10% off your BTCY token purchase for a limited time. You’re entering at an early stage, before launch and before potential future price movements once BTCY is live and tradable (if and when it gets listed). </p>
+                With the Christmas Discount, you get 10% off your BTCY token
+                purchase for a limited time. You’re entering at an early stage,
+                before launch and before potential future price movements once
+                BTCY is live and tradable (if and when it gets listed).{" "}
+              </p>
             </div>
 
             {/* Benefit 3 */}
@@ -1092,13 +1610,16 @@ const QuantumMiningPage = () => {
                 3. Aligned with Bitcoin – Pegged Ratio
               </h3>
               <p className="text-base md:text-lg lg:text-xl text-gray-300 leading-relaxed">
-                BTCY is designed with a target peg of 1,000,000 BTCY = 1 BTC, connecting the ecosystem to Bitcoin&apos;s price. Quantum Mining lets you participate in that vision early—while understanding that the peg, listing, and future market price are not guaranteed and can change.
+                BTCY is designed with a target peg of 1,000,000 BTCY = 1 BTC,
+                connecting the ecosystem to Bitcoin&apos;s price. Quantum Mining
+                lets you participate in that vision early—while understanding
+                that the peg, listing, and future market price are not
+                guaranteed and can change.
               </p>
             </div>
           </div>
         </div>
       </div>
-
 
       <div className="flex flex-col lg:flex-row items-center justify-center gap-20 mt-80">
         <Image
@@ -1190,8 +1711,6 @@ const QuantumMiningPage = () => {
         </div>
       </div>
 
-
-
       <div className="mt-40">
         <h2 className="text-4xl md:text-6xl xl:text-8xl font-bold text-center">
           Register and Purchase BTCY
@@ -1206,9 +1725,7 @@ const QuantumMiningPage = () => {
               <li>USDT / USDC</li>
               <li>Paypal</li>
               <li>USD credit/debit card</li>
-              <li>
-                USD bank wire <ComingSoonBadge />
-              </li>
+              <li>USD bank wire</li>
             </ul>
           </div>
           <div className="w-full lg:w-1/2">
@@ -1224,9 +1741,7 @@ const QuantumMiningPage = () => {
               <li>
                 Local currencies: EUR, GBP, JPY, AED, INR <ComingSoonBadge />
               </li>
-              <li>
-                Bank wires (SWIFT/SEPA) <ComingSoonBadge />
-              </li>
+              <li>Bank wires (SWIFT/SEPA)</li>
               <li>
                 Local methods: Alipay, UPI, M-Pesa <ComingSoonBadge />
               </li>
@@ -1234,7 +1749,6 @@ const QuantumMiningPage = () => {
           </div>
         </div>
       </div>
-
 
       {/* FAQs section */}
       <div className="my-80 flex flex-col items-center justify-center px-4 max-w-[1000px] mx-auto">
@@ -1245,7 +1759,7 @@ const QuantumMiningPage = () => {
           <Image src={ArtImage5} alt="Art Image 5" className="w-54" />
         </div>
         <h3 className="text-xl md:text-2xl lg:text-3xl font-semibold text-primary text-center mb-12 md:mb-16">
-          Quantum Mining, BTCY &  Christmas Discount
+          Quantum Mining, BTCY & Christmas Discount
         </h3>
 
         {/* FAQ Accordions */}
@@ -1259,7 +1773,10 @@ const QuantumMiningPage = () => {
                 What is Quantum Mining?
               </AccordionTrigger>
               <AccordionContent className="text-base md:text-lg text-tertiary my-4">
-                Quantum Mining is our pre-sale route for BTCY. Instead of mining nuggets inside the app and converting later, you buy BTCY tokens directly before launch. It’s designed for users who want to secure tokens upfront rather than tap and mine daily.
+                Quantum Mining is our pre-sale route for BTCY. Instead of mining
+                nuggets inside the app and converting later, you buy BTCY tokens
+                directly before launch. It’s designed for users who want to
+                secure tokens upfront rather than tap and mine daily.
               </AccordionContent>
             </AccordionItem>
 
@@ -1272,8 +1789,17 @@ const QuantumMiningPage = () => {
               </AccordionTrigger>
               <AccordionContent className="text-base md:text-lg text-tertiary my-4">
                 <ul className="list-disc pl-5 space-y-2">
-                  <li><strong>Power Mining:</strong> You mine nuggets in the app faster and with longer sessions, then later convert those nuggets into BTCY via Alchemy when the feature is live.</li>
-                  <li><strong>Quantum Mining:</strong> You skip nuggets entirely and purchase BTCY tokens directly as a pre-sale. It’s about getting tokens now rather than grinding daily mining sessions.</li>
+                  <li>
+                    <strong>Power Mining:</strong> You mine nuggets in the app
+                    faster and with longer sessions, then later convert those
+                    nuggets into BTCY via Alchemy when the feature is live.
+                  </li>
+                  <li>
+                    <strong>Quantum Mining:</strong> You skip nuggets entirely
+                    and purchase BTCY tokens directly as a pre-sale. It’s about
+                    getting tokens now rather than grinding daily mining
+                    sessions.
+                  </li>
                 </ul>
               </AccordionContent>
             </AccordionItem>
@@ -1286,7 +1812,11 @@ const QuantumMiningPage = () => {
                 What exactly am I buying with Quantum Mining?
               </AccordionTrigger>
               <AccordionContent className="text-base md:text-lg text-tertiary my-4">
-                You are purchasing an allocation of BTCY tokens in advance, under our pre-sale terms. These tokens are not yet listed or tradable on public exchanges. They will be delivered/activated according to the project’s launch and token release schedule, subject to the platform’s terms and any applicable regulations.
+                You are purchasing an allocation of BTCY tokens in advance,
+                under our pre-sale terms. These tokens are not yet listed or
+                tradable on public exchanges. They will be delivered/activated
+                according to the project’s launch and token release schedule,
+                subject to the platform’s terms and any applicable regulations.
               </AccordionContent>
             </AccordionItem>
 
@@ -1298,7 +1828,12 @@ const QuantumMiningPage = () => {
                 What does the 1,000,000 BTCY = 1 BTC ratio mean?
               </AccordionTrigger>
               <AccordionContent className="text-base md:text-lg text-tertiary my-4">
-                This ratio is a target peg used inside the Bitcoin Yay ecosystem to conceptually link BTCY to Bitcoin (1,000,000 BTCY representing the value of 1 BTC in the design). It is not a guaranteed exchange rate and does not mean you can always swap 1,000,000 BTCY for 1 BTC. Actual market prices, if and when BTCY lists, will depend on supply, demand, and market conditions.
+                This ratio is a target peg used inside the Bitcoin Yay ecosystem
+                to conceptually link BTCY to Bitcoin (1,000,000 BTCY
+                representing the value of 1 BTC in the design). It is not a
+                guaranteed exchange rate and does not mean you can always swap
+                1,000,000 BTCY for 1 BTC. Actual market prices, if and when BTCY
+                lists, will depend on supply, demand, and market conditions.
               </AccordionContent>
             </AccordionItem>
 
@@ -1310,7 +1845,9 @@ const QuantumMiningPage = () => {
                 Is BTCY listed on any exchange right now?
               </AccordionTrigger>
               <AccordionContent className="text-base md:text-lg text-tertiary my-4">
-                No. BTCY is not currently listed on any exchange. Quantum Mining is a pre-launch token purchase. Future listings, if they happen, will be announced separately and are not guaranteed.
+                No. BTCY is not currently listed on any exchange. Quantum Mining
+                is a pre-launch token purchase. Future listings, if they happen,
+                will be announced separately and are not guaranteed.
               </AccordionContent>
             </AccordionItem>
 
@@ -1322,7 +1859,10 @@ const QuantumMiningPage = () => {
                 Does Quantum Mining guarantee that BTCY will go up in value?
               </AccordionTrigger>
               <AccordionContent className="text-base md:text-lg text-tertiary my-4">
-                No. There is no guarantee that BTCY will increase in value, be listed on exchanges, or be tradeable in your region. Crypto tokens are highly volatile, and you should assume you can lose some or all of the funds you commit.
+                No. There is no guarantee that BTCY will increase in value, be
+                listed on exchanges, or be tradeable in your region. Crypto
+                tokens are highly volatile, and you should assume you can lose
+                some or all of the funds you commit.
               </AccordionContent>
             </AccordionItem>
 
@@ -1336,9 +1876,15 @@ const QuantumMiningPage = () => {
               <AccordionContent className="text-base md:text-lg text-tertiary my-4">
                 Quantum Mining is aimed at users who:
                 <ul className="list-disc pl-5 space-y-1 mt-2">
-                  <li>Don't want to tap and mine every day</li>
-                  <li>Prefer buying tokens directly instead of grinding nuggets</li>
-                  <li>Want to take advantage of early pricing and limited-time discounts (like the 12:12 10% off sale) while understanding the high risk and speculative nature of pre-launch tokens.</li>
+                  <li>Don&apos;t want to tap and mine every day</li>
+                  <li>
+                    Prefer buying tokens directly instead of grinding nuggets
+                  </li>
+                  <li>
+                    Want to take advantage of early pricing and limited-time
+                    discounts (like the 12:12 10% off sale) while understanding
+                    the high risk and speculative nature of pre-launch tokens.
+                  </li>
                 </ul>
               </AccordionContent>
             </AccordionItem>
@@ -1348,14 +1894,18 @@ const QuantumMiningPage = () => {
               className="border border-bg3 rounded-lg px-6 bg-transparent"
             >
               <AccordionTrigger className="text-left text-xl md:text-2xl font-bold text-tertiary hover:no-underline flex items-center justify-between">
-                Can I still mine for free or use Power Mining if I choose Quantum Mining?
+                Can I still mine for free or use Power Mining if I choose
+                Quantum Mining?
               </AccordionTrigger>
               <AccordionContent className="text-base md:text-lg text-tertiary my-4">
                 Yes. Quantum Mining is optional. You can still:
                 <ul className="list-disc pl-5 space-y-1 mt-2">
                   <li>Mine for free inside the app</li>
                   <li>Upgrade to Power Mining for faster nugget earning</li>
-                  <li>Or combine all three: free mining, Power Mining, and Quantum Mining depending on your strategy and risk appetite.</li>
+                  <li>
+                    Or combine all three: free mining, Power Mining, and Quantum
+                    Mining depending on your strategy and risk appetite.
+                  </li>
                 </ul>
               </AccordionContent>
             </AccordionItem>
@@ -1368,7 +1918,13 @@ const QuantumMiningPage = () => {
                 Where do my purchased BTCY tokens and withdrawn nuggets go?
               </AccordionTrigger>
               <AccordionContent className="text-base md:text-lg text-tertiary my-4">
-                Your BTCY app account is directly linked to your Indexx.ai asset wallet. When you buy BTCY through Quantum Mining or withdraw mined nuggets via Alchemy, the resulting BTCY tokens are sent to your Indexx.ai asset wallet automatically. You can log into Indexx.ai using your Bitcoin Yay (BTCY) account, view your BTCY balance there, and use any supported features on the exchange once BTCY is live and available.
+                Your BTCY app account is directly linked to your Indexx.ai asset
+                wallet. When you buy BTCY through Quantum Mining or withdraw
+                mined nuggets via Alchemy, the resulting BTCY tokens are sent to
+                your Indexx.ai asset wallet automatically. You can log into
+                Indexx.ai using your Bitcoin Yay (BTCY) account, view your BTCY
+                balance there, and use any supported features on the exchange
+                once BTCY is live and available.
               </AccordionContent>
             </AccordionItem>
           </Accordion>
@@ -1377,11 +1933,44 @@ const QuantumMiningPage = () => {
 
       <PaymentPopup
         isOpen={isPaymentPopupOpen}
-        onClose={() => setIsPaymentPopupOpen(false)}
+        onClose={handleOpenCancelConfirmation}
+        onPaymentConfirmed={handleStartCryptoVerification}
+        onCancel={handleOpenCancelConfirmation}
         cryptoType={selectedPaymentOption}
         order={activeOrder}
-        closeOnOutsideClick={false}
-        closeOnEsc={false}
+      />
+
+      <WireTransferPopup
+        isOpen={isWireTransferPopupOpen}
+        onClose={() => setIsWireTransferPopupOpen(false)}
+        payAmount={payAmount}
+        wireOrderId={pendingOrderId}
+      />
+
+      <CancelConfirmationPopup
+        isOpen={isCancelConfirmOpen}
+        onClose={() => {
+          if (isCancellingOrder) return;
+          setCancelError(undefined);
+          setIsCancelConfirmOpen(false);
+        }}
+        onStay={() => {
+          if (isCancellingOrder) return;
+          setCancelError(undefined);
+          setIsCancelConfirmOpen(false);
+        }}
+        onCancel={handleCancelActiveOrder}
+        isCancelling={isCancellingOrder}
+        errorMessage={cancelError}
+      />
+
+      <VerifyingPaymentPopup
+        isOpen={isVerifyingPopupOpen}
+        onClose={() => {
+          if (isCancellingOrder) return;
+          setIsCancelConfirmOpen(false);
+          setIsVerifyingPopupOpen(false);
+        }}
       />
 
       <LoginPopup
@@ -1394,9 +1983,22 @@ const QuantumMiningPage = () => {
       <SuccessPopup
         isOpen={successOpen}
         onClose={handleCloseSuccess}
+        walletUrl={walletUrl}
         orderSummary={latestOrderSignal || undefined}
       />
-      <UnsuccessPopup isOpen={failOpen} onClose={() => setFailOpen(false)} />
+      <UnsuccessPopup
+        isOpen={failOpen}
+        onClose={() => {
+          setFailOpen(false);
+          setFailureMessage(undefined);
+          setFailRequiresTxHash(false);
+          setIsTxVerificationSubmitting(false);
+        }}
+        onSubmitTxHash={failRequiresTxHash ? handleSubmitTxHash : undefined}
+        isSubmitting={isTxVerificationSubmitting}
+        errorMessage={failureMessage}
+        orderId={activeOrder?.orderId || pendingOrderId || undefined}
+      />
     </div>
   );
 };

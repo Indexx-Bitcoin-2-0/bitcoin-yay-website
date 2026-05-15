@@ -7,6 +7,7 @@ import CustomButton2 from "@/components/CustomButton2";
 import SubmitButton from "@/assets/images/buttons/arrow-up-button.webp";
 import { useAuth } from "@/contexts/AuthContext";
 import LoginPopup from "@/components/LoginPopup";
+import { API_BASE_URL } from "@/lib/api-config";
 
 interface FormData {
   title: string;
@@ -92,7 +93,7 @@ export default function NewProposal() {
     // Check user role
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/dao/getDashboard`,
+        `${API_BASE_URL}/api/v1/dao/getDashboard`,
         {
           method: "POST",
           headers: {
@@ -176,7 +177,7 @@ export default function NewProposal() {
       };
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/dao/createProposal`,
+        `${API_BASE_URL}/api/v1/dao/createProposal`,
         {
           method: "POST",
           headers: {

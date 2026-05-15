@@ -18,8 +18,12 @@ const header_data = [
           },
           {
             name: "Alchemy Trade",
-            href: `/coming-soon`,
+            href: `/alchemy-trade`,
           },
+          // {
+          // name: "Alchemy Trade",
+          // href: `/coming-soon`,
+          // },
         ],
       },
       {
@@ -284,7 +288,6 @@ const header_data = [
             href: "https://indexx.ai",
             openInNewTab: true,
           },
-
         ],
       },
       {

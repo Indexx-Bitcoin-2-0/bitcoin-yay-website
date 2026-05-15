@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import axios, { AxiosError } from "axios";
+import { buildApiUrl } from "@/lib/api-config";
 
-const MINING_BASE_URL = process.env.NEXT_PUBLIC_API_URL
-    ? `${process.env.NEXT_PUBLIC_API_URL}/api/v1/mining`
-    : "";
+const MINING_BASE_URL = buildApiUrl("/api/v1/mining");
 
 export async function GET(
     request: Request,

@@ -14,6 +14,7 @@ import RoleImage5 from "@/assets/images/dao/Contributors.webp";
 import CustomButton from "@/components/CustomButton";
 import { useAuth } from "@/contexts/AuthContext";
 import LoginPopup from "@/components/LoginPopup";
+import { buildApiUrl } from "@/lib/api-config";
 
 interface Proposal {
   proposalNumber: number;
@@ -74,7 +75,7 @@ export default function ProposalDetailPage() {
     const fetchProposal = async () => {
       try {
         const response = await fetch(
-          `https://api.v1.indexx.ai/api/v1/dao/getProposalDetail/${proposalId}`
+          buildApiUrl(`/api/v1/dao/getProposalDetail/${proposalId}`)
         );
         const data = await response.json();
 
@@ -142,7 +143,7 @@ export default function ProposalDetailPage() {
     setLoadingVote(true);
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/dao/voteProposal`,
+        buildApiUrl("/api/v1/dao/voteProposal"),
         {
           method: "POST",
           headers: {

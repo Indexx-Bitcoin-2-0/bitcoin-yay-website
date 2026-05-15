@@ -8,7 +8,6 @@ import { ChevronDown, Check } from "lucide-react";
 import CustomButton2 from "@/components/CustomButton2";
 import LoginPopup from "@/components/LoginPopup";
 import PaymentMethodPopup, { PaymentMethod } from "@/components/PaymentMethodPopup";
-import NewYearPromotionalBanner from "@/components/NewYearPromotionalBanner";
 import { useAuth } from "@/contexts/AuthContext";
 import { PROVIDER_LABELS } from "@/constants/paymentProviders";
 import {
@@ -263,11 +262,6 @@ const TurboMiningPage = () => {
 
   return (
     <div className="mx-auto mt-40 md:mt-60 px-4 md:px-20 xl:px-40 relative max-w-[2000px]">
-      {/* New Year Promotional Banner */}
-      <div className="mb-20">
-        <NewYearPromotionalBanner />
-      </div>
-
       <div className="flex flex-col items-center justify-center gap-20">
         <div className="flex items-center gap-10">
           <Image

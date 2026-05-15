@@ -14,6 +14,7 @@ import CorrectIcon from "@/assets/images/dao/dashboard/correct-icon.svg";
 import CrossIcon from "@/assets/images/dao/dashboard/cross-icon.svg";
 import PendingIcon from "@/assets/images/dao/dashboard/pending-icon.svg";
 import { useAuth } from "@/contexts/AuthContext";
+import { API_BASE_URL } from "@/lib/api-config";
 import LoginPopup from "@/components/LoginPopup";
 
 interface Power {
@@ -63,7 +64,7 @@ export default function Dashboard() {
 
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/v1/dao/getDashboard`,
+          `${API_BASE_URL}/api/v1/dao/getDashboard`,
           {
             method: "POST",
             headers: {

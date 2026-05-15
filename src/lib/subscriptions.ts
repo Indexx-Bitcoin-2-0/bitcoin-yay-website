@@ -1,3 +1,5 @@
+import { API_BASE_URL } from "@/lib/api-config";
+
 export type PaymentProvider = "stripe" | "paypal";
 
 export interface SubscriptionPurchasePayload {
@@ -105,8 +107,7 @@ export const SUBSCRIPTIONS_PURCHASE_URL = `${LOCAL_SUBSCRIPTIONS_BASE_URL}/purch
 const COUPON_VALIDATION_URL = `${LOCAL_SUBSCRIPTIONS_BASE_URL}/coupons/validate`;
 const MINING_SUBSCRIPTION_PLAN_URL = "/api/mining/getUserSubscriptionPlan";
 
-const REMOTE_SUBSCRIPTIONS_HOST =
-  process.env.NEXT_PUBLIC_API_URL ?? "https://api.v1.indexx.ai";
+const REMOTE_SUBSCRIPTIONS_HOST = API_BASE_URL;
 const SUBSCRIPTION_HISTORY_URL = `${REMOTE_SUBSCRIPTIONS_HOST}/api/v1/bitcoinyay/subscriptions`;
 const CHANGE_PLAN_URL = `${REMOTE_SUBSCRIPTIONS_HOST}/api/v1/bitcoinyay/subscriptions/changeplan`;
 
@@ -196,7 +197,9 @@ export async function fetchSubscriptionHistory(
   const result = await response.json().catch(() => null);
   if (!response.ok || !result) {
     const errorMessage =
-      result?.error || result?.message || "Unable to load subscription history.";
+      result?.error ||
+      result?.message ||
+      "Unable to load subscription history.";
     throw new Error(errorMessage);
   }
 
@@ -217,7 +220,9 @@ export async function changeSubscriptionPlan(
   const result = await response.json().catch(() => null);
   if (!response.ok || !result) {
     const errorMessage =
-      result?.error || result?.message || "Unable to change the subscription plan.";
+      result?.error ||
+      result?.message ||
+      "Unable to change the subscription plan.";
     throw new Error(errorMessage);
   }
 
@@ -229,7 +234,9 @@ export async function fetchUserSubscriptionPlan(
   email: string
 ): Promise<MiningSubscriptionPlan | null> {
   const response = await fetch(
-    `${MINING_SUBSCRIPTION_PLAN_URL}/${coinSymbol}/${encodeURIComponent(email)}`,
+    `${MINING_SUBSCRIPTION_PLAN_URL}/${coinSymbol}/${encodeURIComponent(
+      email
+    )}`,
     {
       method: "GET",
     }
@@ -238,7 +245,9 @@ export async function fetchUserSubscriptionPlan(
   const result = await response.json().catch(() => null);
   if (!response.ok || !result) {
     const errorMessage =
-      result?.error || result?.message || "Unable to load the mining subscription plan.";
+      result?.error ||
+      result?.message ||
+      "Unable to load the mining subscription plan.";
     throw new Error(errorMessage);
   }
 
