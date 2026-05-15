@@ -360,6 +360,10 @@ export default function SellBtcyPage() {
     window.location.href = url;
   };
 
+  const handleSellStatusPopupClose = () => {
+    window.location.reload();
+  };
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -642,7 +646,7 @@ export default function SellBtcyPage() {
 
       <SellStatusPopupV2
         isOpen={isSellStatusPopupOpen}
-        onClose={() => setIsSellStatusPopupOpen(false)}
+        onClose={handleSellStatusPopupClose}
         usdtAmount={expectedReceiveAmount}
         currency={currency}
       />
