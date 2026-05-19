@@ -267,7 +267,7 @@ export default function SellBtcyPage() {
     }
 
     if (expectedReceiveAmount < MIN_SELL_USD) {
-      return `Minimum sell amount is ${formattedMinimumSellBtcy} BTCY, worth $${MIN_SELL_USD}.`;
+      return `Minimum sell amount is ${formattedMinimumSellBtcy} BTCY to receive at least $${MIN_SELL_USD} after fees.`;
     }
 
     if (btcyBalance !== null && requestedBtcyAmount > btcyBalance) {
@@ -469,7 +469,7 @@ export default function SellBtcyPage() {
               </span>
               <span className="text-gray-300">
                 <span className="text-primary font-semibold">Minimum:</span>{" "}
-                {formattedMinimumSellBtcy} BTCY (${MIN_SELL_USD} worth)
+                {formattedMinimumSellBtcy} BTCY to receive ${MIN_SELL_USD} after fees
               </span>
             </div>
             {amountError && (
