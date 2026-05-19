@@ -8,12 +8,14 @@ import failedIcon from '@/assets/images/failed_icon.svg'
 interface TransactionFailedPopupProps {
   isOpen: boolean;
   onClose: () => void;
+  title?: string;
   message?: string;
 }
 
 const TransactionFailedPopup: React.FC<TransactionFailedPopupProps> = ({
   isOpen,
   onClose,
+  title = "Transaction Failed",
   message = "Something went wrong while processing your request. Please try again. If the issue continues, contact customer support.",
 }) => {
   return (
@@ -25,7 +27,7 @@ const TransactionFailedPopup: React.FC<TransactionFailedPopupProps> = ({
         </div>
 
         <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-6">
-          Transaction Failed
+          {title}
         </h2>
 
         <p className="text-lg md:text-xl text-[#EAEAEA] mb-12 max-w-lg mx-auto">
