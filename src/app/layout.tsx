@@ -1,7 +1,7 @@
 import "./globals.css";
 import { Suspense } from "react";
 import SignInTokenHandler from "@/components/SignInTokenHandler";
-import NewYearAirdropPopupHandler from "@/components/NewYearAirdropPopupHandler";
+import BirthdayPopupHandler from "@/components/BirthdayPopupHandler";
 import ConditionalLayout from "@/components/ConditionalLayout";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { GoogleOAuthProvider } from "@react-oauth/google"; // ✅ Import this
@@ -63,7 +63,7 @@ export default function RootLayout({
             <Suspense fallback={null}>
               <SignInTokenHandler />
             </Suspense>
-            <NewYearAirdropPopupHandler />
+            <BirthdayPopupHandler />
             <ConditionalLayout>{children}</ConditionalLayout>
           </AuthProvider>
         </GoogleOAuthProvider>
