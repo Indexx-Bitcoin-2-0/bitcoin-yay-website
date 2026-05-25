@@ -1050,19 +1050,12 @@ function ClaimPageContent() {
         <div
           className={`flex justify-center mb-6 md:mb-8 ${claimButtonDisabled ? "pointer-events-none opacity-70" : ""}`}
         >
-          <div className="relative">
-            <CustomButton2
-              text={claimButtonLabel}
-              image={WalletIcon}
-              imageStyling="w-20 md:w-30"
-              onClick={openConfirmPopup}
-            />
-            {claimButtonDisabled && (
-              <span className="absolute inset-x-0 bottom-[-28px] text-xs text-primary text-center">
-                {isSessionFinalizing ? "Finalizing your session…" : "Claim transaction in progress…"}
-              </span>
-            )}
-          </div>
+          <CustomButton2
+            text={claimButtonLabel}
+            image={WalletIcon}
+            imageStyling="w-20 md:w-30"
+            onClick={openConfirmPopup}
+          />
         </div>
         <PopupComponent isOpen={isConfirmPopupOpen} onClose={closeConfirmPopup}>
           <div className="w-72 md:w-96 bg-bg p-6 rounded-2xl flex flex-col gap-4">
