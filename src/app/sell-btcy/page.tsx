@@ -28,7 +28,10 @@ import SellStatusPopupV2 from "./SellStatusPopupV2";
 import TransactionFailedPopup from "./TransactionFailedPopup";
 
 import { useAuth } from "@/contexts/AuthContext";
-import { SELL_BTCY_CREATE_ORDER_ROUTE } from "@/routes";
+import {
+  SELL_BTCY_CREATE_ORDER_ROUTE,
+  SELL_BTCY_ELIGIBILITY_ROUTE,
+} from "@/routes";
 import { getAuthenticatedWalletUrl } from "@/lib/authenticated-wallet";
 import {
   applyReceivedAmountDeduction,
@@ -40,6 +43,17 @@ import { getUserWalletBalance } from "@/lib/alchemy";
 // Define the valid network types globally for clarity
 type NetworkType = "binance" | "ethereum" | "solana";
 type CurrencyType = "USDT" | "USDC";
+type SellEligibilityData = {
+  email?: string;
+  canCreateSellOrder?: boolean;
+  sellAllowanceEligible?: boolean;
+  kycStatus?: string;
+  serviceStatus?: string;
+  purchasedAmount?: number;
+  usedAmount?: number;
+  remainingAmount?: number;
+  message?: string;
+};
 
 const DEFAULT_SELL_FAILURE_MESSAGE =
   "Something went wrong while processing your request. Please try again. If the issue continues, contact customer support.";
@@ -105,6 +119,40 @@ const getKycPopupMessage = (responseData: unknown) => {
   return message;
 };
 
+const normalizeSellEligibility = (responseData: unknown) => {
+  const payloadData = getSellOrderPayloadData(responseData);
+
+  if (payloadData && typeof payloadData === "object") {
+    return payloadData as SellEligibilityData;
+  }
+
+  if (responseData && typeof responseData === "object") {
+    return responseData as SellEligibilityData;
+  }
+
+  return null;
+};
+
+const getEligibilityMessage = (eligibility: SellEligibilityData | null) =>
+  eligibility?.message?.trim() || DEFAULT_SELL_FAILURE_MESSAGE;
+
+const isKycBlockedEligibility = (eligibility: SellEligibilityData | null) => {
+  const kycStatus = eligibility?.kycStatus?.toLowerCase();
+  const message = getEligibilityMessage(eligibility).toLowerCase();
+
+  return (
+    kycStatus === "missing" ||
+    kycStatus === "pending" ||
+    message.includes("kyc")
+  );
+};
+
+const fetchSellEligibility = (email: string) =>
+  axios.get(SELL_BTCY_ELIGIBILITY_ROUTE, {
+    params: { email },
+    validateStatus: () => true,
+  });
+
 const isValidSolanaAddress = (address: string) => {
   try {
     new PublicKey(address);
@@ -147,6 +195,8 @@ export default function SellBtcyPage() {
   const [isSellStatusPopupOpen, setIsSellStatusPopupOpen] = useState(false);
   const [isTransactionFailedPopupOpen, setIsTransactionFailedPopupOpen] =
     useState(false);
+  const [transactionFailedTitle, setTransactionFailedTitle] =
+    useState("Transaction Failed");
   const [transactionFailedMessage, setTransactionFailedMessage] = useState(
     DEFAULT_SELL_FAILURE_MESSAGE
   );
@@ -154,7 +204,10 @@ export default function SellBtcyPage() {
 
   const [loading, setLoading] = useState(false);
   const [balanceLoading, setBalanceLoading] = useState(false);
+  const [eligibilityLoading, setEligibilityLoading] = useState(false);
   const [btcyBalance, setBtcyBalance] = useState<number | null>(null);
+  const [sellEligibility, setSellEligibility] =
+    useState<SellEligibilityData | null>(null);
   const [sellError, setSellError] = useState<string | null>(null);
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
   const [addressTouched, setAddressTouched] = useState(false);
@@ -222,6 +275,44 @@ export default function SellBtcyPage() {
     };
   }, [user?.email, isAuthLoading]);
 
+  useEffect(() => {
+    let isActive = true;
+
+    const loadSellEligibility = async () => {
+      if (isAuthLoading) {
+        return;
+      }
+
+      if (!user?.email) {
+        setSellEligibility(null);
+        setEligibilityLoading(false);
+        return;
+      }
+
+      setEligibilityLoading(true);
+      try {
+        const response = await fetchSellEligibility(user.email);
+        if (!isActive) return;
+
+        setSellEligibility(normalizeSellEligibility(response.data));
+      } catch (error) {
+        if (!isActive) return;
+        console.error("Failed to fetch BTCY sell eligibility:", error);
+        setSellEligibility(null);
+      } finally {
+        if (isActive) {
+          setEligibilityLoading(false);
+        }
+      }
+    };
+
+    loadSellEligibility();
+
+    return () => {
+      isActive = false;
+    };
+  }, [user?.email, isAuthLoading]);
+
   // Calculate the converted amount based on live price
   const expectedGrossReceiveAmount = btcyAmount
     ? Number(btcyAmount) * btcyPrice
@@ -246,6 +337,20 @@ export default function SellBtcyPage() {
         maximumFractionDigits: 8,
       })
       : null;
+  const eligibleSellAmount =
+    typeof sellEligibility?.remainingAmount === "number"
+      ? Math.max(0, sellEligibility.remainingAmount)
+      : null;
+  const formattedEligibleSellAmount =
+    eligibleSellAmount !== null
+      ? eligibleSellAmount.toLocaleString("en-US", {
+        maximumFractionDigits: 8,
+      })
+      : null;
+  const maxSellableBtcy =
+    btcyBalance !== null && eligibleSellAmount !== null
+      ? Math.min(btcyBalance, eligibleSellAmount)
+      : (eligibleSellAmount ?? btcyBalance);
   const balanceLabel = user?.email
     ? `Your BTCY Token Balance: ${balanceLoading ? "Loading..." : (formattedBtcyBalance ?? "Unavailable")
     } BTCY`
@@ -272,6 +377,14 @@ export default function SellBtcyPage() {
 
     if (btcyBalance !== null && requestedBtcyAmount > btcyBalance) {
       return `Amount exceeds your available balance of ${formattedBtcyBalance ?? "0"
+        } BTCY.`;
+    }
+
+    if (
+      eligibleSellAmount !== null &&
+      requestedBtcyAmount > eligibleSellAmount
+    ) {
+      return `Amount exceeds your eligible sell balance of ${formattedEligibleSellAmount ?? "0"
         } BTCY.`;
     }
 
@@ -303,6 +416,7 @@ export default function SellBtcyPage() {
 
     setHasAttemptedSubmit(true);
     setSellError(null);
+    setTransactionFailedTitle("Transaction Failed");
     setTransactionFailedMessage(DEFAULT_SELL_FAILURE_MESSAGE);
 
     if (isAuthLoading) {
@@ -323,6 +437,38 @@ export default function SellBtcyPage() {
 
     try {
       setLoading(true);
+
+      const eligibilityResponse = await fetchSellEligibility(user.email);
+      const eligibility = normalizeSellEligibility(eligibilityResponse.data);
+      setSellEligibility(eligibility);
+
+      if (!eligibility?.canCreateSellOrder) {
+        if (isKycBlockedEligibility(eligibility)) {
+          setKycMessage(getEligibilityMessage(eligibility));
+          setIsKycPopupOpen(true);
+          return;
+        }
+
+        setTransactionFailedTitle("Unable to Sell BTCY");
+        setTransactionFailedMessage(getEligibilityMessage(eligibility));
+        setIsTransactionFailedPopupOpen(true);
+        return;
+      }
+
+      if (
+        typeof eligibility.remainingAmount === "number" &&
+        requestedBtcyAmount > eligibility.remainingAmount
+      ) {
+        setTransactionFailedTitle("Sell Amount Exceeds Allowance");
+        setTransactionFailedMessage(
+          `You can sell up to ${eligibility.remainingAmount.toLocaleString(
+            "en-US",
+            { maximumFractionDigits: 8 }
+          )} BTCY from your eligible purchased BTCY allowance.`
+        );
+        setIsTransactionFailedPopupOpen(true);
+        return;
+      }
 
       const payload = {
         email: user.email,
@@ -453,7 +599,7 @@ export default function SellBtcyPage() {
             <input
               type="number"
               value={btcyAmount}
-              max={btcyBalance ?? undefined}
+              max={maxSellableBtcy ?? undefined}
               onChange={(e) => {
                 setBtcyAmount(e.target.value);
                 setSellError(null);
@@ -468,8 +614,14 @@ export default function SellBtcyPage() {
                 {formattedBtcyBalance ?? "0"} BTCY
               </span>
               <span className="text-gray-300">
+                <span className="text-primary font-semibold">Eligible:</span>{" "}
+                {eligibilityLoading
+                  ? "Loading..."
+                  : `${formattedEligibleSellAmount ?? "Unavailable"} BTCY`}
+              </span>
+              <span className="text-gray-300">
                 <span className="text-primary font-semibold">Minimum:</span>{" "}
-                {formattedMinimumSellBtcy} BTCY (${MIN_SELL_USD} worth)
+                {formattedMinimumSellBtcy} BTCY to receive ${MIN_SELL_USD} after fees
               </span>
             </div>
             {amountError && (
@@ -669,6 +821,7 @@ export default function SellBtcyPage() {
       <TransactionFailedPopup
         isOpen={isTransactionFailedPopupOpen}
         onClose={() => setIsTransactionFailedPopupOpen(false)}
+        title={transactionFailedTitle}
         message={transactionFailedMessage}
       />
 

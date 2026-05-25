@@ -45,6 +45,7 @@ type ClaimDestination = {
   installUrl?: string;
   claimAddress?: string;
   fastTrack?: boolean;
+  disabled?: boolean;
   note?: string;
 };
 
@@ -89,6 +90,7 @@ const claimDestinations: ClaimDestination[] = [
     walletName: "TronLink",
     installUrl: "https://www.tronlink.org",
     claimAddress: TRON_CLAIM_ADDRESS,
+    disabled: true,
   },
   {
     id: "solana",
@@ -98,6 +100,7 @@ const claimDestinations: ClaimDestination[] = [
     walletName: "Phantom",
     installUrl: "https://phantom.app",
     claimAddress: SOLANA_CLAIM_ADDRESS,
+    disabled: true,
   },
   {
     id: "ethereum",
@@ -109,6 +112,7 @@ const claimDestinations: ClaimDestination[] = [
     note:
       "Ethereum claims are routed through the Indexx Asset Wallet dashboard while MetaMask integration is being finalized.",
     claimAddress: ETHEREUM_CLAIM_ADDRESS,
+    disabled: true,
   },
   {
     id: "binance",
@@ -120,6 +124,7 @@ const claimDestinations: ClaimDestination[] = [
     note:
       "MetaMask is recommended for BSC claims. Switch your network to BNB Smart Chain before submitting a claim.",
     claimAddress: ETHEREUM_CLAIM_ADDRESS,
+    disabled: true,
   },
 ];
 
@@ -158,7 +163,7 @@ type TronClaimStatusState = {
 function ClaimPageContent() {
   const router = useRouter();
   const { user, isLoading } = useAuth();
-  const [selectedDestination, setSelectedDestination] = useState<ClaimDestinationId>("tron");
+  const [selectedDestination, setSelectedDestination] = useState<ClaimDestinationId>("indexx");
   const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
   const [walletState, setWalletState] = useState(initialWalletState);
   const [isClaiming, setIsClaiming] = useState(false);
@@ -830,12 +835,19 @@ function ClaimPageContent() {
             {claimDestinations.map((destination) => {
               const isRecommendedLayout = destination.id === "indexx";
               const isSelected = selectedDestination === destination.id;
+              const isDisabled = Boolean(destination.disabled);
               return (
                 <div
                   key={destination.id}
-                  onClick={() => setSelectedDestination(destination.id)}
-                  className={`p-5 md:p-6 rounded-lg border-2 cursor-pointer transition-all ${isSelected
+                  onClick={() => {
+                    if (!isDisabled) setSelectedDestination(destination.id);
+                  }}
+                  aria-disabled={isDisabled}
+                  className={`p-5 md:p-6 rounded-lg border-2 transition-all ${isDisabled ? "cursor-not-allowed opacity-45" : "cursor-pointer"
+                    } ${isSelected
                     ? "border-primary shadow-[0_0_0_2px_rgba(255,159,20,0.5)]"
+                    : isDisabled
+                    ? "border-bg2"
                     : "border-bg2 hover:border-bg3"
                     } ${isRecommendedLayout && !isSelected ? "bg-white/5" : ""}`}
                 >
@@ -1039,19 +1051,12 @@ function ClaimPageContent() {
         <div
           className={`flex justify-center mb-6 md:mb-8 ${claimButtonDisabled ? "pointer-events-none opacity-70" : ""}`}
         >
-          <div className="relative">
-            <CustomButton2
-              text={claimButtonLabel}
-              image={WalletIcon}
-              imageStyling="w-20 md:w-30"
-              onClick={openConfirmPopup}
-            />
-            {claimButtonDisabled && (
-              <span className="absolute inset-x-0 bottom-[-28px] text-xs text-primary text-center">
-                {isSessionFinalizing ? "Finalizing your session…" : "Claim transaction in progress…"}
-              </span>
-            )}
-          </div>
+          <CustomButton2
+            text={claimButtonLabel}
+            image={WalletIcon}
+            imageStyling="w-20 md:w-30"
+            onClick={openConfirmPopup}
+          />
         </div>
         <PopupComponent isOpen={isConfirmPopupOpen} onClose={closeConfirmPopup}>
           <div className="w-72 md:w-96 bg-bg p-6 rounded-2xl flex flex-col gap-4">
