@@ -13,6 +13,7 @@ import CustomButton2 from "@/components/CustomButton2";
 import PopupComponent from "@/components/PopupComponent";
 import WalletIcon from '@/assets/images/alchemy/home/walletIcon.png';
 import PointingButtonImage from "@/assets/images/buttons/point-button.webp";
+import CancelOrderImage from "@/assets/images/buttons/cancelOrder.svg";
 import { useAuth } from "@/contexts/AuthContext";
 import LoginPopup from "@/components/LoginPopup";
 import { TRONABI } from "@/contracts/tron/abi";
@@ -1064,7 +1065,7 @@ function ClaimPageContent() {
             </p>
             <div className="flex flex-col gap-6 md:flex-row md:justify-center">
               <CustomButton2
-                image={PointingButtonImage}
+                image={CancelOrderImage}
                 text="No, cancel"
                 imageStyling="w-28 h-28"
                 widthClassName="w-32 md:w-36"
