@@ -3,9 +3,8 @@
 import Image from "next/image";
 import LogoImage from "@/assets/images/main-logo.svg";
 import IndexxLogo from "@/assets/images/indexx.ai.svg";
-import CartButtonImage from "@/assets/images/buttons/cart-button.webp";
-import SellButtonImage from "@/assets/images/buttons/price-tag-button.webp";
-import PromotionalArt from "@/assets/images/btcy-airdrop/btcyairdroppopup.svg";
+import DownloadIcon from "@/assets/images/buttons/download-button.webp";
+import PromotionalArt from "@/assets/images/birthdayArt.svg";
 import CustomButton2 from "./CustomButton2";
 
 const NewYearPromotionalBanner = () => {
@@ -41,22 +40,36 @@ const NewYearPromotionalBanner = () => {
                     {/* Middle - Promotional Text */}
                     <div className="flex-1 flex flex-col justify-center mb-6 md:mb-8">
                         <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-[#f28132] mb-1 md:mb-2">
-                            SELL IS LIVE — TRADE BTCY NOW
+                            Alchemy Goes Live May 29
                         </h1>
 
                         <p className="text-lg md:text-2xl text-white font-semibold mt-4">
-                            Only Quantum Mining buyers can sell. Buy today, sell today — BTCY is finally tradable.
+                            BTCY turns one. Celebrate our birthday with the launch you&apos;ve been mining toward — convert your Nuggets into BTCY tokens
+                        </p>
+
+                        <p className="text-base md:text-lg text-white mt-4">
+                            Hit 50,000 mined BTCY to qualify. Controlled rollout — early miners first.
                         </p>
                     </div>
 
                     {/* Bottom - Buttons and Disclaimer */}
                     <div className="flex flex-col items-center md:items-start">
                         <div className="flex flex-row items-center gap-4">
-                            <CustomButton2 image={CartButtonImage} text="Buy Now" link="/quantum-mining" imageStyling="w-20" />
-                            <CustomButton2 image={SellButtonImage} text="Sell Now" link="/sell-btcy" imageStyling="w-20" />
+                            <CustomButton2
+                                image={DownloadIcon}
+                                text="Download on App Store"
+                                link="https://apps.apple.com/ph/app/bitcoin-yay/id6744868017"
+                                imageStyling="w-24 h-24"
+                            />
+                            <CustomButton2
+                                image={DownloadIcon}
+                                text="Get it on Google Play"
+                                link="https://play.google.com/store/apps/details?id=com.bitcoin2&hl=en"
+                                imageStyling="w-24 h-24"
+                            />
                         </div>
-                        <p className="text-white text-xs md:text-sm mt-3 md:mt-4 text-center md:text-left">
-                            Sell access exclusive to Quantum Mining buyers for now. More coming soon!
+                        <p className="text-[#f28132] text-xs md:text-sm mt-3 md:mt-4 text-center md:text-left">
+                            Alchemy outcomes are randomized.
                         </p>
                     </div>
                 </div>
