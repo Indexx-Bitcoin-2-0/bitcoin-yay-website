@@ -28,7 +28,7 @@ const BirthdayPopup: React.FC<BirthdayPopupProps> = ({ isOpen, onClose }) => {
 
         {/* Headline */}
         <h1 className="text-primary text-2xl md:text-4xl font-bold leading-tight mb-6">
-          Happy Birthday from BTCY
+          Happy Birthday, BTCY!
           <br />
           Here&apos;s Your Gift
         </h1>
