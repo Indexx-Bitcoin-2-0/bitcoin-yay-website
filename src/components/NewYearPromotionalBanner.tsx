@@ -3,7 +3,8 @@
 import Image from "next/image";
 import LogoImage from "@/assets/images/main-logo.svg";
 import IndexxLogo from "@/assets/images/indexx.ai.svg";
-import DownloadIcon from "@/assets/images/buttons/download-button.webp";
+import AppleIcon from "@/assets/images/apple_icon.webp";
+import PlayStoreIcon from "@/assets/images/playstore_icon.webp";
 import PromotionalArt from "@/assets/images/birthdayArt.svg";
 import CustomButton2 from "./CustomButton2";
 
@@ -56,16 +57,18 @@ const NewYearPromotionalBanner = () => {
                     <div className="flex flex-col items-center md:items-start">
                         <div className="flex flex-row items-center gap-4">
                             <CustomButton2
-                                image={DownloadIcon}
+                                image={AppleIcon}
                                 text="Download on App Store"
                                 link="https://apps.apple.com/ph/app/bitcoin-yay/id6744868017"
-                                imageStyling="w-24 h-24"
+                                imageStyling="w-20 h-20 md:w-24 md:h-24 object-contain"
+                                widthClassName="w-32 md:w-50"
                             />
                             <CustomButton2
-                                image={DownloadIcon}
+                                image={PlayStoreIcon}
                                 text="Get it on Google Play"
                                 link="https://play.google.com/store/apps/details?id=com.bitcoin2&hl=en"
-                                imageStyling="w-24 h-24"
+                                imageStyling="w-20 h-20 md:w-24 md:h-24 object-contain"
+                                widthClassName="w-32 md:w-50"
                             />
                         </div>
                         <p className="text-[#f28132] text-xs md:text-sm mt-3 md:mt-4 text-center md:text-left">
