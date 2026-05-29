@@ -167,14 +167,14 @@ export default function PaymentPopup({
 
         <div className="mt-10 flex justify-around">
           <CustomButton2
-            image={CheckMarkButtonImage}
-            text="Payment Confirmed"
-            onClick={() => onPaymentConfirmed?.()}
-          />
-          <CustomButton2
             image={CancelOrderImage}
             text="Cancel"
             onClick={onCancel || onClose}
+          />
+          <CustomButton2
+            image={CheckMarkButtonImage}
+            text="Payment Confirmed"
+            onClick={() => onPaymentConfirmed?.()}
           />
         </div>
       </div>

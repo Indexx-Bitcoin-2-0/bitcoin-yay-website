@@ -119,20 +119,6 @@ const getKycPopupMessage = (responseData: unknown) => {
   return message;
 };
 
-const getEligibilityMessage = (eligibility: SellEligibilityData | null) =>
-  eligibility?.message?.trim() || DEFAULT_SELL_FAILURE_MESSAGE;
-
-const isKycBlockedEligibility = (eligibility: SellEligibilityData | null) => {
-  const kycStatus = eligibility?.kycStatus?.toLowerCase();
-  const message = getEligibilityMessage(eligibility).toLowerCase();
-
-  return (
-    kycStatus === "missing" ||
-    kycStatus === "pending" ||
-    message.includes("kyc")
-  );
-};
-
 const normalizeSellEligibility = (responseData: unknown) => {
   const payloadData = getSellOrderPayloadData(responseData);
 
@@ -147,28 +133,25 @@ const normalizeSellEligibility = (responseData: unknown) => {
   return null;
 };
 
-const isRouteNotFoundEligibilityResponse = (responseData: unknown) =>
-  getEligibilityMessage(normalizeSellEligibility(responseData))
-    .toLowerCase()
-    .includes("route not found");
+const getEligibilityMessage = (eligibility: SellEligibilityData | null) =>
+  eligibility?.message?.trim() || DEFAULT_SELL_FAILURE_MESSAGE;
 
-const fetchSellEligibility = async (email: string) => {
-  const queryResponse = await axios.get(SELL_BTCY_ELIGIBILITY_ROUTE, {
+const isKycBlockedEligibility = (eligibility: SellEligibilityData | null) => {
+  const kycStatus = eligibility?.kycStatus?.toLowerCase();
+  const message = getEligibilityMessage(eligibility).toLowerCase();
+
+  return (
+    kycStatus === "missing" ||
+    kycStatus === "pending" ||
+    message.includes("kyc")
+  );
+};
+
+const fetchSellEligibility = (email: string) =>
+  axios.get(SELL_BTCY_ELIGIBILITY_ROUTE, {
     params: { email },
     validateStatus: () => true,
   });
-
-  if (!isRouteNotFoundEligibilityResponse(queryResponse.data)) {
-    return queryResponse;
-  }
-
-  return axios.get(
-    `${SELL_BTCY_ELIGIBILITY_ROUTE}/${encodeURIComponent(email)}`,
-    {
-      validateStatus: () => true,
-    }
-  );
-};
 
 const isValidSolanaAddress = (address: string) => {
   try {
@@ -388,8 +371,8 @@ export default function SellBtcyPage() {
       return "BTCY price is loading. Please wait.";
     }
 
-    if (expectedReceiveAmount < MIN_SELL_USD) {
-      return `Minimum sell amount is ${formattedMinimumSellBtcy} BTCY to receive at least $${MIN_SELL_USD} after fees.`;
+    if (expectedReceiveAmount <= MIN_SELL_USD) {
+      return `Minimum sell amount is more than ${formattedMinimumSellBtcy} BTCY, so your net payable is greater than $${MIN_SELL_USD} after the 3% fee.`;
     }
 
     if (btcyBalance !== null && requestedBtcyAmount > btcyBalance) {
@@ -652,7 +635,7 @@ export default function SellBtcyPage() {
               </span>
               <span className="text-gray-300">
                 <span className="text-primary font-semibold">Minimum:</span>{" "}
-                {formattedMinimumSellBtcy} BTCY to receive ${MIN_SELL_USD} after fees
+                More than {formattedMinimumSellBtcy} BTCY to receive over ${MIN_SELL_USD} after fees
               </span>
             </div>
             {amountError && (

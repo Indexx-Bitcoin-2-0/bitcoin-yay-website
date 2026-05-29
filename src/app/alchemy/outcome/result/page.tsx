@@ -447,16 +447,16 @@ export default function AlchemyOutcomeResultPage() {
 
                     <div className="flex flex-col md:flex-row items-center justify-between gap-30 w-full mt-20 max-w-lg">
                         <CustomButton2
-                            text="Claim Token"
-                            image={WalletIcon}
-                            imageStyling="w-20 md:w-30"
-                            onClick={handleClaimClick}
-                        />
-                        <CustomButton2
                             text="Convert Again"
                             image={ConvertIcon}
                             imageStyling="w-20 md:w-30"
                             link="/alchemy"
+                        />
+                        <CustomButton2
+                            text="Claim Token"
+                            image={WalletIcon}
+                            imageStyling="w-20 md:w-30"
+                            onClick={handleClaimClick}
                         />
                     </div>
 
