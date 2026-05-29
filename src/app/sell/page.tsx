@@ -9,6 +9,10 @@ import { isAddress } from "viem";
 import { useAuth } from "@/contexts/AuthContext";
 import { SELL_BTCY_CREATE_ROUTE } from "@/routes";
 import { getAuthenticatedWalletUrl } from "@/lib/authenticated-wallet";
+import {
+  applyReceivedAmountDeduction,
+  RECEIVED_AMOUNT_MULTIPLIER,
+} from "@/lib/quantum-mining";
 import KycVerificationPopup from "../sell-btcy/KycVerificationPopup";
 import TransactionFailedPopup from "../sell-btcy/TransactionFailedPopup";
 
@@ -24,7 +28,8 @@ interface SellFormData {
 const KYC_ACCOUNT_URL = "https://cex.indexx.ai/indexx-exchange/account";
 const BTCY_PRICE_USD = 0.1;
 const MIN_SELL_USD = 10;
-const MIN_SELL_BTCY = MIN_SELL_USD / BTCY_PRICE_USD;
+const MIN_SELL_BTCY =
+  MIN_SELL_USD / (BTCY_PRICE_USD * RECEIVED_AMOUNT_MULTIPLIER);
 const DEFAULT_KYC_MESSAGE =
   "To sell BTCY and receive USDT, you need to complete identity verification (KYC).";
 const DEFAULT_SELL_FAILURE_MESSAGE =
@@ -135,12 +140,19 @@ export default function SellPage() {
     }
 
     const btcyAmount = Number(formData.btcyAmount);
-    if (Number.isNaN(btcyAmount) || btcyAmount < MIN_SELL_BTCY) {
+    const grossReceiveAmount = btcyAmount * BTCY_PRICE_USD;
+    const receiveAmount = applyReceivedAmountDeduction(grossReceiveAmount);
+    if (Number.isNaN(btcyAmount) || btcyAmount < 1) {
+      setFormError("Please enter a valid BTCY amount.");
+      return;
+    }
+
+    if (receiveAmount <= MIN_SELL_USD) {
       setFormError(
-        `Minimum sell amount is ${MIN_SELL_BTCY.toLocaleString("en-US", {
+        `Minimum sell amount is more than ${MIN_SELL_BTCY.toLocaleString("en-US", {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
-        })} BTCY, worth $${MIN_SELL_USD}.`
+        })} BTCY, so your net payable is greater than $${MIN_SELL_USD} after the 3% fee.`
       );
       return;
     }
@@ -159,6 +171,7 @@ export default function SellPage() {
       const res = await axios.post(SELL_BTCY_CREATE_ROUTE, {
         email: user.email,
         btcyAmount,
+        receiveAmount,
         receiveCurrency: formData.receiveCurrency, // Now dynamic
         destinationWallet: formData.receiveAddress, // Using the dynamic address field
         network: formData.network,
@@ -279,7 +292,7 @@ export default function SellPage() {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
                         })}{" "}
-                        BTCY (${MIN_SELL_USD} worth)
+                        BTCY (net &gt; ${MIN_SELL_USD} after fee)
                       </span>
                     </span>
                   </div>
