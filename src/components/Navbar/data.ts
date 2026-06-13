@@ -383,6 +383,12 @@ const header_data = [
             name: "Mobile Mining",
             href: `/#mobile-mining`,
           },
+          {
+            name: "Mining Station",
+            href: "https://miningstation.bitcoinyay.com/",
+            openInNewTab: false,
+            authTokenRedirect: true,
+          },
         ],
       },
       // {

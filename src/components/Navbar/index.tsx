@@ -39,6 +39,7 @@ import {
   getUserMiningBalance,
   getUserWalletBalance,
 } from "@/lib/alchemy";
+import { getAuthenticatedWalletUrl } from "@/lib/authenticated-wallet";
 import { balanceCopy } from "@/content/balanceCopy";
 
 import CustomButton2 from "@/components/CustomButton2";
@@ -52,6 +53,7 @@ interface LinkItem {
   name: string;
   href: string;
   openInNewTab?: boolean;
+  authTokenRedirect?: boolean;
 }
 
 interface DropdownSection {
@@ -107,11 +109,24 @@ const MobileLogo = () => (
 );
 // Extract dropdown link component
 const DropdownLink = memo(
-  ({ link, isMainList }: { link: LinkItem; isMainList?: boolean }) => (
+  ({
+    link,
+    isMainList,
+    onClick,
+  }: {
+    link: LinkItem;
+    isMainList?: boolean;
+    onClick?: (
+      link: LinkItem,
+      event: React.MouseEvent<HTMLAnchorElement>
+    ) => void;
+  }) => (
     <li className="list-none flex flex-col text-left my-2">
       <a
         href={link.href}
         target={link.openInNewTab ? "_blank" : undefined}
+        rel={link.openInNewTab ? "noopener noreferrer" : undefined}
+        onClick={(event) => onClick?.(link, event)}
         className={`${
           isMainList ? "text-[25px] font-semibold" : "text-xs mt-4"
         } text-tertiary block relative after:absolute after:left-0 after:-bottom-1 after:w-5 after:h-[3px] after:bg-primary after:opacity-0 hover:after:opacity-100 after:transition-opacity after:duration-300`}
@@ -617,9 +632,36 @@ const Navbar: React.FC = () => {
     setMenuOpen((prev) => !prev);
   }, []);
 
-  const closeMobileMenu = () => {
+  const closeMobileMenu = useCallback(() => {
     setMenuOpen(false);
-  };
+  }, []);
+
+  const handleNavLinkClick = useCallback(
+    async (
+      link: LinkItem,
+      event: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>
+    ) => {
+      if (!link.authTokenRedirect) {
+        closeMobileMenu();
+        return;
+      }
+
+      event.preventDefault();
+      setBackdropVisibility(false);
+      closeMobileMenu();
+
+      if (!isAuthenticated || !user) {
+        setIsLoginPopupOpen(true);
+        return;
+      }
+
+      const redirectUrl = await getAuthenticatedWalletUrl(link.href, {
+        includeBuyToken: false,
+      });
+      window.location.href = redirectUrl;
+    },
+    [closeMobileMenu, isAuthenticated, user]
+  );
 
   // Auth handlers
   const handleLoginSuccess = () => {
@@ -1112,6 +1154,7 @@ const Navbar: React.FC = () => {
                                 key={linkIdx}
                                 link={link}
                                 isMainList={section.mainList}
+                                onClick={handleNavLinkClick}
                               />
                             ))}
                           </ul>
@@ -1238,10 +1281,18 @@ const Navbar: React.FC = () => {
                             <Link
                               key={linkIdx}
                               href={link.href}
+                              target={link.openInNewTab ? "_blank" : undefined}
+                              rel={
+                                link.openInNewTab
+                                  ? "noopener noreferrer"
+                                  : undefined
+                              }
                               className={`block text-lg my-3 hover:text-primary ${
                                 section.mainList ? "font-bold text-xl" : ""
                               }`}
-                              onClick={closeMobileMenu}
+                              onClick={(event) =>
+                                handleNavLinkClick(link, event)
+                              }
                             >
                               {link.name}
                             </Link>
