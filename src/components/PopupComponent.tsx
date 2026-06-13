@@ -1,6 +1,6 @@
 // components/Popup.tsx
 
-import React, { ReactNode, useRef } from "react";
+import React, { ReactNode, useEffect, useRef } from "react";
 import Image from "next/image";
 
 import CrossImage from "@/assets/images/icons/cross-white.png";
@@ -12,6 +12,24 @@ interface PopupProps {
   showCloseButton?: boolean;
 }
 
+// Shared counter so stacked popups don't fight over body scroll lock.
+// The page only unlocks once the LAST open popup closes.
+let openPopupCount = 0;
+
+const lockBodyScroll = () => {
+  if (openPopupCount === 0) {
+    document.body.style.overflow = "hidden";
+  }
+  openPopupCount += 1;
+};
+
+const unlockBodyScroll = () => {
+  openPopupCount = Math.max(0, openPopupCount - 1);
+  if (openPopupCount === 0) {
+    document.body.style.overflow = "";
+  }
+};
+
 const PopupComponent: React.FC<PopupProps> = ({
   isOpen,
   onClose,
@@ -19,6 +37,17 @@ const PopupComponent: React.FC<PopupProps> = ({
   showCloseButton = true,
 }) => {
   const popupRef = useRef<HTMLDivElement>(null);
+
+  // Lock background scroll while the popup is open so only the popup scrolls
+  useEffect(() => {
+    if (!isOpen) return;
+
+    lockBodyScroll();
+
+    return () => {
+      unlockBodyScroll();
+    };
+  }, [isOpen]);
 
   // Handle click outside popup
   // useEffect(() => {
