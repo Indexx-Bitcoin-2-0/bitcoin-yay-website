@@ -498,6 +498,16 @@ const Navbar: React.FC = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const currentPath = usePathname();
+  // Track the URL hash so deep-linked nav items (e.g. /faq#mining) can be made
+  // active individually — usePathname() does not include the hash.
+  const [currentHash, setCurrentHash] = useState("");
+  useEffect(() => {
+    const readHash = () =>
+      setCurrentHash(typeof window !== "undefined" ? window.location.hash : "");
+    readHash();
+    window.addEventListener("hashchange", readHash);
+    return () => window.removeEventListener("hashchange", readHash);
+  }, [currentPath]);
   const router = useRouter();
 
   // Auth related states
@@ -526,6 +536,15 @@ const Navbar: React.FC = () => {
     }
 
     const isPathActive = (path: string): boolean => {
+      if (!path) return false;
+      // Hash-scoped links (e.g. /faq#mining) are active only when both the
+      // path AND the hash match — so only the relevant dropdown lights up.
+      const hashIndex = path.indexOf("#");
+      if (hashIndex !== -1) {
+        const base = path.slice(0, hashIndex);
+        const hash = path.slice(hashIndex);
+        return currentPath === base && currentHash === hash;
+      }
       if (path === "/") return currentPath === "/";
       return currentPath.startsWith(path);
     };
@@ -571,7 +590,7 @@ const Navbar: React.FC = () => {
         active,
       };
     });
-  }, [currentPath, balances.nugget]);
+  }, [currentPath, currentHash, balances.nugget]);
 
   // Optimized resize handler with debounce
   useEffect(() => {

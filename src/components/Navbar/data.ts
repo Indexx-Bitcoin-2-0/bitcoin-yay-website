@@ -40,6 +40,10 @@ const header_data = [
         heading: "Support",
         links: [
           {
+            name: "FAQs",
+            href: "/faq#wallet-tokens",
+          },
+          {
             name: "Contact Us",
             href: "/support/#contact-us",
           },
@@ -107,6 +111,10 @@ const header_data = [
       {
         heading: "Support",
         links: [
+          {
+            name: "FAQs",
+            href: "/faq#getting-started",
+          },
           {
             name: "Contact Us",
             href: "/support/#contact-us",
@@ -224,6 +232,10 @@ const header_data = [
       {
         heading: "Support",
         links: [
+          {
+            name: "FAQs",
+            href: "/faq#nodes",
+          },
           {
             name: "Contact Us",
             href: "/support/#contact-us",
@@ -424,6 +436,10 @@ const header_data = [
       {
         heading: "Support",
         links: [
+          {
+            name: "FAQs",
+            href: "/faq#mining",
+          },
           {
             name: "Contact Us",
             href: "/support/#contact-us",

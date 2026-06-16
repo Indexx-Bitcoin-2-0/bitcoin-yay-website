@@ -24,6 +24,7 @@ const Footer = ({ }) => {
         { text: "Community", url: "#" },
         { text: "Developers", url: "#" },
         { text: "About us", url: "/about" },
+        { text: "FAQs", url: "/faq" },
         { text: "Support", url: "/support" },
       ],
     },
