@@ -71,9 +71,10 @@ const NewYearPromotionalBanner = () => {
             Bet Smart. Mine More.
           </h1>
 
-          {/* Benefit 1 — +10% */}
-          <div className="flex items-center gap-4 md:gap-5 mb-6">
-            <span className="text-4xl md:text-5xl font-extrabold text-[#f28132] shrink-0">
+          {/* Benefits — shared 2-col grid so both text blocks align */}
+          <div className="grid grid-cols-[auto_1fr] items-center gap-x-4 md:gap-x-5 gap-y-6 mb-8">
+            {/* Benefit 1 — +10% */}
+            <span className="justify-self-center text-4xl md:text-5xl font-extrabold text-[#f28132] shrink-0">
               +10%
             </span>
             <p className="text-base md:text-lg text-white leading-snug">
@@ -81,11 +82,9 @@ const NewYearPromotionalBanner = () => {
               <span className="font-bold text-[#f28132]">Win 10% More</span>
               <br className="hidden md:block" /> on Every Prediction
             </p>
-          </div>
 
-          {/* Benefit 2 — Turbo mining */}
-          <div className="flex items-center gap-4 md:gap-5 mb-8">
-            <span className="w-12 h-12 md:w-14 md:h-14 rounded-full border-2 border-[#f28132] flex items-center justify-center shrink-0">
+            {/* Benefit 2 — Turbo mining */}
+            <span className="justify-self-center w-12 h-12 md:w-14 md:h-14 rounded-full border-2 border-[#f28132] flex items-center justify-center shrink-0">
               <Zap
                 size={26}
                 className="text-[#f28132]"
@@ -103,7 +102,7 @@ const NewYearPromotionalBanner = () => {
           </div>
 
           {/* Visit oval button */}
-          <div className="self-center md:self-start md:ml-[-20px]">
+          <div className="self-center md:self-start">
             <CustomButton2
               image={VisitButtonImage}
               text="Visit"
