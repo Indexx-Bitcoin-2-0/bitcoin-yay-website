@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { Zap } from "lucide-react";
 import CustomButton2 from "./CustomButton2";
 import LogoImage from "@/assets/images/main-logo.svg";
@@ -8,14 +9,36 @@ import IndexxLogo from "@/assets/images/indexx.ai.svg";
 import HandsArt from "@/assets/images/btcy-index-relationship/hands.webp";
 import PartnerLogo from "@/assets/images/image.webp";
 import VisitButtonImage from "@/assets/images/buttons/arrow-right-button.svg";
+import { useAuth } from "@/contexts/AuthContext";
+import { getAuthenticatedWalletUrl } from "@/lib/authenticated-wallet";
 
 // NOTE: This banner is rendered on the home page (src/app/page.tsx). The
 // component keeps its legacy name to avoid touching the import there.
-//
-// TODO(link): point the "Visit" button at the partner / campaign URL.
-const VISIT_URL = "https://test.lottery.emmm.io/";
+const VISIT_URL = "https://emmm.io/";
 
 const NewYearPromotionalBanner = () => {
+  const { user } = useAuth();
+  const [visitUrl, setVisitUrl] = useState(VISIT_URL);
+
+  useEffect(() => {
+    let isActive = true;
+
+    const buildVisitLink = async () => {
+      const url = await getAuthenticatedWalletUrl(VISIT_URL, { includeBuyToken: false });
+      if (isActive) setVisitUrl(url);
+    };
+
+    if (user?.email) {
+      buildVisitLink();
+    } else {
+      setVisitUrl(VISIT_URL);
+    }
+
+    return () => {
+      isActive = false;
+    };
+  }, [user?.email]);
+
   return (
     <div className="w-full bg-[#2a2a2a] rounded-2xl overflow-hidden p-8 md:p-10">
       {/* Top - Co-branded logos + Powered By (centered, matching Alchemy layout) */}
@@ -84,7 +107,7 @@ const NewYearPromotionalBanner = () => {
             <CustomButton2
               image={VisitButtonImage}
               text="Visit"
-              link={VISIT_URL}
+              link={visitUrl}
               _blank
               imageStyling="w-16 h-16 md:w-28 md:h-28 object-contain mb-[-16px]"
 
