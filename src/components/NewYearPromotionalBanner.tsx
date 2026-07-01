@@ -40,7 +40,7 @@ const NewYearPromotionalBanner = () => {
   }, [user?.email]);
 
   return (
-    <div className="w-full bg-[#2a2a2a] rounded-2xl overflow-hidden p-8 md:p-10">
+    <div className="h-full w-full bg-[#2a2a2a] rounded-2xl overflow-hidden p-8 md:p-10">
       {/* Top - Co-branded logos + Powered By (centered, matching Alchemy layout) */}
       <div className="flex flex-col items-center">
         <div className="flex items-center justify-center gap-5 md:gap-7 mb-2">
