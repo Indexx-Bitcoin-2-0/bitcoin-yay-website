@@ -73,8 +73,8 @@ const SlateLotteryBanner = () => {
         {/* Left Section - Content */}
         <div className="flex flex-[1.4] flex-col p-6 md:p-8">
           {/* Headline */}
-          <h1 className="mb-5 text-4xl font-extrabold uppercase leading-[0.95] tracking-tight text-white md:text-5xl lg:text-6xl">
-            Slate  Lottery
+          <h1 className="mb-5 text-4xl font-bold uppercase leading-[0.95] tracking-tight text-white md:text-6xl">
+            Prediction  Lottery
             <br />
             <span>Is </span>
             <span className="text-[#f28132]">Live.</span>
