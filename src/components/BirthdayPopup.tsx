@@ -56,6 +56,11 @@ const BirthdayPopup: React.FC<BirthdayPopupProps> = ({ isOpen, onClose }) => {
               ⚡ 20% OFF on Power Mining
             </p>
           </div>
+          <div className="rounded-lg px-4 mt-[-10px]">
+            <p className="text-primary text-lg md:text-xl font-bold">
+              🎯 Bet on EMMM &amp; Get 30% OFF Power Mining
+            </p>
+          </div>
         </div>
 
         {/* Campaign Dates */}
