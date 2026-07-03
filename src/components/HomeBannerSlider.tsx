@@ -49,8 +49,8 @@ const HomeBannerSlider = () => {
         </CarouselItem>
       </CarouselContent>
 
-      <CarouselPrevious className="left-2 h-10 w-10 cursor-pointer border-[#f28132] text-white hover:border-[#f28132] hover:bg-black/60 hover:text-[#f28132] md:-left-12" />
-      <CarouselNext className="right-2 h-10 w-10 cursor-pointer border-[#f28132] text-white hover:border-[#f28132] hover:bg-black/60 hover:text-[#f28132] md:-right-12" />
+      <CarouselPrevious className="left-2 h-10 w-10 cursor-pointer text-primary md:-left-12 border-none " />
+      <CarouselNext className="right-2 h-10 w-10 cursor-pointer text-primary md:-right-12 border-none" />
     </Carousel>
   );
 };
