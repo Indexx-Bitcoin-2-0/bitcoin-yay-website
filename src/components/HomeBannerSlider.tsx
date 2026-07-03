@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/carousel";
 import NewYearPromotionalBanner from "./NewYearPromotionalBanner";
 import SlateLotteryBanner from "./SlateLotteryBanner";
+import IndependenceWeekBanner from "./IndependenceWeekBanner";
 
 // Time each banner stays before auto-advancing (ms).
 const AUTOPLAY_INTERVAL = 6000;
@@ -46,6 +47,9 @@ const HomeBannerSlider = () => {
         </CarouselItem>
         <CarouselItem className="h-full">
           <SlateLotteryBanner />
+        </CarouselItem>
+        <CarouselItem className="h-full">
+          <IndependenceWeekBanner />
         </CarouselItem>
       </CarouselContent>
 
