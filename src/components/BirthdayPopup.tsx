@@ -7,7 +7,7 @@ import LogoImage from "@/assets/images/main-logo.svg";
 import IndexxLogo from "@/assets/images/indexx.ai.svg";
 // TODO(graphics): swap this placeholder art for the Independence Week graphic
 // once it's provided.
-import BirthdayArt from "@/assets/images/popup/attention.webp";
+import BirthdayArt from "@/assets/images/julyPopupArt.png";
 
 interface BirthdayPopupProps {
   isOpen: boolean;
@@ -23,12 +23,12 @@ const BirthdayPopup: React.FC<BirthdayPopupProps> = ({ isOpen, onClose }) => {
 
         {/* Illustration */}
         <div className="flex justify-center my-4 md:my-6">
-          {/* <Image
+          <Image
             src={BirthdayArt}
             alt="Independence Week Illustration"
-            className="w-36"
-          /> */}
-          <p className="text-8xl">🇺🇸 </p>
+            className="w-50"
+          />
+
         </div>
 
         {/* Headline */}
