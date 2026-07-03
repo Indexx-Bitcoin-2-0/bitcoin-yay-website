@@ -81,7 +81,11 @@ const ElectricMiningPage = () => {
 
     setCouponValidationLoading(true);
     try {
-      const validation = await validateCoupon(getPlanKey(), trimmedCoupon);
+      const validation = await validateCoupon(
+        getPlanKey(),
+        trimmedCoupon,
+        user?.email
+      );
       setCouponValidation(validation);
       setCouponValidationStatus("valid");
       setCouponValidationMessage(
