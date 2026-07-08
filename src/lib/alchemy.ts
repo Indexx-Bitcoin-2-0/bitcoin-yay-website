@@ -663,7 +663,7 @@ const normalizeMiningBalance = (
   const totalBalance =
     toFiniteNumber(source["totalBalance"]) ??
     toFiniteNumber(source["balance"]) ??
-    sumNumbers(transferableBalance, unverifiedBalance, migratedBalance);
+    sumNumbers(transferableBalance, unverifiedBalance);
 
   return {
     email,
