@@ -122,6 +122,12 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
                 {/* Footer / Logout */}
                 <div className="border-t border-gray-700/50 p-4 flex flex-col items-center justify-center gap-2">
                     <Link
+                        href="/nugget-transfer"
+                        className="w-full py-2 text-center text-gray-300 font-semibold hover:text-primary hover:cursor-pointer rounded-xl transition-all duration-200"
+                    >
+                        Transfer Nuggets
+                    </Link>
+                    <Link
                         href="/subscription"
                         className="w-full py-2 text-center text-gray-300 font-semibold hover:text-primary hover:cursor-pointer rounded-xl transition-all duration-200"
                     >

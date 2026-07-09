@@ -66,6 +66,7 @@ import UserReviewCards from "@/components/UserReviewCards";
 import DisclaimerComponent from "@/components/DisclaimerComponent";
 import CustomButton2 from "@/components/CustomButton2";
 import HomeBannerSlider from "@/components/HomeBannerSlider";
+import SocialCampaignEntryButton from "@/components/social-campaign/SocialCampaignEntryButton";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
@@ -150,8 +151,13 @@ export default function Home() {
   return (
     <div className="overflow-hidden relative mt-40 mx-auto">
       {/* Home banner slider (promo banners) */}
-      <div className="px-4 md:px-8 lg:px-20 xl:px-40 mb-20">
+      <div className="px-4 md:px-8 lg:px-20 xl:px-40 mb-8">
         <HomeBannerSlider />
+      </div>
+
+      {/* Social Media Campaign entry point */}
+      <div className="mb-20 flex justify-center px-4">
+        <SocialCampaignEntryButton />
       </div>
 
       <div className="mt-6 flex flex-col items-center text-center">
