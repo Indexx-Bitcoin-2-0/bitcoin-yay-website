@@ -520,6 +520,7 @@ const Navbar: React.FC = () => {
     withdrawn: 0,
     token: 0,
   });
+  const [balanceRefreshTick, setBalanceRefreshTick] = useState(0);
   const [isBalanceLoading, setIsBalanceLoading] = useState(false);
   const [balanceError, setBalanceError] = useState<string | null>(null);
   const [activeBalanceModal, setActiveBalanceModal] =
@@ -835,6 +836,16 @@ const Navbar: React.FC = () => {
   }, [stopMiningTicker]);
 
   useEffect(() => {
+    const handleBalanceRefresh = () => {
+      setBalanceRefreshTick((value) => value + 1);
+    };
+
+    window.addEventListener("btcy-balances:refresh", handleBalanceRefresh);
+    return () =>
+      window.removeEventListener("btcy-balances:refresh", handleBalanceRefresh);
+  }, []);
+
+  useEffect(() => {
     if (!isAuthenticated || !user?.email) {
       baseNuggetRef.current = 0;
       miningRateRef.current = 0;
@@ -987,7 +998,13 @@ const Navbar: React.FC = () => {
     return () => {
       isCancelled = true;
     };
-  }, [isAuthenticated, startMiningTicker, stopMiningTicker, user?.email]);
+  }, [
+    balanceRefreshTick,
+    isAuthenticated,
+    startMiningTicker,
+    stopMiningTicker,
+    user?.email,
+  ]);
 
   const handleOpenBalanceModal = useCallback(
     (type: BalanceModalType, trigger?: HTMLElement | null) => {
