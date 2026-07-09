@@ -882,8 +882,7 @@ const Navbar: React.FC = () => {
         const miningData = miningResult.value.data;
         const baseNugget =
           toSafeNumber(miningData?.transferableBalance) +
-          toSafeNumber(miningData?.unverifiedBalance) +
-          toSafeNumber(miningData?.migratedBalance);
+          toSafeNumber(miningData?.unverifiedBalance);
 
         baseNuggetRef.current = baseNugget;
 
