@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import LoginPopup from "@/components/LoginPopup";
@@ -10,38 +10,16 @@ import SubmitButtonImage from "@/assets/images/buttons/submit-button.webp";
 import ImageUploadSection, {
   UploadedImage,
 } from "@/components/social-campaign/ImageUploadSection";
-
-type SubmissionStatus = "pending" | "approved" | "rejected";
-
-interface CampaignSubmission {
-  status: SubmissionStatus;
-  submittedAt: string;
-  rejectionReason?: string;
-}
-
-// TODO(backend): replace this localStorage mock with real API calls
-// (GET current submission, POST new submission with the uploaded images).
-const STORAGE_PREFIX = "btcySocialCampaign:";
-
-const readSubmission = (email: string): CampaignSubmission | null => {
-  try {
-    const raw = window.localStorage.getItem(STORAGE_PREFIX + email);
-    return raw ? (JSON.parse(raw) as CampaignSubmission) : null;
-  } catch {
-    return null;
-  }
-};
-
-const writeSubmission = (email: string, sub: CampaignSubmission) => {
-  try {
-    window.localStorage.setItem(STORAGE_PREFIX + email, JSON.stringify(sub));
-  } catch {
-    /* ignore */
-  }
-};
+import {
+  CampaignSubmission,
+  SocialCampaignStatus,
+  getMySubmission,
+  submitCampaign,
+  uploadImagesForApp,
+} from "@/lib/social-campaign";
 
 const STATUS_META: Record<
-  SubmissionStatus,
+  SocialCampaignStatus,
   { label: string; color: string; icon: string }
 > = {
   pending: { label: "Pending Review", color: "#FFC107", icon: "⏳" },
@@ -55,13 +33,34 @@ const SocialCampaignPage: React.FC = () => {
 
   const [checked, setChecked] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
+  const [loadingSubmission, setLoadingSubmission] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [submission, setSubmission] = useState<CampaignSubmission | null>(null);
 
   const [btcyImages, setBtcyImages] = useState<UploadedImage[]>([]);
   const [emmmImages, setEmmmImages] = useState<UploadedImage[]>([]);
   const [errors, setErrors] = useState<{ btcy?: string; emmm?: string }>({});
   const [submitting, setSubmitting] = useState(false);
+  const [submitStage, setSubmitStage] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [justSubmitted, setJustSubmitted] = useState(false);
+
+  const loadSubmission = useCallback(async () => {
+    try {
+      setLoadingSubmission(true);
+      setLoadError(null);
+      const current = await getMySubmission();
+      setSubmission(current);
+    } catch (error) {
+      setLoadError(
+        error instanceof Error
+          ? error.message
+          : "Failed to load your campaign status. Please try again."
+      );
+    } finally {
+      setLoadingSubmission(false);
+    }
+  }, []);
 
   useEffect(() => {
     if (isLoading) return;
@@ -70,12 +69,12 @@ const SocialCampaignPage: React.FC = () => {
       setChecked(true);
       return;
     }
-    setSubmission(readSubmission(user.email));
     setChecked(true);
-  }, [user, isLoading]);
+    loadSubmission();
+  }, [user, isLoading, loadSubmission]);
 
   const handleSubmit = async () => {
-    if (!user) return;
+    if (!user || submitting) return;
 
     const nextErrors: { btcy?: string; emmm?: string } = {};
     if (btcyImages.length === 0)
@@ -83,26 +82,48 @@ const SocialCampaignPage: React.FC = () => {
     if (emmmImages.length === 0)
       nextErrors.emmm = "Please upload at least one EMMM screenshot.";
     setErrors(nextErrors);
+    setSubmitError(null);
     if (Object.keys(nextErrors).length > 0) return;
 
     setSubmitting(true);
-    // TODO(backend): upload btcyImages + emmmImages and associate with user.
-    await new Promise((r) => setTimeout(r, 800));
+    try {
+      setSubmitStage("Uploading Bitcoin Yay screenshots…");
+      const [bitcoinyayImageKeys, emmmImageKeys] = await Promise.all([
+        uploadImagesForApp(
+          "bitcoinyay",
+          btcyImages.map((img) => img.file)
+        ),
+        (async () => {
+          setSubmitStage("Uploading EMMM screenshots…");
+          return uploadImagesForApp(
+            "emmm",
+            emmmImages.map((img) => img.file)
+          );
+        })(),
+      ]);
 
-    const sub: CampaignSubmission = {
-      status: "pending",
-      submittedAt: new Date().toISOString(),
-    };
-    writeSubmission(user.email, sub);
+      setSubmitStage("Submitting your campaign entry…");
+      const sub = await submitCampaign({ bitcoinyayImageKeys, emmmImageKeys });
 
-    [...btcyImages, ...emmmImages].forEach((img) =>
-      URL.revokeObjectURL(img.previewUrl)
-    );
-    setBtcyImages([]);
-    setEmmmImages([]);
-    setSubmission(sub);
-    setJustSubmitted(true);
-    setSubmitting(false);
+      [...btcyImages, ...emmmImages].forEach((img) =>
+        URL.revokeObjectURL(img.previewUrl)
+      );
+      setBtcyImages([]);
+      setEmmmImages([]);
+      setSubmission(sub);
+      setJustSubmitted(true);
+    } catch (error) {
+      setSubmitError(
+        error instanceof Error
+          ? error.message
+          : "Failed to submit your campaign entry. Please try again."
+      );
+      // A submission may already exist (e.g. race from another tab) — refresh to reflect the true state.
+      loadSubmission();
+    } finally {
+      setSubmitStage(null);
+      setSubmitting(false);
+    }
   };
 
   // ---- Loading ----
@@ -141,7 +162,8 @@ const SocialCampaignPage: React.FC = () => {
     );
   }
 
-  const showForm = !submission || submission.status === "rejected";
+  const showForm =
+    !loadingSubmission && !loadError && (!submission || submission.status === "rejected");
 
   return (
     <div className="min-h-screen bg-[#202020] px-4 pb-24 pt-28 md:px-8">
@@ -157,6 +179,27 @@ const SocialCampaignPage: React.FC = () => {
           </p>
         </div>
 
+        {/* Loading current submission status */}
+        {loadingSubmission && (
+          <div className="mb-6 rounded-2xl border border-white/10 bg-[#2a2a2a] p-5 text-center text-tertiary">
+            Loading your campaign status…
+          </div>
+        )}
+
+        {/* Failed to load current submission status */}
+        {loadError && (
+          <div className="mb-6 rounded-2xl border border-[#F44336]/40 bg-[#F44336]/10 p-5 text-center">
+            <p className="text-sm font-semibold text-[#F44336]">{loadError}</p>
+            <button
+              type="button"
+              onClick={loadSubmission}
+              className="mt-3 rounded-full border border-primary px-5 py-2 text-sm font-bold text-primary"
+            >
+              Retry
+            </button>
+          </div>
+        )}
+
         {/* Success banner (just submitted) */}
         {justSubmitted && (
           <div className="mb-6 rounded-2xl border border-[#4CAF50]/40 bg-[#4CAF50]/10 p-5 text-center">
@@ -170,7 +213,7 @@ const SocialCampaignPage: React.FC = () => {
         )}
 
         {/* Already submitted -> status card */}
-        {submission && !showForm && (
+        {!loadingSubmission && submission && !showForm && (
           <StatusCard submission={submission} />
         )}
 
@@ -241,11 +284,18 @@ const SocialCampaignPage: React.FC = () => {
               />
             </div>
 
+            {/* Submit error */}
+            {submitError && (
+              <div className="mt-6 rounded-2xl border border-[#F44336]/40 bg-[#F44336]/10 p-4 text-center">
+                <p className="text-sm font-semibold text-[#F44336]">{submitError}</p>
+              </div>
+            )}
+
             {/* Submit */}
             <div className="mt-8 flex justify-center">
               <CustomButton2
                 image={SubmitButtonImage}
-                text={submitting ? "Submitting…" : "Submit Campaign"}
+                text={submitting ? submitStage ?? "Submitting…" : "Submit Campaign"}
                 onClick={handleSubmit}
                 disabled={submitting}
                 imageStyling="w-32"
@@ -308,7 +358,8 @@ const StatusCard: React.FC<{ submission: CampaignSubmission }> = ({ submission }
 
       {submission.status === "approved" && (
         <p className="mt-6 rounded-xl bg-primary/10 p-4 text-center text-sm text-primary">
-          🎁 Your reward (14 Days of Turbo Mining Power) has been applied to your account.
+          🎁 Your reward ({submission.rewardDays ?? 14} Days of Turbo Mining Power) has been
+          applied to your account.
         </p>
       )}
 
