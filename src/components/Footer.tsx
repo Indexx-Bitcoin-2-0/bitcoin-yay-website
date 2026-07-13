@@ -20,6 +20,7 @@ const Footer = ({ }) => {
     {
       title: "Quick Links",
       links: [
+        { text: "Bible", url: "/bible" },
         { text: "bitcoin-yay Blockchain", url: "#" },
         { text: "Community", url: "#" },
         { text: "Developers", url: "#" },

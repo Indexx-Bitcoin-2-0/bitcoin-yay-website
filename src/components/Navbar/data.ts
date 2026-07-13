@@ -449,6 +449,14 @@ const header_data = [
     ],
   },
   {
+    mainTextDesktop: "Mining Station",
+    mainTextMob: "Mining Station",
+    active: false,
+    href: "https://miningstation.bitcoinyay.com/",
+    authTokenRedirect: true,
+    hasMegaDrop: false,
+  },
+  {
     mainTextDesktop: "Subscription",
     mainTextMob: "Subscription",
     active: false,

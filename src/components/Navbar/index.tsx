@@ -68,6 +68,7 @@ interface HeaderItem {
   active: boolean;
   href: string;
   openInNewTab?: boolean;
+  authTokenRedirect?: boolean;
   hasMegaDrop: boolean;
   dropDownContent?: DropdownSection[];
 }
@@ -1127,6 +1128,10 @@ const Navbar: React.FC = () => {
                 <a
                   href={element.href}
                   target={element.openInNewTab ? "_blank" : undefined}
+                  onClick={(event) =>
+                    element.authTokenRedirect &&
+                    handleNavLinkClick(element as unknown as LinkItem, event)
+                  }
                   className={`text-sm font-normal transition-all duration-300 hover:text-primary ${
                     element.active ? "text-primary" : "text-tertiary"
                   } group-hover:text-primary`}
@@ -1328,8 +1333,11 @@ const Navbar: React.FC = () => {
                 >
                   <Link
                     href={element.href}
+                    target={element.openInNewTab ? "_blank" : undefined}
                     className="block text-xl py-2 hover:text-primary"
-                    onClick={closeMobileMenu}
+                    onClick={(event) =>
+                      handleNavLinkClick(element as unknown as LinkItem, event)
+                    }
                   >
                     {element.mainTextMob}
                   </Link>

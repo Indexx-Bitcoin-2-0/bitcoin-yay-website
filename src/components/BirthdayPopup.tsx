@@ -5,9 +5,7 @@ import Image from "next/image";
 import PopupComponent from "@/components/PopupComponent";
 import LogoImage from "@/assets/images/main-logo.svg";
 import IndexxLogo from "@/assets/images/indexx.ai.svg";
-// TODO(graphics): swap this placeholder art for the Independence Week graphic
-// once it's provided.
-import BirthdayArt from "@/assets/images/julyPopupArt.png";
+import BirthdayArt from "@/assets/images/mining/turbo-mining-art-1.webp";
 
 interface BirthdayPopupProps {
   isOpen: boolean;
@@ -15,7 +13,7 @@ interface BirthdayPopupProps {
 }
 
 // NOTE: Legacy component/file name kept ("BirthdayPopup") so its handler import
-// stays intact. Content is the 4th of July Independence Week promotion.
+// stays intact. Content is the Social Media Campaign promotion.
 const BirthdayPopup: React.FC<BirthdayPopupProps> = ({ isOpen, onClose }) => {
   return (
     <PopupComponent isOpen={isOpen} onClose={onClose}>
@@ -25,7 +23,7 @@ const BirthdayPopup: React.FC<BirthdayPopupProps> = ({ isOpen, onClose }) => {
         <div className="flex justify-center my-4 md:my-6">
           <Image
             src={BirthdayArt}
-            alt="Independence Week Illustration"
+            alt="Social Media Campaign Illustration"
             className="w-50"
           />
 
@@ -33,44 +31,40 @@ const BirthdayPopup: React.FC<BirthdayPopupProps> = ({ isOpen, onClose }) => {
 
         {/* Headline */}
         <h1 className="text-primary text-2xl md:text-4xl font-bold leading-tight mb-6">
-          Independence Week
+          Social Media Campaign
           <br />
-          4th of July Special
+          Follow &amp; Earn
         </h1>
 
         {/* Body */}
         <p className="text-white text-base md:text-lg leading-relaxed mb-5 px-2">
-          Celebrate Independence Week with Bitcoin Yay! For one week only, enjoy
-          exclusive offers on BTCY mining plans:
+          Follow our official Bitcoin Yay &amp; EMMM channels, upload your
+          screenshots as proof, and claim your reward:
         </p>
 
-        {/* Offers */}
+        {/* Steps */}
         <div className="flex flex-col gap-3 mb-6 px-2">
           <div className="rounded-lg py-1 px-4">
             <p className="text-primary text-lg md:text-xl font-bold">
-              🚀 30% Bonus on Quantum Mining
+              👥 Follow Bitcoin Yay &amp; EMMM
             </p>
           </div>
           <div className="rounded-lg px-4 mt-[-10px]">
             <p className="text-white text-lg md:text-xl font-bold">
-              ⚡ 20% OFF on Power Mining
+              📸 Upload Your Screenshots
             </p>
           </div>
-          <div className="rounded-lg px-4 mt-[-10px]">
-            <p className="text-primary text-lg md:text-xl font-bold">
-              🎯 Bet on EMMM &amp; Get 30% OFF Power Mining
-            </p>
-          </div>
+
         </div>
 
-        {/* Campaign Dates */}
+        {/* Reward */}
         <p className="text-primary text-base md:text-lg font-semibold mb-1 ">
-          July 4 – July 10, 2026 · 7 Days Only
+          🎁 Reward · 2 Weeks Turbo Mining Power
         </p>
 
         {/* Footer Note */}
         <p className="text-gray-400 text-sm md:text-base font-medium">
-          Offers apply automatically at checkout — don&apos;t miss out!
+          Our team will review your submission and grant your reward once approved.
         </p>
       </div>
     </PopupComponent>

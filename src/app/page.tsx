@@ -155,11 +155,6 @@ export default function Home() {
         <HomeBannerSlider />
       </div>
 
-      {/* Social Media Campaign entry point */}
-      <div className="mb-20 flex justify-center px-4">
-        <SocialCampaignEntryButton />
-      </div>
-
       <div className="mt-6 flex flex-col items-center text-center">
         <div className="px-4 text-2xl font-bold text-primary max-w-250 leading-tight">
           Bitcoin-Yay Is The Micro Token
