@@ -47,74 +47,78 @@ const header_data = [
       },
     ],
   },
-  {
-    mainTextDesktop: "Bible",
-    mainTextMob: "Bible",
-    active: false,
-    href: "/bible",
-    hasMegaDrop: true,
-    dropDownContent: [
-      {
-        heading: "Explore Bible",
-        mainList: true,
-        links: [
-          {
-            name: "Story of BTCY",
-            href: "/bible/story",
-          },
-          {
-            name: "Story of Yatoshi",
-            href: "/bible/yatoshi",
-          },
-          {
-            name: "Whitepaper",
-            href: "/bible/whitepaper",
-          },
-          {
-            name: "Tokenomics",
-            href: "/bible/tokenomics",
-          },
-          {
-            name: "bitcoin-yay Blockchain",
-            href: "/bible/blockchain",
-          },
-          {
-            name: "bitcoin-yay Wallet",
-            href: "/bible/bitcoin-yay-wallet",
-          },
-        ],
-      },
-      {
-        heading: "Action",
-        links: [
-          {
-            name: "Buy token",
-            href: "https://cex.indexx.ai/update/home?buyToken=BTCY",
-            openInNewTab: true,
-          },
-          {
-            name: "Buy Gift Card",
-            href: "https://shop.indexx.ai/?category=bitcoin-cards",
-            openInNewTab: true,
-          },
-          {
-            name: "Crypto Treasury",
-            href: "https://cex.indexx.ai/smart-crypto",
-            openInNewTab: true,
-          },
-        ],
-      },
-      {
-        heading: "Support",
-        links: [
-          {
-            name: "Contact Us",
-            href: "/support/#contact-us",
-          },
-        ],
-      },
-    ],
-  },
+  // {
+  //   mainTextDesktop: "Bible",
+  //   mainTextMob: "Bible",
+  //   active: false,
+  //   href: "/bible",
+  //   hasMegaDrop: true,
+  //   dropDownContent: [
+  //     {
+  //       heading: "Explore Bible",
+  //       mainList: true,
+  //       links: [
+  //         {
+  //           name: "Story of BTCY",
+  //           href: "/bible/story",
+  //         },
+  //         {
+  //           name: "Story of Yatoshi",
+  //           href: "/bible/yatoshi",
+  //         },
+  //         {
+  //           name: "Whitepaper",
+  //           href: "/bible/whitepaper",
+  //         },
+  //         {
+  //           name: "Tokenomics",
+  //           href: "/bible/tokenomics",
+  //         },
+  //         {
+  //           name: "bitcoin-yay Blockchain",
+  //           href: "/bible/blockchain",
+  //         },
+  //         {
+  //           name: "bitcoin-yay Wallet",
+  //           href: "/bible/bitcoin-yay-wallet",
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       heading: "Action",
+  //       links: [
+  //         {
+  //           name: "Buy token",
+  //           href: "https://cex.indexx.ai/update/home?buyToken=BTCY",
+  //           openInNewTab: true,
+  //         },
+  //         {
+  //           name: "Buy Gift Card",
+  //           href: "https://shop.indexx.ai/?category=bitcoin-cards",
+  //           openInNewTab: true,
+  //         },
+  //         {
+  //           name: "Crypto Treasury",
+  //           href: "https://cex.indexx.ai/smart-crypto",
+  //           openInNewTab: true,
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       heading: "Support",
+  //       links: [
+  //         {
+  //           name: "FAQs",
+  //           href: "/faq#getting-started",
+  //         },
+  //         {
+  //           name: "Contact Us",
+  //           href: "/support/#contact-us",
+  //         },
+  //       ],
+  //     },
+  //   ],
+  // },
   {
     mainTextDesktop: "Bitcoin",
     mainTextMob: "Bitcoin",
@@ -427,8 +431,16 @@ const header_data = [
     ],
   },
   {
-    mainTextDesktop: "Subscription",
-    mainTextMob: "Subscription",
+    mainTextDesktop: "Mining Station",
+    mainTextMob: "Mining Station",
+    active: false,
+    href: "https://miningstation.bitcoinyay.com/",
+    authTokenRedirect: true,
+    hasMegaDrop: false,
+  },
+  {
+    mainTextDesktop: "Power Mining",
+    mainTextMob: "Power Mining",
     active: false,
     href: "/mining/power-mining",
     hasMegaDrop: false,
