@@ -454,7 +454,19 @@ const header_data = [
     active: false,
     href: "https://miningstation.bitcoinyay.com/",
     authTokenRedirect: true,
-    hasMegaDrop: false,
+    hasMegaDrop: true,
+    dropDownContent: [
+      {
+        heading: "Mining Station",
+        mainList: true,
+        links: [
+          {
+            name: "Leaderboard",
+            href: "/leaderboard",
+          },
+        ],
+      },
+    ],
   },
   {
     mainTextDesktop: "Subscription",
