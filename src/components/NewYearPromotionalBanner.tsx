@@ -50,11 +50,17 @@ const NewYearPromotionalBanner = () => {
             className="h-12 md:h-16 w-auto object-contain"
           />
           <span className="text-white/60 text-xl md:text-2xl font-light">×</span>
-          <Image
-            src={PartnerLogo}
-            alt="Partner"
-            className="h-12 md:h-16 w-auto object-contain"
-          />
+          {/* Tiger logo + brand name lockup */}
+          <div className="flex items-center gap-2 md:gap-3">
+            <Image
+              src={PartnerLogo}
+              alt="Eeny Meeny Miny Moe"
+              className="h-12 md:h-16 w-auto object-contain"
+            />
+            <span className="whitespace-nowrap text-lg font-bold text-white md:text-2xl">
+              Eeny Meeny Miny Moe
+            </span>
+          </div>
         </div>
 
         {/* Powered By */}

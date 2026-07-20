@@ -1,4 +1,6 @@
 import React from "react";
+import Image from "next/image";
+import MiningStationLogo from "@/assets/images/mining-station/mining-station-logo.png";
 
 // Mining Station Leaderboard — top station owners ranked by active referrals.
 // TODO(backend): replace this mock list with the live leaderboard endpoint.
@@ -57,6 +59,11 @@ export default function LeaderboardPage() {
       <div className="mx-auto w-full max-w-3xl">
         {/* Header */}
         <div className="mb-10 text-center">
+          <Image
+            src={MiningStationLogo}
+            alt="Mining Station"
+            className="mx-auto mb-6 h-20 w-auto object-contain md:h-24"
+          />
           <span className="mb-3 inline-block rounded-full bg-primary/15 px-4 py-1 text-sm font-semibold text-primary">
             Updated Weekly
           </span>

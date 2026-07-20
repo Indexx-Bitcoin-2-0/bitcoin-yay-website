@@ -53,12 +53,17 @@ const SlateLotteryBanner = () => {
             className="h-12 w-auto object-contain md:h-16"
           />
           <span className="text-xl font-light text-white/60 md:text-2xl">×</span>
-          {/* TODO: swap PartnerLogo for the tiger-team badge if a dedicated asset is provided */}
-          <Image
-            src={PartnerLogo}
-            alt="Partner"
-            className="h-12 w-auto object-contain md:h-16"
-          />
+          {/* Tiger logo + brand name lockup */}
+          <div className="flex items-center gap-2 md:gap-3">
+            <Image
+              src={PartnerLogo}
+              alt="Eeny Meeny Miny Moe"
+              className="h-12 w-auto object-contain md:h-16"
+            />
+            <span className="whitespace-nowrap text-lg font-bold text-white md:text-2xl">
+              Eeny Meeny Miny Moe
+            </span>
+          </div>
         </div>
 
         {/* Powered By */}

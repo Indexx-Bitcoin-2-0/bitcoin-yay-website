@@ -12,6 +12,7 @@ import {
 import NewYearPromotionalBanner from "./NewYearPromotionalBanner";
 import SlateLotteryBanner from "./SlateLotteryBanner";
 import SocialCampaignBanner from "./SocialCampaignBanner";
+import LeaderboardBanner from "./LeaderboardBanner";
 
 // Time each banner stays before auto-advancing (ms).
 const AUTOPLAY_INTERVAL = 6000;
@@ -51,10 +52,13 @@ const HomeBannerSlider = () => {
         <CarouselItem className="h-full">
           <SocialCampaignBanner />
         </CarouselItem>
+        <CarouselItem className="h-full">
+          <LeaderboardBanner />
+        </CarouselItem>
       </CarouselContent>
 
-      <CarouselPrevious className="left-2 h-10 w-10 cursor-pointer text-primary md:-left-12 border-none " />
-      <CarouselNext className="right-2 h-10 w-10 cursor-pointer text-primary md:-right-12 border-none" />
+      <CarouselPrevious className="left-2 h-10 w-10 cursor-pointer border-none bg-transparent text-primary transition-transform duration-200 hover:scale-125 hover:bg-transparent hover:text-primary md:-left-12" />
+      <CarouselNext className="right-2 h-10 w-10 cursor-pointer border-none bg-transparent text-primary transition-transform duration-200 hover:scale-125 hover:bg-transparent hover:text-primary md:-right-12" />
     </Carousel>
   );
 };
