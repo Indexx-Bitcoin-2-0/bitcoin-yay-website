@@ -442,6 +442,20 @@ export default function SellBtcyPage() {
       const eligibility = normalizeSellEligibility(eligibilityResponse.data);
       setSellEligibility(eligibility);
 
+      if (eligibilityResponse.data?.status === 400) {
+        setTransactionFailedTitle("Unable to Sell BTCY");
+        setTransactionFailedMessage(getEligibilityMessage(eligibility));
+        setIsTransactionFailedPopupOpen(true);
+        return;
+      }
+
+      if (eligibilityResponse.data?.status === 404) {
+        setTransactionFailedTitle("Unable to Sell BTCY");
+        setTransactionFailedMessage(getEligibilityMessage(eligibility));
+        setIsTransactionFailedPopupOpen(true);
+        return;
+      }
+
       if (!eligibility?.canCreateSellOrder) {
         if (isKycBlockedEligibility(eligibility)) {
           setKycMessage(getEligibilityMessage(eligibility));

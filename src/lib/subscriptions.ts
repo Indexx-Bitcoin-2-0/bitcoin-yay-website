@@ -148,16 +148,33 @@ export async function purchaseSubscription(
   return result.data;
 }
 
+export interface CouponValidationPayload {
+  planKey: string;
+  couponCode: string;
+  email?: string;
+}
+
 export async function validateCoupon(
   planKey: string,
-  couponCode: string
+  couponCode: string,
+  email?: string
 ): Promise<CouponValidationResponse> {
+  const requestPayload: CouponValidationPayload = {
+    planKey,
+    couponCode,
+  };
+
+  const trimmedEmail = email?.trim();
+  if (trimmedEmail) {
+    requestPayload.email = trimmedEmail;
+  }
+
   const response = await fetch(COUPON_VALIDATION_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ planKey, couponCode }),
+    body: JSON.stringify(requestPayload),
   });
 
   const result = await response.json().catch(() => null);

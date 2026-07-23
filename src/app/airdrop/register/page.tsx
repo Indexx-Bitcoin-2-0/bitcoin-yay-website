@@ -1,581 +1,93 @@
-"use client";
-
-import { FormEvent, useState, useEffect } from "react";
-import Link from "next/link";
 import Image from "next/image";
-import axios, { AxiosError } from "axios";
-
-import { isAddress } from "viem";
-import { BTCY_SOCIAL_POST_AIRDROP_REGISTER_API_ROUTE } from "@/routes";
-import { getGmailAliasInfo } from "@/lib/utils";
-import { useAuth } from "@/contexts/AuthContext";
+import Link from "next/link";
 
 import BgImage1 from "@/assets/images/airdrop/bg-art-1.webp";
 import BgImage2 from "@/assets/images/airdrop/bg-art-2.webp";
-import BackArrowIcon1 from "@/assets/images/icons/back-arrow-1.webp";
-import BackArrowIcon2 from "@/assets/images/icons/back-arrow-2.webp";
-import CopyIcon1 from "@/assets/images/icons/copy-icon-1.webp";
-import CopyIcon2 from "@/assets/images/icons/copy-icon-2.webp";
-import InfoIcon from "@/assets/images/icons/info-icon.webp";
-import DownloadButton from "@/assets/images/buttons/download-button.webp";
-import BackButton from "@/assets/images/buttons/back-button.webp";
-import RegisterButtonImage from "@/assets/images/buttons/register-button.webp";
-import PointFingerButtonImage from "@/assets/images/buttons/point-button.webp";
-import PopupArt1 from "@/assets/images/airdrop/popup-art.webp";
-import PopupArt2 from "@/assets/images/airdrop/popup-art-1.webp";
-import PopupArt3 from "@/assets/images/airdrop/popup-art-2.webp";
 import PopupArt4 from "@/assets/images/airdrop/popup-art-3.svg";
 import PopupArt5 from "@/assets/images/airdrop/popup-art-4.png";
+import BackButton from "@/assets/images/buttons/back-button.webp";
+import BackArrowIcon1 from "@/assets/images/icons/back-arrow-1.webp";
+import BackArrowIcon2 from "@/assets/images/icons/back-arrow-2.webp";
 
-import PopupComponent from "@/components/PopupComponent";
 import CustomButton2 from "@/components/CustomButton2";
-import RegisterPopup from "@/components/RegisterPopup";
-import DownloadAppPopup from "@/components/DownloadAppPopup";
-
-interface FormErrors {
-  email?: string;
-  username?: string;
-  acceptTerms?: string;
-  general?: string; // For general form errors, e.g., from API
-}
-
 
 export default function AirdropRegisterPage() {
-  const [email, setEmail] = useState<string>("");
-  const [username, setUsername] = useState<string>("");
-  const [postLink, setPostLink] = useState<string>("");
-  const [walletAddress, setWalletAddress] = useState<string>("");
-  const [acceptTerms, setAcceptTerms] = useState<boolean>(false);
-  const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
-  const [isRegistraionSuccessful, setIsRegistrationSuccessful] =
-    useState<boolean>(false);
-  const [isRegistrationClosed] = useState<boolean>(false);
-  interface FormErrors {
-    email?: string;
-    username?: string;
-    postLink?: string;
-    walletAddress?: string;
-    acceptTerms?: string;
-    general?: string;
-  }
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
-  const [isRegisterPopupOpen, setIsRegisterPopupOpen] =
-    useState<boolean>(false);
-  const [isDownloadPopupOpen, setIsDownloadPopupOpen] =
-    useState<boolean>(false);
-  const [showRegisterToClaimButton, setShowRegisterToClaimButton] =
-    useState<boolean>(true);
-  const { isAuthenticated, user } = useAuth();
-
-  useEffect(() => {
-    const storedEmail = user?.email || localStorage.getItem("email") || "";
-    if (storedEmail) {
-      setEmail(storedEmail);
-    }
-  }, [user]);
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
-    const emailAliasInfo = getGmailAliasInfo(email);
-
-    if (!email.trim()) {
-      newErrors.email = "Email address is required.";
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = "Email address is invalid.";
-    } else if (emailAliasInfo.isGmail && emailAliasInfo.hasAlias) {
-      newErrors.email =
-        "Gmail aliases (like using '+' tags or @googlemail.com) aren't supported. Please use your primary Gmail address.";
-    }
-
-    if (!username.trim()) {
-      newErrors.username = "Name is required.";
-    } else if (username.length < 3) {
-      newErrors.username = "Name must be at least 3 characters long.";
-    }
-
-    if (!postLink.trim()) {
-      newErrors.postLink = "Post link is required.";
-    }
-
-    if (!walletAddress.trim()) {
-      newErrors.walletAddress = "Wallet address is required.";
-    } else if (!isAddress(walletAddress.trim())) {
-      newErrors.walletAddress = "Please enter a valid Ethereum wallet address (e.g. 0x...).";
-    }
-
-    if (!acceptTerms) {
-      newErrors.acceptTerms = "You must accept the Terms and conditions.";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
-    e.preventDefault();
-    console.log("handleSubmit");
-
-    // Check if registration is closed first
-    if (isRegistrationClosed) {
-      setIsPopupOpen(true);
-      return;
-    }
-
-    // Validate form before submission
-    if (!validateForm()) {
-      setFormSubmitted(true);
-      return;
-    }
-
-    // Clear any previous errors and set form as submitted
-    setErrors({});
-    setFormSubmitted(true);
-
-    try {
-      const res = await axios.post(BTCY_SOCIAL_POST_AIRDROP_REGISTER_API_ROUTE, {
-        name: username.trim(),
-        email: email.trim(),
-        postLink: postLink.trim(),
-        walletAddress: walletAddress.trim(),
-      });
-
-      if (res.status === 200 || res.status === 201) {
-        setIsRegistrationSuccessful(true);
-        setShowRegisterToClaimButton(true);
-        // Reset form only on successful submission
-        setEmail("");
-        setUsername("");
-        setPostLink("");
-        setWalletAddress("");
-        setAcceptTerms(false);
-      } else {
-        setIsRegistrationSuccessful(false);
-      }
-      setIsPopupOpen(true);
-      setFormSubmitted(false);
-    } catch (error) {
-      const axiosError = error as AxiosError;
-      const responseData = axiosError.response?.data as
-        | { message?: string; error?: string; data?: { message?: string } }
-        | undefined;
-      const serverMessage =
-        responseData?.message || responseData?.error || responseData?.data?.message;
-      const fallbackMessage =
-        axiosError.message || "Network error or server unavailable. Please try again.";
-      const generalMessage =
-        typeof serverMessage === "string" && serverMessage.length > 0
-          ? serverMessage
-          : fallbackMessage;
-      const shouldShowDownloadPopup =
-        !isAuthenticated &&
-        axiosError.response?.status === 400 &&
-        typeof generalMessage === "string" &&
-        generalMessage.toLowerCase().includes("not registered");
-      const isDuplicateRegistrationError = axiosError.response?.status === 409;
-
-      setIsRegistrationSuccessful(false);
-      setErrors({ general: generalMessage });
-      setShowRegisterToClaimButton(!isDuplicateRegistrationError);
-
-      if (shouldShowDownloadPopup) {
-        setIsDownloadPopupOpen(true);
-      } else {
-        setIsPopupOpen(true);
-      }
-      setFormSubmitted(false);
-    }
-  };
-  const isSubmitDisabled = !acceptTerms;
   return (
-    <div className="container mx-auto mt-60 flex flex-col justify-center items-center">
-      {/* ###############  Bsckgroung Images   ############################# */}
-      <div className="absolute inset-0 bg-cover bg-center mt-40 -z-10">
+    <div className="container mx-auto mt-60 flex flex-col items-center justify-center">
+      <div className="absolute inset-0 mt-40 -z-10 bg-cover bg-center">
         <Image
           src={BgImage1}
           alt="Background Image 1"
-          className="w-80 md:w-60 xl:w-120 absolute top-0 left-0"
+          className="absolute left-0 top-0 w-80 md:w-60 xl:w-120"
         />
         <Image
           src={BgImage2}
           alt="Background Image 2"
-          className="hidden md:block md:w-60 xl:w-120 absolute top-0 right-0"
+          className="absolute right-0 top-0 hidden md:block md:w-60 xl:w-120"
         />
       </div>
 
-      {/* ###############  Popups   ############################# */}
-
-      <div>
-        <PopupComponent
-          isOpen={isPopupOpen}
-          onClose={() => setIsPopupOpen(false)}
-        >
-          {isRegistrationClosed ? (
-            <div>
-              <div className="flex flex-col items-center justify-center text-center w-90 md:w-164 p-4 md:p-8">
-                <Image
-                  src={PopupArt4}
-                  alt="Popup Art 4"
-                  className="w-64 md:w-80 mt-4"
-                />
-                <div className="relative mt-10">
-                  <Image
-                    src={PopupArt5}
-                    alt="Popup Art 5"
-                    className="w-20 md:w-34 absolute -top-10 md:-top-24 right-0"
-                  />
-                  <h3 className="text-2xl md:text-5xl font-bold">
-                    Airdrop <span className="text-primary"> Ended!</span>
-                  </h3>
-                  <p className="mt-2 text-xl md:text-2xl font-semibold uppercase">
-                    The recent airdrop has ended — thank you for participating
-                    and mining with Turbo Power!
-                  </p>
-                </div>
-                <div className="mt-10 mb-4 relative">
-                  <Image
-                    src={PopupArt5}
-                    alt="Popup Art 5"
-                    className="w-20 md:w-34 absolute -top-10 md:-top-20 left-0"
-                  />
-                  <h3 className="text-2xl md:text-5xl font-bold md:leading-16">
-                    Stay Tuned for
-                    <br />
-                    <span className="text-primary">
-                      Upcoming Airdrop Events
-                    </span>
-                  </h3>
-                  <p className="mt-2 text-xl md:text-2xl font-semibold uppercase">
-                    More power-packed events are on the way.{" "}
-                    <span className="text-primary">Get ready to:</span>
-                  </p>
-                  <p className="mt-2 text-xl md:text-2xl font-semibold uppercase">
-                    Unlock Free Power mining and Earn bonus days through
-                    referrals
-                  </p>
-                  <p className="mt-2 text-xl md:text-2xl font-semibold uppercase text-primary">
-                    Celebrate special occasions with exclusive airdrops
-                  </p>
-                </div>
-              </div>
-            </div>
-          ) : isRegistraionSuccessful ? (
-            <div className="py-6 w-90 md:w-140 flex flex-col justify-center items-center text-center relative overflow-hidden">
-              <div className="absolute inset-0 bg-cover bg-center -z-10">
-                <Image
-                  src={PopupArt3}
-                  alt="Background Image 1"
-                  className="w-40 absolute top-0 -left-10"
-                />
-                <Image
-                  src={PopupArt2}
-                  alt="Background Image 2"
-                  className="w-40 absolute top-0 -right-10"
-                />
-              </div>
-              <Image src={PopupArt1} alt="art" className="w-48 lg:w-56" />
-              <h2 className="mt-10 text-3xl md:text-5xl font-medium text-primary">
-                Congratulations!
-              </h2>
-              <p className="mt-6 max-w-100 lg:text-xl">
-                You have successfully registered for the bitcoin-yay Social Media Airdrop.
-              </p>
-
-              {/* <div className="mb-6 mt-2 lg:mt-8 w-full px-4 md:px-8 text-start">
-                <label
-                  htmlFor="referralLink"
-                  className="block text-bg3 text-xl mb-2"
-                >
-                  Referral link
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    id="referralLink"
-                    className="w-full text-lg p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none  hover:border-primary"
-                    value={userReferralLink}
-                    readOnly
-                  />
-                  <button
-                    type="button"
-                    onClick={copyReferralLink}
-                    className="absolute group inset-y-0 right-3 cursor-pointer"
-                  >
-                    <Image
-                      src={CopyIcon1}
-                      alt="Copy Icon"
-                      className="group-hover:hidden w-6 h-6 z-10"
-                    />
-                    <Image
-                      src={CopyIcon2}
-                      alt="Copy Icon"
-                      className="hidden group-hover:block w-6 h-6 z-10"
-                    />
-                  </button>
-                </div>
-                <p className="text-primary text-xs italic mt-2">
-                  Share the link with your family and friends to increase your
-                  chances of extending your Turbo Mining Power by another day or
-                  more.
-                </p>
-              </div>
-
-              <button
-                className="text-bg3 text-base hover:text-primary cursor-pointer"
-                onClick={copyReferralLink}
-              >
-                Copy your referral link
-              </button> */}
-
-              <CustomButton2
-                image={DownloadButton}
-                text="Download the Mining App"
-                link="/#apple-store-download"
-                imageStyling="w-22 mt-8"
-              />
-            </div>
-          ) : (
-            <div className="w-80 md:w-100 flex flex-col justify-center items-center text-center p-10">
-              <Image src={InfoIcon} alt="Info Icon" className="w-22" />
-              <h3 className="text-3xl md:text-5xl font-medium mt-6">Oops</h3>
-              <p className="mt-6">
-                {errors.general ||
-                  "We couldn’t find a registration on file for that email. Please register to continue."}
-              </p>
-              <div className="flex flex-col gap-4 w-full max-w-[260px] mt-10 px-4">
-                {showRegisterToClaimButton && (
-                  <CustomButton2
-                    image={RegisterButtonImage}
-                    text="Register to claim"
-                    imageStyling="w-22"
-                    widthClassName="w-full"
-                    onClick={() => {
-                      setIsPopupOpen(false);
-                      setIsRegisterPopupOpen(true);
-                    }}
-                  />
-                )}
-                <CustomButton2
-                  image={BackButton}
-                  text="Back"
-                  link="/airdrop"
-                  imageStyling="w-22"
-                  widthClassName="w-full"
-                />
-              </div>
-            </div>
-          )}
-        </PopupComponent>
-      </div>
-
-      {/* ###################   Back arrow  ##################### */}
-      <div className="w-full flex justify-start group -mt-20">
-        <Link href="#" onClick={() => window.history.back()}>
+      <div className="group -mt-20 flex w-full justify-start">
+        <Link href="/airdrop">
           <Image
             src={BackArrowIcon1}
             alt="Back Arrow"
-            className="group-hover:hidden w-12 h-12 md:w-16 md:h-16 cursor-pointer"
+            className="h-12 w-12 cursor-pointer group-hover:hidden md:h-16 md:w-16"
           />
           <Image
             src={BackArrowIcon2}
             alt="Back Arrow"
-            className="hidden group-hover:block w-12 h-12 md:w-16 md:h-16 cursor-pointer"
+            className="hidden h-12 w-12 cursor-pointer group-hover:block md:h-16 md:w-16"
           />
         </Link>
       </div>
 
-      {/* ###################   Main Content  ##################### */}
-      <div className="text-center flex flex-col items-center justify-center px-4">
-        <h4 className="text-xl md:text-3xl font-semibold text-primary">Sign Up for the</h4>
-        <h2 className="mt-4 md:mt-6 text-4xl md:text-7xl lg:text-9xl ">
-          bitcoin-yay
-          <br />
-          <span className="text-primary">Social Media Airdrop!</span>
-        </h2>
-        <p className="mt-8 md:mt-16 text-lg md:text-2xl font-medium max-w-4xl">
-          To claim airdrop you need to be a Miner. Download the app and join now
-          if you haven&apos;t already!
-        </p>
-        <p className="mt-2 md:mt-4 text-lg md:text-2xl font-medium">
-          <Link
-            href="/#apple-store-download"
-            className="text-primary hover:underline hover:underline-offset-4 cursor-pointer"
-          >
-            Download Now!
-          </Link>
+      <div className="flex max-w-4xl flex-col items-center px-4 text-center">
+        <h4 className="text-xl font-semibold text-primary md:text-3xl">
+          Airdrop Registration
+        </h4>
+        <h1 className="mt-4 text-4xl md:mt-6 md:text-7xl lg:text-9xl">
+          Closed
+        </h1>
+        <p className="mt-8 max-w-3xl text-lg font-medium md:mt-12 md:text-2xl">
+          The Bitcoin Yay social media airdrop registration is no longer
+          accepting entries.
         </p>
       </div>
-      <div className="w-full flex justify-center mt-10 mb-40">
-        <form
-          onSubmit={handleSubmit}
-          className="w-full p-8 flex flex-col justify-center max-w-3xl"
-        >
-          <div className="mb-6">
-            <label htmlFor="username" className="block text-bg3 text-lg md:text-xl mb-2">
-              Name
-            </label>
-            <input
-              type="text"
-              id="username"
-              className={
-                "w-full text-lg p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none  hover:border-primary"
-              }
-              placeholder="Enter your name"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+
+      <div className="mb-40 mt-12 w-full max-w-4xl px-4">
+        <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-[#090909]/80 px-6 py-10 text-center md:px-10 md:py-14">
+          <Image
+            src={PopupArt5}
+            alt="Decorative Art"
+            className="absolute right-4 top-4 w-20 opacity-80 md:right-8 md:top-8 md:w-28"
+          />
+          <Image
+            src={PopupArt4}
+            alt="Airdrop Ended"
+            className="mx-auto w-56 md:w-72"
+          />
+          <h2 className="mt-8 text-3xl font-bold md:text-5xl">
+            Airdrop <span className="text-primary">Ended</span>
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-lg font-semibold uppercase md:text-2xl">
+            Thank you for your interest. This registration page has been closed.
+          </p>
+          <p className="mx-auto mt-6 max-w-2xl text-base text-[#d5d5d5] md:text-lg">
+            Check the main airdrop page for future campaign updates and new
+            event announcements.
+          </p>
+
+          <div className="mt-10 flex justify-center">
+            <CustomButton2
+              image={BackButton}
+              text="Back to Airdrop"
+              link="/airdrop"
+              imageStyling="w-22"
             />
-            {formSubmitted && errors.username && (
-              <p className="text-red-700 text-base mt-2">{errors.username}</p>
-            )}
           </div>
-          <div className="mb-6">
-            <label htmlFor="email" className="block text-bg3 text-xl mb-2">
-              Email Address
-            </label>
-            <input
-              type="email"
-              id="email"
-              className={
-                "w-full text-lg p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none  hover:border-primary"
-              }
-              placeholder="Enter the email address you used on Indexx.ai"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            {formSubmitted && errors.email && (
-              <p className="text-red-700 text-base mt-2">{errors.email}</p>
-            )}
-          </div>
-
-          <div className="mb-6 focus-within:text-primary">
-            <label htmlFor="postLink" className="block text-bg3 text-xl mb-2">
-              Post Link
-            </label>
-            <input
-              type="text"
-              id="postLink"
-              className={
-                "w-full text-lg p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary"
-              }
-              placeholder="Submit your post link here"
-              value={postLink}
-              onChange={(e) => setPostLink(e.target.value)}
-            />
-            {formSubmitted && errors.postLink && (
-              <p className="text-red-700 text-base mt-2">{errors.postLink}</p>
-            )}
-          </div>
-
-          <div className="mb-6 focus-within:text-primary">
-            <label htmlFor="walletAddress" className="block text-bg3 text-xl mb-2">
-              Wallet Address
-            </label>
-            <input
-              type="text"
-              id="walletAddress"
-              className={
-                "w-full text-lg p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none hover:border-primary"
-              }
-              placeholder="Enter your USDT ERC20 wallet address"
-              value={walletAddress}
-              onChange={(e) => setWalletAddress(e.target.value)}
-            />
-            {formSubmitted && errors.walletAddress && (
-              <p className="text-red-700 text-base mt-2">{errors.walletAddress}</p>
-            )}
-            <p className="text-primary text-sm italic mt-2">
-              Note: If you don’t have a USDT wallet on the Ethereum Blockchain please create one
-            </p>
-          </div>
-
-          <div className="mb-6 items-center">
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="acceptTerms"
-                className="h-5 w-5 text-orange-500 transition duration-150 ease-in-out bg-transparent border-tertiary rounded"
-                checked={acceptTerms}
-                onChange={(e) => setAcceptTerms(e.target.checked)}
-              />
-              <label htmlFor="acceptTerms" className="ml-2 text-bg3 text-sm">
-                Accept Terms and conditions
-              </label>
-            </div>
-            {formSubmitted && errors.acceptTerms && (
-              <p className="text-red-600 text-base mt-2">
-                {errors.acceptTerms}
-              </p>
-            )}
-            {errors.general && (
-              <p className="text-red-600 text-base mt-2">{errors.general}</p>
-            )}
-          </div>
-
-          {/* <div className="mb-6 mt-20">
-            <label
-              htmlFor="referralLink"
-              className="block text-bg3 text-xl mb-2"
-            >
-              Referral link
-            </label>
-            <div className="relative">
-              <input
-                type="text"
-                id="referralLink"
-                className="w-full text-lg p-3 text-tertiary border border-bg3 rounded-md focus:border-primary focus:outline-none  hover:border-primary"
-                value={referralLink}
-                placeholder="Enter the referral link you received"
-                onChange={(e) => setReferralLink(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <p className="text-primary text-base italic text-center mb-6">
-            Note: This link is from the user who shared the free Turbo Mining
-            Gopher Airdrop with you. After you sign up, you’ll get your own
-            referral link to share.
-          </p> */}
-          <div className="flex flex-col items-center mt-20 gap-6">
-<div className="flex justify-center">
-              {/* <button type="submit">
-                <Image
-                  src={PointFingerButtonImage}
-                  alt="Submit Button"
-                  className="w-36 hover:scale-105 cursor-pointer"
-                />
-              </button> */}
-              <CustomButton2
-                image={PointFingerButtonImage}
-                text="Submit"
-                disabled={isSubmitDisabled}
-                onClick={(e) => {
-                  e.preventDefault();
-                  // Create a synthetic form event to pass to handleSubmit
-                  const formEvent = {
-                    ...e,
-                    preventDefault: () => e.preventDefault(),
-                    currentTarget: e.currentTarget.closest(
-                      "form"
-                    ) as HTMLFormElement,
-                    target: e.currentTarget.closest("form") as HTMLFormElement,
-                  } as FormEvent<HTMLFormElement>;
-                  handleSubmit(formEvent);
-                }}
-                imageStyling="w-36"
-              />
-            </div>
-          </div>
-        </form>
+        </div>
       </div>
-      <RegisterPopup
-        isOpen={isRegisterPopupOpen}
-        onClose={() => setIsRegisterPopupOpen(false)}
-        onRegisterSuccess={() => setIsRegisterPopupOpen(false)}
-        onLoginClick={() => setIsRegisterPopupOpen(false)}
-      />
-      <DownloadAppPopup
-        isOpen={isDownloadPopupOpen}
-        onClose={() => setIsDownloadPopupOpen(false)}
-      />
     </div>
   );
 }

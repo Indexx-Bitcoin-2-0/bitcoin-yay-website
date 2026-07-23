@@ -40,6 +40,10 @@ const header_data = [
         heading: "Support",
         links: [
           {
+            name: "FAQs",
+            href: "/faq#wallet-tokens",
+          },
+          {
             name: "Contact Us",
             href: "/support/#contact-us",
           },
@@ -229,6 +233,10 @@ const header_data = [
         heading: "Support",
         links: [
           {
+            name: "FAQs",
+            href: "/faq#nodes",
+          },
+          {
             name: "Contact Us",
             href: "/support/#contact-us",
           },
@@ -387,6 +395,12 @@ const header_data = [
             name: "Mobile Mining",
             href: `/#mobile-mining`,
           },
+          {
+            name: "Mining Station",
+            href: "https://miningstation.bitcoinyay.com/",
+            openInNewTab: false,
+            authTokenRedirect: true,
+          },
         ],
       },
       // {
@@ -423,6 +437,10 @@ const header_data = [
         heading: "Support",
         links: [
           {
+            name: "FAQs",
+            href: "/faq#mining",
+          },
+          {
             name: "Contact Us",
             href: "/support/#contact-us",
           },
@@ -436,11 +454,23 @@ const header_data = [
     active: false,
     href: "https://miningstation.bitcoinyay.com/",
     authTokenRedirect: true,
-    hasMegaDrop: false,
+    hasMegaDrop: true,
+    dropDownContent: [
+      {
+        heading: "Mining Station",
+        mainList: true,
+        links: [
+          {
+            name: "Leaderboard",
+            href: "/leaderboard",
+          },
+        ],
+      },
+    ],
   },
   {
-    mainTextDesktop: "Power Mining",
-    mainTextMob: "Power Mining",
+    mainTextDesktop: "Subscription",
+    mainTextMob: "Subscription",
     active: false,
     href: "/mining/power-mining",
     hasMegaDrop: false,

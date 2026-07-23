@@ -39,6 +39,7 @@ import {
   getUserMiningBalance,
   getUserWalletBalance,
 } from "@/lib/alchemy";
+import { getAuthenticatedWalletUrl } from "@/lib/authenticated-wallet";
 import { balanceCopy } from "@/content/balanceCopy";
 
 import CustomButton2 from "@/components/CustomButton2";
@@ -52,6 +53,7 @@ interface LinkItem {
   name: string;
   href: string;
   openInNewTab?: boolean;
+  authTokenRedirect?: boolean;
 }
 
 interface DropdownSection {
@@ -66,6 +68,7 @@ interface HeaderItem {
   active: boolean;
   href: string;
   openInNewTab?: boolean;
+  authTokenRedirect?: boolean;
   hasMegaDrop: boolean;
   dropDownContent?: DropdownSection[];
 }
@@ -107,11 +110,24 @@ const MobileLogo = () => (
 );
 // Extract dropdown link component
 const DropdownLink = memo(
-  ({ link, isMainList }: { link: LinkItem; isMainList?: boolean }) => (
+  ({
+    link,
+    isMainList,
+    onClick,
+  }: {
+    link: LinkItem;
+    isMainList?: boolean;
+    onClick?: (
+      link: LinkItem,
+      event: React.MouseEvent<HTMLAnchorElement>
+    ) => void;
+  }) => (
     <li className="list-none flex flex-col text-left my-2">
       <a
         href={link.href}
         target={link.openInNewTab ? "_blank" : undefined}
+        rel={link.openInNewTab ? "noopener noreferrer" : undefined}
+        onClick={(event) => onClick?.(link, event)}
         className={`${
           isMainList ? "text-[25px] font-semibold" : "text-xs mt-4"
         } text-tertiary block relative after:absolute after:left-0 after:-bottom-1 after:w-5 after:h-[3px] after:bg-primary after:opacity-0 hover:after:opacity-100 after:transition-opacity after:duration-300`}
@@ -483,6 +499,16 @@ const Navbar: React.FC = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const currentPath = usePathname();
+  // Track the URL hash so deep-linked nav items (e.g. /faq#mining) can be made
+  // active individually — usePathname() does not include the hash.
+  const [currentHash, setCurrentHash] = useState("");
+  useEffect(() => {
+    const readHash = () =>
+      setCurrentHash(typeof window !== "undefined" ? window.location.hash : "");
+    readHash();
+    window.addEventListener("hashchange", readHash);
+    return () => window.removeEventListener("hashchange", readHash);
+  }, [currentPath]);
   const router = useRouter();
 
   // Auth related states
@@ -495,6 +521,7 @@ const Navbar: React.FC = () => {
     withdrawn: 0,
     token: 0,
   });
+  const [balanceRefreshTick, setBalanceRefreshTick] = useState(0);
   const [isBalanceLoading, setIsBalanceLoading] = useState(false);
   const [balanceError, setBalanceError] = useState<string | null>(null);
   const [activeBalanceModal, setActiveBalanceModal] =
@@ -511,6 +538,15 @@ const Navbar: React.FC = () => {
     }
 
     const isPathActive = (path: string): boolean => {
+      if (!path) return false;
+      // Hash-scoped links (e.g. /faq#mining) are active only when both the
+      // path AND the hash match — so only the relevant dropdown lights up.
+      const hashIndex = path.indexOf("#");
+      if (hashIndex !== -1) {
+        const base = path.slice(0, hashIndex);
+        const hash = path.slice(hashIndex);
+        return currentPath === base && currentHash === hash;
+      }
       if (path === "/") return currentPath === "/";
       return currentPath.startsWith(path);
     };
@@ -556,7 +592,7 @@ const Navbar: React.FC = () => {
         active,
       };
     });
-  }, [currentPath, balances.nugget]);
+  }, [currentPath, currentHash, balances.nugget]);
 
   // Optimized resize handler with debounce
   useEffect(() => {
@@ -617,9 +653,36 @@ const Navbar: React.FC = () => {
     setMenuOpen((prev) => !prev);
   }, []);
 
-  const closeMobileMenu = () => {
+  const closeMobileMenu = useCallback(() => {
     setMenuOpen(false);
-  };
+  }, []);
+
+  const handleNavLinkClick = useCallback(
+    async (
+      link: LinkItem,
+      event: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>
+    ) => {
+      if (!link.authTokenRedirect) {
+        closeMobileMenu();
+        return;
+      }
+
+      event.preventDefault();
+      setBackdropVisibility(false);
+      closeMobileMenu();
+
+      if (!isAuthenticated || !user) {
+        setIsLoginPopupOpen(true);
+        return;
+      }
+
+      const redirectUrl = await getAuthenticatedWalletUrl(link.href, {
+        includeBuyToken: false,
+      });
+      window.location.href = redirectUrl;
+    },
+    [closeMobileMenu, isAuthenticated, user]
+  );
 
   // Auth handlers
   const handleLoginSuccess = () => {
@@ -774,6 +837,16 @@ const Navbar: React.FC = () => {
   }, [stopMiningTicker]);
 
   useEffect(() => {
+    const handleBalanceRefresh = () => {
+      setBalanceRefreshTick((value) => value + 1);
+    };
+
+    window.addEventListener("btcy-balances:refresh", handleBalanceRefresh);
+    return () =>
+      window.removeEventListener("btcy-balances:refresh", handleBalanceRefresh);
+  }, []);
+
+  useEffect(() => {
     if (!isAuthenticated || !user?.email) {
       baseNuggetRef.current = 0;
       miningRateRef.current = 0;
@@ -821,8 +894,7 @@ const Navbar: React.FC = () => {
         const miningData = miningResult.value.data;
         const baseNugget =
           toSafeNumber(miningData?.transferableBalance) +
-          toSafeNumber(miningData?.unverifiedBalance) +
-          toSafeNumber(miningData?.migratedBalance);
+          toSafeNumber(miningData?.unverifiedBalance);
 
         baseNuggetRef.current = baseNugget;
 
@@ -927,7 +999,13 @@ const Navbar: React.FC = () => {
     return () => {
       isCancelled = true;
     };
-  }, [isAuthenticated, startMiningTicker, stopMiningTicker, user?.email]);
+  }, [
+    balanceRefreshTick,
+    isAuthenticated,
+    startMiningTicker,
+    stopMiningTicker,
+    user?.email,
+  ]);
 
   const handleOpenBalanceModal = useCallback(
     (type: BalanceModalType, trigger?: HTMLElement | null) => {
@@ -1067,6 +1145,10 @@ const Navbar: React.FC = () => {
                 <a
                   href={element.href}
                   target={element.openInNewTab ? "_blank" : undefined}
+                  onClick={(event) =>
+                    element.authTokenRedirect &&
+                    handleNavLinkClick(element as unknown as LinkItem, event)
+                  }
                   className={`text-sm font-normal transition-all duration-300 hover:text-primary ${
                     element.active ? "text-primary" : "text-tertiary"
                   } group-hover:text-primary`}
@@ -1112,6 +1194,7 @@ const Navbar: React.FC = () => {
                                 key={linkIdx}
                                 link={link}
                                 isMainList={section.mainList}
+                                onClick={handleNavLinkClick}
                               />
                             ))}
                           </ul>
@@ -1238,10 +1321,18 @@ const Navbar: React.FC = () => {
                             <Link
                               key={linkIdx}
                               href={link.href}
+                              target={link.openInNewTab ? "_blank" : undefined}
+                              rel={
+                                link.openInNewTab
+                                  ? "noopener noreferrer"
+                                  : undefined
+                              }
                               className={`block text-lg my-3 hover:text-primary ${
                                 section.mainList ? "font-bold text-xl" : ""
                               }`}
-                              onClick={closeMobileMenu}
+                              onClick={(event) =>
+                                handleNavLinkClick(link, event)
+                              }
                             >
                               {link.name}
                             </Link>
@@ -1259,8 +1350,11 @@ const Navbar: React.FC = () => {
                 >
                   <Link
                     href={element.href}
+                    target={element.openInNewTab ? "_blank" : undefined}
                     className="block text-xl py-2 hover:text-primary"
-                    onClick={closeMobileMenu}
+                    onClick={(event) =>
+                      handleNavLinkClick(element as unknown as LinkItem, event)
+                    }
                   >
                     {element.mainTextMob}
                   </Link>

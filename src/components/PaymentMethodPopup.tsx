@@ -20,6 +20,7 @@ interface PaymentMethodPopupProps {
     onSelectPaymentMethod: (method: PaymentMethod) => void;
     planName?: string;
     subscriptionAmount?: number;
+    finalAmount?: number;
 }
 
 const formatCurrency = (value: number) =>
@@ -34,9 +35,17 @@ const PaymentMethodPopup: React.FC<PaymentMethodPopupProps> = ({
     onSelectPaymentMethod,
     planName,
     subscriptionAmount,
+    finalAmount,
 }) => {
-    const amountLabel =
-        subscriptionAmount !== undefined ? ` • ${formatCurrency(subscriptionAmount)}` : "";
+    const hasDiscount =
+        finalAmount !== undefined &&
+        subscriptionAmount !== undefined &&
+        finalAmount < subscriptionAmount;
+    const amountLabel = hasDiscount
+        ? ""
+        : subscriptionAmount !== undefined
+            ? ` • ${formatCurrency(subscriptionAmount)}`
+            : "";
     const planLabel =
         planName || subscriptionAmount !== undefined
             ? `${planName ?? "Subscription"}${amountLabel}`
@@ -171,7 +180,17 @@ const PaymentMethodPopup: React.FC<PaymentMethodPopupProps> = ({
                 </p>
                 {planLabel && (
                     <p className="text-sm md:text-base text-tertiary text-center mb-6">
-                        {planLabel}
+                        <span>{planLabel}</span>
+                        {hasDiscount && (
+                            <span className="ml-2 inline-flex items-center gap-2">
+                                <span className="text-white/60 line-through">
+                                    {formatCurrency(subscriptionAmount)}
+                                </span>
+                                <span className="font-semibold text-white">
+                                    {formatCurrency(finalAmount)}
+                                </span>
+                            </span>
+                        )}
                     </p>
                 )}
 

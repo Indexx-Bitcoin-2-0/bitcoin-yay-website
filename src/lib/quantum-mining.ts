@@ -487,7 +487,7 @@ export function optionToCurrencyIn(opt: PaymentOption): QuantumCurrencyIn {
     return "WireTransfer";
   }
   if (opt === "USD") {
-    return "CreditCard";
+    return "USD";
   }
   return opt;
 }
@@ -504,7 +504,17 @@ export function applyReceivedAmountDeduction(amount: number): number {
 }
 
 /**
- * Calculates BTCY amount from USD amount
+ * Calculates base BTCY amount from USD amount
+ */
+export function calculateBaseBTCYAmount(
+  usdAmount: number,
+  btcyPrice: number
+): number {
+  return usdAmount / btcyPrice;
+}
+
+/**
+ * Calculates BTCY amount from USD amount with 30% UI bonus
  */
 export function calculateBTCYAmount(
   usdAmount: number,

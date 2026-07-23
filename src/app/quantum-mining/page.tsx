@@ -61,6 +61,7 @@ import {
   clearQuantumPaymentOrderData,
   isCryptoPayment,
   optionToCurrencyIn,
+  calculateBaseBTCYAmount,
   calculateBTCYAmount,
   MIN_PURCHASE_AMOUNT_USD,
   validateOrderData,
@@ -68,6 +69,7 @@ import {
   QuantumOrderSocketPayload,
   QuantumCryptoPaymentCheckResult,
 } from "@/lib/quantum-mining";
+import { analytics } from "@/lib/analytics";
 
 interface Errors {
   payAmount?: string;
@@ -408,6 +410,11 @@ const QuantumMiningPage = () => {
 
   const handledReturnRef = useRef(false);
 
+  // Track Page View
+  useEffect(() => {
+    analytics.trackPageView("Quantum Mining");
+  }, []);
+
   useEffect(() => {
     activeOrderRef.current = activeOrder;
   }, [activeOrder]);
@@ -495,6 +502,11 @@ const QuantumMiningPage = () => {
       setCancelError(undefined);
       setIsCancellingOrder(false);
       setSuccessOpen(true);
+      analytics.trackPurchaseComplete({
+        order_id: signal?.orderId || pendingOrderIdRef.current || "unknown",
+        amount: signal?.amount || Number(payAmount) || 0,
+        currency: signal?.currency || selectedPaymentOption || "USD",
+      });
       setActiveOrder(null);
       setPendingOrderId(null);
       activeOrderRef.current = null;
@@ -1061,6 +1073,7 @@ const QuantumMiningPage = () => {
     if (!user?.email) {
       setIsLoginPopupOpen(true);
       setIsPaymentPopupOpen(false);
+      analytics.trackPopupOpen("Login Popup (Required for Buy)");
       return;
     }
 
@@ -1076,6 +1089,12 @@ const QuantumMiningPage = () => {
     setIsCancellingOrder(false);
     setSuccessOpen(false);
     setLatestOrderSignal(null);
+
+    analytics.trackBuyIntent({
+      amount: Number(payAmount),
+      currency: selectedPaymentOption,
+      network: isCryptoPayment(selectedPaymentOption) ? selectedNetwork : undefined,
+    });
 
     try {
       const outAmount = calculateBTCYAmount(Number(payAmount), btcyPrice);
@@ -1130,6 +1149,12 @@ const QuantumMiningPage = () => {
               : "",
         };
         storeQuantumPaymentOrderData(stash);
+
+        analytics.trackOrderCreated({
+          order_id: stash.orderId,
+          amount: Number(payAmount),
+          currency: selectedPaymentOption,
+        });
 
         if (stash.orderId) {
           setPendingOrderId(stash.orderId);
@@ -1430,7 +1455,7 @@ const QuantumMiningPage = () => {
             <div className="relative">
               <input
                 type="number"
-                className="w-full px-4 py-3 border border-bg3 rounded-lg text-lg focus:outline-none focus:border-primary hover:border-primary "
+                className="w-full px-4 py-3 border border-bg3 rounded-lg text-lg focus:outline-none focus:border-primary hover:border-primary [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 placeholder="0"
                 value={payAmount}
                 onChange={(e) => handlePayAmountChange(e.target.value)}
@@ -1457,7 +1482,7 @@ const QuantumMiningPage = () => {
             <div className="relative">
               <input
                 type="number"
-                className="w-full px-4 py-3 border border-bg3 rounded-lg text-lg focus:outline-none focus:border-primary hover:border-primary "
+                className="w-full px-4 py-3 border border-bg3 rounded-lg text-lg focus:outline-none focus:border-primary hover:border-primary [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 placeholder="0"
                 value={getAmount}
                 readOnly

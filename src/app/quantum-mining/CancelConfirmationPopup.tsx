@@ -44,7 +44,7 @@ export default function CancelConfirmationPopup({
               if (isCancelling) return;
               onStay();
             }}
-            imageStyling="w-24 md:w-32 lg:w-40"
+            imageStyling="w-24"
           />
           <CustomButton2
             image={CancelOrderImage}
@@ -53,7 +53,7 @@ export default function CancelConfirmationPopup({
               if (isCancelling) return;
               onCancel();
             }}
-            imageStyling="w-24 md:w-32 lg:w-40"
+            imageStyling="w-24"
           />
         </div>
       </div>
