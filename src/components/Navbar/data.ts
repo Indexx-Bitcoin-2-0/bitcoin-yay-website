@@ -397,7 +397,7 @@ const header_data = [
           },
           {
             name: "Mining Station",
-            href: "https://miningstation.bitcoinyay.com/",
+            href: "https://test.miningstation.bitcoinyay.com/",
             openInNewTab: false,
             authTokenRedirect: true,
           },
@@ -452,7 +452,7 @@ const header_data = [
     mainTextDesktop: "Mining Station",
     mainTextMob: "Mining Station",
     active: false,
-    href: "https://miningstation.bitcoinyay.com/",
+    href: "https://test.miningstation.bitcoinyay.com/",
     authTokenRedirect: true,
     hasMegaDrop: true,
     dropDownContent: [

@@ -25,7 +25,7 @@ interface IconicItem {
 const ITEMS: IconicItem[] = [
   {
     name: "Mining Station",
-    href: "https://miningstation.bitcoinyay.com/",
+    href: "https://test.miningstation.bitcoinyay.com/",
     icon: MiningStationIcon,
     authTokenRedirect: true,
   },
