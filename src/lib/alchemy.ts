@@ -143,6 +143,12 @@ export interface AlchemyConfigResponse {
   config?: AlchemyRuntimeConfig;
   maxInputLimit?: number;
   maxInputLimitLabel?: string;
+  // Personalized when `email` is passed to getAlchemyConfig(): reflects
+  // the caller's actual Alchemy unlock requirement (5,000 for Mining
+  // Station Owners, otherwise the standard/special threshold) — computed
+  // the same way the backend enforces it at session-start time.
+  isStationOwner?: boolean;
+  alchemyMinimumMinedRequired?: number;
   error?: string;
 }
 
@@ -436,11 +442,17 @@ export async function completeAlchemyProcess(
 /**
  * Fetches alchemy configuration for all types
  */
-export async function getAlchemyConfig(): Promise<AlchemyConfigResponse> {
+export async function getAlchemyConfig(email?: string): Promise<AlchemyConfigResponse> {
   try {
     ensureAlchemyEnabled();
 
-    const response = await fetch(ALCHEMY_CONFIG_API_ROUTE, {
+    const url = new URL(ALCHEMY_CONFIG_API_ROUTE);
+    const trimmedEmail = email?.trim();
+    if (trimmedEmail) {
+      url.searchParams.set("email", trimmedEmail);
+    }
+
+    const response = await fetch(url.toString(), {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -460,6 +472,8 @@ export async function getAlchemyConfig(): Promise<AlchemyConfigResponse> {
       config: result.config,
       maxInputLimit: result.maxInputLimit,
       maxInputLimitLabel: result.maxInputLimitLabel,
+      isStationOwner: result.isStationOwner,
+      alchemyMinimumMinedRequired: result.alchemyMinimumMinedRequired,
     };
   } catch (error) {
     console.error("Get alchemy config error:", error);
