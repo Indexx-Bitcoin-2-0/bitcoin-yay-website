@@ -1,5 +1,7 @@
 "use client";
 
+import { EXTERNAL_URLS } from "@/lib/api-config";
+
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -142,7 +144,7 @@ export default function SalePage() {
                             <CustomButton2
                                 text="Google Play"
                                 image={DownloadLogo}
-                                link="https://play.google.com/store/apps/details?id=com.bitcoin2&hl=en"
+                                link={EXTERNAL_URLS.stores.googlePlay}
                                 _blank={true}
                                 imageStyling="w-24 h-24"
                             />
@@ -151,7 +153,7 @@ export default function SalePage() {
                             <CustomButton2
                                 text="Apple"
                                 image={DownloadLogo}
-                                link="https://apps.apple.com/ph/app/bitcoin-yay/id6744868017"
+                                link={EXTERNAL_URLS.stores.apple}
                                 _blank={true}
                                 imageStyling="w-24 h-24"
                             />

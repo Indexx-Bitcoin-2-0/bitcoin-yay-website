@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "@/lib/api-config";
+import { API_BASE_URL, EXTERNAL_URLS } from "@/lib/api-config";
 
 export const CONTACT_US_ROUTE = `${API_BASE_URL}/api/v1/inex/basic/emailToAdmin`;
 
@@ -73,7 +73,7 @@ export const QUANTUM_USER_ORDER_API_ROUTE = `${API_BASE_URL}/api/v1/inex/user/ge
 
 // External API Routes
 export const COINGECKO_PRICE_API_ROUTE =
-  "https://api.coingecko.com/api/v3/simple/price";
+  EXTERNAL_URLS.api.coinGeckoPrice;
 
 export const SELL_BTCY_CREATE_ORDER_ROUTE = `${API_BASE_URL}/api/v1/inex/sell-btcy/createSellOrder`;
 export const SELL_BTCY_CREATE_ROUTE = SELL_BTCY_CREATE_ORDER_ROUTE;

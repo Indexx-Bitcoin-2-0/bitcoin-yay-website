@@ -1,5 +1,7 @@
 "use client";
 
+import { EXTERNAL_URLS } from "@/lib/api-config";
+
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -55,20 +57,20 @@ const JoinPopup: React.FC<JoinPopupProps> = ({
           <CustomButton2
             image={AppleIcon}
             text="Download on App Store"
-            onClick={() => window.open("https://apps.apple.com/ph/app/bitcoin-yay/id6744868017", "_blank")}
+            onClick={() => window.open(EXTERNAL_URLS.stores.apple, "_blank")}
             imageStyling="w-18"
           />
           <CustomButton2
             image={PlaystoreIcon}
             text="Get it on Google Play"
-            onClick={() => window.open("https://play.google.com/store/apps/details?id=com.bitcoin2&hl=en", "_blank")}
+            onClick={() => window.open(EXTERNAL_URLS.stores.googlePlay, "_blank")}
             imageStyling="w-18"
           />
         </div>
         <div className="flex flex-row gap-10">
           <div className="flex flex-col items-start justify-start mt-6">
             <Link
-              href="https://apps.apple.com/ph/app/bitcoin-yay/id6744868017"
+              href={EXTERNAL_URLS.stores.apple}
               target="_blank"
             >
               <Image
@@ -81,7 +83,7 @@ const JoinPopup: React.FC<JoinPopupProps> = ({
           <div className="flex flex-col items-start justify-start mt-6">
 
             <Link
-              href="https://play.google.com/store/apps/details?id=com.bitcoin2&hl=en"
+              href={EXTERNAL_URLS.stores.googlePlay}
               target="_blank"
             >
               <Image

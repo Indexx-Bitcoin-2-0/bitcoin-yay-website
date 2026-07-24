@@ -1,5 +1,7 @@
 "use client";
 
+import { EXTERNAL_URLS } from "@/lib/api-config";
+
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -48,7 +50,7 @@ import StartAlchemyImage from "@/assets/images/alchemy/startAlchemySVG.svg";
 const FALLBACK_MIN_NUGGET_INPUT = 1000;
 const FALLBACK_MAX_NUGGET_INPUT = 5000;
 const FALLBACK_MINED_NUGGETS_REQUIRED = 10000;
-const WALLET_OVERVIEW_BASE_URL = "https://cex.indexx.ai/wallet/overview";
+const WALLET_OVERVIEW_BASE_URL: string = EXTERNAL_URLS.app.walletOverview;
 
 export default function AlchemyPage() {
   const { user, isLoading: isAuthLoading } = useAuth();
@@ -151,7 +153,7 @@ export default function AlchemyPage() {
     const fetchPrices = async () => {
       try {
         const res = await axios.get(
-          "https://api.coingecko.com/api/v3/simple/price",
+          EXTERNAL_URLS.api.coinGeckoPrice,
           {
             params: {
               ids: "bitcoin",

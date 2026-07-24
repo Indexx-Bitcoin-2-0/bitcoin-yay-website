@@ -1,5 +1,7 @@
 "use client";
 
+import { EXTERNAL_URLS } from "@/lib/api-config";
+
 import Link from "next/link";
 import Image, { type StaticImageData } from "next/image";
 import { usePathname } from "next/navigation";
@@ -25,7 +27,7 @@ interface IconicItem {
 const ITEMS: IconicItem[] = [
   {
     name: "Mining Station",
-    href: "https://test.miningstation.bitcoinyay.com/",
+    href: EXTERNAL_URLS.app.miningStation,
     icon: MiningStationIcon,
     authTokenRedirect: true,
   },

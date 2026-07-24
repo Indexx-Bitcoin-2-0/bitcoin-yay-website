@@ -1,5 +1,7 @@
 "use client";
 
+import { EXTERNAL_URLS } from "@/lib/api-config";
+
 import CustomStyledConatiner from "@/components/CustomStyledContainer";
 import {
   InfoSection,
@@ -570,7 +572,7 @@ export default function PrivacyPolicy() {
           link="Google Analytics Opt-out Browser Add-on"
           onClick={() => {
             window.open(
-              "https://support.google.com/analytics/answer/181881?hl=en",
+              EXTERNAL_URLS.privacy.googleAnalyticsOptOut,
               "_blank"
             );
           }}

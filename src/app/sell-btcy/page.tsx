@@ -1,5 +1,7 @@
 "use client";
 
+import { EXTERNAL_URLS } from "@/lib/api-config";
+
 import { useState, useEffect, type FormEvent } from "react";
 import Image from "next/image";
 import axios from "axios";
@@ -62,7 +64,7 @@ const DEFAULT_KYC_MESSAGE =
 const BTCY_SYMBOL = "BTCY";
 const TOKEN_WALLET_NETWORK = "Ying Yang Chain";
 const MIN_SELL_USD = 10;
-const KYC_ACCOUNT_URL = "https://cex.indexx.ai/indexx-exchange/account";
+const KYC_ACCOUNT_URL = EXTERNAL_URLS.app.kycAccount;
 
 const getSellOrderPayloadData = (responseData: unknown) => {
   if (

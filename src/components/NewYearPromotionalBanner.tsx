@@ -1,5 +1,7 @@
 "use client";
 
+import { EXTERNAL_URLS } from "@/lib/api-config";
+
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Zap } from "lucide-react";
@@ -14,7 +16,7 @@ import { getAuthenticatedWalletUrl } from "@/lib/authenticated-wallet";
 
 // NOTE: This banner is rendered on the home page (src/app/page.tsx). The
 // component keeps its legacy name to avoid touching the import there.
-const VISIT_URL = "https://emmm.io/";
+const VISIT_URL: string = EXTERNAL_URLS.promotion.emmm;
 
 const NewYearPromotionalBanner = () => {
   const { user } = useAuth();

@@ -1,5 +1,7 @@
 "use client";
 
+import { EXTERNAL_URLS } from "@/lib/api-config";
+
 import Image from "next/image";
 import Link from "next/link";
 
@@ -120,14 +122,14 @@ export default function AlchemyTradePage() {
             <CustomButton2
               text="Buy"
               image={BuyButtonImage}
-              link="https://cex.indexx.ai/update/home"
+              link={EXTERNAL_URLS.indexx.exchangeTrade}
               imageStyling="w-26"
               _blank={true}
             />
             <CustomButton2
               text="Sell"
               image={SellButtonImage}
-              link="https://cex.indexx.ai/update/home"
+              link={EXTERNAL_URLS.indexx.exchangeTrade}
               imageStyling="w-26"
               _blank={true}
             />

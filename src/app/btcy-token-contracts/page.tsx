@@ -1,5 +1,7 @@
 "use client";
 
+import { EXTERNAL_URLS } from "@/lib/api-config";
+
 import { useState } from "react";
 import { Copy, ExternalLink, ArrowRight } from "lucide-react";
 import CustomStyledConatiner from "@/components/CustomStyledContainer";
@@ -9,37 +11,37 @@ const contractData = [
         network: "Solana",
         standard: "SPL",
         contract: "7RUbRcqvQ7gXNmfuxsoUoputPXT85fGzoPSu6xXi6U9p",
-        explorer: "https://explorer.solana.com/address/7RUbRcqvQ7gXNmfuxsoUoputPXT85fGzoPSu6xXi6U9p",
+        explorer: EXTERNAL_URLS.tokenContracts.solanaExplorer,
         explorerName: "View on Solana Explorer",
         isActive: true,
-        logoUrl: "https://cryptologos.cc/logos/solana-sol-logo.png?v=023",
+        logoUrl: EXTERNAL_URLS.tokenContracts.solanaLogo,
     },
     {
         network: "Tron",
         standard: "TRC-20",
         contract: "TJVh7pdziZHNaEwfmBcwZN5JjuEjnN1xzB",
-        explorer: "https://tronscan.org/#/token20/TJVh7pdziZHNaEwfmBcwZN5JjuEjnN1xzB",
+        explorer: EXTERNAL_URLS.tokenContracts.tronExplorer,
         explorerName: "View on TRONSCAN",
         isActive: true,
-        logoUrl: "https://cryptologos.cc/logos/tron-trx-logo.png?v=023",
+        logoUrl: EXTERNAL_URLS.tokenContracts.tronLogo,
     },
     {
         network: "Ethereum",
         standard: "ERC-20",
         contract: "0x22726F15677F6a569F42ea9a4de6e5e5eEd9B93b",
-        explorer: "https://etherscan.io/token/0x22726F15677F6a569F42ea9a4de6e5e5eEd9B93b",
+        explorer: EXTERNAL_URLS.tokenContracts.ethereumExplorer,
         explorerName: "View on Etherscan",
         isActive: true,
-        logoUrl: "https://cryptologos.cc/logos/ethereum-eth-logo.png?v=023",
+        logoUrl: EXTERNAL_URLS.tokenContracts.ethereumLogo,
     },
     {
         network: "BSC",
         standard: "BEP-20",
         contract: "0x22726F15677F6a569F42ea9a4de6e5e5eEd9B93b",
-        explorer: "https://bscscan.com/token/0x22726F15677F6a569F42ea9a4de6e5e5eEd9B93b",
+        explorer: EXTERNAL_URLS.tokenContracts.bscExplorer,
         explorerName: "View on BSCScan",
         isActive: true,
-        logoUrl: "https://cryptologos.cc/logos/bnb-bnb-logo.png?v=023",
+        logoUrl: EXTERNAL_URLS.tokenContracts.bnbLogo,
     },
     {
         network: "Stellar",
@@ -48,7 +50,7 @@ const contractData = [
         explorer: "#",
         explorerName: "Stellar Expert",
         isActive: false,
-        logoUrl: "https://cryptologos.cc/logos/stellar-xlm-logo.png?v=023",
+        logoUrl: EXTERNAL_URLS.tokenContracts.stellarLogo,
     },
 ];
 
@@ -106,17 +108,11 @@ export default function BTCTokenContractsPage() {
                                     <td className="py-4 px-4 md:py-6 md:px-6 text-sm md:text-base text-white whitespace-nowrap">
                                         <div className="flex items-center gap-3">
                                             <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/20 bg-white/5 p-2">
-                                                {item.logoUrl ? (
-                                                    <img
-                                                        src={item.logoUrl}
-                                                        alt={`${item.network} logo`}
-                                                        className="h-full w-full object-cover rounded-full"
-                                                    />
-                                                ) : (
-                                                    <span className="text-[10px] font-semibold uppercase tracking-wider text-white">
-                                                        {item.network.slice(0, 3)}
-                                                    </span>
-                                                )}
+                                                <img
+                                                    src={item.logoUrl}
+                                                    alt={`${item.network} logo`}
+                                                    className="h-full w-full object-cover rounded-full"
+                                                />
                                             </div>
                                             <span className="text-sm md:text-base font-semibold text-white">
                                                 {item.network}
