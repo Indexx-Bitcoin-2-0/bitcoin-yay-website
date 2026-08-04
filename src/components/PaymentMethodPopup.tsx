@@ -89,8 +89,8 @@ const PaymentMethodPopup: React.FC<PaymentMethodPopupProps> = ({
         {
             id: "stripe" as PaymentMethod,
             name: "Stripe",
-            description: "Cards, wallets, Apple Pay, and Google Pay (powered by Stripe).",
-            disabled: false,
+            description: "Stripe is currently unavailable for Power Mining subscriptions.",
+            disabled: true,
             icon: (
                 <Image
                     src={StripeIcon}

@@ -141,7 +141,7 @@ const formatMetric = (value: number) =>
     });
 
 const getSupportedPaymentProvider = (method: PaymentMethod): PaymentProvider =>
-    method === "paypal" || method === "stripe" ? method : "stripe";
+    method === "stripe" ? "stripe" : "paypal";
 
 const SUBSCRIPTION_PAUSED_MESSAGE =
     " ";
