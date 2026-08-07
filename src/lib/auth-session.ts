@@ -5,6 +5,41 @@ export const invalidateAuthSession = (): void => {
   window.dispatchEvent(new Event(AUTH_SESSION_INVALID_EVENT));
 };
 
+const getBearerToken = (authorization?: string | null): string | null => {
+  if (!authorization) return null;
+  const match = authorization.match(/^Bearer\s+(.+)$/i);
+  return match?.[1]?.trim() || null;
+};
+
+export const isAuthorizationTokenExpired = (
+  authorization?: string | null
+): boolean => {
+  const token = getBearerToken(authorization);
+  if (!token) return false;
+
+  try {
+    const payloadSegment = token.split(".")[1];
+    if (!payloadSegment) return false;
+    const normalized = payloadSegment.replace(/-/g, "+").replace(/_/g, "/");
+    const padded = normalized.padEnd(
+      normalized.length + ((4 - (normalized.length % 4)) % 4),
+      "="
+    );
+    const payload = JSON.parse(window.atob(padded)) as { exp?: number };
+    return typeof payload.exp === "number" && Date.now() >= payload.exp * 1000;
+  } catch {
+    return false;
+  }
+};
+
+export const invalidateIfAuthorizationExpired = (
+  authorization?: string | null
+): boolean => {
+  const expired = isAuthorizationTokenExpired(authorization);
+  if (expired) invalidateAuthSession();
+  return expired;
+};
+
 export const isInvalidAuthError = (message?: string): boolean =>
   Boolean(
     message &&

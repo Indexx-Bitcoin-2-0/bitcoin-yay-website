@@ -20,6 +20,7 @@ import { decodeJWT } from "@/lib/signInToken";
 import {
   AUTH_SESSION_INVALID_EVENT,
   handleAuthFailure,
+  invalidateIfAuthorizationExpired,
 } from "@/lib/auth-session";
 
 type TokenPayload = {
@@ -139,7 +140,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const requestHeaders = new Headers(
         init?.headers ?? (input instanceof Request ? input.headers : undefined)
       );
-      const isAuthenticatedRequest = requestHeaders.has("Authorization");
+      const authorization = requestHeaders.get("Authorization");
+      const isAuthenticatedRequest = Boolean(authorization);
+      invalidateIfAuthorizationExpired(authorization);
       const response = await originalFetch(input, init);
 
       if (isAuthenticatedRequest) {
@@ -159,6 +162,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     window.fetch = authenticatedFetch;
 
+    const axiosRequestInterceptor = axios.interceptors.request.use((config) => {
+      const authorization = config.headers?.get?.("Authorization");
+      invalidateIfAuthorizationExpired(
+        typeof authorization === "string" ? authorization : null
+      );
+      return config;
+    });
+
     const axiosInterceptor = axios.interceptors.response.use(
       (response) => response,
       (error: unknown) => {
@@ -176,6 +187,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (window.fetch === authenticatedFetch) {
         window.fetch = originalFetch;
       }
+      axios.interceptors.request.eject(axiosRequestInterceptor);
       axios.interceptors.response.eject(axiosInterceptor);
     };
   }, []);
