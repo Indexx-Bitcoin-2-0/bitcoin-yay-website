@@ -11,6 +11,7 @@ import {
   GET_USER_MINING_BALANCE_API_ROUTE,
   GET_USER_WALLET_BALANCE_API_ROUTE,
 } from "@/routes";
+import { handleAuthFailure } from "@/lib/auth-session";
 
 export const ALCHEMY_DISABLED = false;
 
@@ -163,7 +164,9 @@ function getAccessToken(): string | null {
 
 async function parseJsonSafe(response: Response) {
   try {
-    return await response.json();
+    const result = await response.json();
+    handleAuthFailure(response, result);
+    return result;
   } catch (error) {
     const fallback =
       (await response.text().catch(() => "")) || "Unable to parse response body";

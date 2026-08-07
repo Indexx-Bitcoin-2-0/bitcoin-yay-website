@@ -41,6 +41,7 @@ import {
   NormalizedActiveLiquidityPool,
 } from "@/services/alchemy.service";
 import axios from "axios";
+import { isInvalidAuthError } from "@/lib/auth-session";
 
 import FortuneFunnelIcon from "@/assets/images/alchemy/fortuneFunnel.svg";
 import MegaPathIcon from "@/assets/images/alchemy/mega_path.svg";
@@ -486,6 +487,11 @@ export default function AlchemyPage() {
         error instanceof Error
           ? error.message
           : "Failed to start the conversion. Please try again.";
+      if (isInvalidAuthError(message)) {
+        setStatusMessage(null);
+        setIsLoginPopupOpen(true);
+        return;
+      }
       setFormError(message);
     } finally {
       setIsProcessingAlchemy(false);
