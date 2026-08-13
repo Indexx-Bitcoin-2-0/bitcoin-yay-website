@@ -9,6 +9,8 @@ interface CustomButtonProps {
   text: string;
   handleButtonClick: (key: number) => void;
   isActive?: boolean;
+  /** Override the oval image size (defaults to the standard tab size). */
+  imageClassName?: string;
 }
 
 const CustomButton = ({
@@ -16,6 +18,7 @@ const CustomButton = ({
   text,
   handleButtonClick,
   isActive,
+  imageClassName = "w-26 md:w-36 lg:w-40",
 }: CustomButtonProps) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -32,13 +35,13 @@ const CustomButton = ({
         <Image
           src={ButtonBorderActive}
           alt="Button Border"
-          className="w-26 md:w-36 lg:w-40"
+          className={imageClassName}
         />
       ) : (
         <Image
           src={isHovered ? ButtonBorderActive : ButtonBorder}
           alt="Button Border"
-          className="w-26 md:w-36 lg:w-40"
+          className={imageClassName}
         />
       )}
       <p

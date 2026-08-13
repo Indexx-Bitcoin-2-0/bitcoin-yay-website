@@ -1,6 +1,7 @@
 "use client";
 
 import { EXTERNAL_URLS } from "@/lib/api-config";
+import BuybackRuleNote from "@/components/p2p/BuybackRuleNote";
 
 import { useState, useEffect, type FormEvent } from "react";
 import Image from "next/image";
@@ -542,6 +543,7 @@ export default function SellBtcyPage() {
     <div className="min-h-screen">
       {/* Hero Section */}
       <div className="mx-auto mt-40 md:mt-60 px-4 md:px-8 lg:px-20 xl:px-40 relative max-w-[2000px]">
+        <BuybackRuleNote className="mb-8 max-w-3xl" />
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12">
           <div className="flex-3 w-full lg:w-auto">
             <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold text-white leading-tight mb-6 md:mb-10">

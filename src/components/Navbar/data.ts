@@ -52,6 +52,13 @@ const header_data = [
       },
     ],
   },
+  {
+    mainTextDesktop: "P2P",
+    mainTextMob: "P2P",
+    active: false,
+    href: "/p2p",
+    hasMegaDrop: false,
+  },
   // {
   //   mainTextDesktop: "Bible",
   //   mainTextMob: "Bible",

@@ -34,6 +34,7 @@ const ITEMS: IconicItem[] = [
   { name: "Alchemy", href: "/alchemy", icon: AlchemyIcon },
   { name: "Buy BTCY", href: "/quantum-mining", icon: BuyBtcyIcon },
   { name: "Sell BTCY", href: "/sell-btcy", icon: SellBtcyIcon },
+  { name: "P2P", href: "/p2p", icon: SellBtcyIcon },
 
   { name: "Power Mining", href: "/mining/power-mining", icon: SubscriptionIcon },
 ];
