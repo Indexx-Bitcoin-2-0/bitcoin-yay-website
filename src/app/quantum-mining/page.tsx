@@ -318,6 +318,7 @@ const PAYMENT_OPTIONS = [
     icon: StripeIcon,
     optionIconClassName: "w-10 h-10",
     inputIconClassName: "w-10 h-10",
+    disabled: true,
   },
 ] as const;
 
@@ -832,7 +833,10 @@ const QuantumMiningPage = () => {
   const isBelowMinimumAmount =
     hasNumericPayAmount && numericPayAmount < MIN_PURCHASE_AMOUNT_USD;
   const isBuyDisabled =
-    !hasNumericPayAmount || isBelowMinimumAmount || !!errors.payAmount;
+    selectedPaymentOption === "Stripe" ||
+    !hasNumericPayAmount ||
+    isBelowMinimumAmount ||
+    !!errors.payAmount;
   const selectedPaymentVisual =
     PAYMENT_OPTIONS.find((option) => option.name === selectedPaymentOption) ??
     PAYMENT_OPTIONS[0];
@@ -1377,11 +1381,19 @@ const QuantumMiningPage = () => {
           {PAYMENT_OPTIONS.map((option) => {
             const name = option.name as PaymentOption;
             const isSelected = name === selectedPaymentOption;
+            const isDisabled = "disabled" in option && option.disabled;
             return (
-              <div
+              <button
+                type="button"
                 key={name}
-                className="relative cursor-pointer transition-all duration-200"
-                onClick={() => setSelectedPaymentOption(name)}
+                disabled={isDisabled}
+                aria-label={isDisabled ? `${name} - Coming Soon` : name}
+                className={`relative transition-all duration-200 ${
+                  isDisabled
+                    ? "cursor-not-allowed opacity-50"
+                    : "cursor-pointer"
+                }`}
+                onClick={() => !isDisabled && setSelectedPaymentOption(name)}
               >
                 <div className="group flex flex-col items-center">
                   <span className="mb-2">
@@ -1392,13 +1404,19 @@ const QuantumMiningPage = () => {
                     />
                   </span>
                   <span
-                    className={`text-lg group-hover:text-primary ${isSelected ? "text-primary" : ""
-                      }`}
+                    className={`text-lg ${
+                      !isDisabled ? "group-hover:text-primary" : ""
+                    } ${isSelected ? "text-primary" : ""}`}
                   >
                     {name}
                   </span>
+                  {isDisabled && (
+                    <span className="mt-1 text-xs font-semibold uppercase tracking-wide text-primary">
+                      Coming Soon
+                    </span>
+                  )}
                 </div>
-              </div>
+              </button>
             );
           })}
         </div>

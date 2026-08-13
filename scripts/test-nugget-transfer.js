@@ -32,7 +32,7 @@ const ACCESS_TOKEN =
 const REQUEST_ORIGIN = process.env.REQUEST_ORIGIN || "https://www.bitcoinyay.com";
 
 const MIN_TRANSFER_NUGGETS = 5000;
-const MIN_TRANSFER_REFERRALS = 5;
+const MIN_TRANSFER_REFERRALS = 25;
 
 const routes = {
   referrals: (email) =>

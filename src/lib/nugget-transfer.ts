@@ -26,7 +26,7 @@ export interface SubmitTransferResult {
 }
 
 export const MIN_TRANSFER_NUGGETS = 5000;
-export const MIN_TRANSFER_REFERRALS = 5;
+export const MIN_TRANSFER_REFERRALS = 25;
 
 const TRANSFER_ENDPOINT = `${API_BASE_URL}/api/v1/mining/nuggets/transfer`;
 const REFERRALS_ENDPOINT = `${API_BASE_URL}/api/v1/inex/user/referrals`;
