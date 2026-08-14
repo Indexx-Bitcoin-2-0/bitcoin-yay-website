@@ -1,24 +1,19 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import BuybackRuleNote from "@/components/p2p/BuybackRuleNote";
 import CustomButton from "@/components/CustomButton";
 import CustomButton2 from "@/components/CustomButton2";
 import Dropdown from "@/components/p2p/Dropdown";
 import PopupComponent from "@/components/PopupComponent";
+import LoginPopup from "@/components/LoginPopup";
+import { useAuth } from "@/contexts/AuthContext";
 import CartButtonImage from "@/assets/images/buttons/cart-button.webp";
 import SellButtonImage from "@/assets/images/buttons/price-tag-button.webp";
 import CheckMarkButtonImage from "@/assets/images/buttons/check-mark-button.webp";
 import CancelOrderImage from "@/assets/images/buttons/cancelOrder.svg";
-import SendButtonImage from "@/assets/images/buttons/send-button.webp";
-import DollarButtonImage from "@/assets/images/buttons/dollar-button.webp";
 import DisputeButtonImage from "@/assets/images/buttons/customer_support.svg";
-import RetryButtonImage from "@/assets/images/buttons/retry-button.webp";
 import {
-  CURRENT_USER,
-  INITIAL_MARKET_ORDERS,
-  INITIAL_MY_ORDERS,
-  INITIAL_WALLET,
   PAYMENT_METHODS,
   P2POrder,
   OrderStatus,
@@ -31,11 +26,26 @@ import {
   formatBtcy,
   formatPrice,
   formatUsd,
-  nextStatus,
+  mapBackendOfferStatus,
+  mapBackendTradeStatus,
+  formatPaymentDetails,
+  nameFromEmail,
   orderTotal,
-  p2pAvailable,
   roleOf,
   walletTotal,
+  P2PApiOffer,
+  P2PApiTrade,
+  getP2PWalletSummary,
+  listP2PSellOffers,
+  listMyP2POffers,
+  listMyP2PTrades,
+  createP2PSellOffer,
+  createP2PTrade,
+  cancelP2POffer,
+  markP2PTradeAsPaid,
+  confirmP2PTradePayment,
+  cancelP2PTrade,
+  createP2PDispute,
 } from "@/lib/p2p";
 
 // BTCY is considered "locked" while an order sits in any of these states.
@@ -49,6 +59,44 @@ const LOCKED_STATES: OrderStatus[] = [
 ];
 
 type Tab = "market" | "sell" | "orders";
+
+// ---------------------------------------------------------------------------
+// Conversion: backend offers/trades -> display P2POrder
+// ---------------------------------------------------------------------------
+
+function offerToOpenOrder(offer: P2PApiOffer): P2POrder {
+  const amount = offer.availableAmount / offer.pricePerUnit;
+  return {
+    id: offer.offerId,
+    sellerId: offer.creatorEmail,
+    sellerName: nameFromEmail(offer.creatorEmail),
+    amount,
+    price: offer.pricePerUnit,
+    paymentMethods: offer.paymentMethods?.length
+      ? offer.paymentMethods
+      : offer.acceptedPaymentMethods,
+    paymentDetails: formatPaymentDetails(offer.paymentInstructions) || undefined,
+    status: mapBackendOfferStatus(offer.status),
+    createdAt: offer.createdAt,
+  };
+}
+
+function tradeToOrder(trade: P2PApiTrade, offer?: P2PApiOffer): P2POrder {
+  return {
+    id: trade.tradeId,
+    tradeId: trade.tradeId,
+    sellerId: trade.sellerEmail,
+    sellerName: nameFromEmail(trade.sellerEmail),
+    buyerId: trade.buyerEmail,
+    buyerName: nameFromEmail(trade.buyerEmail),
+    amount: trade.cryptoAmount,
+    price: trade.pricePerUnit,
+    paymentMethods: [trade.paymentMethod],
+    paymentDetails: formatPaymentDetails(offer?.paymentInstructions) || undefined,
+    status: mapBackendTradeStatus(trade.status),
+    createdAt: trade.createdAt,
+  };
+}
 
 // ---------------------------------------------------------------------------
 // Small presentational pieces
@@ -119,7 +167,7 @@ function BalanceCard({ wallet, locked }: { wallet: Wallet; locked: number }) {
         <span className="text-sm text-tertiary">
           Available to trade:{" "}
           <span className="font-semibold text-primary">
-            {formatBtcy(Math.max(0, walletTotal(wallet) - locked))} BTCY
+            {formatBtcy(walletTotal(wallet))} BTCY
           </span>
         </span>
       </div>
@@ -147,9 +195,11 @@ function BalanceCard({ wallet, locked }: { wallet: Wallet; locked: number }) {
 
 function MarketTab({
   orders,
+  loading,
   onBuy,
 }: {
   orders: P2POrder[];
+  loading: boolean;
   onBuy: (o: P2POrder) => void;
 }) {
   const [sort, setSort] = useState<"price_asc" | "price_desc" | "amount_desc">(
@@ -192,7 +242,7 @@ function MarketTab({
           ]}
         />
         <span className="ml-auto text-sm text-tertiary/70">
-          {visible.length} offer{visible.length === 1 ? "" : "s"}
+          {loading ? "Loading…" : `${visible.length} offer${visible.length === 1 ? "" : "s"}`}
         </span>
       </div>
 
@@ -235,7 +285,7 @@ function MarketTab({
                 </td>
               </tr>
             ))}
-            {visible.length === 0 && (
+            {!loading && visible.length === 0 && (
               <tr>
                 <td
                   colSpan={6}
@@ -256,58 +306,87 @@ function MarketTab({
 // Tab: Sell (create order)
 // ---------------------------------------------------------------------------
 
+// Which structured fields a payment method needs, and how to label them.
+type PaymentFieldKey =
+  | "bankName"
+  | "accountHolder"
+  | "accountNumber"
+  | "routingNumber"
+  | "handle"
+  | "walletAddress";
+
+const PAYMENT_METHOD_FIELDS: Record<
+  string,
+  { key: PaymentFieldKey; label: string; placeholder: string }[]
+> = {
+  "Bank Transfer": [
+    { key: "bankName", label: "Bank name", placeholder: "Chase" },
+    { key: "accountHolder", label: "Account holder name", placeholder: "Jane Doe" },
+    { key: "accountNumber", label: "Account number", placeholder: "000123456789" },
+    { key: "routingNumber", label: "Routing number", placeholder: "021000021" },
+  ],
+  PayPal: [{ key: "handle", label: "PayPal email", placeholder: "you@example.com" }],
+  Wise: [{ key: "handle", label: "Wise email", placeholder: "you@example.com" }],
+  "Cash App": [{ key: "handle", label: "Cash App $Cashtag", placeholder: "$yourcashtag" }],
+  "USDT (TRC20)": [
+    { key: "walletAddress", label: "USDT (TRC20) wallet address", placeholder: "T…" },
+  ],
+};
+
 function SellTab({
-  wallet,
   available,
+  submitting,
   onCreate,
 }: {
-  wallet: Wallet;
   available: number;
+  submitting: boolean;
   onCreate: (o: {
     amount: number;
     price: number;
-    paymentMethods: string[];
-    expiresInHours: number;
+    paymentMethod: string;
+    paymentDetails: Record<string, string>;
   }) => void;
 }) {
   const [amount, setAmount] = useState("");
   const [price, setPrice] = useState("0.063");
-  const [methods, setMethods] = useState<string[]>([]);
-  const [expiry, setExpiry] = useState("24");
+  const [method, setMethod] = useState<string>("");
+  const [fields, setFields] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
 
   const amountNum = parseFloat(amount) || 0;
   const priceNum = parseFloat(price) || 0;
   const total = amountNum * priceNum;
+  const methodFields = method ? PAYMENT_METHOD_FIELDS[method] ?? [] : [];
 
-  const toggleMethod = (m: string) =>
-    setMethods((prev) =>
-      prev.includes(m) ? prev.filter((x) => x !== m) : [...prev, m],
-    );
+  const selectMethod = (m: string) => {
+    setMethod(m);
+    setFields({});
+  };
+
+  const setField = (key: string, value: string) =>
+    setFields((prev) => ({ ...prev, [key]: value }));
 
   const submit = () => {
     if (amountNum <= 0) return setError("Enter a BTCY amount.");
     if (amountNum > available)
       return setError(
-        `You can list at most ${formatBtcy(available)} BTCY (rest is locked).`,
+        `You can list at most ${formatBtcy(available)} BTCY.`,
       );
     if (priceNum <= 0) return setError("Enter a price per BTCY.");
-    if (methods.length === 0)
-      return setError("Select at least one payment method.");
+    if (!method) return setError("Select a payment method.");
+    if (methodFields.some((f) => !fields[f.key]?.trim()))
+      return setError("Fill in all payment details for the buyer.");
     setError(null);
     onCreate({
       amount: amountNum,
       price: priceNum,
-      paymentMethods: methods,
-      expiresInHours: parseInt(expiry, 10) || 24,
+      paymentMethod: method,
+      paymentDetails: fields,
     });
     setAmount("");
-    setMethods([]);
+    setMethod("");
+    setFields({});
   };
-
-  // Earned is spent first (buyback-eligible purchased BTCY is preserved).
-  const fromEarned = Math.min(wallet.earned, amountNum);
-  const fromPurchased = Math.max(0, amountNum - fromEarned);
 
   return (
     <div className="mx-auto max-w-xl space-y-5">
@@ -348,14 +427,14 @@ function SellTab({
 
         <div>
           <label className="mb-2 block text-sm text-tertiary">
-            Payment methods
+            Payment method
           </label>
           <div className="flex flex-wrap gap-2">
             {PAYMENT_METHODS.map((m) => (
               <button
                 key={m}
-                onClick={() => toggleMethod(m)}
-                className={`rounded-full border px-3 py-1.5 text-sm transition ${methods.includes(m)
+                onClick={() => selectMethod(m)}
+                className={`rounded-full border px-3 py-1.5 text-sm transition ${method === m
                   ? "border-primary bg-primary/15 text-primary"
                   : "border-white/15 text-tertiary hover:border-primary/60"
                   }`}
@@ -366,21 +445,25 @@ function SellTab({
           </div>
         </div>
 
-        <div>
-          <label className="mb-1 block text-sm text-tertiary">
-            Order expiry
-          </label>
-          <Dropdown
-            value={expiry}
-            onChange={setExpiry}
-            options={[
-              { label: "6 hours", value: "6" },
-              { label: "12 hours", value: "12" },
-              { label: "24 hours", value: "24" },
-              { label: "48 hours", value: "48" },
-            ]}
-          />
-        </div>
+        {methodFields.length > 0 && (
+          <div className="space-y-3">
+            <p className="text-sm text-tertiary">Payment details for buyer</p>
+            {methodFields.map((f) => (
+              <div key={f.key}>
+                <label className="mb-1 block text-xs text-tertiary/70">{f.label}</label>
+                <input
+                  value={fields[f.key] ?? ""}
+                  onChange={(e) => setField(f.key, e.target.value)}
+                  placeholder={f.placeholder}
+                  className="w-full rounded-xl border border-white/15 bg-black/40 px-4 py-3 text-white outline-none focus:border-primary"
+                />
+              </div>
+            ))}
+            <p className="text-xs text-tertiary/60">
+              Shown to the buyer once they take your order.
+            </p>
+          </div>
+        )}
 
         <div className="rounded-xl bg-black/30 p-4 text-sm">
           <div className="flex justify-between">
@@ -389,14 +472,6 @@ function SellTab({
               {formatUsd(total)}
             </span>
           </div>
-          {amountNum > 0 && (
-            <div className="mt-2 text-xs text-tertiary/70">
-              Deducted from: {formatBtcy(fromEarned)} Earned
-              {fromPurchased > 0
-                ? ` + ${formatBtcy(fromPurchased)} Purchased`
-                : ""}
-            </div>
-          )}
         </div>
 
         {error && <p className="text-sm text-red-400">{error}</p>}
@@ -404,7 +479,7 @@ function SellTab({
         <div className="flex justify-center">
           <CustomButton2
             image={SellButtonImage}
-            text="Create Order"
+            text={submitting ? "Creating…" : "Create Order"}
             onClick={submit}
             imageStyling="w-28 md:w-32"
             ariaLabel="Create Order"
@@ -425,13 +500,18 @@ function SellTab({
 
 function MyOrdersTab({
   orders,
+  currentEmail,
+  loading,
   onOpen,
 }: {
   orders: P2POrder[];
+  currentEmail: string;
+  loading: boolean;
   onOpen: (o: P2POrder) => void;
 }) {
-  const asSeller = orders.filter((o) => o.sellerId === CURRENT_USER.id);
-  const asBuyer = orders.filter((o) => o.buyerId === CURRENT_USER.id);
+  const email = currentEmail.toLowerCase();
+  const asSeller = orders.filter((o) => o.sellerId.toLowerCase() === email);
+  const asBuyer = orders.filter((o) => o.buyerId?.toLowerCase() === email);
 
   const list = (title: string, items: P2POrder[]) => (
     <div>
@@ -440,7 +520,7 @@ function MyOrdersTab({
       </h3>
       {items.length === 0 ? (
         <p className="rounded-xl border border-white/10 bg-white/5 px-4 py-6 text-center text-sm text-tertiary/60">
-          Nothing here yet.
+          {loading ? "Loading…" : "Nothing here yet."}
         </p>
       ) : (
         <div className="space-y-3">
@@ -456,7 +536,7 @@ function MyOrdersTab({
                 </p>
                 <p className="text-xs text-tertiary/70">
                   {formatPrice(o.price)}/BTCY ·{" "}
-                  {o.sellerId === CURRENT_USER.id
+                  {o.sellerId.toLowerCase() === email
                     ? `Buyer: ${o.buyerName ?? "—"}`
                     : `Seller: ${o.sellerName}`}
                 </p>
@@ -483,18 +563,20 @@ function MyOrdersTab({
 
 function TradeRoom({
   order,
+  currentEmail,
+  actionLoading,
   onClose,
   onAction,
 }: {
   order: P2POrder;
+  currentEmail: string;
+  actionLoading: boolean;
   onClose: () => void;
   onAction: (action: TradeAction) => void;
 }) {
-  const role = roleOf(order);
+  const role = roleOf(order, currentEmail);
   const s = order.status;
 
-  // Trade-room actions render as CustomButton2 ovals: orange for primary,
-  // grey (tertiary) for secondary/destructive.
   const Btn = ({
     label,
     action,
@@ -507,7 +589,7 @@ function TradeRoom({
     <CustomButton2
       image={image}
       text={label}
-      onClick={() => onAction(action)}
+      onClick={() => !actionLoading && onAction(action)}
       imageStyling="w-24 md:w-28"
       ariaLabel={label}
     />
@@ -531,9 +613,7 @@ function TradeRoom({
         <Btn key="d" label="Dispute" action="dispute" image={DisputeButtonImage} />,
       );
     } else if (s === "payment_confirmed") {
-      myActions.push(
-        <Btn key="r" label="Release" action="release" image={SendButtonImage} />,
-      );
+      waitingMsg.push("Finalizing BTCY release…");
     }
   } else if (role === "buyer") {
     if (s === "payment_pending") {
@@ -550,22 +630,6 @@ function TradeRoom({
       waitingMsg.push("Payment confirmed. Awaiting BTCY release.");
     }
   }
-
-  // Demo helper: advance the counterparty's step so the whole lifecycle is
-  // walkable by a single person (removed once the backend drives both sides).
-  const sim: { label: string; action: TradeAction } | null = (() => {
-    if (role === "seller") {
-      if (s === "open") return { label: "Sim: accept", action: "accept" };
-      if (s === "payment_pending") return { label: "Sim: pay", action: "pay" };
-    }
-    if (role === "buyer") {
-      if (s === "payment_submitted")
-        return { label: "Sim: confirm", action: "confirm" };
-      if (s === "payment_confirmed")
-        return { label: "Sim: release", action: "release" };
-    }
-    return null;
-  })();
 
   return (
     <PopupComponent isOpen onClose={onClose}>
@@ -620,29 +684,18 @@ function TradeRoom({
           </p>
         ))}
 
-        {order.status === "admin_review" && (
+        {(order.status === "admin_review" || order.status === "disputed") && (
           <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/5 p-4">
             <p className="text-sm text-red-400">
-              This trade is under admin review. An admin will verify the
-              evidence and resolve it.
+              This trade is under admin review. Our support team will verify
+              the evidence and resolve it — no action needed from you here.
             </p>
-            <div className="mt-3 flex flex-wrap items-center justify-center gap-8">
-              <Btn label="Release" action="resolve_release" image={SendButtonImage} />
-              <Btn label="Refund" action="resolve_refund" image={DollarButtonImage} />
-            </div>
           </div>
         )}
 
-        <div className="mt-5 flex flex-wrap items-center justify-center gap-8">
-          {myActions}
-        </div>
-
-        {sim && (
-          <div className="mt-4 flex flex-col items-center border-t border-white/10 pt-4">
-            <p className="mb-2 text-[11px] uppercase tracking-wide text-tertiary/50">
-              Demo controls
-            </p>
-            <Btn label={sim.label} action={sim.action} image={RetryButtonImage} />
+        {myActions.length > 0 && (
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-8">
+            {myActions}
           </div>
         )}
       </div>
@@ -655,105 +708,214 @@ function TradeRoom({
 // ---------------------------------------------------------------------------
 
 export default function P2PMarketplacePage() {
-  const [wallet, setWallet] = useState<Wallet>(INITIAL_WALLET);
-  const [marketOrders, setMarketOrders] =
-    useState<P2POrder[]>(INITIAL_MARKET_ORDERS);
-  const [myOrders, setMyOrders] = useState<P2POrder[]>(INITIAL_MY_ORDERS);
+  const { user, isLoading: isAuthLoading } = useAuth();
+  const email = user?.email ?? "";
+
+  const [wallet, setWallet] = useState<Wallet>({ purchased: 0, earned: 0 });
+  const [walletLoading, setWalletLoading] = useState(false);
+
+  const [marketOffers, setMarketOffers] = useState<P2PApiOffer[]>([]);
+  const [marketLoading, setMarketLoading] = useState(false);
+
+  const [myOffers, setMyOffers] = useState<P2PApiOffer[]>([]);
+  const [myTrades, setMyTrades] = useState<P2PApiTrade[]>([]);
+  const [myOrdersLoading, setMyOrdersLoading] = useState(false);
+
   const [tab, setTab] = useState<Tab>("market");
   const [openOrderId, setOpenOrderId] = useState<string | null>(null);
-  const [orderCounter, setOrderCounter] = useState(1);
+  const [sellSubmitting, setSellSubmitting] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
+
+  // Require login as soon as the P2P page loads, matching the pattern used
+  // on other login-gated pages (e.g. mining/nuclear-mining).
+  useEffect(() => {
+    if (!isAuthLoading && !user) {
+      setIsLoginPopupOpen(true);
+    }
+  }, [isAuthLoading, user]);
+
+  const refreshWallet = useCallback(async () => {
+    if (!email) {
+      setWallet({ purchased: 0, earned: 0 });
+      return;
+    }
+    setWalletLoading(true);
+    try {
+      const res = await getP2PWalletSummary(email);
+      if (res.success) setWallet(res.data);
+    } finally {
+      setWalletLoading(false);
+    }
+  }, [email]);
+
+  const refreshMarket = useCallback(async () => {
+    setMarketLoading(true);
+    try {
+      const res = await listP2PSellOffers();
+      if (res.success) setMarketOffers(res.data);
+    } finally {
+      setMarketLoading(false);
+    }
+  }, []);
+
+  const refreshMyOrders = useCallback(async () => {
+    if (!email) {
+      setMyOffers([]);
+      setMyTrades([]);
+      return;
+    }
+    setMyOrdersLoading(true);
+    try {
+      const [offersRes, tradesRes] = await Promise.all([
+        listMyP2POffers(email),
+        listMyP2PTrades(email),
+      ]);
+      if (offersRes.success) setMyOffers(offersRes.data);
+      if (tradesRes.success) setMyTrades(tradesRes.data);
+    } finally {
+      setMyOrdersLoading(false);
+    }
+  }, [email]);
+
+  useEffect(() => {
+    if (isAuthLoading) return;
+    refreshWallet();
+    refreshMyOrders();
+  }, [isAuthLoading, refreshWallet, refreshMyOrders]);
+
+  useEffect(() => {
+    refreshMarket();
+  }, [refreshMarket]);
+
+  const marketOrders = useMemo(
+    () => marketOffers.map(offerToOpenOrder),
+    [marketOffers],
+  );
+
+  // My orders = my trades (source of truth once a buyer has taken an offer)
+  // plus my own offers that no trade exists for yet (still open, or cancelled
+  // before anyone took them).
+  const myOrders = useMemo(() => {
+    const offerById = new Map(myOffers.map((o) => [o.offerId, o]));
+    const tradeOrders = myTrades.map((t) => tradeToOrder(t, offerById.get(t.offerId)));
+    const offerIdsWithTrades = new Set(myTrades.map((t) => t.offerId));
+    const untakenOfferOrders = myOffers
+      .filter((o) => !offerIdsWithTrades.has(o.offerId))
+      .map(offerToOpenOrder);
+    return [...tradeOrders, ...untakenOfferOrders].sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
+  }, [myOffers, myTrades]);
 
   const lockedBtcy = useMemo(
     () =>
       myOrders
         .filter(
           (o) =>
-            o.sellerId === CURRENT_USER.id && LOCKED_STATES.includes(o.status),
+            o.sellerId.toLowerCase() === email.toLowerCase() &&
+            LOCKED_STATES.includes(o.status),
         )
         .reduce((sum, o) => sum + o.amount, 0),
-    [myOrders],
+    [myOrders, email],
   );
-  const available = Math.max(0, p2pAvailable(wallet) - lockedBtcy);
+  // Purchased/earned already exclude BTCY locked in active offers/trades —
+  // the backend debits the wallet at offer-creation time.
+  const available = walletTotal(wallet);
 
   const openOrder = useMemo(
     () => myOrders.find((o) => o.id === openOrderId) ?? null,
     [myOrders, openOrderId],
   );
 
-  // Buy an open market offer → become the buyer, move it into My Orders.
-  const handleBuy = (o: P2POrder) => {
-    const matched: P2POrder = {
-      ...o,
-      buyerId: CURRENT_USER.id,
-      buyerName: CURRENT_USER.name,
-      status: "payment_pending",
-    };
-    setMarketOrders((prev) => prev.filter((x) => x.id !== o.id));
-    setMyOrders((prev) => [matched, ...prev]);
-    setTab("orders");
-    setOpenOrderId(matched.id);
+  const requireAuth = () => {
+    if (!email) {
+      setIsLoginPopupOpen(true);
+      return false;
+    }
+    return true;
   };
 
-  // Create a sell order → lock BTCY (earned first, purchased preserved).
-  const handleCreate = (data: {
+  // Buy an open market offer -> creates a real trade on the backend.
+  const handleBuy = async (o: P2POrder) => {
+    if (!requireAuth()) return;
+    setErrorMessage(null);
+    const res = await createP2PTrade({
+      email,
+      offerId: o.id,
+      fiatAmount: orderTotal(o),
+      paymentMethod: o.paymentMethods[0],
+    });
+    if (!res.success) {
+      setErrorMessage(res.error);
+      return;
+    }
+    await Promise.all([refreshMarket(), refreshMyOrders()]);
+    setTab("orders");
+    setOpenOrderId(res.data.tradeId);
+  };
+
+  // Create a sell order -> escrow-locks BTCY on the backend (earned first).
+  const handleCreate = async (data: {
     amount: number;
     price: number;
-    paymentMethods: string[];
-    expiresInHours: number;
+    paymentMethod: string;
+    paymentDetails: Record<string, string>;
   }) => {
-    const fromEarned = Math.min(wallet.earned, data.amount);
-    const fromPurchased = Math.max(0, data.amount - fromEarned);
-    const newOrder: P2POrder = {
-      id: `ord_new_${orderCounter}`,
-      sellerId: CURRENT_USER.id,
-      sellerName: CURRENT_USER.name,
-      amount: data.amount,
-      price: data.price,
-      paymentMethods: data.paymentMethods,
-      status: "open",
-      createdAt: new Date().toISOString(),
-      expiresInHours: data.expiresInHours,
-      source: { purchased: fromPurchased, earned: fromEarned },
-    };
-    setOrderCounter((c) => c + 1);
-    setMyOrders((prev) => [newOrder, ...prev]);
-    setTab("orders");
+    if (!requireAuth()) return;
+    setErrorMessage(null);
+    setSellSubmitting(true);
+    try {
+      const res = await createP2PSellOffer({ email, ...data });
+      if (!res.success) {
+        setErrorMessage(res.error);
+        return;
+      }
+      await Promise.all([refreshWallet(), refreshMyOrders(), refreshMarket()]);
+      setTab("orders");
+    } finally {
+      setSellSubmitting(false);
+    }
   };
 
-  // Apply a trade action to the open order and mutate wallet on settlement.
-  const handleAction = (action: TradeAction) => {
-    if (!openOrder) return;
-    const from = openOrder.status;
-    const to = nextStatus(from, action);
-
-    setMyOrders((prev) =>
-      prev.map((o) => {
-        if (o.id !== openOrder.id) return o;
-        const updated: P2POrder = { ...o, status: to };
-        // When a buyer accepts a seller's open order in the demo, attach a buyer.
-        if (action === "accept" && !o.buyerId) {
-          updated.buyerId = "u_demo_buyer";
-          updated.buyerName = "Demo Buyer";
-        }
-        return updated;
-      }),
-    );
-
-    // Settlement: seller's BTCY leaves the wallet once released/completed.
-    const iAmSeller = openOrder.sellerId === CURRENT_USER.id;
-    if (iAmSeller && (to === "completed" || to === "btcy_released")) {
-      const src = openOrder.source ?? {
-        earned: Math.min(wallet.earned, openOrder.amount),
-        purchased: Math.max(0, openOrder.amount - wallet.earned),
-      };
-      setWallet((w) => ({
-        purchased: Math.max(0, w.purchased - src.purchased),
-        earned: Math.max(0, w.earned - src.earned),
-      }));
+  // Apply a trade-room action against the real backend, then refetch.
+  const handleAction = async (action: TradeAction) => {
+    if (!openOrder || !requireAuth()) return;
+    if (action === "release" || action === "resolve_release" || action === "resolve_refund") {
+      // "release" is folded into "confirm" on the backend; admin resolution
+      // isn't wired up yet.
+      return;
     }
+    setErrorMessage(null);
+    setActionLoading(true);
+    try {
+      let res: { success: boolean; error?: string };
+      if (action === "cancel") {
+        res = openOrder.tradeId
+          ? await cancelP2PTrade(openOrder.tradeId)
+          : await cancelP2POffer(openOrder.id);
+      } else if (action === "pay" && openOrder.tradeId) {
+        res = await markP2PTradeAsPaid(openOrder.tradeId);
+      } else if (action === "confirm" && openOrder.tradeId) {
+        res = await confirmP2PTradePayment(openOrder.tradeId);
+      } else if (action === "dispute" && openOrder.tradeId) {
+        res = await createP2PDispute({
+          email,
+          tradeId: openOrder.tradeId,
+          reason: "P2P trade dispute",
+          description: "Raised by a participant from the P2P trade room.",
+        });
+      } else {
+        return;
+      }
 
-    if (action === "cancel" || to === "completed") {
-      // keep the modal open so the user sees the final state; they can close it.
+      if (!res.success) {
+        setErrorMessage(res.error ?? "Action failed");
+      }
+      await Promise.all([refreshWallet(), refreshMyOrders(), refreshMarket()]);
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -777,6 +939,12 @@ export default function P2PMarketplacePage() {
         <BalanceCard wallet={wallet} locked={lockedBtcy} />
         <BuybackRuleNote />
 
+        {errorMessage && (
+          <div className="rounded-xl border border-red-500/30 bg-red-500/5 p-3 text-sm text-red-400">
+            {errorMessage}
+          </div>
+        )}
+
         {/* Tabs — hand-drawn ovals, matching the Support page */}
         <div className="flex flex-wrap items-center justify-center md:gap-4">
           {tabs.map((t, index) => (
@@ -791,23 +959,41 @@ export default function P2PMarketplacePage() {
         </div>
 
         {tab === "market" && (
-          <MarketTab orders={marketOrders} onBuy={handleBuy} />
+          <MarketTab orders={marketOrders} loading={marketLoading} onBuy={handleBuy} />
         )}
         {tab === "sell" && (
-          <SellTab wallet={wallet} available={available} onCreate={handleCreate} />
+          <SellTab
+            available={available}
+            submitting={sellSubmitting}
+            onCreate={handleCreate}
+          />
         )}
         {tab === "orders" && (
-          <MyOrdersTab orders={myOrders} onOpen={(o) => setOpenOrderId(o.id)} />
+          <MyOrdersTab
+            orders={myOrders}
+            currentEmail={email}
+            loading={myOrdersLoading}
+            onOpen={(o) => setOpenOrderId(o.id)}
+          />
         )}
       </div>
 
       {openOrder && (
         <TradeRoom
           order={openOrder}
+          currentEmail={email}
+          actionLoading={actionLoading}
           onClose={() => setOpenOrderId(null)}
           onAction={handleAction}
         />
       )}
+
+      <LoginPopup
+        isOpen={isLoginPopupOpen}
+        onRegisterClick={() => setIsLoginPopupOpen(false)}
+        onClose={() => setIsLoginPopupOpen(false)}
+        onLoginSuccess={() => setIsLoginPopupOpen(false)}
+      />
     </main>
   );
 }

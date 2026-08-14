@@ -79,3 +79,21 @@ export const SELL_BTCY_CREATE_ORDER_ROUTE = `${API_BASE_URL}/api/v1/inex/sell-bt
 export const SELL_BTCY_CREATE_ROUTE = SELL_BTCY_CREATE_ORDER_ROUTE;
 export const SELL_BTCY_ELIGIBILITY_ROUTE = `${API_BASE_URL}/api/v1/inex/sell-btcy/eligibility`;
 export const BTCY_ORDER_HISTORY_ROUTE = `${API_BASE_URL}/api/v1/inex/order/btcy/orders`;
+
+const P2P_BASE_ROUTE = `${API_BASE_URL}/api/v1/p2p`;
+export const P2P_SELL_OFFERS_ROUTE = `${P2P_BASE_ROUTE}/sell`;
+export const P2P_USER_OFFERS_ROUTE = `${P2P_BASE_ROUTE}/user/offers`;
+export const P2P_USER_OFFER_ROUTE = (offerId: string) =>
+  `${P2P_USER_OFFERS_ROUTE}/${encodeURIComponent(offerId)}`;
+export const P2P_USER_OFFER_PAUSE_ROUTE = (offerId: string) =>
+  `${P2P_USER_OFFER_ROUTE(offerId)}/pause`;
+export const P2P_TRADES_ROUTE = `${P2P_BASE_ROUTE}/trades`;
+export const P2P_TRADE_ROUTE = (tradeId: string) =>
+  `${P2P_TRADES_ROUTE}/${encodeURIComponent(tradeId)}`;
+export const P2P_TRADE_PAY_ROUTE = (tradeId: string) =>
+  `${P2P_TRADE_ROUTE(tradeId)}/pay`;
+export const P2P_TRADE_CONFIRM_ROUTE = (tradeId: string) =>
+  `${P2P_TRADE_ROUTE(tradeId)}/confirm`;
+export const P2P_TRADE_CANCEL_ROUTE = (tradeId: string) =>
+  `${P2P_TRADE_ROUTE(tradeId)}/cancel`;
+export const P2P_DISPUTES_ROUTE = `${P2P_BASE_ROUTE}/disputes`;

@@ -1,13 +1,13 @@
-// P2P Marketplace — frontend-only mock layer.
-// Everything here is client-side mock data + pure helpers. No backend/API.
-// Swap these out for real API calls when the backend lands.
+// P2P Marketplace — display/formatting logic + backend<->UI status mapping.
+// Network calls live in ./api. This module is pure (no fetch) so it can be
+// unit-tested and reused across components without side effects.
 
 export type BalanceSource = "purchased" | "earned";
 
 export interface Wallet {
   /** BTCY bought directly from the company — eligible for Company Buyback. */
   purchased: number;
-  /** BTCY earned via Mining → Nuggets → Alchemy — P2P only. */
+  /** BTCY earned via Mining → Nuggets → Alchemy, or received on P2P — P2P only. */
   earned: number;
 }
 
@@ -82,12 +82,12 @@ export interface P2POrder {
   expiresInHours?: number;
   /** How the seller's locked BTCY splits across buckets (display only). */
   source?: { purchased: number; earned: number };
+  /** Present once a buyer has taken the offer — drives which API call "cancel" makes. */
+  tradeId?: string;
 }
 
 export const orderTotal = (o: Pick<P2POrder, "amount" | "price">) =>
   o.amount * o.price;
-
-export const CURRENT_USER = { id: "me", name: "You" } as const;
 
 export const PAYMENT_METHODS = [
   "Bank Transfer",
@@ -112,152 +112,101 @@ export const formatPrice = (n: number) =>
     maximumFractionDigits: 6,
   })}`;
 
-// ---------------------------------------------------------------------------
-// Mock seed data
-// ---------------------------------------------------------------------------
+/** "alex.morgan@example.com" -> "alex.morgan" for a lightweight display name. */
+export const nameFromEmail = (email: string) => email.split("@")[0] || email;
 
-/** The current user's wallet — split by source. */
-export const INITIAL_WALLET: Wallet = { purchased: 1000, earned: 2000 };
+/** Renders structured payment instructions into a single display string for the buyer. */
+export function formatPaymentDetails(
+  instructions: import("./api").P2PPaymentInstructions | undefined,
+): string {
+  if (!instructions) return "";
+  const { method, bankName, accountHolder, accountNumber, routingNumber, handle, walletAddress } =
+    instructions;
 
-/** Open sell orders from OTHER users (the public marketplace). */
-export const INITIAL_MARKET_ORDERS: P2POrder[] = [
-  {
-    id: "ord_1001",
-    sellerId: "u_alex",
-    sellerName: "Alex M.",
-    amount: 500,
-    price: 0.063,
-    paymentMethods: ["Bank Transfer", "PayPal"],
-    paymentDetails: "PayPal: alex@example.com",
-    status: "open",
-    createdAt: "2026-08-04T09:00:00Z",
-    expiresInHours: 24,
-  },
-  {
-    id: "ord_1002",
-    sellerId: "u_bella",
-    sellerName: "Bella K.",
-    amount: 1000,
-    price: 0.064,
-    paymentMethods: ["USDT (TRC20)"],
-    paymentDetails: "USDT TRC20: TXxxxx…9f2",
-    status: "open",
-    createdAt: "2026-08-04T08:30:00Z",
-    expiresInHours: 12,
-  },
-  {
-    id: "ord_1003",
-    sellerId: "u_chris",
-    sellerName: "Chris P.",
-    amount: 2500,
-    price: 0.062,
-    paymentMethods: ["Bank Transfer", "Wise"],
-    paymentDetails: "Wise: chris.p",
-    status: "open",
-    createdAt: "2026-08-04T07:45:00Z",
-    expiresInHours: 48,
-  },
-  {
-    id: "ord_1004",
-    sellerId: "u_dora",
-    sellerName: "Dora N.",
-    amount: 150,
-    price: 0.065,
-    paymentMethods: ["Cash App", "PayPal"],
-    paymentDetails: "Cash App: $doraN",
-    status: "open",
-    createdAt: "2026-08-04T06:10:00Z",
-    expiresInHours: 6,
-  },
-];
-
-/** The current user's own orders (as seller and as buyer) to seed My Orders. */
-export const INITIAL_MY_ORDERS: P2POrder[] = [
-  {
-    id: "ord_9001",
-    sellerId: CURRENT_USER.id,
-    sellerName: CURRENT_USER.name,
-    amount: 300,
-    price: 0.063,
-    paymentMethods: ["Bank Transfer"],
-    status: "open",
-    createdAt: "2026-08-03T15:00:00Z",
-    expiresInHours: 24,
-    source: { purchased: 0, earned: 300 },
-  },
-  {
-    id: "ord_9002",
-    sellerId: "u_evan",
-    sellerName: "Evan R.",
-    buyerId: CURRENT_USER.id,
-    buyerName: CURRENT_USER.name,
-    amount: 400,
-    price: 0.064,
-    paymentMethods: ["PayPal"],
-    paymentDetails: "PayPal: evan.r@example.com",
-    status: "payment_submitted",
-    createdAt: "2026-08-03T11:20:00Z",
-  },
-  {
-    id: "ord_9003",
-    sellerId: CURRENT_USER.id,
-    sellerName: CURRENT_USER.name,
-    buyerId: "u_fara",
-    buyerName: "Fara Q.",
-    amount: 800,
-    price: 0.062,
-    paymentMethods: ["USDT (TRC20)"],
-    status: "completed",
-    createdAt: "2026-08-01T10:00:00Z",
-    source: { purchased: 500, earned: 300 },
-  },
-];
+  if (bankName || accountHolder || accountNumber || routingNumber) {
+    return [
+      bankName && `Bank: ${bankName}`,
+      accountHolder && `Account Holder: ${accountHolder}`,
+      accountNumber && `Account #: ${accountNumber}`,
+      routingNumber && `Routing #: ${routingNumber}`,
+    ]
+      .filter(Boolean)
+      .join(" · ");
+  }
+  if (walletAddress) {
+    return `${method ? `${method}: ` : ""}${walletAddress}`;
+  }
+  if (handle) {
+    return `${method ? `${method}: ` : ""}${handle}`;
+  }
+  return "";
+}
 
 // ---------------------------------------------------------------------------
-// Status machine (pure) — advances the mock lifecycle
+// Backend <-> UI status mapping
 // ---------------------------------------------------------------------------
+
+/**
+ * Backend P2PTradeStatus is coarser than the UI's OrderStatus: it has no
+ * distinct "matched, awaiting payment prompt" or "BTCY released" states —
+ * those are collapsed into payment_pending and completed respectively.
+ */
+export function mapBackendTradeStatus(status: string): OrderStatus {
+  switch (status) {
+    case "Pending":
+      return "payment_pending";
+    case "Paid":
+      return "payment_submitted";
+    case "Confirmed":
+      return "payment_confirmed";
+    case "Completed":
+      return "completed";
+    case "Disputed":
+      return "admin_review";
+    case "Cancelled":
+    case "Expired":
+      return "cancelled";
+    default:
+      return "payment_pending";
+  }
+}
+
+export function mapBackendOfferStatus(status: string): OrderStatus {
+  switch (status) {
+    case "Active":
+    case "Paused":
+      return "open";
+    case "Cancelled":
+    case "Expired":
+      return "cancelled";
+    default:
+      // Completed offers always have a corresponding trade, which is used
+      // as the source of truth instead — this branch shouldn't normally render.
+      return "completed";
+  }
+}
 
 export type TradeAction =
   | "accept" // buyer accepts an open order
   | "pay" // buyer marks payment sent
-  | "confirm" // seller confirms payment received
-  | "release" // seller releases the locked BTCY
+  | "confirm" // seller confirms payment received (also releases BTCY)
+  | "release" // folded into "confirm" on the real backend
   | "dispute"
-  | "resolve_release" // admin resolves in buyer's favour
-  | "resolve_refund" // admin resolves in seller's favour
+  | "resolve_release" // admin resolves in buyer's favour (not wired yet)
+  | "resolve_refund" // admin resolves in seller's favour (not wired yet)
   | "cancel";
-
-export const nextStatus = (
-  status: OrderStatus,
-  action: TradeAction,
-): OrderStatus => {
-  switch (action) {
-    case "accept":
-      return "payment_pending"; // matched → immediately awaiting payment
-    case "pay":
-      return "payment_submitted";
-    case "confirm":
-      return "payment_confirmed";
-    case "release":
-      return "completed";
-    case "dispute":
-      return "admin_review";
-    case "resolve_release":
-      return "completed";
-    case "resolve_refund":
-      return "cancelled";
-    case "cancel":
-      return "cancelled";
-    default:
-      return status;
-  }
-};
 
 export const isActive = (s: OrderStatus) =>
   s !== "completed" && s !== "cancelled";
 
-export const roleOf = (o: P2POrder): "seller" | "buyer" | null => {
-  if (o.sellerId === CURRENT_USER.id) return "seller";
-  if (o.buyerId === CURRENT_USER.id) return "buyer";
+export const roleOf = (
+  o: P2POrder,
+  currentUserEmail: string,
+): "seller" | "buyer" | null => {
+  const email = currentUserEmail.toLowerCase();
+  if (o.sellerId.toLowerCase() === email) return "seller";
+  if (o.buyerId?.toLowerCase() === email) return "buyer";
   return null;
 };
+
+export * from "./api";
