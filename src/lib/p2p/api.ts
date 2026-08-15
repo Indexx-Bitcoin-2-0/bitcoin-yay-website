@@ -202,7 +202,10 @@ export interface CreateP2POfferInput {
   amount: number; // BTCY quantity
   price: number; // USD per BTCY
   paymentMethod: string;
-  paymentDetails: P2PPaymentDetailsInput;
+  // The exact keys depend on paymentMethod (see P2PPaymentDetailsInput above
+  // for the shape per method) — collected dynamically from a method-keyed
+  // form, so the caller has a plain Record, not one specific union member.
+  paymentDetails: Record<string, string>;
 }
 
 export async function createP2PSellOffer(
@@ -291,10 +294,13 @@ export async function createP2PTrade(
   );
 }
 
-export async function markP2PTradeAsPaid(tradeId: string): Promise<ApiResult<null>> {
+export async function markP2PTradeAsPaid(
+  tradeId: string,
+  paymentProofImage: string
+): Promise<ApiResult<null>> {
   return request(
     P2P_TRADE_PAY_ROUTE(tradeId),
-    { method: "POST", body: JSON.stringify({ tradeId }) },
+    { method: "POST", body: JSON.stringify({ tradeId, paymentProofImage }) },
     () => null
   );
 }

@@ -373,6 +373,10 @@ function SellTab({
         `You can list at most ${formatBtcy(available)} BTCY.`,
       );
     if (priceNum <= 0) return setError("Enter a price per BTCY.");
+    if (total < 10)
+      return setError(
+        `Minimum order value is $10 — increase the amount or price (currently ${formatUsd(total)}).`,
+      );
     if (!method) return setError("Select a payment method.");
     if (methodFields.some((f) => !fields[f.key]?.trim()))
       return setError("Fill in all payment details for the buyer.");
@@ -572,24 +576,55 @@ function TradeRoom({
   currentEmail: string;
   actionLoading: boolean;
   onClose: () => void;
-  onAction: (action: TradeAction) => void;
+  onAction: (action: TradeAction, payload?: { paymentProofImage?: string }) => void;
 }) {
   const role = roleOf(order, currentEmail);
   const s = order.status;
+
+  // "I've Paid" requires a screenshot of the off-platform payment attached
+  // first — the seller (and an admin, if this ends up disputed) needs
+  // something to check against besides the buyer's word.
+  const [proofImage, setProofImage] = useState<string | null>(null);
+  const [proofFileName, setProofFileName] = useState("");
+  const [proofError, setProofError] = useState<string | null>(null);
+
+  const handleProofChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setProofError("Please attach an image (screenshot or photo).");
+      return;
+    }
+    if (file.size > 8 * 1024 * 1024) {
+      setProofError("Image is too large — please attach a file under 8MB.");
+      return;
+    }
+    setProofError(null);
+    setProofFileName(file.name);
+    const reader = new FileReader();
+    reader.onload = () => setProofImage(reader.result as string);
+    reader.readAsDataURL(file);
+  };
 
   const Btn = ({
     label,
     action,
     image,
+    disabled,
   }: {
     label: string;
     action: TradeAction;
     image: typeof CheckMarkButtonImage;
+    disabled?: boolean;
   }) => (
     <CustomButton2
       image={image}
       text={label}
-      onClick={() => !actionLoading && onAction(action)}
+      disabled={disabled || actionLoading}
+      onClick={() => {
+        if (actionLoading || disabled) return;
+        onAction(action, action === "pay" ? { paymentProofImage: proofImage ?? undefined } : undefined);
+      }}
       imageStyling="w-24 md:w-28"
       ariaLabel={label}
     />
@@ -598,6 +633,7 @@ function TradeRoom({
   // Actions available to the CURRENT user, given role + status.
   const myActions: React.ReactNode[] = [];
   const waitingMsg: string[] = [];
+  let showProofUpload = false;
 
   if (role === "seller") {
     if (s === "open") {
@@ -617,8 +653,9 @@ function TradeRoom({
     }
   } else if (role === "buyer") {
     if (s === "payment_pending") {
+      showProofUpload = true;
       myActions.push(
-        <Btn key="p" label="I've Paid" action="pay" image={CheckMarkButtonImage} />,
+        <Btn key="p" label="I've Paid" action="pay" image={CheckMarkButtonImage} disabled={!proofImage} />,
         <Btn key="c" label="Cancel" action="cancel" image={CancelOrderImage} />,
       );
     } else if (s === "payment_submitted") {
@@ -677,6 +714,25 @@ function TradeRoom({
             </div>
           )}
         </div>
+
+        {showProofUpload && (
+          <div className="mt-4 rounded-xl border border-primary/30 bg-primary/5 p-4">
+            <p className="text-sm text-white">Attach proof of payment</p>
+            <p className="mt-1 text-xs text-tertiary/70">
+              A screenshot or receipt of the payment you sent — required before you can mark this trade as paid.
+            </p>
+            <label className="mt-3 flex cursor-pointer items-center justify-center rounded-lg border border-dashed border-primary/40 px-4 py-3 text-sm text-primary hover:bg-primary/10">
+              {proofFileName || "Choose an image"}
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleProofChange}
+              />
+            </label>
+            {proofError && <p className="mt-2 text-xs text-red-400">{proofError}</p>}
+          </div>
+        )}
 
         {waitingMsg.map((m, i) => (
           <p key={i} className="mt-4 text-sm text-primary">
@@ -880,11 +936,14 @@ export default function P2PMarketplacePage() {
   };
 
   // Apply a trade-room action against the real backend, then refetch.
-  const handleAction = async (action: TradeAction) => {
+  const handleAction = async (
+    action: TradeAction,
+    payload?: { paymentProofImage?: string }
+  ) => {
     if (!openOrder || !requireAuth()) return;
     if (action === "release" || action === "resolve_release" || action === "resolve_refund") {
       // "release" is folded into "confirm" on the backend; admin resolution
-      // isn't wired up yet.
+      // is handled from the admin dashboard, not this trade room.
       return;
     }
     setErrorMessage(null);
@@ -896,7 +955,11 @@ export default function P2PMarketplacePage() {
           ? await cancelP2PTrade(openOrder.tradeId)
           : await cancelP2POffer(openOrder.id);
       } else if (action === "pay" && openOrder.tradeId) {
-        res = await markP2PTradeAsPaid(openOrder.tradeId);
+        if (!payload?.paymentProofImage) {
+          setErrorMessage("Please attach proof of payment first.");
+          return;
+        }
+        res = await markP2PTradeAsPaid(openOrder.tradeId, payload.paymentProofImage);
       } else if (action === "confirm" && openOrder.tradeId) {
         res = await confirmP2PTradePayment(openOrder.tradeId);
       } else if (action === "dispute" && openOrder.tradeId) {
