@@ -309,6 +309,19 @@ export async function markP2PTradeAsPaid(
   );
 }
 
+// Buyer only, and only while the trade is still waiting on the seller to
+// confirm — swaps out a mistakenly-attached receipt for a new one.
+export async function replaceP2PPaymentProof(
+  tradeId: string,
+  paymentProofImage: string
+): Promise<ApiResult<null>> {
+  return request(
+    P2P_TRADE_PAYMENT_PROOF_ROUTE(tradeId),
+    { method: "POST", body: JSON.stringify({ tradeId, paymentProofImage }) },
+    () => null
+  );
+}
+
 export async function confirmP2PTradePayment(tradeId: string): Promise<ApiResult<null>> {
   return request(
     P2P_TRADE_CONFIRM_ROUTE(tradeId),

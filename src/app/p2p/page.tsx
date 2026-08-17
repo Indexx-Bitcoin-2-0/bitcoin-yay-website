@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import BuybackRuleNote from "@/components/p2p/BuybackRuleNote";
 import CustomButton from "@/components/CustomButton";
 import CustomButton2 from "@/components/CustomButton2";
@@ -47,6 +47,7 @@ import {
   cancelP2PTrade,
   createP2PDispute,
   getP2PTradePaymentProofUrl,
+  replaceP2PPaymentProof,
 } from "@/lib/p2p";
 
 // BTCY is considered "locked" while an order sits in any of these states.
@@ -263,7 +264,7 @@ function MarketTab({
           <tbody>
             {visible.map((o) => (
               <tr key={o.id} className="border-t border-white/10">
-                <td className="px-4 py-3 text-white">{o.sellerName}</td>
+                <td className="px-4 py-3 text-white">{o.sellerId}</td>
                 <td className="px-4 py-3 text-white">{formatBtcy(o.amount)}</td>
                 <td className="px-4 py-3 text-tertiary">
                   {formatPrice(o.price)}
@@ -543,8 +544,8 @@ function MyOrdersTab({
                 <p className="text-xs text-tertiary/70">
                   {formatPrice(o.price)}/BTCY ·{" "}
                   {o.sellerId.toLowerCase() === email
-                    ? `Buyer: ${o.buyerName ?? "—"}`
-                    : `Seller: ${o.sellerName}`}
+                    ? `Buyer: ${o.buyerId ?? "—"}`
+                    : `Seller: ${o.sellerId}`}
                 </p>
                 <p
                   className="mt-1 truncate font-mono text-[11px] text-tertiary/50"
@@ -576,16 +577,21 @@ function MyOrdersTab({
 function TradeRoom({
   order,
   currentEmail,
-  actionLoading,
+  pendingAction,
   onClose,
   onAction,
 }: {
   order: P2POrder;
   currentEmail: string;
-  actionLoading: boolean;
+  // Which action is currently in flight, if any — lets the specific
+  // button that was clicked show its own loading label, instead of every
+  // button in the popup just going dim with no feedback about which one
+  // is actually doing something.
+  pendingAction: TradeAction | null;
   onClose: () => void;
   onAction: (action: TradeAction, payload?: { paymentProofImage?: string }) => void;
 }) {
+  const actionLoading = pendingAction !== null;
   const role = roleOf(order, currentEmail);
   const s = order.status;
 
@@ -645,6 +651,22 @@ function TradeRoom({
     setReceiptLoading(false);
   };
 
+  // Once a "replace_proof" submission finishes (success or failure —
+  // either way the parent's handleAction has resolved by the time
+  // pendingAction clears), drop the cached receipt URL and the file
+  // picker's selection so the next "View Payment Receipt" click fetches
+  // the new image instead of showing the stale cached one.
+  const prevPendingActionRef = useRef<TradeAction | null>(null);
+  useEffect(() => {
+    if (prevPendingActionRef.current === "replace_proof" && pendingAction === null) {
+      setReceiptUrl(null);
+      setReceiptImageLoaded(false);
+      setProofImage(null);
+      setProofFileName("");
+    }
+    prevPendingActionRef.current = pendingAction;
+  }, [pendingAction]);
+
   const downloadReceipt = async () => {
     if (!order.tradeId) return;
     setDownloadingReceipt(true);
@@ -670,45 +692,51 @@ function TradeRoom({
 
   const Btn = ({
     label,
+    loadingLabel,
     action,
     image,
     disabled,
   }: {
     label: string;
+    loadingLabel?: string;
     action: TradeAction;
     image: typeof CheckMarkButtonImage;
     disabled?: boolean;
-  }) => (
-    <CustomButton2
-      image={image}
-      text={label}
-      disabled={disabled || actionLoading}
-      onClick={() => {
-        if (actionLoading || disabled) return;
-        onAction(action, action === "pay" ? { paymentProofImage: proofImage ?? undefined } : undefined);
-      }}
-      imageStyling="w-24 md:w-28"
-      ariaLabel={label}
-    />
-  );
+  }) => {
+    const isThisPending = pendingAction === action;
+    return (
+      <CustomButton2
+        image={image}
+        text={isThisPending ? loadingLabel ?? "Submitting…" : label}
+        disabled={disabled || actionLoading}
+        onClick={() => {
+          if (actionLoading || disabled) return;
+          onAction(action, action === "pay" ? { paymentProofImage: proofImage ?? undefined } : undefined);
+        }}
+        imageStyling="w-24 md:w-28"
+        ariaLabel={isThisPending ? loadingLabel ?? "Submitting…" : label}
+      />
+    );
+  };
 
   // Actions available to the CURRENT user, given role + status.
   const myActions: React.ReactNode[] = [];
   const waitingMsg: string[] = [];
   let showProofUpload = false;
+  let showReplaceProof = false;
 
   if (role === "seller") {
     if (s === "open") {
       myActions.push(
-        <Btn key="c" label="Cancel" action="cancel" image={CancelOrderImage} />,
+        <Btn key="c" label="Cancel" loadingLabel="Cancelling…" action="cancel" image={CancelOrderImage} />,
       );
       waitingMsg.push("Waiting for a buyer to accept your offer.");
     } else if (s === "payment_pending") {
       waitingMsg.push("Waiting for the buyer to send payment.");
     } else if (s === "payment_submitted") {
       myActions.push(
-        <Btn key="cf" label="Confirm" action="confirm" image={CheckMarkButtonImage} />,
-        <Btn key="d" label="Dispute" action="dispute" image={DisputeButtonImage} />,
+        <Btn key="cf" label="Confirm" loadingLabel="Confirming…" action="confirm" image={CheckMarkButtonImage} />,
+        <Btn key="d" label="Dispute" loadingLabel="Submitting…" action="dispute" image={DisputeButtonImage} />,
       );
     } else if (s === "payment_confirmed") {
       waitingMsg.push("Finalizing BTCY release…");
@@ -717,12 +745,13 @@ function TradeRoom({
     if (s === "payment_pending") {
       showProofUpload = true;
       myActions.push(
-        <Btn key="p" label="I've Paid" action="pay" image={CheckMarkButtonImage} disabled={!proofImage} />,
-        <Btn key="c" label="Cancel" action="cancel" image={CancelOrderImage} />,
+        <Btn key="p" label="I've Paid" loadingLabel="Submitting…" action="pay" image={CheckMarkButtonImage} disabled={!proofImage} />,
+        <Btn key="c" label="Cancel" loadingLabel="Cancelling…" action="cancel" image={CancelOrderImage} />,
       );
     } else if (s === "payment_submitted") {
+      showReplaceProof = order.hasPaymentProof === true;
       myActions.push(
-        <Btn key="d" label="Dispute" action="dispute" image={DisputeButtonImage} />,
+        <Btn key="d" label="Dispute" loadingLabel="Submitting…" action="dispute" image={DisputeButtonImage} />,
       );
       waitingMsg.push("Waiting for the seller to confirm your payment.");
     } else if (s === "payment_confirmed") {
@@ -756,14 +785,14 @@ function TradeRoom({
               {formatUsd(orderTotal(order))}
             </p>
           </div>
-          <div>
+          <div className="col-span-2">
             <p className="text-tertiary/60">
               {role === "seller" ? "Buyer" : "Seller"}
             </p>
-            <p className="text-white">
+            <p className="break-all text-white">
               {role === "seller"
-                ? order.buyerName ?? "—"
-                : order.sellerName}
+                ? order.buyerId ?? "—"
+                : order.sellerId}
             </p>
           </div>
           <div className="col-span-2">
@@ -816,6 +845,30 @@ function TradeRoom({
               {receiptLoading ? "Loading receipt…" : "View Payment Receipt"}
             </button>
             {receiptError && !receiptOpen && <p className="mt-2 text-xs text-red-400">{receiptError}</p>}
+
+            {showReplaceProof && (
+              <div className="mt-4 border-t border-white/10 pt-4">
+                <p className="text-xs text-tertiary/70">
+                  Attached the wrong screenshot? Choose a new one to replace it.
+                </p>
+                <label className="mt-2 flex cursor-pointer items-center justify-center rounded-lg border border-dashed border-primary/40 px-4 py-3 text-sm text-primary hover:bg-primary/10">
+                  {proofFileName || "Choose a new image"}
+                  <input type="file" accept="image/*" className="hidden" onChange={handleProofChange} />
+                </label>
+                {proofError && <p className="mt-2 text-xs text-red-400">{proofError}</p>}
+                <button
+                  type="button"
+                  disabled={!proofImage || pendingAction !== null}
+                  onClick={() => {
+                    if (!proofImage || pendingAction !== null) return;
+                    onAction("replace_proof", { paymentProofImage: proofImage });
+                  }}
+                  className="mt-2 w-full rounded-lg bg-primary/20 px-4 py-2 text-sm font-medium text-primary hover:bg-primary/30 disabled:opacity-40"
+                >
+                  {pendingAction === "replace_proof" ? "Replacing…" : "Replace Receipt"}
+                </button>
+              </div>
+            )}
           </div>
         )}
 
@@ -916,7 +969,7 @@ export default function P2PMarketplacePage() {
   const [tab, setTab] = useState<Tab>("market");
   const [openOrderId, setOpenOrderId] = useState<string | null>(null);
   const [sellSubmitting, setSellSubmitting] = useState(false);
-  const [actionLoading, setActionLoading] = useState(false);
+  const [pendingAction, setPendingAction] = useState<TradeAction | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
 
@@ -1083,7 +1136,7 @@ export default function P2PMarketplacePage() {
       return;
     }
     setErrorMessage(null);
-    setActionLoading(true);
+    setPendingAction(action);
     try {
       let res: { success: boolean; error?: string };
       if (action === "cancel") {
@@ -1096,6 +1149,12 @@ export default function P2PMarketplacePage() {
           return;
         }
         res = await markP2PTradeAsPaid(openOrder.tradeId, payload.paymentProofImage);
+      } else if (action === "replace_proof" && openOrder.tradeId) {
+        if (!payload?.paymentProofImage) {
+          setErrorMessage("Please choose a new receipt image first.");
+          return;
+        }
+        res = await replaceP2PPaymentProof(openOrder.tradeId, payload.paymentProofImage);
       } else if (action === "confirm" && openOrder.tradeId) {
         res = await confirmP2PTradePayment(openOrder.tradeId);
       } else if (action === "dispute" && openOrder.tradeId) {
@@ -1127,7 +1186,7 @@ export default function P2PMarketplacePage() {
       }
       await Promise.all(refetches);
     } finally {
-      setActionLoading(false);
+      setPendingAction(null);
     }
   };
 
@@ -1194,7 +1253,7 @@ export default function P2PMarketplacePage() {
         <TradeRoom
           order={openOrder}
           currentEmail={email}
-          actionLoading={actionLoading}
+          pendingAction={pendingAction}
           onClose={() => setOpenOrderId(null)}
           onAction={handleAction}
         />

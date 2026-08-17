@@ -196,7 +196,8 @@ export type TradeAction =
   | "dispute"
   | "resolve_release" // admin resolves in buyer's favour (not wired yet)
   | "resolve_refund" // admin resolves in seller's favour (not wired yet)
-  | "cancel";
+  | "cancel"
+  | "replace_proof"; // buyer swaps out a mistakenly-attached receipt
 
 export const isActive = (s: OrderStatus) =>
   s !== "completed" && s !== "cancelled";
