@@ -46,6 +46,7 @@ import {
   confirmP2PTradePayment,
   cancelP2PTrade,
   createP2PDispute,
+  getP2PTradePaymentProofUrl,
 } from "@/lib/p2p";
 
 // BTCY is considered "locked" while an order sits in any of these states.
@@ -95,6 +96,7 @@ function tradeToOrder(trade: P2PApiTrade, offer?: P2PApiOffer): P2POrder {
     paymentDetails: formatPaymentDetails(offer?.paymentInstructions) || undefined,
     status: mapBackendTradeStatus(trade.status),
     createdAt: trade.createdAt,
+    hasPaymentProof: Boolean(trade.paymentProof),
   };
 }
 
@@ -532,9 +534,9 @@ function MyOrdersTab({
             <button
               key={o.id}
               onClick={() => onOpen(o)}
-              className="flex w-full items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-left transition hover:border-primary/50"
+              className="flex w-full items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-left transition hover:border-primary/50"
             >
-              <div>
+              <div className="min-w-0">
                 <p className="text-white">
                   {formatBtcy(o.amount)} BTCY · {formatUsd(orderTotal(o))}
                 </p>
@@ -543,6 +545,12 @@ function MyOrdersTab({
                   {o.sellerId.toLowerCase() === email
                     ? `Buyer: ${o.buyerName ?? "—"}`
                     : `Seller: ${o.sellerName}`}
+                </p>
+                <p
+                  className="mt-1 truncate font-mono text-[11px] text-tertiary/50"
+                  title={o.id}
+                >
+                  {o.id}
                 </p>
               </div>
               <StatusChip status={o.status} />
@@ -604,6 +612,60 @@ function TradeRoom({
     const reader = new FileReader();
     reader.onload = () => setProofImage(reader.result as string);
     reader.readAsDataURL(file);
+  };
+
+  // Lets either side of the trade view the payment receipt — the seller
+  // needs to check it before confirming or disputing, the buyer can
+  // confirm what they submitted. Opens in its own larger popup rather
+  // than inline, so the receipt is actually legible. The presigned URL
+  // expires in 1h, so it's fetched on demand rather than eagerly on open.
+  const [receiptUrl, setReceiptUrl] = useState<string | null>(null);
+  const [receiptLoading, setReceiptLoading] = useState(false);
+  const [receiptError, setReceiptError] = useState<string | null>(null);
+  const [receiptOpen, setReceiptOpen] = useState(false);
+  const [downloadingReceipt, setDownloadingReceipt] = useState(false);
+  // Tracks the <img> itself finishing rendering, not just the API call —
+  // the skeleton should stay up until the browser has actually painted
+  // the image, not just until we have a URL for it.
+  const [receiptImageLoaded, setReceiptImageLoaded] = useState(false);
+
+  const loadReceipt = async () => {
+    if (!order.tradeId) return;
+    setReceiptOpen(true);
+    if (receiptUrl) return; // already fetched (and likely already rendered) this session
+    setReceiptLoading(true);
+    setReceiptError(null);
+    setReceiptImageLoaded(false);
+    const res = await getP2PTradePaymentProofUrl(order.tradeId);
+    if (res.success) {
+      setReceiptUrl(res.data.url);
+    } else {
+      setReceiptError(res.error || "Could not load the payment receipt.");
+    }
+    setReceiptLoading(false);
+  };
+
+  const downloadReceipt = async () => {
+    if (!order.tradeId) return;
+    setDownloadingReceipt(true);
+    try {
+      // Ask for a separate presigned URL with Content-Disposition:
+      // attachment set server-side — S3 then forces a real download on
+      // navigation regardless of the bucket's CORS policy, since CORS
+      // only gates JS reads (fetch/XHR), not the browser just following
+      // a link. No blob/fetch dance needed on this end.
+      const res = await getP2PTradePaymentProofUrl(order.tradeId, { download: true });
+      if (!res.success) throw new Error(res.error);
+      const link = document.createElement("a");
+      link.href = res.data.url;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch {
+      setReceiptError("Could not start the download — try again in a moment.");
+    } finally {
+      setDownloadingReceipt(false);
+    }
   };
 
   const Btn = ({
@@ -669,6 +731,7 @@ function TradeRoom({
   }
 
   return (
+    <>
     <PopupComponent isOpen onClose={onClose}>
       <div className="w-[92vw] max-w-lg max-h-[80vh] overflow-y-auto p-6">
         <div className="mb-4">
@@ -734,6 +797,28 @@ function TradeRoom({
           </div>
         )}
 
+        {order.hasPaymentProof && (
+          <div className="mt-4 rounded-xl border border-primary/30 bg-primary/5 p-4">
+            <p className="text-sm text-white">
+              {role === "seller" ? "Payment receipt from the buyer" : "Your payment receipt"}
+            </p>
+            <p className="mt-1 text-xs text-tertiary/70">
+              {role === "seller"
+                ? "Review the buyer’s screenshot before confirming or disputing."
+                : "The screenshot you attached when you marked this trade as paid."}
+            </p>
+            <button
+              type="button"
+              onClick={loadReceipt}
+              disabled={receiptLoading}
+              className="mt-3 w-full rounded-lg border border-dashed border-primary/40 px-4 py-3 text-sm text-primary hover:bg-primary/10 disabled:opacity-60"
+            >
+              {receiptLoading ? "Loading receipt…" : "View Payment Receipt"}
+            </button>
+            {receiptError && !receiptOpen && <p className="mt-2 text-xs text-red-400">{receiptError}</p>}
+          </div>
+        )}
+
         {waitingMsg.map((m, i) => (
           <p key={i} className="mt-4 text-sm text-primary">
             ⏳ {m}
@@ -756,6 +841,57 @@ function TradeRoom({
         )}
       </div>
     </PopupComponent>
+
+    {receiptOpen && (
+      <PopupComponent isOpen onClose={() => setReceiptOpen(false)}>
+        <div className="w-[92vw] max-w-4xl max-h-[90vh] overflow-y-auto p-6">
+          <div className="mb-4">
+            <h2 className="text-xl font-bold text-white">Payment Receipt</h2>
+            <p className="text-xs text-tertiary/70">Order {order.id}</p>
+          </div>
+
+          {!receiptLoading && receiptError && !receiptUrl && (
+            <div className="rounded-xl border border-red-500/30 bg-red-500/5 p-4 text-sm text-red-400">
+              {receiptError}
+            </div>
+          )}
+
+          {(receiptLoading || (receiptUrl && !receiptImageLoaded)) && (
+            <div className="mx-auto h-[70vh] w-full animate-pulse rounded-xl bg-white/10" />
+          )}
+
+          {receiptUrl && (
+            <>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={receiptUrl}
+                alt="Payment receipt"
+                onLoad={() => setReceiptImageLoaded(true)}
+                className={`mx-auto max-h-[70vh] w-full rounded-xl border border-white/10 object-contain ${
+                  receiptImageLoaded ? "block" : "hidden"
+                }`}
+              />
+              {receiptImageLoaded && (
+                <div className="mt-5 flex flex-col items-center gap-2">
+                  <CustomButton2
+                    image={CheckMarkButtonImage}
+                    text={downloadingReceipt ? "Downloading…" : "Download"}
+                    disabled={downloadingReceipt}
+                    onClick={downloadReceipt}
+                    imageStyling="w-24 md:w-28"
+                    ariaLabel="Download receipt"
+                  />
+                  {receiptError && (
+                    <p className="max-w-sm text-center text-xs text-tertiary/70">{receiptError}</p>
+                  )}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </PopupComponent>
+    )}
+    </>
   );
 }
 
@@ -976,7 +1112,20 @@ export default function P2PMarketplacePage() {
       if (!res.success) {
         setErrorMessage(res.error ?? "Action failed");
       }
-      await Promise.all([refreshWallet(), refreshMyOrders(), refreshMarket()]);
+
+      // Only refetch what this specific action could actually have
+      // changed. Marking paid, confirming, and disputing never touch the
+      // current user's own wallet balance or the market listing (the
+      // offer's already off the market by the time a trade exists) — the
+      // status change alone is visible via myOrders. Only cancelling can
+      // move BTCY back to a wallet, and only cancelling an untaken offer
+      // (no tradeId yet) removes anything from the market.
+      const refetches: Promise<unknown>[] = [refreshMyOrders()];
+      if (action === "cancel") {
+        refetches.push(refreshWallet());
+        if (!openOrder.tradeId) refetches.push(refreshMarket());
+      }
+      await Promise.all(refetches);
     } finally {
       setActionLoading(false);
     }

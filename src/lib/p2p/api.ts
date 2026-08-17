@@ -13,6 +13,7 @@ import {
   P2P_TRADE_PAY_ROUTE,
   P2P_TRADE_CONFIRM_ROUTE,
   P2P_TRADE_CANCEL_ROUTE,
+  P2P_TRADE_PAYMENT_PROOF_ROUTE,
   P2P_DISPUTES_ROUTE,
 } from "@/routes";
 import { handleAuthFailure } from "@/lib/auth-session";
@@ -80,6 +81,9 @@ export interface P2PApiTrade {
   pricePerUnit: number;
   paymentMethod: string;
   paymentDetails?: Record<string, unknown> | string;
+  // S3 key of the buyer's uploaded payment screenshot, if any — not a
+  // viewable URL on its own; exchange it via getP2PTradePaymentProofUrl.
+  paymentProof?: string;
   status: string;
   createdAt: string;
   paidAt?: string;
@@ -311,6 +315,22 @@ export async function confirmP2PTradePayment(tradeId: string): Promise<ApiResult
     { method: "POST", body: JSON.stringify({ tradeId }) },
     () => null
   );
+}
+
+// A short-lived (1h) presigned URL to view the buyer's uploaded payment
+// screenshot — only the trade's own buyer or seller can fetch this.
+// Pass download: true to get a URL S3 itself marks as an attachment
+// (Content-Disposition), which triggers a real save-to-disk on
+// navigation — works even though the bucket has no CORS policy for this
+// origin, since that only blocks JS reads (fetch/XHR), not navigation.
+export async function getP2PTradePaymentProofUrl(
+  tradeId: string,
+  options?: { download?: boolean }
+): Promise<ApiResult<{ url: string }>> {
+  const route = options?.download
+    ? `${P2P_TRADE_PAYMENT_PROOF_ROUTE(tradeId)}?download=1`
+    : P2P_TRADE_PAYMENT_PROOF_ROUTE(tradeId);
+  return request(route, { method: "GET" }, (result) => result?.data);
 }
 
 export async function cancelP2PTrade(

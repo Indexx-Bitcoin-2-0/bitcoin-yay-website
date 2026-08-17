@@ -84,6 +84,8 @@ export interface P2POrder {
   source?: { purchased: number; earned: number };
   /** Present once a buyer has taken the offer — drives which API call "cancel" makes. */
   tradeId?: string;
+  /** Whether the buyer has attached a payment screenshot — fetch it via getP2PTradePaymentProofUrl. */
+  hasPaymentProof?: boolean;
 }
 
 export const orderTotal = (o: Pick<P2POrder, "amount" | "price">) =>

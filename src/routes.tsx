@@ -96,4 +96,6 @@ export const P2P_TRADE_CONFIRM_ROUTE = (tradeId: string) =>
   `${P2P_TRADE_ROUTE(tradeId)}/confirm`;
 export const P2P_TRADE_CANCEL_ROUTE = (tradeId: string) =>
   `${P2P_TRADE_ROUTE(tradeId)}/cancel`;
+export const P2P_TRADE_PAYMENT_PROOF_ROUTE = (tradeId: string) =>
+  `${P2P_TRADE_ROUTE(tradeId)}/payment-proof`;
 export const P2P_DISPUTES_ROUTE = `${P2P_BASE_ROUTE}/disputes`;
