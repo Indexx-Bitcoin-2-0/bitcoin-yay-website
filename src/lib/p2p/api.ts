@@ -34,7 +34,7 @@ export interface P2PHandlePaymentDetails {
   handle: string;
 }
 export interface P2PWalletPaymentDetails {
-  // USDT (TRC20) — a receiving wallet address.
+  // USDT — a receiving wallet address; network (TRC20/ERC20/BEP20/Polygon/Solana) is encoded in paymentMethod.
   walletAddress: string;
 }
 export type P2PPaymentDetailsInput =

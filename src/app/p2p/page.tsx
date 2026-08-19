@@ -1,6 +1,9 @@
 "use client";
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import TronWeb from "tronweb";
+import { isAddress as isValidEvmAddress } from "viem";
+import { PublicKey } from "@solana/web3.js";
 import BuybackRuleNote from "@/components/p2p/BuybackRuleNote";
 import CustomButton from "@/components/CustomButton";
 import CustomButton2 from "@/components/CustomButton2";
@@ -331,10 +334,73 @@ const PAYMENT_METHOD_FIELDS: Record<
   PayPal: [{ key: "handle", label: "PayPal email", placeholder: "you@example.com" }],
   Wise: [{ key: "handle", label: "Wise email", placeholder: "you@example.com" }],
   "Cash App": [{ key: "handle", label: "Cash App $Cashtag", placeholder: "$yourcashtag" }],
-  "USDT (TRC20)": [
-    { key: "walletAddress", label: "USDT (TRC20) wallet address", placeholder: "T…" },
-  ],
+  // USDT's wallet-address field is built dynamically below, once a network
+  // is picked — see USDT_NETWORKS and usdtFieldsFor().
 };
+
+// USDT networks offered once "USDT" is picked as the payment method. `tag`
+// is composed into the payment-method string sent to the backend (e.g.
+// "USDT (TRC20)") — kept as the exact strings the backend's
+// createOffPlatformFiatSellOffer already parses, so no backend change was
+// needed when this list grows.
+const USDT_NETWORKS: { tag: string; label: string; placeholder: string }[] = [
+  { tag: "TRC20", label: "Tron (TRC20)", placeholder: "T…" },
+  { tag: "ERC20", label: "Ethereum (ERC20)", placeholder: "0x…" },
+  { tag: "BEP20", label: "BNB Chain (BEP20)", placeholder: "0x…" },
+  { tag: "Polygon", label: "Polygon", placeholder: "0x…" },
+  { tag: "Solana", label: "Solana", placeholder: "Base58 address…" },
+];
+
+const usdtFieldsFor = (networkTag: string) => {
+  const network = USDT_NETWORKS.find((n) => n.tag === networkTag) ?? USDT_NETWORKS[0];
+  return [
+    {
+      key: "walletAddress" as const,
+      label: `USDT (${network.tag}) wallet address`,
+      placeholder: network.placeholder,
+    },
+  ];
+};
+
+// Which chain a USDT payment method's wallet address belongs to — every
+// chain has a visually-similar-but-incompatible address format, so a
+// wrong pick here would send funds to an address the buyer can't access.
+// Kept in sync with the network detection in the backend's
+// createOffPlatformFiatSellOffer (indexx-exchange-backend/platform/p2p.operations.ts).
+type UsdtNetwork = "tron" | "evm" | "solana";
+
+function detectUsdtNetwork(paymentMethod: string): UsdtNetwork | null {
+  const m = paymentMethod.toUpperCase();
+  if (m.includes("TRC20") || m.includes("TRON")) return "tron";
+  if (m.includes("ERC20") || m.includes("BEP20") || m.includes("POLYGON") || m.includes("BSC")) return "evm";
+  if (m.includes("SOLANA") || m.includes("SPL")) return "solana";
+  return null;
+}
+
+function isValidSolanaAddress(address: string) {
+  try {
+    new PublicKey(address);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Validates a wallet address against the chain implied by the payment method. Returns true for non-wallet methods (nothing to check). */
+function isValidUsdtWalletAddress(paymentMethod: string, address: string) {
+  const network = detectUsdtNetwork(paymentMethod);
+  if (!network) return true;
+  const trimmed = address.trim();
+  if (!trimmed) return false;
+  switch (network) {
+    case "tron":
+      return TronWeb.utils.address.isAddress(trimmed);
+    case "evm":
+      return isValidEvmAddress(trimmed);
+    case "solana":
+      return isValidSolanaAddress(trimmed);
+  }
+}
 
 function SellTab({
   available,
@@ -353,16 +419,27 @@ function SellTab({
   const [amount, setAmount] = useState("");
   const [price, setPrice] = useState("0.063");
   const [method, setMethod] = useState<string>("");
+  const [usdtNetwork, setUsdtNetwork] = useState<string>(USDT_NETWORKS[0].tag);
   const [fields, setFields] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
 
   const amountNum = parseFloat(amount) || 0;
   const priceNum = parseFloat(price) || 0;
   const total = amountNum * priceNum;
-  const methodFields = method ? PAYMENT_METHOD_FIELDS[method] ?? [] : [];
+  const methodFields =
+    method === "USDT" ? usdtFieldsFor(usdtNetwork) : method ? PAYMENT_METHOD_FIELDS[method] ?? [] : [];
+  // The actual label sent to (and parsed by) the backend — USDT composes
+  // in the chosen network, e.g. "USDT (TRC20)"; other methods pass through.
+  const finalPaymentMethod = method === "USDT" ? `USDT (${usdtNetwork})` : method;
 
   const selectMethod = (m: string) => {
     setMethod(m);
+    setUsdtNetwork(USDT_NETWORKS[0].tag);
+    setFields({});
+  };
+
+  const selectUsdtNetwork = (tag: string) => {
+    setUsdtNetwork(tag);
     setFields({});
   };
 
@@ -383,15 +460,20 @@ function SellTab({
     if (!method) return setError("Select a payment method.");
     if (methodFields.some((f) => !fields[f.key]?.trim()))
       return setError("Fill in all payment details for the buyer.");
+    if (fields.walletAddress && !isValidUsdtWalletAddress(finalPaymentMethod, fields.walletAddress))
+      return setError(
+        `That doesn't look like a valid ${finalPaymentMethod} address. Double-check it — sending to the wrong chain can permanently lose funds.`,
+      );
     setError(null);
     onCreate({
       amount: amountNum,
       price: priceNum,
-      paymentMethod: method,
+      paymentMethod: finalPaymentMethod,
       paymentDetails: fields,
     });
     setAmount("");
     setMethod("");
+    setUsdtNetwork(USDT_NETWORKS[0].tag);
     setFields({});
   };
 
@@ -451,6 +533,29 @@ function SellTab({
             ))}
           </div>
         </div>
+
+        {method === "USDT" && (
+          <div>
+            <label className="mb-2 block text-sm text-tertiary">Network</label>
+            <div className="flex flex-wrap gap-2">
+              {USDT_NETWORKS.map((n) => (
+                <button
+                  key={n.tag}
+                  onClick={() => selectUsdtNetwork(n.tag)}
+                  className={`rounded-full border px-3 py-1.5 text-sm transition ${usdtNetwork === n.tag
+                    ? "border-primary bg-primary/15 text-primary"
+                    : "border-white/15 text-tertiary hover:border-primary/60"
+                    }`}
+                >
+                  {n.label}
+                </button>
+              ))}
+            </div>
+            <p className="mt-1 text-xs text-tertiary/60">
+              Double-check the network — sending to the wrong chain can permanently lose funds.
+            </p>
+          </div>
+        )}
 
         {methodFields.length > 0 && (
           <div className="space-y-3">

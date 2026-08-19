@@ -94,7 +94,7 @@ export const orderTotal = (o: Pick<P2POrder, "amount" | "price">) =>
 export const PAYMENT_METHODS = [
   "Bank Transfer",
   "PayPal",
-  "USDT (TRC20)",
+  "USDT",
   "Wise",
   "Cash App",
 ] as const;
