@@ -1,5 +1,7 @@
 "use client";
 
+import { EXTERNAL_URLS } from "@/lib/api-config";
+
 import Image from "next/image";
 
 import CustomButton2 from "@/components/CustomButton2";
@@ -49,7 +51,7 @@ const PowerMiningPage = () => {
       {/* Video Section */}
       <div className="flex items-center justify-center my-40 md:my-60 max-w-7xl mx-auto aspect-video">
         <iframe
-          src="https://www.youtube.com/embed/bVbsQwh_GCI"
+          src={EXTERNAL_URLS.videos.quantumMining}
           title="Quantum Mining"
           frameBorder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

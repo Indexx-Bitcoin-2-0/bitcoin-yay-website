@@ -1,4 +1,5 @@
 import { buildApiUrl } from "@/lib/api-config";
+import { handleAuthFailure } from "@/lib/auth-session";
 
 export interface ActiveLiquidityPoolResponse {
   current?: number;
@@ -59,6 +60,7 @@ export async function fetchActiveLiquidityPool(
   });
 
   const body = await response.json().catch(() => null);
+  handleAuthFailure(response, body ?? undefined);
   const payload =
     ((body?.data ?? body) as ActiveLiquidityPoolResponse | null) ?? null;
 

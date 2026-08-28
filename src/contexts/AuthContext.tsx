@@ -8,6 +8,7 @@ import React, {
   ReactNode,
   useCallback,
 } from "react";
+import axios from "axios";
 import {
   saveAuthData,
   getAuthData,
@@ -16,6 +17,11 @@ import {
   User,
 } from "@/lib/auth";
 import { decodeJWT } from "@/lib/signInToken";
+import {
+  AUTH_SESSION_INVALID_EVENT,
+  handleAuthFailure,
+  invalidateIfAuthorizationExpired,
+} from "@/lib/auth-session";
 
 type TokenPayload = {
   exp?: number;
@@ -112,6 +118,79 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
+
+  useEffect(() => {
+    const handleInvalidSession = () => {
+      logout();
+      setIsLoading(false);
+    };
+
+    window.addEventListener(AUTH_SESSION_INVALID_EVENT, handleInvalidSession);
+    return () =>
+      window.removeEventListener(
+        AUTH_SESSION_INVALID_EVENT,
+        handleInvalidSession
+      );
+  }, [logout]);
+
+  useEffect(() => {
+    const originalFetch = window.fetch;
+
+    const authenticatedFetch: typeof window.fetch = async (input, init) => {
+      const requestHeaders = new Headers(
+        init?.headers ?? (input instanceof Request ? input.headers : undefined)
+      );
+      const authorization = requestHeaders.get("Authorization");
+      const isAuthenticatedRequest = Boolean(authorization);
+      invalidateIfAuthorizationExpired(authorization);
+      const response = await originalFetch(input, init);
+
+      if (isAuthenticatedRequest) {
+        if (response.status === 401) {
+          handleAuthFailure(response);
+        } else if (!response.ok) {
+          const payload = await response
+            .clone()
+            .json()
+            .catch(() => undefined);
+          handleAuthFailure(response, payload);
+        }
+      }
+
+      return response;
+    };
+
+    window.fetch = authenticatedFetch;
+
+    const axiosRequestInterceptor = axios.interceptors.request.use((config) => {
+      const authorization = config.headers?.get?.("Authorization");
+      invalidateIfAuthorizationExpired(
+        typeof authorization === "string" ? authorization : null
+      );
+      return config;
+    });
+
+    const axiosInterceptor = axios.interceptors.response.use(
+      (response) => response,
+      (error: unknown) => {
+        if (axios.isAxiosError(error)) {
+          const authorization = error.config?.headers?.get?.("Authorization");
+          if (authorization && error.response) {
+            handleAuthFailure(error.response, error.response.data);
+          }
+        }
+        return Promise.reject(error);
+      }
+    );
+
+    return () => {
+      if (window.fetch === authenticatedFetch) {
+        window.fetch = originalFetch;
+      }
+      axios.interceptors.request.eject(axiosRequestInterceptor);
+      axios.interceptors.response.eject(axiosInterceptor);
+    };
+  }, []);
 
   useEffect(() => {
     if (!user?.access_token) {

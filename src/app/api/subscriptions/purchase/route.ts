@@ -14,6 +14,14 @@ export async function POST(request: Request) {
 
   try {
     const payload = await request.json();
+
+    if (payload?.provider?.toLowerCase() === "stripe") {
+      return NextResponse.json(
+        { error: "Stripe is currently unavailable for Power Mining subscriptions." },
+        { status: 400 }
+      );
+    }
+
     const response = await axios.post(
       `${SUBSCRIPTIONS_BASE_URL}/purchase-test`,
       payload,

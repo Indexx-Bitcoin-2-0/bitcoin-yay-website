@@ -1,5 +1,7 @@
 "use client";
 
+import { EXTERNAL_URLS } from "@/lib/api-config";
+
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -39,6 +41,7 @@ import {
   NormalizedActiveLiquidityPool,
 } from "@/services/alchemy.service";
 import axios from "axios";
+import { isInvalidAuthError } from "@/lib/auth-session";
 
 import FortuneFunnelIcon from "@/assets/images/alchemy/fortuneFunnel.svg";
 import MegaPathIcon from "@/assets/images/alchemy/mega_path.svg";
@@ -47,8 +50,8 @@ import DownArrowIcon from '@/assets/images/alchemy/downArrow.svg'
 import StartAlchemyImage from "@/assets/images/alchemy/startAlchemySVG.svg";
 const FALLBACK_MIN_NUGGET_INPUT = 1000;
 const FALLBACK_MAX_NUGGET_INPUT = 5000;
-const FALLBACK_MINED_NUGGETS_REQUIRED = 50000;
-const WALLET_OVERVIEW_BASE_URL = "https://cex.indexx.ai/wallet/overview";
+const FALLBACK_MINED_NUGGETS_REQUIRED = 10000;
+const WALLET_OVERVIEW_BASE_URL: string = EXTERNAL_URLS.app.walletOverview;
 
 export default function AlchemyPage() {
   const { user, isLoading: isAuthLoading } = useAuth();
@@ -66,6 +69,8 @@ export default function AlchemyPage() {
   const [formError, setFormError] = useState<string | null>(null);
   const [limitWarning, setLimitWarning] = useState<string | null>(null);
   const [alchemyConfig, setAlchemyConfig] = useState<AlchemyRuntimeConfig | null>(null);
+  const [personalizedMinimumMinedRequired, setPersonalizedMinimumMinedRequired] =
+    useState<number | null>(null);
   const [configLoading, setConfigLoading] = useState(true);
   const [configError, setConfigError] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
@@ -98,7 +103,9 @@ export default function AlchemyPage() {
     alchemyConfig?.defaultInputLimit ??
     FALLBACK_MAX_NUGGET_INPUT;
   const alchemyUnlockLimit =
-    alchemyConfig?.v2MinimumMinedDefault ?? FALLBACK_MINED_NUGGETS_REQUIRED;
+    personalizedMinimumMinedRequired ??
+    alchemyConfig?.v2MinimumMinedDefault ??
+    FALLBACK_MINED_NUGGETS_REQUIRED;
   const maxNuggetInputMessage = `You can convert between ${minNuggetInput.toLocaleString(
     "en-US"
   )} and ${maxNuggetInput.toLocaleString("en-US")} BTCY per session.`;
@@ -147,7 +154,7 @@ export default function AlchemyPage() {
     const fetchPrices = async () => {
       try {
         const res = await axios.get(
-          "https://api.coingecko.com/api/v3/simple/price",
+          EXTERNAL_URLS.api.coinGeckoPrice,
           {
             params: {
               ids: "bitcoin",
@@ -173,7 +180,7 @@ export default function AlchemyPage() {
       setConfigLoading(true);
       setConfigError(null);
       try {
-        const response = await getAlchemyConfig();
+        const response = await getAlchemyConfig(user?.email);
         if (!isActive) return;
 
         if (!response.success || !response.config) {
@@ -189,6 +196,9 @@ export default function AlchemyPage() {
           maxInputLimitLabel:
             response.maxInputLimitLabel ?? response.config.maxInputLimitLabel,
         });
+        setPersonalizedMinimumMinedRequired(
+          response.alchemyMinimumMinedRequired ?? null
+        );
       } catch (error) {
         if (!isActive) return;
         console.error("Failed to load alchemy config:", error);
@@ -210,7 +220,7 @@ export default function AlchemyPage() {
     return () => {
       isActive = false;
     };
-  }, []);
+  }, [user?.email]);
 
   useEffect(() => {
     const storedSession = getClickConvertSessionState();
@@ -477,6 +487,11 @@ export default function AlchemyPage() {
         error instanceof Error
           ? error.message
           : "Failed to start the conversion. Please try again.";
+      if (isInvalidAuthError(message)) {
+        setStatusMessage(null);
+        setIsLoginPopupOpen(true);
+        return;
+      }
       setFormError(message);
     } finally {
       setIsProcessingAlchemy(false);
@@ -790,7 +805,7 @@ export default function AlchemyPage() {
               </div>
               <p className="text-2xl font-semibold">Fortune Funnel</p>
               <p className="text-sm md:text-base text-tertiary">
-                Your starting stage at 50,000 Nuggets. High risk with lower
+                Your starting stage at 10,000 Nuggets. High risk with lower
                 rewards, good for early conversions but results can vary.
               </p>
             </div>

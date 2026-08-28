@@ -1,5 +1,7 @@
 "use client";
 
+import { EXTERNAL_URLS } from "@/lib/api-config";
+
 import Link from "next/link";
 import Image, { type StaticImageData } from "next/image";
 import { usePathname } from "next/navigation";
@@ -25,13 +27,14 @@ interface IconicItem {
 const ITEMS: IconicItem[] = [
   {
     name: "Mining Station",
-    href: "https://miningstation.bitcoinyay.com/",
+    href: EXTERNAL_URLS.app.miningStation,
     icon: MiningStationIcon,
     authTokenRedirect: true,
   },
   { name: "Alchemy", href: "/alchemy", icon: AlchemyIcon },
   { name: "Buy BTCY", href: "/quantum-mining", icon: BuyBtcyIcon },
   { name: "Sell BTCY", href: "/sell-btcy", icon: SellBtcyIcon },
+  { name: "P2P", href: "/p2p", icon: SellBtcyIcon },
 
   { name: "Power Mining", href: "/mining/power-mining", icon: SubscriptionIcon },
 ];

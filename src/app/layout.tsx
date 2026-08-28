@@ -5,9 +5,10 @@ import BirthdayPopupHandler from "@/components/BirthdayPopupHandler";
 import ConditionalLayout from "@/components/ConditionalLayout";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { GoogleOAuthProvider } from "@react-oauth/google"; // ✅ Import this
+import { EXTERNAL_URLS } from "@/lib/api-config";
 
 export const metadata = {
-  metadataBase: new URL("https://bitcoinyay.com"),
+  metadataBase: new URL(EXTERNAL_URLS.app.website),
   title: {
     default: "bitcoin-yay - Mobile Mining App for Bitcoin Micro Tokens",
     template: "%s | bitcoin-yay",
@@ -27,7 +28,7 @@ export const metadata = {
     type: "website",
     locale: "en_US",
     siteName: "Bitcoin-Yay",
-    url: "https://bitcoinyay.com",
+    url: EXTERNAL_URLS.app.website,
   },
   twitter: {
     card: "summary_large_image",
@@ -62,7 +63,7 @@ export default function RootLayout({
             __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
             new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
             j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            '${EXTERNAL_URLS.analytics.googleTagManagerScript}?id='+i+dl;f.parentNode.insertBefore(j,f);
             })(window,document,'script','dataLayer','GTM-M8XVF4JG');`,
           }}
         />
@@ -72,7 +73,7 @@ export default function RootLayout({
         {/* Google Tag Manager (noscript) */}
         <noscript>
           <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-M8XVF4JG"
+            src={`${EXTERNAL_URLS.analytics.googleTagManagerFrame}?id=GTM-M8XVF4JG`}
             height="0"
             width="0"
             style={{ display: "none", visibility: "hidden" }}

@@ -1,5 +1,7 @@
 "use client";
 
+import { EXTERNAL_URLS } from "@/lib/api-config";
+
 import { useState } from "react";
 import axios from "axios";
 import Image from "next/image";
@@ -25,7 +27,7 @@ interface SellFormData {
   receiveCurrency: "USDT" | "USDC"; // Added currency selector
 }
 
-const KYC_ACCOUNT_URL = "https://cex.indexx.ai/indexx-exchange/account";
+const KYC_ACCOUNT_URL = EXTERNAL_URLS.app.kycAccount;
 const BTCY_PRICE_USD = 0.1;
 const MIN_SELL_USD = 10;
 const MIN_SELL_BTCY =

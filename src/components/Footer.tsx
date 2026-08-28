@@ -1,5 +1,7 @@
 "use client";
 
+import { EXTERNAL_URLS } from "@/lib/api-config";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -41,12 +43,12 @@ const Footer = ({ }) => {
     bottomLinks = [
       {
         image: FbIcon,
-        url: "https://www.facebook.com/profile.php?id=61574910722200",
+        url: EXTERNAL_URLS.social.facebook,
       },
-      { image: InstaIcon, url: "https://www.instagram.com/bitcoin.yay/" },
-      { image: TelegramIcon, url: "https://t.me/+Cmz7QGEuxP5jY2U1" },
-      { image: XIcon, url: "https://x.com/bitcoin_YAY" },
-      { image: YoutubeIcon, url: "https://www.youtube.com/@BitcoinYay" },
+      { image: InstaIcon, url: EXTERNAL_URLS.social.instagram },
+      { image: TelegramIcon, url: EXTERNAL_URLS.social.telegram },
+      { image: XIcon, url: EXTERNAL_URLS.social.x },
+      { image: YoutubeIcon, url: EXTERNAL_URLS.social.youtube },
     ];
   return (
     <div className="container mx-auto px-4 py-8 mt-10">
@@ -95,7 +97,7 @@ const Footer = ({ }) => {
                     Scan or Click on the QR Code
                   </p>
                   <Link
-                    href="https://apps.apple.com/ph/app/bitcoin-yay/id6744868017"
+                    href={EXTERNAL_URLS.stores.apple}
                     target="_blank"
                   >
                     <Image
@@ -110,7 +112,7 @@ const Footer = ({ }) => {
                     Scan or Click on the QR Code
                   </p>
                   <Link
-                    href="https://play.google.com/store/apps/details?id=com.bitcoin2&hl=en"
+                    href={EXTERNAL_URLS.stores.googlePlay}
                     target="_blank"
                   >
                     <Image

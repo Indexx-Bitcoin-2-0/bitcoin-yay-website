@@ -1,4 +1,6 @@
 "use client";
+
+import { EXTERNAL_URLS } from "@/lib/api-config";
 import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
 
@@ -129,7 +131,7 @@ export default function Home() {
     const fetchPrices = async () => {
       try {
         const res = await axios.get(
-          "https://api.coingecko.com/api/v3/simple/price",
+          EXTERNAL_URLS.api.coinGeckoPrice,
           {
             params: {
               ids: "bitcoin",
@@ -589,7 +591,7 @@ export default function Home() {
                 alt="App Store QR"
                 onClick={() => {
                   window.open(
-                    "https://apps.apple.com/ph/app/bitcoin-yay/id6744868017",
+                    EXTERNAL_URLS.stores.apple,
                     "_blank"
                   );
                 }}
@@ -611,7 +613,7 @@ export default function Home() {
                 text="Download the Mining App"
                 onClick={() => {
                   window.open(
-                    "https://apps.apple.com/ph/app/bitcoin-yay/id6744868017",
+                    EXTERNAL_URLS.stores.apple,
                     "_blank"
                   );
                 }}
@@ -628,7 +630,7 @@ export default function Home() {
                 alt="Play Store QR"
                 onClick={() => {
                   window.open(
-                    "https://play.google.com/store/apps/details?id=com.bitcoin2&hl=en",
+                    EXTERNAL_URLS.stores.googlePlay,
                     "_blank"
                   );
                 }}
@@ -651,7 +653,7 @@ export default function Home() {
                 text="Download the Mining App"
                 onClick={() => {
                   window.open(
-                    "https://play.google.com/store/apps/details?id=com.bitcoin2&hl=en",
+                    EXTERNAL_URLS.stores.googlePlay,
                     "_blank"
                   );
                 }}
@@ -677,14 +679,14 @@ export default function Home() {
             <CustomButton2
               image={DollarButtonImage}
               text="Buy Token"
-              link="https://cex.indexx.ai/"
+              link={EXTERNAL_URLS.indexx.exchange}
               imageStyling="w-30"
               ariaLabel="Buy Bitcoin-Yay tokens on Indexx exchange"
             />
             <CustomButton2
               image={InfoButtonImage}
               text="Discover Indexx.ai"
-              link="https://indexx.ai/"
+              link={EXTERNAL_URLS.indexx.home}
               imageStyling="w-30"
               ariaLabel="Learn more about Indexx AI platform and services"
             />

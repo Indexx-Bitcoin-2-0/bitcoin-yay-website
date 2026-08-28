@@ -1,5 +1,7 @@
 "use client";
 
+import { EXTERNAL_URLS } from "@/lib/api-config";
+
 export const dynamic = "force-dynamic";
 
 import { Suspense, useEffect, useRef, useState } from "react";
@@ -30,8 +32,8 @@ const BSC_NETWORK_PARAMS = {
     symbol: "BNB",
     decimals: 18,
   },
-  rpcUrls: ["https://bsc-dataseed.binance.org/"],
-  blockExplorerUrls: ["https://bscscan.com"],
+  rpcUrls: [EXTERNAL_URLS.wallets.bscRpc],
+  blockExplorerUrls: [EXTERNAL_URLS.wallets.bscExplorer],
 };
 
 type ClaimDestinationId = "tron" | "solana" | "indexx" | "ethereum" | "binance";
@@ -88,7 +90,7 @@ const claimDestinations: ClaimDestination[] = [
     description: "Decentralized wallet on Tron Network",
     recommended: "TronLink",
     walletName: "TronLink",
-    installUrl: "https://www.tronlink.org",
+    installUrl: EXTERNAL_URLS.wallets.tronLink,
     claimAddress: TRON_CLAIM_ADDRESS,
     disabled: true,
   },
@@ -98,7 +100,7 @@ const claimDestinations: ClaimDestination[] = [
     description: "Decentralized wallet on Solana Network",
     recommended: "Phantom",
     walletName: "Phantom",
-    installUrl: "https://phantom.app",
+    installUrl: EXTERNAL_URLS.wallets.phantom,
     claimAddress: SOLANA_CLAIM_ADDRESS,
     disabled: true,
   },
@@ -108,7 +110,7 @@ const claimDestinations: ClaimDestination[] = [
     description: "Decentralized wallet on Ethereum Network",
     recommended: "MetaMask",
     walletName: "MetaMask",
-    installUrl: "https://metamask.io/download/",
+    installUrl: EXTERNAL_URLS.wallets.metamask,
     note:
       "Ethereum claims are routed through the Indexx Asset Wallet dashboard while MetaMask integration is being finalized.",
     claimAddress: ETHEREUM_CLAIM_ADDRESS,
@@ -120,7 +122,7 @@ const claimDestinations: ClaimDestination[] = [
     description: "Decentralized wallet on BNB Smart Chain",
     recommended: "MetaMask",
     walletName: "MetaMask",
-    installUrl: "https://metamask.io/download/",
+    installUrl: EXTERNAL_URLS.wallets.metamask,
     note:
       "MetaMask is recommended for BSC claims. Switch your network to BNB Smart Chain before submitting a claim.",
     claimAddress: ETHEREUM_CLAIM_ADDRESS,

@@ -1,5 +1,7 @@
 "use client";
 
+import { EXTERNAL_URLS } from "@/lib/api-config";
+
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 
@@ -348,7 +350,7 @@ const PowerMiningPlansPage = () => {
       {/* Video Section */}
       <div className="flex items-center justify-center my-40 md:my-60 max-w-7xl mx-auto aspect-video">
         <iframe
-          src="https://www.youtube.com/embed/tuppsYWEDGI"
+          src={EXTERNAL_URLS.videos.powerMining}
           title="Power Mining"
           frameBorder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

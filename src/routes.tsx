@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "@/lib/api-config";
+import { API_BASE_URL, EXTERNAL_URLS } from "@/lib/api-config";
 
 export const CONTACT_US_ROUTE = `${API_BASE_URL}/api/v1/inex/basic/emailToAdmin`;
 
@@ -73,9 +73,29 @@ export const QUANTUM_USER_ORDER_API_ROUTE = `${API_BASE_URL}/api/v1/inex/user/ge
 
 // External API Routes
 export const COINGECKO_PRICE_API_ROUTE =
-  "https://api.coingecko.com/api/v3/simple/price";
+  EXTERNAL_URLS.api.coinGeckoPrice;
 
 export const SELL_BTCY_CREATE_ORDER_ROUTE = `${API_BASE_URL}/api/v1/inex/sell-btcy/createSellOrder`;
 export const SELL_BTCY_CREATE_ROUTE = SELL_BTCY_CREATE_ORDER_ROUTE;
 export const SELL_BTCY_ELIGIBILITY_ROUTE = `${API_BASE_URL}/api/v1/inex/sell-btcy/eligibility`;
 export const BTCY_ORDER_HISTORY_ROUTE = `${API_BASE_URL}/api/v1/inex/order/btcy/orders`;
+
+const P2P_BASE_ROUTE = `${API_BASE_URL}/api/v1/p2p`;
+export const P2P_SELL_OFFERS_ROUTE = `${P2P_BASE_ROUTE}/sell`;
+export const P2P_USER_OFFERS_ROUTE = `${P2P_BASE_ROUTE}/user/offers`;
+export const P2P_USER_OFFER_ROUTE = (offerId: string) =>
+  `${P2P_USER_OFFERS_ROUTE}/${encodeURIComponent(offerId)}`;
+export const P2P_USER_OFFER_PAUSE_ROUTE = (offerId: string) =>
+  `${P2P_USER_OFFER_ROUTE(offerId)}/pause`;
+export const P2P_TRADES_ROUTE = `${P2P_BASE_ROUTE}/trades`;
+export const P2P_TRADE_ROUTE = (tradeId: string) =>
+  `${P2P_TRADES_ROUTE}/${encodeURIComponent(tradeId)}`;
+export const P2P_TRADE_PAY_ROUTE = (tradeId: string) =>
+  `${P2P_TRADE_ROUTE(tradeId)}/pay`;
+export const P2P_TRADE_CONFIRM_ROUTE = (tradeId: string) =>
+  `${P2P_TRADE_ROUTE(tradeId)}/confirm`;
+export const P2P_TRADE_CANCEL_ROUTE = (tradeId: string) =>
+  `${P2P_TRADE_ROUTE(tradeId)}/cancel`;
+export const P2P_TRADE_PAYMENT_PROOF_ROUTE = (tradeId: string) =>
+  `${P2P_TRADE_ROUTE(tradeId)}/payment-proof`;
+export const P2P_DISPUTES_ROUTE = `${P2P_BASE_ROUTE}/disputes`;

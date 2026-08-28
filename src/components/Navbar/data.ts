@@ -1,3 +1,4 @@
+import { EXTERNAL_URLS } from "@/lib/api-config";
 const baseURL = "/";
 
 const header_data = [
@@ -51,6 +52,13 @@ const header_data = [
       },
     ],
   },
+  {
+    mainTextDesktop: "P2P",
+    mainTextMob: "P2P",
+    active: false,
+    href: "/p2p",
+    hasMegaDrop: false,
+  },
   // {
   //   mainTextDesktop: "Bible",
   //   mainTextMob: "Bible",
@@ -93,17 +101,17 @@ const header_data = [
   //       links: [
   //         {
   //           name: "Buy token",
-  //           href: "https://cex.indexx.ai/update/home?buyToken=BTCY",
+  //           href: EXTERNAL_URLS.indexx.buyBtcy,
   //           openInNewTab: true,
   //         },
   //         {
   //           name: "Buy Gift Card",
-  //           href: "https://shop.indexx.ai/?category=bitcoin-cards",
+  //           href: EXTERNAL_URLS.indexx.bitcoinCards,
   //           openInNewTab: true,
   //         },
   //         {
   //           name: "Crypto Treasury",
-  //           href: "https://cex.indexx.ai/smart-crypto",
+  //           href: EXTERNAL_URLS.indexx.smartCrypto,
   //           openInNewTab: true,
   //         },
   //       ],
@@ -150,7 +158,7 @@ const header_data = [
         links: [
           {
             name: "Buy BTCY",
-            href: "https://cex.indexx.ai/update/home?buyToken=BTCY",
+            href: EXTERNAL_URLS.indexx.buyBtcy,
             openInNewTab: true,
           },
           {
@@ -159,7 +167,7 @@ const header_data = [
           },
           {
             name: "Buy Gift Card",
-            href: "https://shop.indexx.ai/?category=bitcoin-cards",
+            href: EXTERNAL_URLS.indexx.bitcoinCards,
             openInNewTab: true,
           },
         ],
@@ -169,7 +177,7 @@ const header_data = [
         links: [
           {
             name: "Crypto Treasury",
-            href: "https://cex.indexx.ai/smart-crypto",
+            href: EXTERNAL_URLS.indexx.smartCrypto,
             openInNewTab: true,
           },
         ],
@@ -297,7 +305,7 @@ const header_data = [
         links: [
           {
             name: "indexx.ai",
-            href: "https://indexx.ai",
+            href: EXTERNAL_URLS.indexx.home,
             openInNewTab: true,
           },
         ],
@@ -308,7 +316,7 @@ const header_data = [
         links: [
           {
             name: "WallStreet",
-            href: "https://wallstreet.indexx.ai",
+            href: EXTERNAL_URLS.indexx.wallStreet,
             openInNewTab: true,
           },
           {
@@ -338,32 +346,32 @@ const header_data = [
         links: [
           {
             name: "Sign up on Exchange",
-            href: "https://indexx.ai/auth/signup-email?redirectWebsiteLink=exchange",
+            href: EXTERNAL_URLS.indexx.exchangeSignup,
             openInNewTab: true,
           },
           {
             name: "Get Gift Cards",
-            href: "https://shop.indexx.ai/?category=gift",
+            href: EXTERNAL_URLS.indexx.gifts,
             openInNewTab: true,
           },
           {
             name: "But Ticket",
-            href: "https://lotto.indexx.ai/contest?contest=crypto",
+            href: EXTERNAL_URLS.indexx.cryptoLottery,
             openInNewTab: true,
           },
           {
             name: "Enroll to Academy",
-            href: "https://indexx.ai/auth/signup-email?redirectWebsiteLink=academy",
+            href: EXTERNAL_URLS.indexx.academySignup,
             openInNewTab: true,
           },
           {
             name: "Invest with Smart Crypto",
-            href: "https://cex.indexx.ai/smart-crypto",
+            href: EXTERNAL_URLS.indexx.smartCrypto,
             openInNewTab: true,
           },
           {
             name: "Invest with Smart APY",
-            href: "https://cex.indexx.ai/smart-apy",
+            href: EXTERNAL_URLS.indexx.smartApy,
             openInNewTab: true,
           },
         ],
@@ -373,7 +381,7 @@ const header_data = [
         links: [
           {
             name: "About Us",
-            href: "https://indexx.ai/indexx-exchange/about",
+            href: EXTERNAL_URLS.indexx.about,
             openInNewTab: true,
           },
         ],
@@ -397,7 +405,7 @@ const header_data = [
           },
           {
             name: "Mining Station",
-            href: "https://miningstation.bitcoinyay.com/",
+            href: EXTERNAL_URLS.app.miningStation,
             openInNewTab: false,
             authTokenRedirect: true,
           },
@@ -452,7 +460,7 @@ const header_data = [
     mainTextDesktop: "Mining Station",
     mainTextMob: "Mining Station",
     active: false,
-    href: "https://miningstation.bitcoinyay.com/",
+    href: EXTERNAL_URLS.app.miningStation,
     authTokenRedirect: true,
     hasMegaDrop: true,
     dropDownContent: [
@@ -489,7 +497,7 @@ const header_data = [
         links: [
           {
             name: "Who is Bitcon Satoshi",
-            href: "https://whoisbitcoinsatoshi.wtf",
+            href: EXTERNAL_URLS.wibs.home,
             openInNewTab: true,
           },
         ],
@@ -500,17 +508,17 @@ const header_data = [
         links: [
           {
             name: "Buy WIBS",
-            href: "https://cex.indexx.ai/update/home?buyToken=WIBS",
+            href: EXTERNAL_URLS.indexx.buyWibs,
             openInNewTab: true,
           },
           {
             name: "Buy Gift Cards",
-            href: "https://shop.indexx.ai/?category=bitcoin-cards",
+            href: EXTERNAL_URLS.indexx.bitcoinCards,
             openInNewTab: true,
           },
           {
             name: "Crypto Treasury",
-            href: "https://cex.indexx.ai/smart-crypto",
+            href: EXTERNAL_URLS.indexx.smartCrypto,
             openInNewTab: true,
           },
         ],
@@ -521,7 +529,7 @@ const header_data = [
         links: [
           {
             name: "Contact Us",
-            href: "https://whoisbitcoinsatoshi.wtf/contact-us",
+            href: EXTERNAL_URLS.wibs.contact,
             openInNewTab: true,
           },
         ],
