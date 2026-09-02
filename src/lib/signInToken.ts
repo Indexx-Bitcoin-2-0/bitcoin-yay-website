@@ -43,11 +43,17 @@ export const loginWithToken = async (
   );
 };
 
+// The endpoint returns the token as a bare string in `data`, and now expects a
+// bearer token so it can mint for the authenticated identity rather than the
+// URL param.
 export const getUserShortToken = async (
-  email: string
-): Promise<AxiosResponse<ApiEnvelope<{ shortToken: string }>>> => {
+  email: string,
+  accessToken?: string
+): Promise<AxiosResponse<ApiEnvelope<string>>> => {
   const url = `${CREATE_SHORT_TOKEN_API_ROUTE}/${encodeURIComponent(email)}`;
-  return axios.get<ApiEnvelope<{ shortToken: string }>>(url);
+  return axios.get<ApiEnvelope<string>>(url, {
+    headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
+  });
 };
 
 export const getCaptainBeeByEmail = async (
