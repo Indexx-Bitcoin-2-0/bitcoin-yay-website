@@ -4,6 +4,7 @@ import {
   CREATE_SHORT_TOKEN_API_ROUTE,
   LOGIN_WITH_TOKEN_API_ROUTE,
 } from "@/routes";
+import { getAuthData } from "./auth";
 
 type CaptainBeeApiResponse = {
   status?: number;
@@ -47,7 +48,13 @@ export const getUserShortToken = async (
   email: string
 ): Promise<AxiosResponse<ApiEnvelope<{ shortToken: string }>>> => {
   const url = `${CREATE_SHORT_TOKEN_API_ROUTE}/${encodeURIComponent(email)}`;
-  return axios.get<ApiEnvelope<{ shortToken: string }>>(url);
+  // The backend now mints the short token for the authenticated identity and
+  // ignores the :email path param; without a bearer it 401s once
+  // SHORT_TOKEN_REQUIRE_AUTH is enabled. Always send the access token.
+  const accessToken = getAuthData()?.access_token;
+  return axios.get<ApiEnvelope<{ shortToken: string }>>(url, {
+    headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
+  });
 };
 
 export const getCaptainBeeByEmail = async (

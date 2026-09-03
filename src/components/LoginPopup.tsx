@@ -197,7 +197,7 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
             refresh_token: res.data?.data.refresh_token,
             role: res.data?.data.role || "Standard",
             userType: res.data?.data.userType || "Indexx Exchange",
-            shortToken: res.data?.data.shortToken || "google-short-token",
+            shortToken: res.data?.data.shortToken || "",
           });
 
           onLoginSuccess();

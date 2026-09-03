@@ -296,7 +296,7 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
           refresh_token: apiData.refresh_token || "temp-refresh-token-" + Date.now(),
           role: apiData.role || "Standard",
           userType: apiData.userType || "Indexx Exchange",
-          shortToken: apiData.shortToken || "temp-short-token",
+          shortToken: apiData.shortToken || "",
         };
 
         login(userData);
@@ -413,7 +413,7 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
             refresh_token: apiData.refresh_token,
             role: apiData.role || "Standard",
             userType: apiData.userType || "Indexx Exchange",
-            shortToken: apiData.shortToken || "google-short-token",
+            shortToken: apiData.shortToken || "",
           });
 
           onClose();
