@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import SignInTokenHandler from "@/components/SignInTokenHandler";
 import BirthdayPopupHandler from "@/components/BirthdayPopupHandler";
 import ConditionalLayout from "@/components/ConditionalLayout";
+import AdSenseScript from "@/components/ads/AdSenseScript";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { GoogleOAuthProvider } from "@react-oauth/google"; // ✅ Import this
 import { EXTERNAL_URLS } from "@/lib/api-config";
@@ -80,6 +81,8 @@ export default function RootLayout({
           ></iframe>
         </noscript>
         {/* End Google Tag Manager (noscript) */}
+        {/* Google AdSense — no-op until NEXT_PUBLIC_ADSENSE_CLIENT is set. */}
+        <AdSenseScript />
         <GoogleOAuthProvider
           clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}
         >
