@@ -31,13 +31,13 @@ interface LoginPopupProps {
   isOpen: boolean;
   onClose: () => void;
   onLoginSuccess: () => void;
-  onRegisterClick: () => void;
+  onRegisterClick?: () => void;
 }
 const LoginPopup: React.FC<LoginPopupProps> = ({
   isOpen,
   onClose,
   onLoginSuccess,
-  onRegisterClick,
+  onRegisterClick = () => {},
 }) => {
   const { login } = useAuth();
   const [email, setEmail] = useState("");

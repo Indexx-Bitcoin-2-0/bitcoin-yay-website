@@ -277,7 +277,7 @@ export default function Whitepaper() {
           />
           <CustomListItem2
             title="Turbo Power (Mid Paid):"
-            content="6× speed (~9 BTCY/hour) for $300/month. Comes with " super-speed" mining and priority withdrawals – if there's ever a queue or limit on withdrawals, Turbo users are first in line."
+            content="6× speed (~9 BTCY/hour) for $300/month. Comes with “super-speed” mining and priority withdrawals – if there's ever a queue or limit on withdrawals, Turbo users are first in line."
           />
         </CustomUnorderedList>
         <CustomPWithTitle2

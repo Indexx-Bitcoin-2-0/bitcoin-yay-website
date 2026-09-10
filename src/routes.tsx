@@ -32,6 +32,12 @@ export const ALCHEMY_SESSIONS_API_ROUTE = `${ALCHEMY_V2_BASE_ROUTE}/sessions`;
 export const ALCHEMY_PROCESS_API_ROUTE = `${ALCHEMY_V2_BASE_ROUTE}/process`;
 export const ALCHEMY_COMPLETE_V2_API_ROUTE = `${ALCHEMY_V2_BASE_ROUTE}/complete`;
 
+// Rewarded-ad claim gate (mirrors the mobile app).
+export const ALCHEMY_SESSION_AD_PROGRESS_ROUTE = (sessionId: string) =>
+  `${ALCHEMY_V2_BASE_ROUTE}/sessions/${encodeURIComponent(sessionId)}/ad-progress`;
+export const ALCHEMY_SESSION_AD_WATCH_ROUTE = (sessionId: string) =>
+  `${ALCHEMY_V2_BASE_ROUTE}/sessions/${encodeURIComponent(sessionId)}/ads`;
+
 export const ALCHEMY_GET_USER_SUBSCRIPTION = `${API_BASE_URL}/api/v1/mining/getUserSubscriptionPlan/BTCY`;
 
 export const EMAIL_TO_ADMIN_API_ROUTE = `${API_BASE_URL}/api/v1/inex/basic/emailsubscribe`;

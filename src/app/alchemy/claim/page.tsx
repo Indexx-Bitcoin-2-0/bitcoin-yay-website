@@ -19,7 +19,19 @@ import CancelOrderImage from "@/assets/images/buttons/cancelOrder.svg";
 import { useAuth } from "@/contexts/AuthContext";
 import LoginPopup from "@/components/LoginPopup";
 import { TRONABI } from "@/contracts/tron/abi";
-import { finalizeClickConvertSessionState } from "@/lib/alchemy";
+import {
+  finalizeClickConvertSessionState,
+  getAlchemyAdProgress,
+  getClickConvertSessionState,
+  recordAlchemyAdWatch,
+  type AlchemyAdGateInfo,
+  type AlchemyAdProgress,
+} from "@/lib/alchemy";
+import {
+  isWebRewardedAdAvailable,
+  isWebRewardedAdPlaceholder,
+  showWebRewardedAd,
+} from "@/lib/webRewardedAd";
 
 const SOLANA_CLAIM_ADDRESS = "7RUbRcqvQ7gXNmfuxsoUoputPXT85fGzoPSu6xXi6U9p";
 const TRON_CLAIM_ADDRESS = "TJVh7pdziZHNaEwfmBcwZN5JjuEjnN1xzB";
@@ -184,6 +196,91 @@ function ClaimPageContent() {
   const [claimSuccessMessage, setClaimSuccessMessage] = useState<string | null>(null);
   const [isSuccessPopupOpen, setIsSuccessPopupOpen] = useState(false);
   const successRedirectTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Rewarded-ad claim gate (mirrors the mobile app). The server enforces it on
+  // /complete; this just mirrors the state so the button is disabled until the
+  // videos are watched.
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [adProgress, setAdProgress] = useState<AlchemyAdProgress | null>(null);
+  const [adGateBusy, setAdGateBusy] = useState(false);
+  const adGateReady = !adProgress || adProgress.satisfied || adProgress.adsDisabled;
+  const rewardedAdAvailable = isWebRewardedAdAvailable();
+  const rewardedAdIsPlaceholder = isWebRewardedAdPlaceholder();
+
+  useEffect(() => {
+    const state = getClickConvertSessionState();
+    const sid = state?.sessionId ?? null;
+    setSessionId(sid);
+    let active = true;
+
+    // Dev aid: with NEXT_PUBLIC_ADS_PREVIEW=1, seed a mock gate so the card can
+    // be reviewed without a live session.
+    if (!sid && process.env.NEXT_PUBLIC_ADS_PREVIEW === "1") {
+      setAdProgress({
+        sessionId: "preview",
+        adsWatched: 0,
+        adsRequired: 2,
+        adsDisabled: false,
+        satisfied: false,
+        alreadyClaimed: false,
+        startedAt: null,
+      });
+      return () => {
+        active = false;
+      };
+    }
+
+    if (!sid) return;
+    getAlchemyAdProgress(sid).then((progress) => {
+      if (active && progress) setAdProgress(progress);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const applyAdGateInfo = (gate: AlchemyAdGateInfo) => {
+    setAdProgress((prev) => ({
+      sessionId: prev?.sessionId ?? sessionId ?? "",
+      adsWatched: gate.adsWatched,
+      adsRequired: gate.adsRequired || prev?.adsRequired || 2,
+      adsDisabled: false,
+      satisfied: false,
+      alreadyClaimed: false,
+      startedAt: prev?.startedAt ?? null,
+    }));
+  };
+
+  const handleWatchGateAd = async () => {
+    if (adGateBusy || !sessionId) return;
+    setAdGateBusy(true);
+    setClaimError(null);
+    try {
+      const target = adProgress?.adsRequired ?? 2;
+      let latest: AlchemyAdProgress | null = adProgress;
+      while ((latest?.adsWatched ?? 0) < target) {
+        const granted = await showWebRewardedAd();
+        if (!granted) {
+          setClaimError("That video didn't finish. Please try again to unlock your claim.");
+          break;
+        }
+        latest = await recordAlchemyAdWatch(
+          sessionId,
+          (latest?.adsWatched ?? 0) + 1
+        );
+        if (latest) setAdProgress(latest);
+        if (!latest || latest.satisfied) break;
+      }
+    } catch (error) {
+      console.error("Alchemy claim gate ad error:", error);
+      if (sessionId) {
+        const refreshed = await getAlchemyAdProgress(sessionId);
+        if (refreshed) setAdProgress(refreshed);
+      }
+    } finally {
+      setAdGateBusy(false);
+    }
+  };
   const [ethereumState, setEthereumState] = useState({
     installed: false,
     connected: false,
@@ -629,6 +726,14 @@ function ClaimPageContent() {
       setClaimStatus("Session finalized. Proceed with your claim.");
       return true;
     } catch (error) {
+      const gate = (error as { adGate?: AlchemyAdGateInfo })?.adGate;
+      if (gate) {
+        applyAdGateInfo(gate);
+        if (sessionId) {
+          const refreshed = await getAlchemyAdProgress(sessionId);
+          if (refreshed) setAdProgress(refreshed);
+        }
+      }
       setClaimError(
         error instanceof Error
           ? error.message
@@ -750,7 +855,18 @@ function ClaimPageContent() {
       return;
     }
 
-    if (isSessionFinalizing) {
+    if (!adGateReady) {
+      setClaimError(
+        `Watch ${
+          adProgress
+            ? Math.max(0, adProgress.adsRequired - adProgress.adsWatched)
+            : 2
+        } more video(s) to unlock your claim.`
+      );
+      return;
+    }
+
+    if (isSessionFinalizing || adGateBusy) {
       return;
     }
 
@@ -761,7 +877,11 @@ function ClaimPageContent() {
   };
 
   const claimButtonDisabled =
-    isSessionFinalizing || isClaiming || Boolean(claimSuccessMessage);
+    isSessionFinalizing ||
+    isClaiming ||
+    adGateBusy ||
+    !adGateReady ||
+    Boolean(claimSuccessMessage);
   const claimButtonLabel = isSessionFinalizing
     ? "Finalizing..."
     : isClaiming
@@ -779,7 +899,7 @@ function ClaimPageContent() {
     return <div className="mt-40 text-center text-3xl">Loading...</div>;
   }
 
-  if (!user) {
+  if (!user && process.env.NEXT_PUBLIC_ADS_PREVIEW !== "1") {
     return (
       <>
         <div className="min-h-screen bg-bg0 text-white flex flex-col items-center justify-center px-6 py-20">
@@ -1049,6 +1169,61 @@ function ClaimPageContent() {
           </div>
         )}
 
+        {/* Rewarded-ad claim gate */}
+        {adProgress && !adProgress.satisfied && !adProgress.adsDisabled && (
+          <div className="mx-auto mb-8 max-w-xl rounded-2xl border border-bg2 bg-bg1/60 p-5 md:p-6">
+            <div className="flex items-center gap-2">
+              <span className="text-primary">🔒</span>
+              <p className="text-base font-semibold text-white">
+                Watch to unlock your claim
+              </p>
+            </div>
+            <p className="mt-2 text-sm text-tertiary">
+              Watch {adProgress.adsRequired} short video
+              {adProgress.adsRequired === 1 ? "" : "s"} to unlock the claim button
+              and send your BTCY. Already watched{" "}
+              {Math.min(adProgress.adsWatched, adProgress.adsRequired)} of{" "}
+              {adProgress.adsRequired}.
+            </p>
+
+            {/* Rewarded-ad placeholder (AdSense-only plan — no rewarded inventory yet). */}
+            <div className="mt-4 flex min-h-[120px] flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-primary/50 bg-primary/5 p-4 text-center">
+              <span className="text-[10px] uppercase tracking-[0.2em] text-tertiary/70">
+                Advertisement
+              </span>
+              <span className="text-sm font-semibold text-primary">
+                Rewarded video slot
+              </span>
+              <span className="text-[11px] text-tertiary">
+                {rewardedAdIsPlaceholder
+                  ? "Placeholder — a real video plays here once a Google Ad Manager rewarded unit is set"
+                  : "Google Ad Manager rewarded unit"}
+              </span>
+            </div>
+
+            {rewardedAdAvailable ? (
+              <button
+                type="button"
+                onClick={handleWatchGateAd}
+                disabled={adGateBusy}
+                className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {adGateBusy
+                  ? "Loading video…"
+                  : `Watch & unlock (${Math.min(
+                      adProgress.adsWatched,
+                      adProgress.adsRequired
+                    )}/${adProgress.adsRequired})`}
+              </button>
+            ) : (
+              <p className="mt-4 text-xs text-amber-300">
+                Rewarded videos aren&apos;t available on the web yet — open the
+                Bitcoin-Yay mobile app to watch and unlock this claim.
+              </p>
+            )}
+          </div>
+        )}
+
         {/* Claim Tokens Button */}
         <div
           className={`flex justify-center mb-6 md:mb-8 ${claimButtonDisabled ? "pointer-events-none opacity-70" : ""}`}
@@ -1060,6 +1235,14 @@ function ClaimPageContent() {
             onClick={openConfirmPopup}
           />
         </div>
+        {!adGateReady && (
+          <p className="-mt-2 mb-6 text-center text-xs text-tertiary">
+            {adProgress
+              ? Math.max(0, adProgress.adsRequired - adProgress.adsWatched)
+              : 2}{" "}
+            more video(s) to unlock the claim button
+          </p>
+        )}
         <PopupComponent isOpen={isConfirmPopupOpen} onClose={closeConfirmPopup}>
           <div className="w-72 md:w-96 bg-bg p-6 rounded-2xl flex flex-col gap-4">
             <p className="text-base text-white leading-relaxed">

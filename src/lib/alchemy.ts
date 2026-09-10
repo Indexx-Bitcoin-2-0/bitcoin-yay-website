@@ -7,6 +7,8 @@ import {
   ALCHEMY_PROCESS_API_ROUTE,
   ALCHEMY_COMPLETE_V2_API_ROUTE,
   ALCHEMY_SESSIONS_API_ROUTE,
+  ALCHEMY_SESSION_AD_PROGRESS_ROUTE,
+  ALCHEMY_SESSION_AD_WATCH_ROUTE,
   GET_USER_BTCY_BALANCE_API_ROUTE,
   GET_USER_MINING_BALANCE_API_ROUTE,
   GET_USER_WALLET_BALANCE_API_ROUTE,
@@ -99,12 +101,30 @@ export interface CompleteAlchemyProcessData {
   withdrawalAddress?: string;
 }
 
+export interface AlchemyAdGateInfo {
+  code: "AD_GATE_REQUIRED";
+  adsWatched: number;
+  adsRequired: number;
+}
+
 export interface AlchemyProcessResponse {
   success: boolean;
   message?: string;
   status?: number;
   session?: AlchemySessionRecord;
   error?: string;
+  /** Set when /complete was blocked by the rewarded-ad claim gate. */
+  adGate?: AlchemyAdGateInfo;
+}
+
+export interface AlchemyAdProgress {
+  sessionId: string;
+  adsWatched: number;
+  adsRequired: number;
+  adsDisabled: boolean;
+  satisfied: boolean;
+  alreadyClaimed: boolean;
+  startedAt: string | null;
 }
 
 export interface AlchemyConfigItem {
@@ -421,7 +441,28 @@ export async function completeAlchemyProcess(
     const sessionPayload = result.session ?? result.data ?? null;
 
     if (!response.ok) {
-      throw new Error(result.error || "Failed to complete alchemy session");
+      // Rewarded-ad claim gate — the server blocks /complete until the videos
+      // are watched. Surface it distinctly so the UI can show the gate.
+      if (
+        response.status === 403 &&
+        result?.data?.code === "AD_GATE_REQUIRED"
+      ) {
+        return {
+          success: false,
+          status: 403,
+          error:
+            result.message ||
+            "Watch the required videos to claim your tokens.",
+          adGate: {
+            code: "AD_GATE_REQUIRED",
+            adsWatched: Number(result.data.adsWatched) || 0,
+            adsRequired: Number(result.data.adsRequired) || 0,
+          },
+        };
+      }
+      throw new Error(
+        result.error || result.message || "Failed to complete alchemy session"
+      );
     }
 
     return {
@@ -439,6 +480,61 @@ export async function completeAlchemyProcess(
           ? error.message
           : "Failed to complete alchemy session",
     };
+  }
+}
+
+/**
+ * Rewarded-ad claim-gate progress for a session (mirrors the mobile app).
+ */
+export async function getAlchemyAdProgress(
+  sessionId: string
+): Promise<AlchemyAdProgress | null> {
+  try {
+    const accessToken = getAccessToken();
+    if (!accessToken || !sessionId) return null;
+    const response = await fetch(
+      ALCHEMY_SESSION_AD_PROGRESS_ROUTE(sessionId),
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    const result = await parseJsonSafe(response);
+    if (!response.ok) return null;
+    return (result?.data as AlchemyAdProgress) ?? null;
+  } catch (error) {
+    console.error("getAlchemyAdProgress error:", error);
+    return null;
+  }
+}
+
+/**
+ * Record one rewarded-ad view for a session; returns the refreshed progress.
+ */
+export async function recordAlchemyAdWatch(
+  sessionId: string,
+  sequence?: number
+): Promise<AlchemyAdProgress | null> {
+  try {
+    const accessToken = getAccessToken();
+    if (!accessToken || !sessionId) return null;
+    const response = await fetch(ALCHEMY_SESSION_AD_WATCH_ROUTE(sessionId), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ sequence, source: "web" }),
+    });
+    const result = await parseJsonSafe(response);
+    if (!response.ok) return null;
+    return (result?.data as AlchemyAdProgress) ?? null;
+  } catch (error) {
+    console.error("recordAlchemyAdWatch error:", error);
+    return null;
   }
 }
 
@@ -1097,7 +1193,11 @@ export async function finalizeClickConvertSessionState({
   });
 
   if (!result.success || !result.session) {
-    throw new Error(result.error || "Missing alchemy session result");
+    const err = new Error(result.error || "Missing alchemy session result");
+    if (result.adGate) {
+      (err as Error & { adGate?: AlchemyAdGateInfo }).adGate = result.adGate;
+    }
+    throw err;
   }
 
   const updatedState: ClickConvertSessionState = {

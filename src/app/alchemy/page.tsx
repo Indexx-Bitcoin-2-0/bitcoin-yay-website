@@ -23,6 +23,7 @@ import HowItWorksArt from "@/assets/images/alchemy/home/howItWorks.png";
 import WalletIcon from '@/assets/images/alchemy/home/walletIcon.png'
 
 import CustomButton2 from "@/components/CustomButton2";
+import AdSlot from "@/components/ads/AdSlot";
 import { useAuth } from "@/contexts/AuthContext";
 import LoginPopup from "@/components/LoginPopup";
 import {
@@ -1128,6 +1129,11 @@ export default function AlchemyPage() {
           </div>
         </div>
       )}
+
+      {/* Editorial content zone — safe for a labelled display ad. Kept well away
+          from the convert input (#alchemy-nuggets-input) and out of the
+          outcome / claim funnel entirely. */}
+      <AdSlot name="alchemyContent" layout="in-article" format="fluid" />
 
       <div className="mt-80 font-light flex flex-col gap-4 mb-40">
         <h3 className="text-xl font-semibold">Disclaimer</h3>

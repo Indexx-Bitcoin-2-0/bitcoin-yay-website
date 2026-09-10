@@ -114,14 +114,14 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
     const fetchBalance = async (personalizedMinimum: number | null) => {
       const balance = await getUserBTCYBalance(user?.email || "");
       setUserPlanData({
-        balance: balance.data?.totalBTCYBalance,
-        userType: balance.data?.userType,
-        plan: balance.data?.plan,
+        balance: balance.data?.totalBTCYBalance ?? 0,
+        userType: balance.data?.userType ?? "",
+        plan: balance.data?.plan ?? "",
       });
       const requiredBalance =
         personalizedMinimum ?? getMinimumBTCYBalanceForAlchemy(user?.email);
       setPersonalizedMinimumMinedRequired(requiredBalance);
-      if (balance.data?.totalBTCYBalance < requiredBalance) {
+      if ((balance.data?.totalBTCYBalance ?? 0) < requiredBalance) {
         setError(
           `You need at least ${requiredBalance.toLocaleString(
             "en-US"
