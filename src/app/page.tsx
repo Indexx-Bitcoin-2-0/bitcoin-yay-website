@@ -6,6 +6,7 @@ import Link from "next/link";
 
 import BenefitCard from "@/components/BenefitCard";
 import HeroComponent from "@/components/HeroComponent";
+import YaysAppAnnouncement from "@/components/YaysAppAnnouncement";
 
 import IndexxLogo1 from "@/assets/images/indexx-logo-1.svg";
 import IndexxAiLogo from "@/assets/images/indexx.ai.svg";
@@ -152,6 +153,7 @@ export default function Home() {
 
   return (
     <div className="overflow-hidden relative mt-40 mx-auto">
+      <YaysAppAnnouncement />
       {/* Home banner slider (promo banners) */}
       <div className="px-4 md:px-8 lg:px-20 xl:px-40 mb-8">
         <HomeBannerSlider />

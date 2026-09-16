@@ -304,6 +304,11 @@ const header_data = [
         mainList: true,
         links: [
           {
+            name: "YaysApp · Chats & calls",
+            href: "/#yaysapp",
+            openInNewTab: false,
+          },
+          {
             name: "indexx.ai",
             href: EXTERNAL_URLS.indexx.home,
             openInNewTab: true,

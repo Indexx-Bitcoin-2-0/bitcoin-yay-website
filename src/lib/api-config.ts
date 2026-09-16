@@ -39,6 +39,11 @@ const EVM_BTCY_CONTRACT = "0x22726F15677F6a569F42ea9a4de6e5e5eEd9B93b";
  * service endpoints can be reviewed and changed without hunting through UI code.
  */
 export const EXTERNAL_URLS = {
+  yaysapp: {
+    home: "https://yaysapp.com",
+    // iOS app isn't published yet — no Apple Store URL until it goes live.
+    googlePlay: "https://play.google.com/store/apps/details?id=com.indexx.yaysapp",
+  },
   api: {
     coinGeckoPrice: "https://api.coingecko.com/api/v3/simple/price",
   },

@@ -12,8 +12,10 @@ const BirthdayPopupHandler = () => {
   const pathname = usePathname();
 
   useEffect(() => {
+    // The home page has its own YaysApp introduction; avoid stacked popups.
     // Don't show popup on these paths
     if (
+      pathname === "/" ||
       pathname === "/download" ||
       pathname === "/sales" ||
       pathname === "/quantum-sale" ||
