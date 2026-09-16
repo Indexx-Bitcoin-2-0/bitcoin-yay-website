@@ -1,0 +1,205 @@
+/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint 84c556a117c3) — edit the source there, not here. */
+/*
+ * Zodiac Hub styles. SOURCE OF TRUTH: zodiac-embed/ — copied, never edited in a
+ * consumer repo. A CSS module for the same reason as the launcher: Next 13's
+ * pages router refuses global CSS outside _app, CRA allows it anywhere, and a
+ * module is the one form both accept with hashed names that cannot collide with
+ * the Bootstrap / MUI / Ant already loaded in these repos.
+ */
+
+.wrap {
+  /* ── Theme tokens ──────────────────────────────────────────────────────
+     Defaults are the Zodiac shell's own palette. Each product overrides them
+     inline so the Hub sits in ITS surface rather than pasting a foreign grey
+     block into a navy page — Fantasy Lotto is #070B28, indexx.ai is #181a20,
+     Academy is light. One component, sixteen skins. */
+  --zdc-bg: #202020;
+  --zdc-surface: #252525;
+  --zdc-border: #4a443d;
+  --zdc-line: #3d3730;
+  --zdc-text: #ffffff;
+  --zdc-label: #d5d5d5;
+  --zdc-muted: #818181;
+  --zdc-dim: #6e645b;
+  --zdc-note: #a2968a;
+  --zdc-track: #2f2f2f;
+  --zdc-green: #14c864;
+
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px 24px 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+  color: var(--zdc-text);
+  background: var(--zdc-bg);
+}
+
+.msg {
+  margin: 0;
+  padding: 40px 0;
+  font-size: 14px;
+  color: var(--zdc-muted);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 14px;
+}
+.title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  color: var(--zdc-text);
+}
+.sub {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  color: var(--zdc-dim);
+}
+.degraded {
+  margin-left: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11.5px;
+  color: var(--zdc-muted);
+}
+
+.section { display: flex; flex-direction: column; gap: 10px; }
+
+.labelRow { display: flex; align-items: center; gap: 10px; }
+.label {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 10px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.19em;
+  color: var(--zdc-green);
+}
+.rule { height: 1px; flex: 1; background: var(--zdc-line); }
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.card {
+  display: block;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--zdc-line);
+  background: var(--zdc-surface);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s ease;
+  min-width: 0;
+}
+.card:hover { border-color: var(--zdc-green); text-decoration: none; }
+.card:focus-visible { outline: 2px solid var(--zdc-green); outline-offset: 2px; }
+
+.cardHead { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.cardMark {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 29px;
+}
+.cardMark > img {
+  display: block;
+  max-width: 40px;
+  max-height: 29px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+.cardName {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--zdc-label);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Sans with tabular figures, not mono: a mono comma takes a full cell and
+   renders "12 , 480". */
+.value {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--zdc-text);
+}
+/* The em dash is deliberately dimmer than a real figure: it must not read as
+   a value at a glance. */
+.valueNone { color: var(--zdc-dim); }
+.unit { margin-left: 4px; font-size: 12px; font-weight: 400; color: var(--zdc-muted); }
+
+.note {
+  margin-top: 6px;
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--zdc-muted);
+}
+.noteLive { color: var(--zdc-green); }
+
+.track {
+  margin-top: 8px;
+  height: 4px;
+  border-radius: 2px;
+  overflow: hidden;
+  background: var(--zdc-track);
+}
+/* Orange belongs to Bitcoin Yay alone; it appears only on a product's own
+   progress, never on shell chrome. */
+.fill { display: block; height: 100%; border-radius: 2px; background: #ff8728; }
+
+.footnote {
+  margin: 8px 0 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(20, 200, 100, 0.3);
+  background: rgba(20, 200, 100, 0.07);
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--zdc-note);
+}
+.footnote > img { display: block; width: 16px; height: auto; margin-top: 2px; flex: 0 0 auto; }
+.footnote code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11.5px;
+}
+
+
+/* ── Responsive ladder ─────────────────────────────────────────────────────
+   Five across is only right on a wide desktop. Each step keeps a card wide
+   enough for a figure like "$19,565.75" to sit on one line — that is what sets
+   the breakpoints, not round numbers. */
+@media (max-width: 1450px) { .cards { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (max-width: 1150px) { .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 860px)  {
+  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .wrap { padding: 24px 16px 40px; }
+  .title { font-size: 23px; }
+  .degraded { margin-left: 0; width: 100%; }
+}
+@media (max-width: 520px) {
+  .cards { grid-template-columns: 1fr; }
+  .wrap { padding: 20px 14px 32px; gap: 16px; }
+  .value { font-size: 20px; }
+  .footnote { flex-direction: column; gap: 8px; }
+}
