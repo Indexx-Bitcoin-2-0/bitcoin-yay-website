@@ -1,4 +1,4 @@
-/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint 84c556a117c3) — edit the source there, not here. */
+/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint 15767b072c96) — edit the source there, not here. */
 /*
  * Zodiac launcher styles. SOURCE OF TRUTH: zodiac-embed/ — copied, never edited
  * in a consumer repo.
@@ -608,6 +608,33 @@
   flex: 0 0 auto;
 }
 .triggerNav .grid > i {
+  width: var(--zodiac-nav-dot-w, 5px);
+  height: var(--zodiac-nav-dot-h, 4px);
+}
+
+/*
+ * Icon-only: the mark at the size of a nav icon, nothing else.
+ *
+ * For rails that are a column of ~20px glyphs. The default trigger is 40px of
+ * dots plus the word, which in a 76px rail clips to "Zo"; the nav variant still
+ * carries a word. The dot metrics match .triggerNav's so the mark reads the
+ * same across both.
+ */
+.triggerIcon {
+  padding: 0;
+  gap: 0;
+  background: none;
+  border: 0;
+  color: inherit;
+}
+.triggerIcon .grid {
+  width: auto;
+  height: auto;
+  gap: var(--zodiac-nav-dot-gap, 2px);
+  padding: 0;
+  flex: 0 0 auto;
+}
+.triggerIcon .grid > i {
   width: var(--zodiac-nav-dot-w, 5px);
   height: var(--zodiac-nav-dot-h, 4px);
 }

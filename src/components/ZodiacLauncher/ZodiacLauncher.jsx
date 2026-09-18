@@ -1,4 +1,4 @@
-/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint 84c556a117c3) — edit the source there, not here. */
+/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint 15767b072c96) — edit the source there, not here. */
 "use client";
 /*
  * Client component: this reads window, holds state and portals to <body>.
@@ -91,10 +91,16 @@ const ART = {
   wallstreet: { logo: "wallst.png", logoBare: "wallst-light.png" },
   xtokens:    { logo: "xtokens.png" },
   usdxx:      { logo: "usdxx.png" },
-  emmm:       { logo: "emmm.png" },
+  /* Supplied dark-panel art, Sep 2026. The light-tone files stay as they were:
+     the old marks are dark line art that muddies on the panel, these read on
+     it. Both were cut from the brand pack — wallet's came as an SVG that was
+     really a 4096x904 raster in a wrapper, and whose viewBox sliced 8px into
+     the wordmark, so the symbol was re-cut from the artwork rather than used
+     as shipped. */
+  emmm:       { logo: "emmm.png", logoBare: "emmm-dark.png" },
   lotto:      { logo: "lotto.png" },
   pay:        { logo: "pay.png" },
-  wallet:     { logo: "wallet.png" },
+  wallet:     { logo: "wallet.png", logoBare: "wallet-dark.png" },
   shoperpal:  { logo: "shoperpal.png" },
   rehuman:    { logo: "rehuman.png", logoBare: "rehuman-light.png" },
   aiainai:    { logo: "aiainai.png" },
@@ -362,8 +368,12 @@ export default function ZodiacLauncher({
    */
   apiBase = undefined,
   tone = "dark",
-  /** "nav" renders the trigger as a sidebar row that inherits the host's
-      colour and type. See .triggerNav in the stylesheet. */
+  /**
+   * "nav"  — a sidebar row that inherits the host's colour and type.
+   * "icon" — the mark alone, sized for a narrow icon rail (YaysApp Web's, and
+   *          whatever the mobile shells end up needing).
+   * See .triggerNav / .triggerIcon in the stylesheet.
+   */
   variant = undefined,
   logoBase = "/logos",
   /**
@@ -797,7 +807,7 @@ export default function ZodiacLauncher({
         <div className={s.panelHead}>
           <img src={`${logoBase}/zodiac.png`} alt="" className={s.panelMark} />
           <span className={s.panelTitleWrap}>
-            <span className={s.panelTitle}>Zodiac</span>
+            <span className={s.panelTitle}>Indexx Zodiac</span>
             <span className={s.panelSub}>
               The Indexx ecosystem — one ID across all sixteen
             </span>
@@ -861,7 +871,7 @@ export default function ZodiacLauncher({
       <button
         type="button"
         ref={triggerRef}
-        className={`${s.trigger} ${variant === "nav" ? s.triggerNav : ""} ${open ? s.triggerOpen : ""}`}
+        className={`${s.trigger} ${variant === "nav" ? s.triggerNav : ""} ${variant === "icon" ? s.triggerIcon : ""} ${open ? s.triggerOpen : ""}`}
         aria-haspopup="dialog"
         aria-expanded={open}
         aria-label="Indexx ecosystem"
@@ -872,7 +882,24 @@ export default function ZodiacLauncher({
             <i key={i} style={{ transform: `rotate(${OVAL_ANGLE}deg)` }} />
           ))}
         </span>
-        <span className={s.word}>Zodiac</span>
+        {/* The icon variant is the mark alone — for a narrow icon rail, where
+            the word does not fit and gets clipped to "Zo". The button keeps its
+            aria-label, so it is still announced as "Indexx ecosystem". */}
+        {/*
+            The mark alone, by default.
+
+            The nine ovals ARE the brand — the word beside them was belt and
+            braces while the shape was unfamiliar, and it is not any more. The
+            name now lives in the panel that opens, where there is room to say it
+            properly ("Indexx Zodiac") instead of abbreviating it into a corner.
+
+            `variant="nav"` keeps the word: there it is a row in a list of
+            labelled rows, and a lone mark among labels reads as a mistake
+            rather than as restraint. It spells the name in FULL, matching the
+            panel — "Zodiac" alone was the abbreviation we just stopped using. The button keeps its aria-label either way,
+            so it is always announced as "Indexx ecosystem".
+        */}
+        {variant === "nav" ? <span className={s.word}>Indexx Zodiac</span> : null}
       </button>
 
       {withDashboard && (
