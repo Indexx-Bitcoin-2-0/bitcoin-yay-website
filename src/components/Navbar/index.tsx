@@ -18,6 +18,8 @@ import logo from "@/assets/images/main-logo.svg";
 import mobLogo from "@/assets/images/logo.webp";
 import ProfileIcon from "@/assets/images/profile-icon.webp";
 import UserDropdown from "./UserDropdown";
+import ZodiacLauncher from "@/components/ZodiacLauncher/ZodiacLauncher";
+import { saveAuthData } from "@/lib/auth";
 import Data from "./data";
 import { useAuth } from "@/contexts/AuthContext";
 import LoginPopup from "@/components/LoginPopup";
@@ -1237,6 +1239,37 @@ const Navbar: React.FC = () => {
               </button>
             </div>
           )}
+
+          {/* Zodiac closes the right-hand cluster, after the account controls —
+              the same slot it takes on every other product, where a theme
+              switcher sits to its right. Bitcoin Yay has none, so it is last. */}
+          <ZodiacLauncher
+            productId="btcy"
+            tone="dark"
+            auth={{
+              clientId: "indexx-btcy",
+              /*
+               * This product does not read the estate's legacy keys. Its
+               * isAuthenticated() is `getAuthData() !== null`, and getAuthData
+               * reads the JSON User under `bitcoinYayAuth` — so writing
+               * access_token/email alone left the header showing Login while
+               * the user was, in fact, signed in. Store the session in the
+               * shape this app actually asks for.
+               */
+              onSession: (s: any) =>
+                s.access_token &&
+                saveAuthData({
+                  email: s.email,
+                  name: s.username || s.email,
+                  access_token: s.access_token,
+                  refresh_token: s.refresh_token || "",
+                  role: "",
+                  userType: s.userType || "",
+                  shortToken: "",
+                  username: s.username || undefined,
+                }),
+            }}
+          />
         </div>
 
         {/* Mobile Menu */}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ADSENSE_CLIENT,
   ADSENSE_ENABLED,
@@ -36,6 +36,11 @@ export default function AdSlot({
 }: AdSlotProps) {
   const slot = AD_SLOTS[name];
   const pushedRef = useRef(false);
+  const insRef = useRef<HTMLModElement | null>(null);
+  // Stays false until AdSense reports a real ad was served, so the "Advertisement"
+  // label and its spacing never show around an empty / collapsed unit
+  // (e.g. before the site is approved, or when a slot goes unfilled).
+  const [filled, setFilled] = useState(false);
 
   useEffect(() => {
     if (!ADSENSE_ENABLED || !slot || pushedRef.current) return;
@@ -49,6 +54,23 @@ export default function AdSlot({
     } catch (err) {
       console.warn("AdSense slot push failed", err);
     }
+  }, [slot]);
+
+  // AdSense stamps data-ad-status="filled" | "unfilled" on the <ins> once it has
+  // resolved the slot. Reveal the wrapper only on "filled".
+  useEffect(() => {
+    const el = insRef.current;
+    if (!el) return;
+    const sync = () => {
+      if (el.getAttribute("data-ad-status") === "filled") setFilled(true);
+    };
+    sync();
+    const observer = new MutationObserver(sync);
+    observer.observe(el, {
+      attributes: true,
+      attributeFilter: ["data-ad-status"],
+    });
+    return () => observer.disconnect();
   }, [slot]);
 
   if (!ADSENSE_ENABLED || !slot) {
@@ -78,12 +100,18 @@ export default function AdSlot({
   return (
     <aside
       aria-label="Advertisement"
-      className={`mx-auto my-12 w-full max-w-3xl text-center ${className ?? ""}`}
+      className={`mx-auto w-full max-w-3xl text-center ${
+        filled ? "my-12" : ""
+      } ${className ?? ""}`}
     >
-      <span className="mb-2 block text-[11px] uppercase tracking-[0.2em] text-tertiary/70">
+      <span
+        className="mb-2 block text-[11px] uppercase tracking-[0.2em] text-tertiary/70"
+        hidden={!filled}
+      >
         Advertisement
       </span>
       <ins
+        ref={insRef}
         key={slot}
         className="adsbygoogle"
         style={{ display: "block" }}

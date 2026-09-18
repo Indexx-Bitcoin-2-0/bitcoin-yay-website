@@ -1,0 +1,640 @@
+/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint 15767b072c96) — edit the source there, not here. */
+/*
+ * Zodiac launcher styles. SOURCE OF TRUTH: zodiac-embed/ — copied, never edited
+ * in a consumer repo.
+ *
+ * A CSS MODULE, not a global stylesheet, for a hard reason: Next 13's pages
+ * router refuses a global CSS import from anywhere but _app, while CRA allows it
+ * anywhere. A module is the one form both accept, so all four copies stay
+ * byte-identical — and class names are hashed, so the same file cannot collide
+ * with the Bootstrap, MUI and Ant Design already loaded in these repos.
+ *
+ * Nothing here is a reset or an element selector. Every property is set
+ * explicitly rather than inherited, because these headers carry three CSS
+ * frameworks between them and inheritance is not survivable.
+ *
+ * Palette is the demo's: Zodiac green var(--zdc-green), panel var(--zdc-surface) on #4A443D,
+ * secondary text var(--zdc-muted), live state #5fbf8b.
+ */
+
+.root {
+  /* ── Theme tokens ──────────────────────────────────────────────────────
+     Defaults are the Zodiac shell's own palette. Each product overrides them
+     inline so the Hub sits in ITS surface rather than pasting a foreign grey
+     block into a navy page — Fantasy Lotto is #070B28, indexx.ai is #181a20,
+     Academy is light. One component, sixteen skins. */
+  --zdc-bg: #202020;
+  --zdc-surface: #252525;
+  --zdc-border: #4a443d;
+  --zdc-line: #3d3730;
+  --zdc-text: #ffffff;
+  --zdc-label: #d5d5d5;
+  --zdc-muted: #818181;
+  --zdc-dim: #6e645b;
+  --zdc-note: #a2968a;
+  --zdc-track: #2f2f2f;
+  --zdc-green: #14c864;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+  line-height: normal;
+}
+
+/* ── Trigger ───────────────────────────────────────────────────────────── */
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  /* No border and no box. Brian, on the demo: "There is a square outline of
+     Zodiac. Why? I don't need that." Open and hover are colour and scale. */
+  background: none;
+  border: 0;
+  border-radius: 10px;
+  padding: 6px 4px;
+  margin: 0;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+/* Every state re-asserts "no box".
+   Brian, on the demo: "There is a square outline of Zodiac. Why? I don't need
+   that." A base `background: none` is not enough here — these headers carry
+   Bootstrap, MUI and Ant, and a host rule like `button:hover { background }`
+   applies only on hover, so it wins a state the base rule never covered. That
+   is the grey plate that appeared behind the mark on Crypto Treasury. */
+.trigger,
+.trigger:hover,
+.trigger:focus,
+.trigger:active,
+.trigger:focus-visible {
+  background: none !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  text-decoration: none !important;
+}
+.trigger:hover { opacity: 0.85; }
+.trigger:active { transform: scale(0.97); }
+.trigger:focus { outline: none; }
+.trigger:focus-visible { outline: 2px solid var(--zdc-green) !important; outline-offset: 3px; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+  width: 40px;
+  padding: 2px;
+  flex: 0 0 auto;
+  transition: transform 0.15s ease;
+}
+.trigger:hover .grid,
+.triggerOpen .grid { transform: scale(1.05); }
+
+/* OVALS, not circles — 11×8 so the tilt is visible. A square cell with
+   border-radius:50% is a circle and the -38.4° rotation does nothing to it,
+   which is exactly how this looked before. The angle is measured from the
+   Bitcoin Yay coin, and every oval in the ecosystem carries it. */
+.grid > i {
+  display: block;
+  width: 11px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--zdc-green);
+}
+
+.word {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  color: var(--zdc-text);
+  transition: color 0.15s ease;
+}
+.trigger:hover .word,
+.triggerOpen .word { color: var(--zdc-green); }
+.light .word { color: #3d3227; }
+
+/* ── Dashboard link (placed separately, on the right of the bar) ───────── */
+
+.dash {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--zdc-text);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+.dash,
+.dash:hover,
+.dash:focus,
+.dash:active {
+  background: none !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+}
+.dash:hover { color: var(--zdc-green); }
+.dash:focus-visible { outline: 2px solid var(--zdc-green); outline-offset: 3px; }
+.dashLight { color: #3d3227; }
+.dashLight:hover { color: #0e9b4c; }
+
+/* ── Panel ─────────────────────────────────────────────────────────────── */
+
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 2147482000;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.panel {
+  /* ── Theme tokens ──────────────────────────────────────────────────────
+     Defaults are the Zodiac shell's own palette. Each product overrides them
+     inline so the Hub sits in ITS surface rather than pasting a foreign grey
+     block into a navy page — Fantasy Lotto is #070B28, indexx.ai is #181a20,
+     Academy is light. One component, sixteen skins. */
+  --zdc-bg: #202020;
+  --zdc-surface: #252525;
+  --zdc-border: #4a443d;
+  --zdc-line: #3d3730;
+  --zdc-text: #ffffff;
+  --zdc-label: #d5d5d5;
+  --zdc-muted: #818181;
+  --zdc-dim: #6e645b;
+  --zdc-note: #a2968a;
+  --zdc-track: #2f2f2f;
+  --zdc-green: #14c864;
+
+  position: fixed;
+  z-index: 2147483000; /* above Bootstrap modals (1050) and MUI drawers (1200) */
+  width: 900px;
+  max-width: calc(100vw - 28px);
+  max-height: calc(100vh - 96px);
+  overflow-y: auto;
+  border-radius: 18px;
+  padding: 20px;
+  background: var(--zdc-surface);
+  border: 1px solid var(--zdc-border);
+  box-shadow: 0 34px 76px -18px rgba(0, 0, 0, 0.8);
+  color: var(--zdc-text);
+  text-align: left;
+}
+.panelLight {
+  background: var(--zdc-text);
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 34px 76px -18px rgba(0, 0, 0, 0.25);
+  color: #3d3227;
+}
+
+.panelHead {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--zdc-line);
+}
+.panelLight .panelHead { border-bottom-color: rgba(0, 0, 0, 0.1); }
+
+.panelMark { display: block; height: 44px; width: auto; flex: 0 0 auto; }
+
+.panelTitleWrap { min-width: 0; display: block; }
+.panelTitle {
+  display: block;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  color: inherit;
+}
+.panelSub {
+  display: block;
+  margin-top: 2px;
+  font-size: 12.5px;
+  color: var(--zdc-muted);
+}
+.panelLight .panelSub { color: #8d8177; }
+
+.panelCount {
+  margin-left: auto;
+  flex: 0 0 auto;
+  align-self: flex-end;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 10px;
+  color: var(--zdc-dim);
+}
+.panelLight .panelCount { color: #a89c90; }
+
+/* ── Groups ────────────────────────────────────────────────────────────── */
+
+.groups {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px 24px;
+}
+.group { min-width: 0; }
+/* Spend runs the full width and lays its four products out in a row, so the
+   panel does not grow a fourth column for one group. */
+.groupWide { grid-column: 1 / -1; min-width: 0; }
+
+.groupLabelRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.groupLabel {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--zdc-green);
+  white-space: nowrap;
+}
+.rule { height: 1px; flex: 1; background: var(--zdc-line); }
+.panelLight .rule { background: rgba(0, 0, 0, 0.1); }
+
+.rows { display: block; }
+.rowsWide {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+}
+
+/* ── Product row ───────────────────────────────────────────────────────── */
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.13s ease;
+  min-width: 0;
+  border: 1px solid transparent;
+}
+.row:hover { background: rgba(255, 255, 255, 0.07); text-decoration: none; }
+.panelLight .row:hover { background: rgba(0, 0, 0, 0.05); }
+.row:focus-visible { outline: 2px solid var(--zdc-green); outline-offset: 2px; }
+
+.rowActive {
+  background: rgba(20, 200, 100, 0.11);
+  border-color: var(--zdc-green);
+}
+.rowActive:hover { background: rgba(20, 200, 100, 0.15); }
+
+/* Bare marks — no oval. The panel is the brand surface; the ovals live in the
+   bar's grid and on product chrome, not here. */
+/* Bare mark in the demo's md box: 48×35, artwork inset to the inscribed bound
+   so a round coin and a wide wordmark both sit correctly. */
+.mark {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 48px;
+  height: 35px;
+}
+.mark > img {
+  display: block;
+  max-width: 48px;
+  max-height: 35px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.rowText { display: block; min-width: 0; flex: 1; }
+.rowName {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* Explicitly white, not inherited: these land in repos carrying Bootstrap,
+     MUI and Ant, any of which can win the cascade on an inherited colour. */
+  color: var(--zdc-text);
+}
+.panelLight .rowName { color: #3d3227; }
+.rowHint {
+  display: block;
+  margin-top: 2px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--zdc-muted);
+}
+.panelLight .rowHint { color: #8d8177; }
+/* "you are here" */
+.hintHere { color: var(--zdc-green); }
+/* the product is doing something for this user right now */
+.hintLive { color: #5fbf8b; }
+
+.panelFoot {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--zdc-line);
+  font-size: 12.5px;
+  color: var(--zdc-label);
+}
+.panelLight .panelFoot {
+  border-top-color: rgba(0, 0, 0, 0.1);
+  color: #6f6459;
+}
+
+
+/* ── Responsive ─────────────────────────────────────────────────────────────
+   The panel is portalled to <body> and positioned from the trigger's viewport
+   box, so on narrow screens it is pinned to the edges instead — the JS clamps
+   `left`, and this stops the fixed 900px width fighting it. */
+@media (max-width: 960px) {
+  .panel { width: calc(100vw - 24px); }
+  .groups { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .rowsWide { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+  .word { display: none; }
+  .panel { padding: 14px; max-height: calc(100vh - 72px); }
+  .groups, .rowsWide { grid-template-columns: 1fr; }
+  .panelMark { height: 34px; }
+  .panelTitle { font-size: 17px; }
+  .panelSub { font-size: 11.5px; }
+  .panelCount { display: none; }
+}
+/* Coarse pointers get a bigger tap target without changing the look. */
+@media (hover: none) {
+  .trigger { padding: 8px 6px; }
+  .row { padding: 10px; }
+}
+
+/* ── Indexx ID account control ─────────────────────────────────────────────
+   Sign-in belongs to the shell, not to each product: signing in here creates
+   the session at the identity provider that every other product's silent check
+   looks for. Same transparent-in-every-state treatment as the trigger, because
+   these headers carry Bootstrap, MUI and Ant between them. */
+.account { display: inline-flex; align-items: center; gap: 10px; min-width: 0; }
+.accountEmail {
+  font-size: 13px;
+  color: var(--zdc-text);
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.authBtn,
+.authBtn:hover,
+.authBtn:focus,
+.authBtn:active {
+  background: none !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: 1px solid rgba(20, 200, 100, 0.4) !important;
+  text-decoration: none !important;
+}
+.authBtn {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--zdc-green);
+  padding: 5px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+.authBtn:hover { background: rgba(20, 200, 100, 0.12) !important; }
+.authBtn:focus-visible { outline: 2px solid var(--zdc-green) !important; outline-offset: 2px; }
+
+/* ── Handoff screen ───────────────────────────────────────────────────────
+ *
+ * Shown for the moment between leaving one product and the next one painting.
+ * The estate spans sixteen products on several registrable domains, so a jump
+ * is a full cross-origin navigation: the old page goes white, the new one
+ * takes a beat to boot, and it reads as a dropped session rather than a move.
+ * Naming both ends — "Fantasy Lotto → Academy" — turns that dead time into the
+ * one thing Zodiac is claiming, which is that these are one place.
+ *
+ * Same tokens as the panel, redeclared because this portals to <body> and so
+ * inherits nothing from the launcher root.
+ */
+.xfade {
+  --zdc-bg: #202020;
+  --zdc-surface: #252525;
+  --zdc-border: #4a443d;
+  --zdc-line: #3d3730;
+  --zdc-text: #ffffff;
+  --zdc-label: #d5d5d5;
+  --zdc-muted: #818181;
+  --zdc-green: #14c864;
+
+  position: fixed;
+  inset: 0;
+  z-index: 2147483001; /* one above the panel, which it replaces */
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(16, 16, 16, 0.86);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  animation: zdcFadeIn 0.16s ease both;
+}
+.xfadeLight { background: rgba(247, 247, 250, 0.9); }
+
+.xcard {
+  width: 460px;
+  max-width: 100%;
+  border-radius: 18px;
+  padding: 26px 28px 22px;
+  background: var(--zdc-surface);
+  border: 1px solid var(--zdc-border);
+  box-shadow: 0 34px 76px -18px rgba(0, 0, 0, 0.8);
+  color: var(--zdc-text);
+  text-align: left;
+  animation: zdcRise 0.22s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+.xfadeLight .xcard {
+  background: var(--zdc-text);
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 34px 76px -18px rgba(0, 0, 0, 0.25);
+  color: #3d3227;
+}
+
+.xbrand { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+.xbrandMark { display: block; height: 26px; width: auto; flex: 0 0 auto; }
+.xlabel {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--zdc-green);
+  white-space: nowrap;
+}
+
+/* from → to. Equal columns so the arrow sits dead centre however long the
+   names are, and both ends read as peers rather than origin and destination. */
+.xpair {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+}
+.xnode { display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 0; }
+.xmark { display: grid; place-items: center; width: 52px; height: 40px; flex: 0 0 auto; }
+.xmark img { max-width: 100%; max-height: 100%; display: block; }
+.xname {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.25;
+  text-align: center;
+  color: inherit;
+  /* Two long names must not push the arrow off centre. */
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.xrole {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--zdc-muted);
+}
+.xarrow { color: var(--zdc-green); flex: 0 0 auto; display: block; }
+
+.xbar {
+  /* It is a <span>: without this it stays inline and silently drops the height
+     and the vertical margin, which is how the track went missing entirely. */
+  display: block;
+  margin-top: 22px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--zdc-line);
+  overflow: hidden;
+}
+.xbarFill {
+  display: block;
+  height: 100%;
+  width: 40%;
+  border-radius: 2px;
+  background: var(--zdc-green);
+  animation: zdcSweep 0.9s ease-in-out infinite;
+}
+.xfoot {
+  margin-top: 14px;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--zdc-muted);
+}
+
+@keyframes zdcFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes zdcRise { from { opacity: 0; transform: translateY(6px) scale(0.985); } to { opacity: 1; transform: none; } }
+@keyframes zdcSweep {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(250%); }
+}
+
+/* A handoff is a navigation, not a decoration: keep the screen (it is the
+   message) and drop only the motion. */
+@media (prefers-reduced-motion: reduce) {
+  .xfade, .xcard { animation: none; }
+  .xbarFill { animation: none; width: 100%; }
+}
+
+/* ── Nav-item variant ─────────────────────────────────────────────────────
+ *
+ * For products whose navigation is a sidebar list rather than a top bar. The
+ * switcher has to read as one of THEIR rows, not as a widget dropped into one,
+ * so this strips the trigger's own box and typography and inherits both from
+ * the host. Deliberately carries no colour of its own: Wall Street's rows are
+ * #A0A0A0 going white on hover, and hardcoding that here would make the next
+ * product's sidebar wrong instead.
+ */
+.triggerNav {
+  width: 100%;
+  /* The host's icon-to-label gap; see .triggerNav .word above. */
+  gap: var(--zodiac-nav-gap, 12px);
+  /* `height: 100%` alone resolves to content height inside a flex row that
+     centres its items, which left the row half the height of Settings beside
+     it. Stretching is what makes it fill the host's row box. */
+  height: auto;
+  align-self: stretch;
+  padding: 0;
+  background: none;
+  border: 0;
+  justify-content: inherit;
+  color: inherit;
+}
+/*
+ * The nav variant means "wear the host's row type", and every sidebar in the
+ * estate spells that differently — Wall Street sets a 13px light label, ai ai N
+ * ai a 11.2px uppercase one tracked out to 1.6px. Rather than one hard-coded
+ * look and a fork per product, each value is a custom property whose DEFAULT is
+ * what Wall Street already had. A host states only what it needs on any ancestor
+ * element; anything it leaves alone renders exactly as before.
+ */
+.triggerNav .word {
+  font-size: var(--zodiac-nav-size, 13px);
+  font-weight: var(--zodiac-nav-weight, 300);
+  line-height: var(--zodiac-nav-leading, 19.5px);
+  letter-spacing: var(--zodiac-nav-tracking, -0.01em);
+  text-transform: var(--zodiac-nav-transform, none);
+  color: inherit;
+}
+/*
+ * Shrink the MARK, not its box.
+ *
+ * The ovals are 11x8 with a 3px gap, so the grid is ~34px tall however narrow
+ * the container is told to be — constraining the box just made the dots spill
+ * over the label beside them. Scale the dots and the gap instead and let the
+ * grid size itself.
+ */
+.triggerNav .grid {
+  width: auto;
+  height: auto;
+  gap: var(--zodiac-nav-dot-gap, 2px);
+  padding: 0;
+  flex: 0 0 auto;
+}
+.triggerNav .grid > i {
+  width: var(--zodiac-nav-dot-w, 5px);
+  height: var(--zodiac-nav-dot-h, 4px);
+}
+
+/*
+ * Icon-only: the mark at the size of a nav icon, nothing else.
+ *
+ * For rails that are a column of ~20px glyphs. The default trigger is 40px of
+ * dots plus the word, which in a 76px rail clips to "Zo"; the nav variant still
+ * carries a word. The dot metrics match .triggerNav's so the mark reads the
+ * same across both.
+ */
+.triggerIcon {
+  padding: 0;
+  gap: 0;
+  background: none;
+  border: 0;
+  color: inherit;
+}
+.triggerIcon .grid {
+  width: auto;
+  height: auto;
+  gap: var(--zodiac-nav-dot-gap, 2px);
+  padding: 0;
+  flex: 0 0 auto;
+}
+.triggerIcon .grid > i {
+  width: var(--zodiac-nav-dot-w, 5px);
+  height: var(--zodiac-nav-dot-h, 4px);
+}
