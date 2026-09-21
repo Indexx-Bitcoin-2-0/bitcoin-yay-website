@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import { type Components } from "react-markdown";
 import type { Metadata } from "next";
+import Image from "next/image";
 import { articles, getArticle } from "../articles";
 
 interface BlogPost {
@@ -100,7 +101,11 @@ export function generateMetadata({ params }: PageProps): Metadata {
   return {
     title: article.title,
     description: article.description,
-    openGraph: { title: article.title, description: article.description },
+    openGraph: {
+      title: article.title,
+      description: article.description,
+      images: [`/blog/${article.slug}.svg`],
+    },
   };
 }
 
@@ -132,6 +137,16 @@ export default function BlogPost({ params }: PageProps) {
         </div>
       </CustomStyledConatiner>
 
+      {article && (
+        <Image
+          src={`/blog/${article.slug}.svg`}
+          alt={article.title}
+          width={1200}
+          height={630}
+          priority
+          className="w-full h-auto rounded-lg mt-8"
+        />
+      )}
       <article className="prose prose-invert prose-lg max-w-none mt-8">
         <ReactMarkdown components={components}>{content}</ReactMarkdown>
       </article>
