@@ -63,7 +63,23 @@ BTCY and its associated plans are designed to enhance participation in the ecosy
 
 ## Where to learn more
 
-Our [FAQ](/faq) answers the most common questions in detail, the [whitepaper](/whitepaper) covers the project's vision, and the [about page](/about) explains who is behind Bitcoin Yay. If you get stuck, the [support](/support) page is the best place to ask for help.`,
+Our [FAQ](/faq) answers the most common questions in detail, the [whitepaper](/whitepaper) covers the project's vision, and the [about page](/about) explains who is behind Bitcoin Yay. If you get stuck, the [support](/support) page is the best place to ask for help.
+
+## Frequently asked questions
+
+**Do I need experience with crypto to use BTCY?** No. The app is designed for beginners. You register with an email address, verify it and start a session, and you do not need to understand blockchains to begin. Many people learn as they go, using the guides and the FAQ.
+
+**Which devices are supported?** Bitcoin Yay runs on iOS and Android phones, with a companion website for account management, buying and selling, referrals and analytics. Blockchain Nodes are the exception: they run on personal computers such as laptops and desktops.
+
+**Which languages does it support?** The app supports several languages, including English, Chinese, Spanish and French, and you can change the language from your profile section.
+
+**What is the difference between the app and the website?** They use the same account. The app is convenient for daily mining, while the website is better for longer tasks such as reviewing analytics, managing referrals or working through buy and sell flows.
+
+**Is BTCY available everywhere?** Not every feature is available in every country. Buying, selling and exchange functions can vary by region because of local regulations, and the app applies the appropriate restrictions based on your location.
+
+## A sensible first week
+
+If you are new, a simple plan keeps things manageable. On day one, create your account, verify your email and run your first session. Over the next few days, get into the habit of starting a session once a day and read the mining details screen so you understand your rate. Later in the week, look at the rewards section and any airdrops that are open, and read the security checklist so your account is well protected from the start. Only after that is it worth thinking about referrals or optional plans, and even then only if they suit you.`,
   },
   {
     slug: "how-btcy-tap-to-mine-works",
@@ -118,7 +134,23 @@ Some earnings depend on verified ad engagement, so they show up first as unverif
 
 ## Getting the most from it
 
-Start a session each day, extend it with ads when it suits you, keep an eye on your boosts, and review the mining details screen now and then. If you want to go deeper, read our guide to [mining plans](/blogs/mining-plans-gophers-explained), or browse the [FAQ](/faq) for answers to specific questions.`,
+Start a session each day, extend it with ads when it suits you, keep an eye on your boosts, and review the mining details screen now and then. If you want to go deeper, read our guide to [mining plans](/blogs/mining-plans-gophers-explained), or browse the [FAQ](/faq) for answers to specific questions.
+
+## Frequently asked questions
+
+**How long is a mining session?** A standard session runs for a fixed cycle, and you can extend to a longer cycle by watching a few short ads. The exact durations are shown in the app when you start mining, because they can change over time.
+
+**Do I have to keep the app open?** The exact behaviour of a session is displayed on the mining screen when you start. Check it there rather than relying on assumptions, since the app is the authoritative source for how long a cycle runs and what is needed to complete it.
+
+**Why did my rate change?** Your rate is a base speed plus active boosts. If a plan expires, a temporary boost such as a Nuclear Power Boost ends, or your referral activity changes, your rate moves accordingly. The mining details screen shows the current figures.
+
+**Can I mine on more than one device?** Your balance belongs to your account, so it is the same wherever you sign in. Rather than trying to multiply sessions, focus on one consistent routine, and remember that duplicate or fraudulent accounts are filtered out.
+
+**Is this the same as cloud mining?** No. Cloud mining sells you a share of real mining hardware. BTCY mining is a virtual, in-app system and does not involve renting hardware or producing BTC.
+
+## Building a routine
+
+The most reliable way to get value from the app is consistency. Pick a time each day when you will naturally open your phone, such as with your morning coffee, and start a session then. If you choose to extend it with ads, do it at the same time so it becomes automatic. Check the mining details screen once a week to confirm your rate looks right, and glance at your wallet to see how verified and pending balances are developing. Small, regular habits matter more here than occasional long sessions.`,
   },
   {
     slug: "mining-plans-gophers-explained",
@@ -169,7 +201,23 @@ Ask yourself a few honest questions:
 
 ## Where plans fit in the bigger picture
 
-Plans are one of several ways to influence your mining rate. Referral activity and campaign rewards also contribute, and you can read about the referral side in our guide to the [referral program and Mining Station](/blogs/btcy-referral-program-and-mining-station). For the basics of how sessions work, see [how BTCY tap-to-mine works](/blogs/how-btcy-tap-to-mine-works).`,
+Plans are one of several ways to influence your mining rate. Referral activity and campaign rewards also contribute, and you can read about the referral side in our guide to the [referral program and Mining Station](/blogs/btcy-referral-program-and-mining-station). For the basics of how sessions work, see [how BTCY tap-to-mine works](/blogs/how-btcy-tap-to-mine-works).
+
+## Frequently asked questions
+
+**Do I lose my balance if I cancel a plan?** Your existing balance is unaffected. Cancelling changes your future mining speed and access to plan-related utilities, according to the terms shown at checkout.
+
+**Are plans a one-time purchase or a subscription?** Mining Gophers are described as subscription tiers, so read the billing details on the plans screen before you confirm. Prices and billing periods are displayed there because they can change.
+
+**Can I start on a low tier and move up?** Yes. You can upgrade, change or cancel your plan from the subscription section, with changes taking effect according to the terms at checkout.
+
+**Will a higher tier increase my referral earnings?** Plans increase your virtual mining speed and unlock additional utilities. Referral rewards work through the referral program, which is covered in a separate guide, so do not assume that a plan changes them.
+
+**Are there refunds?** Refund and cancellation terms are set out at checkout and in the Terms of Use. Read them before you subscribe, and contact support if you have a billing question.
+
+## A few cautions
+
+Be wary of anyone who urges you to buy the highest tier by promising large returns. Plans are not investment contracts, securities or profit-generating instruments, and nobody can promise you an outcome. If someone messages you privately offering a discount or a special deal on a plan, treat it as a scam and buy only inside the official app or website. If you ever feel pressured, step away, read the plans screen again and decide in your own time.`,
   },
   {
     slug: "btcy-referral-program-and-mining-station",
@@ -231,7 +279,23 @@ Earnings come from a share of the verified advertising revenue generated by your
 
 Earnings depend on real, verified activity, and nothing here is a guarantee. The referral program and Mining Station are in-app utilities, not investment products, and nothing on this page is financial advice.
 
-For more detail, visit the [FAQ](/faq) or read about [how mining sessions work](/blogs/how-btcy-tap-to-mine-works).`,
+For more detail, visit the [FAQ](/faq) or read about [how mining sessions work](/blogs/how-btcy-tap-to-mine-works).
+
+## Frequently asked questions
+
+**Where do I find my referral link?** Your referral link and QR code are in the Referrals section of the app and website. You can copy the link or share it straight to WhatsApp, Telegram and other channels.
+
+**Do referrals count immediately?** A referral counts once the new user has signed up through your link and become active. People who register but never mine may not count as verified.
+
+**Can I refer myself with a second account?** No. Duplicate and fraudulent accounts are filtered by anti-fraud checks, and attempting it can put your own standing at risk.
+
+**How many referrals do I need for a Mining Station?** At least 50 verified referrals. Once you reach that milestone you can activate your station.
+
+**What happens to pending earnings?** Pending amounts depend on verified advertising revenue. They appear as unverified in your dashboard and become available once confirmed.
+
+## Planning your outreach
+
+Think about who is likely to enjoy the app. Friends and family who like their phones, follow technology or are curious about crypto are more likely to stay active than people you have to persuade. Explain the basics honestly: it is a free, in-app experience, mining is virtual, and there is no guaranteed income. Offer to help them through the first session, because the first few days decide whether someone becomes an active miner. If you run a community group or a social account, share clear, accurate information rather than exaggerated claims. Honest communities last longer, produce better quality referrals and avoid the problems that come with misleading promotion.`,
   },
   {
     slug: "btcy-nodes-explained",
@@ -290,7 +354,23 @@ You can do one, the other, or both.
 
 Nodes are one of the ways the community, rather than a single company, helps keep the network running. If you are curious about the wider project, the [whitepaper](/whitepaper) covers the design in depth, and our [beginner's guide](/blogs/what-is-bitcoin-yay-btcy) explains how nodes fit alongside the rest of the ecosystem.
 
-Nothing in this article is financial advice, and participation in the network does not guarantee any return.`,
+Nothing in this article is financial advice, and participation in the network does not guarantee any return.
+
+## Frequently asked questions
+
+**Do I need special hardware?** No. Because BTCY uses a lightweight consensus mechanism, you do not need expensive mining hardware or deep technical skills. You install the node software on your computer and take part.
+
+**Can I run a node on my phone?** Blockchain Nodes are software for personal computers such as laptops and desktops. Mobile mining is a separate experience in the app.
+
+**Will a node slow down my computer?** Because the consensus is lightweight rather than Proof-of-Work, it is far lighter than traditional mining. Check the current requirements on the nodes page before you install, and close it when you need every bit of performance.
+
+**Is running a node the same as mining?** Not in the traditional sense. Nodes help validate transactions and secure the network, rather than competing to solve puzzles.
+
+**Which level should I choose?** Start with the level that matches your comfort and the time you can commit, and read the description of each level on the nodes page. You can learn as you go.
+
+## Why decentralisation matters
+
+A network run by one company is only as reliable as that company. When many independent people run nodes, no single party can easily change the rules or take the system offline. Each additional participant makes the network a little more resilient. That is the main reason blockchains encourage ordinary people to run nodes, and it is why Bitcoin Yay has built a version that does not demand expensive equipment. If you enjoy technology and want to understand how the network operates under the surface, running a node is a good way to learn.`,
   },
   {
     slug: "btcy-account-security-checklist",
@@ -362,7 +442,23 @@ You can request account or data deletion through the privacy options in the app 
 
 ## Final thought
 
-Security is a set of small habits rather than one big step. Do the first four items on this list today and you will already be much harder to attack. For more answers, see the [FAQ](/faq) or the [Safety Center](/safety-center).`,
+Security is a set of small habits rather than one big step. Do the first four items on this list today and you will already be much harder to attack. For more answers, see the [FAQ](/faq) or the [Safety Center](/safety-center).
+
+## Frequently asked questions
+
+**Do you ever ask for my password?** Never. The Bitcoin Yay team will not ask for your password, recovery details or verification codes, whether by email, message, social media or phone.
+
+**Is public Wi-Fi safe?** It is better to avoid sensitive actions such as logging in or withdrawing on public networks. If you must, use your mobile data instead.
+
+**What if I lose my phone?** Sign in from another device, change your password straight away and secure your email account. Then contact support through the official page.
+
+**Should I write my password down?** A password manager is safer than notes on paper or in a phone. If you do write it down, keep it somewhere secure and never store it next to the device.
+
+**How often should I change my password?** Use a strong, unique password and change it if you suspect a leak, if you reused it elsewhere or if a service you use has a breach. Constant changes to weak passwords help less than one strong password used only here.
+
+## Build a habit, not a one-off
+
+Set a reminder to review your security every few months. Check that your email password is still strong, remove old devices you no longer use, and clear out any apps you do not recognise. Look at your transaction and withdrawal history for anything unfamiliar. If you help friends or family into crypto, spend five minutes showing them these basics. Most losses in this space come from ordinary mistakes, not sophisticated hacking, and each habit here removes one of those mistakes.`,
   },
   {
     slug: "btcy-airdrops-and-rewards-guide",
@@ -431,7 +527,23 @@ Social-media campaigns ask you to post about Bitcoin Yay. Be truthful when you d
 3. Keep proof, such as screenshots, organised in case it is needed.
 4. Check official channels for announcements.
 
-For related reading, see our [security checklist](/blogs/btcy-account-security-checklist) and the [FAQ](/faq).`,
+For related reading, see our [security checklist](/blogs/btcy-account-security-checklist) and the [FAQ](/faq).
+
+## Frequently asked questions
+
+**Do I have to pay to enter an airdrop?** No. Genuine campaigns do not ask you to send tokens or pay a fee to receive a reward. If someone asks, it is a scam.
+
+**Can I enter more than once with several accounts?** No. Campaigns are for real, individual users, and duplicate accounts are filtered out.
+
+**What is a Loyalty Airdrop?** An example of a campaign aimed at active miners, rewarding people who take part consistently.
+
+**What is a Social Media Airdrop?** A campaign in which users create a post about Bitcoin Yay and tag the official account, following the rules shown on the campaign card.
+
+**Where are winners announced?** Winners are notified in the app and may also be announced through official channels such as Telegram. Use only official sources.
+
+## Keeping track
+
+It helps to note the end and distribution dates of every campaign you enter, so you know when to look for results. Keep the screenshots or links that prove you completed each task until the reward is credited. If a reward is rejected, the cause is usually something simple such as an unclear image, and you can resubmit. Treat every campaign as a bonus rather than income you can rely on, and avoid spending money in anticipation of a reward that has not been distributed yet.`,
   },
   {
     slug: "btcy-vs-bitcoin-key-differences",
@@ -483,7 +595,21 @@ Bitcoin can be held in wallets and on exchanges around the world. Your BTCY is h
 
 Yes. Knowing what you hold and how it works protects you from scams that trade on the confusion, such as offers to "convert your BTCY to Bitcoin" through unofficial channels. Use only the official app and website for any conversion, buying or selling.
 
-Nothing here is financial advice. To learn more, start with our [beginner's guide](/blogs/what-is-bitcoin-yay-btcy) or the [FAQ](/faq).`,
+Nothing here is financial advice. To learn more, start with our [beginner's guide](/blogs/what-is-bitcoin-yay-btcy) or the [FAQ](/faq).
+
+## Frequently asked questions
+
+**Can I exchange BTCY for Bitcoin?** Availability of buying, selling and conversion functions depends on your region and on current platform status. Use only the official app and website for any conversion.
+
+**Does BTCY track the price of Bitcoin?** They are separate assets and separate systems. Do not assume they move together.
+
+**Which is safer?** Neither is risk free. Both are digital assets that can change in value, and each has its own risks. What matters most is that you understand what you hold and protect your account.
+
+**Is BTCY mining bad for the environment?** BTCY mining is a virtual, app-based process and does not rely on energy-intensive Proof-of-Work hardware.
+
+## Why the comparison matters
+
+New users often arrive with a picture of crypto formed by Bitcoin headlines, and it is natural to assume every project works the same way. In practice, projects differ widely in how they create tokens, secure their networks and describe their purpose. Taking a few minutes to learn those differences helps you judge claims more carefully. When you read about any token, ask how it is created, how the network is secured, who can take part, and what it is actually used for. Apply the same questions to BTCY and to any other project, and you will be better placed to spot exaggeration.`,
   },
   {
     slug: "how-to-buy-and-sell-btcy",
@@ -529,7 +655,29 @@ If a payment fails, an amount looks different from what you expected, or a balan
 
 ## Related reading
 
-See [how withdrawals work](/blogs/btcy-withdrawals-guide) for taking funds out of the platform, and the [FAQ](/faq) for short answers to common questions.`,
+See [how withdrawals work](/blogs/btcy-withdrawals-guide) for taking funds out of the platform, and the [FAQ](/faq) for short answers to common questions.
+
+## Frequently asked questions
+
+**What payment methods are supported?** They can include cards and other processors, depending on your region. The list is always displayed in the payment step.
+
+**Are there fees?** Any applicable network or processing fees are shown before you confirm a transaction, so review the confirmation screen for the exact amount.
+
+**Why is selling unavailable for me?** Availability can depend on your region and the current platform status. If the option is not shown, it is not open for your account at the moment.
+
+**Can I cancel a purchase?** Check the terms shown at checkout and contact support promptly if you have a problem. Blockchain transactions are generally not reversible once completed.
+
+**How long does a purchase take?** Timing can vary, so follow the status in your order history rather than repeating the purchase.
+
+## A checklist before every transaction
+
+1. Are you on the official website or app?
+2. Have you read the amount, the fees and the payment method on the confirmation screen?
+3. Do you understand which part of your balance is verified?
+4. Is this an amount you would be comfortable losing?
+5. Have you kept a record of the transaction?
+
+If any answer is no, pause. Taking an extra minute costs nothing, while an avoidable mistake can be expensive. Remember that nobody from the team will ever ask you for your password or ask you to send money to a personal account.`,
   },
   {
     slug: "btcy-withdrawals-guide",
@@ -586,7 +734,23 @@ If you operate a Mining Station, your dashboard has its own Earnings and Withdra
 
 Use a strong, unique password, protect your email and never share login details. Support will never ask for your password. Read the full [security checklist](/blogs/btcy-account-security-checklist).
 
-Nothing here is financial advice. Availability of withdrawal methods can depend on your region.`,
+Nothing here is financial advice. Availability of withdrawal methods can depend on your region.
+
+## Frequently asked questions
+
+**Why was my withdrawal rejected?** Common reasons include an amount below the minimum, an incorrect or unsupported address, or details that could not be verified. The history entry shows the outcome so you can correct it.
+
+**Can I cancel a pending withdrawal?** Check the options shown on the request in your history. If none is offered, contact support with the details rather than submitting a duplicate.
+
+**Which methods are available?** The withdrawal form lists them, for example a BTCY wallet or stablecoin networks. Available options can vary by region.
+
+**Why is my withdrawal taking longer than usual?** Requests are reviewed before processing, and timing can vary. Check the status in your history and contact support if it stays pending for an unusually long time.
+
+**Do I need to enter a deposit address?** For external-chain payouts, yes. You will be asked to provide the address you want to receive on.
+
+## A calm approach
+
+Most withdrawal stress comes from rushing. Before you press submit, breathe and check three things: the amount, the address and the network. After you submit, resist the urge to repeat the request, because duplicates can complicate matters. Keep the transaction details somewhere safe, and if something does go wrong, gather them before contacting support so they can help quickly. Never accept help from strangers who message you offering to recover or speed up a withdrawal, because that is a common scam.`,
   },
   {
     slug: "btcy-wallet-and-balances-explained",
@@ -633,7 +797,23 @@ There is more in our [security checklist](/blogs/btcy-account-security-checklist
 
 ## Related guides
 
-Learn [how mining works](/blogs/how-btcy-tap-to-mine-works), see [how withdrawals work](/blogs/btcy-withdrawals-guide), or browse the [FAQ](/faq). Nothing in this article is financial advice.`,
+Learn [how mining works](/blogs/how-btcy-tap-to-mine-works), see [how withdrawals work](/blogs/btcy-withdrawals-guide), or browse the [FAQ](/faq). Nothing in this article is financial advice.
+
+## Frequently asked questions
+
+**Why does my balance change?** Balances update as you mine, as pending earnings are verified and as you buy, sell, transfer or withdraw. The transaction history explains each movement.
+
+**What does pending mean?** Pending, or unverified, balance is still being validated and becomes available once it is confirmed.
+
+**Can I see my history on the website?** Your account works across the app and the website, so your balance and history are available in both.
+
+**Is my wallet separate from my exchange account?** The wallet lives within the Bitcoin Yay and Indexx.ai ecosystem, which provides the accounts, storage and trading infrastructure behind the scenes.
+
+**Can I transfer BTCY to another user?** Transfers within the ecosystem are supported where enabled, subject to any limits shown on screen.
+
+## Good habits for tracking your balance
+
+Look at your wallet regularly rather than only when something feels wrong. Learn to read the difference between verified and pending amounts so that you are never surprised. When you make a transfer, purchase or withdrawal, note it somewhere so that you can match it against your history later. If a number ever looks unfamiliar, start with the transaction history, then read the troubleshooting guide, and only then contact support with the details you have found. Treat your wallet the way you would treat a bank account: check it often, protect access to it and never share your login.`,
   },
   {
     slug: "btcy-troubleshooting-common-issues",
@@ -680,7 +860,23 @@ You can switch the language from your account or profile section. Bitcoin Yay su
 
 If the steps above do not help, reach out through the official [support](/support) page. Include what you did, what you expected and what happened, and add screenshots. Never send your password to anyone, and ignore anyone who contacts you offering to "fix" your account for a fee.
 
-More answers are in the [FAQ](/faq) and our [security checklist](/blogs/btcy-account-security-checklist).`,
+More answers are in the [FAQ](/faq) and our [security checklist](/blogs/btcy-account-security-checklist).
+
+## More quick answers
+
+**The app is slow or will not load.** Check your connection, close and reopen the app, and make sure you are on the latest version from the App Store or Google Play. Restarting your phone can also help.
+
+**I did not receive a verification email.** Check your spam folder, confirm you typed the address correctly and wait a few minutes before requesting another.
+
+**My referral is not showing.** A referral counts once the new user has signed up through your link and become active. Ask them to complete registration and start a session.
+
+**My streak was reset.** Missing a day means you stop accumulating new BTCY until you start another session. Your existing balance is unaffected.
+
+**A page shows an error.** Refresh it, sign out and back in, and try again a little later. If it persists, take a screenshot and contact support.
+
+## How to write a good support request
+
+Support can help you faster when the request is clear. State what you were trying to do, what you expected and what actually happened. Include the date and time, the device you use and the app version if you know it, and attach screenshots. Never include your password in a message. Be patient and reply to follow-up questions, and avoid opening several duplicate tickets about the same problem, which can slow things down. A calm, detailed message is the quickest route to a fix.`,
   },
   {
     slug: "responsible-participation-in-crypto-communities",
@@ -726,7 +922,21 @@ Use a strong, unique password and keep your email secure. You can request accoun
 
 Read the [whitepaper](/whitepaper), the [FAQ](/faq) and the [Terms of Use](/term-of-service). The more you know, the harder you are to mislead.
 
-Nothing in this article is financial advice.`,
+Nothing in this article is financial advice.
+
+## Frequently asked questions
+
+**Is it wrong to earn from referrals?** No. Referral programs are a normal part of many products. What matters is honesty: be open that you may benefit, and do not mislead people.
+
+**How do I talk about BTCY without overpromising?** Describe what the app does: free in-app mining, optional plans, rewards and airdrops. Avoid income claims, and mention that nothing is guaranteed.
+
+**What should I do if I see a scam?** Do not engage or click. Report it through the official channels, warn other members and never send money or details.
+
+**How do I know a message is really from the team?** Check the official website, app and verified channels. The team will never ask for your password or ask you to send funds first.
+
+## A short personal code
+
+It can help to keep a few rules in mind. Tell the truth about what you are sharing. Never promise returns. Do not push people who are not interested. Help newcomers get started safely. Report scams when you see them. Protect your own accounts. Follow these six rules and you will avoid most of the trouble that catches enthusiastic community members, while helping the ecosystem grow on solid, honest foundations.`,
   },
 ];
 
