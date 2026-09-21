@@ -433,6 +433,301 @@ Social-media campaigns ask you to post about Bitcoin Yay. Be truthful when you d
 
 For related reading, see our [security checklist](/blogs/btcy-account-security-checklist) and the [FAQ](/faq).`,
   },
+  {
+    slug: "btcy-vs-bitcoin-key-differences",
+    title: "BTCY vs Bitcoin (BTC): Key Differences Every Newcomer Should Know",
+    description:
+      "BTCY and Bitcoin share part of a name but work very differently. Compare how each is created, secured and used, and avoid the most common mix-ups.",
+    date: "September 21, 2026",
+    category: "Education",
+    content: `The name Bitcoin Yay leads many newcomers to assume it is a version of Bitcoin, or a way to get Bitcoin. It is neither. This article sets the two side by side so you know exactly what each one is.
+
+## The short version
+
+Bitcoin (BTC) is a decentralised digital currency secured by Proof-of-Work mining. BTCY is the token of the Bitcoin Yay ecosystem, earned mainly through an in-app, tap-to-mine experience and used inside that ecosystem. They are separate assets on separate systems.
+
+## How each one is created
+
+**Bitcoin** is created by miners who run specialised, energy-intensive hardware. They compete to add blocks to the chain, and the winner is rewarded with new BTC.
+
+**BTCY** is generated through the Bitcoin Yay app. Mining is virtual and app-based: you start a session and BTCY accumulates in your account. It does not use your device's resources and it does not produce BTC.
+
+## How each one is secured
+
+Bitcoin relies on Proof-of-Work, which is secure but consumes large amounts of energy. Bitcoin Yay nodes use a lightweight, trust-based consensus, so ordinary laptops and desktops can take part. You can read more in our guide to [Bitcoin Yay nodes](/blogs/btcy-nodes-explained).
+
+## Who can take part
+
+Serious Bitcoin mining today usually needs specialised machines and cheap electricity. Taking part in BTCY mining needs only a phone and a free account.
+
+## Where each one lives
+
+Bitcoin can be held in wallets and on exchanges around the world. Your BTCY is held in your account wallet within the Bitcoin Yay and Indexx.ai ecosystem, where you can see your balance, transaction history and transfers.
+
+## Side-by-side summary
+
+| | Bitcoin (BTC) | BTCY |
+|---|---|---|
+| How it is earned | Proof-of-Work mining | In-app, tap-to-mine sessions |
+| Hardware needed | Specialised machines | A phone |
+| Energy use | High | Light |
+| Ecosystem | The Bitcoin network | Bitcoin Yay, powered by Indexx.ai |
+
+## Common misunderstandings
+
+- **"Mining BTCY gives me Bitcoin."** It does not. It generates BTCY only.
+- **"BTCY is the same as BTC."** They are different assets with different rules.
+- **"BTCY is an investment product."** BTCY and its plans are in-app utilities. They are not investment contracts, securities or profit-generating instruments.
+
+## Should you care about the difference?
+
+Yes. Knowing what you hold and how it works protects you from scams that trade on the confusion, such as offers to "convert your BTCY to Bitcoin" through unofficial channels. Use only the official app and website for any conversion, buying or selling.
+
+Nothing here is financial advice. To learn more, start with our [beginner's guide](/blogs/what-is-bitcoin-yay-btcy) or the [FAQ](/faq).`,
+  },
+  {
+    slug: "how-to-buy-and-sell-btcy",
+    title: "How to Buy and Sell BTCY: A Step-by-Step Overview",
+    description:
+      "A practical overview of the buy and sell flows for BTCY, what to check before you confirm, and why availability and fees can differ by region.",
+    date: "September 21, 2026",
+    category: "Guides",
+    content: `Most people begin by mining BTCY, but you can also buy it or convert your balance through the platform. This guide explains the general flow and the checks worth making before you confirm anything.
+
+## Buying BTCY
+
+You buy BTCY through the purchase flow on the website or in the app, using the payment methods supported for your region.
+
+1. **Sign in** to your Bitcoin Yay account.
+2. **Open the buy flow** and choose how much you want.
+3. **Pick a payment method.** Supported methods can include cards and other processors. The exact options depend on your region and are shown at the payment step.
+4. **Review the summary.** Any applicable network or processing fees are displayed before you confirm.
+5. **Confirm** and wait for the transaction to complete. Your order then appears in your history.
+
+## Selling BTCY
+
+The Sell flow converts your BTCY balance. The app walks you through the amount, the method and a confirmation step. Availability of selling can depend on your region and on the current platform status, so the option may not always be open.
+
+## What to check before you confirm
+
+- **The amount and fees.** Read the confirmation screen for the exact figures.
+- **Your region.** Buying, selling and exchange functions can vary by country because of local regulations. The app applies restrictions automatically based on your location.
+- **Verified vs unverified balance.** Verified balance is fully confirmed and usable. Unverified, or pending, balance is still being validated, for example earnings that depend on verified ad engagement.
+- **That you are on the official site.** Type the address yourself or use the official app. Scam sites copy the look of real ones.
+
+## Keep records
+
+Your order history and wallet transaction history show what you bought, sold and transferred. Keep an eye on them, and save receipts if you need them for tax purposes. Tax rules differ by country, so check the rules where you live.
+
+## Risks to understand
+
+Crypto assets can lose value, and you should only put in what you can afford to lose. BTCY is an in-app utility token, not an investment product, and nothing in the app or on this website is financial advice.
+
+## If something looks wrong
+
+If a payment fails, an amount looks different from what you expected, or a balance is missing, check your order history first and then contact the [support](/support) page. Never share your password with anyone claiming to help, and be cautious of anyone who contacts you first. Our [security checklist](/blogs/btcy-account-security-checklist) covers this in more detail.
+
+## Related reading
+
+See [how withdrawals work](/blogs/btcy-withdrawals-guide) for taking funds out of the platform, and the [FAQ](/faq) for short answers to common questions.`,
+  },
+  {
+    slug: "btcy-withdrawals-guide",
+    title: "BTCY Withdrawals: How They Work and How to Avoid Mistakes",
+    description:
+      "How to request a withdrawal in Bitcoin Yay, what the statuses mean, why there is a minimum, and the checks that prevent costly address mistakes.",
+    date: "September 21, 2026",
+    category: "Guides",
+    content: `Withdrawing is the moment when small mistakes become expensive. This guide walks through how withdrawals work in Bitcoin Yay and how to avoid the errors that cause most problems.
+
+## The basic flow
+
+From the Withdrawals area:
+
+1. **Choose a withdrawal method.** The supported methods are listed in the form, for example a BTCY wallet or stablecoin networks.
+2. **Enter the amount.**
+3. **Provide a destination** where one is required. For external-chain payouts you are asked for your deposit address.
+4. **Submit the request.**
+
+Requests are reviewed and processed, then reflected in your withdrawal history.
+
+## The minimum amount
+
+A minimum withdrawal applies. The form stops you from submitting below it, and the current minimum is displayed on the withdrawal screen. We do not quote the number here because it can change.
+
+## Understanding statuses
+
+Every request has a status in your withdrawal history:
+
+- **Pending.** Submitted and awaiting review or processing.
+- **Completed.** Processed and sent.
+- **Rejected.** Not processed. The history entry shows the outcome so you can correct the problem and try again.
+
+Withdrawals are reviewed and typically processed within a short window, but timing can vary, so check the history rather than resubmitting.
+
+## Avoiding address mistakes
+
+Blockchain transfers cannot normally be reversed, so an incorrect address can mean lost funds.
+
+1. **Copy and paste** the address from your own wallet. Do not retype it.
+2. **Check the beginning and end** of the pasted address.
+3. **Match the network.** Sending on the wrong network is one of the most common ways funds go missing.
+4. **Try a small test first** when the amount is large.
+
+## Balances that are not yet available
+
+Only your available balance can be withdrawn. Pending, or unverified, amounts must be confirmed first. Anyone offering to release pending balances for a fee is running a scam.
+
+## Mining Station withdrawals
+
+If you operate a Mining Station, your dashboard has its own Earnings and Withdrawals sections showing lifetime earnings, current-month earnings, pending amounts and your available withdrawal balance. See our guide to the [referral program and Mining Station](/blogs/btcy-referral-program-and-mining-station).
+
+## Staying safe
+
+Use a strong, unique password, protect your email and never share login details. Support will never ask for your password. Read the full [security checklist](/blogs/btcy-account-security-checklist).
+
+Nothing here is financial advice. Availability of withdrawal methods can depend on your region.`,
+  },
+  {
+    slug: "btcy-wallet-and-balances-explained",
+    title: "Your BTCY Wallet Explained: Verified, Pending and Transfers",
+    description:
+      "Understand where your BTCY is stored, the difference between verified and unverified balance, how BTCY Alchemy fits in, and how transfers work.",
+    date: "September 21, 2026",
+    category: "Guides",
+    content: `Your wallet is where everything you earn shows up, so it pays to understand what the numbers mean. This guide explains the main parts of the Bitcoin Yay wallet.
+
+## Where is my BTCY stored?
+
+Your BTCY is held in your account wallet within the Bitcoin Yay and Indexx.ai ecosystem. From the wallet section you can view balances, transaction history and transfers. Because it is tied to your account, the same balance is visible on the mobile app and on the website.
+
+## Verified vs unverified balance
+
+This is the distinction that confuses people most.
+
+- **Verified balance** is fully confirmed and usable.
+- **Unverified (pending) balance** is still being validated. A common example is earnings that depend on verified ad engagement. It becomes available once it is confirmed.
+
+If your total looks larger than what you can spend, part of it is probably pending. That is normal.
+
+## Reading your transaction history
+
+The history lists the movements on your account, such as mining credits, purchases, transfers and withdrawals. Use it as your first stop when something looks unexpected. It is also useful for your own records.
+
+## What is BTCY Alchemy?
+
+BTCY Alchemy is an in-app feature for converting and claiming tokens within the ecosystem. The Alchemy flow guides you through processing and claiming step by step, so follow the on-screen instructions rather than any third-party advice.
+
+## Transfers
+
+Transfers to another user within the ecosystem are supported where enabled. Use the transfer option in your wallet and follow the steps and any limits shown. Double-check the recipient before you confirm, since transfers usually cannot be undone.
+
+## Keeping your wallet safe
+
+- Use a strong, unique password.
+- Protect your email, because it controls password resets.
+- Never share your login details. The team will never ask for them.
+- Use only the official app and website.
+
+There is more in our [security checklist](/blogs/btcy-account-security-checklist).
+
+## Related guides
+
+Learn [how mining works](/blogs/how-btcy-tap-to-mine-works), see [how withdrawals work](/blogs/btcy-withdrawals-guide), or browse the [FAQ](/faq). Nothing in this article is financial advice.`,
+  },
+  {
+    slug: "btcy-troubleshooting-common-issues",
+    title: "BTCY Troubleshooting: Fixing the Most Common Issues",
+    description:
+      "Quick fixes for common Bitcoin Yay problems: mining not accumulating, a missing balance, rejected rewards, login trouble and delayed withdrawals.",
+    date: "September 21, 2026",
+    category: "Support",
+    content: `Most problems in the app have simple explanations. Work through the relevant section below before contacting support, and you will often solve it in a couple of minutes.
+
+## My mining balance is not growing
+
+Check whether a session is running. You only accumulate new BTCY while a session is active. If your last session ended, start a new one. Also open the mining details screen to see your current and boosted rates.
+
+## My balance looks lower than expected
+
+Part of it may be pending. Verified balance is fully usable, while unverified balance, such as earnings that depend on verified ad engagement, needs confirmation first. Look at the breakdown in your wallet before assuming anything is missing.
+
+## My reward was rejected
+
+Common reasons are an unclear screenshot, an account that does not match, or a task that was not completed as described. Re-read the task instructions and submit a clear, valid proof.
+
+## I did not win an airdrop
+
+Each campaign has an "Ends" date and a "Distribution" date, and winners are selected after it closes. Check in-app notifications and the official channels. See our [airdrops guide](/blogs/btcy-airdrops-and-rewards-guide).
+
+## I cannot log in
+
+Use "Forgot password" on the login screen, enter your email and follow the reset link. If no email arrives, check spam and confirm you are using the address you registered with. Treat any reset email you did not request as suspicious.
+
+## My withdrawal is still pending
+
+Withdrawals are reviewed and typically processed within a short window. Check the status in your withdrawal history rather than submitting again. A rejected request shows the outcome so you can fix it. See the [withdrawals guide](/blogs/btcy-withdrawals-guide).
+
+## A feature is not available to me
+
+Some functions, such as buying, selling and exchange, can vary by region because of local regulations, and the app applies restrictions based on your location.
+
+## The app language is wrong
+
+You can switch the language from your account or profile section. Bitcoin Yay supports several languages, including English, Chinese, Spanish and French.
+
+## When to contact support
+
+If the steps above do not help, reach out through the official [support](/support) page. Include what you did, what you expected and what happened, and add screenshots. Never send your password to anyone, and ignore anyone who contacts you offering to "fix" your account for a fee.
+
+More answers are in the [FAQ](/faq) and our [security checklist](/blogs/btcy-account-security-checklist).`,
+  },
+  {
+    slug: "responsible-participation-in-crypto-communities",
+    title: "Taking Part in a Crypto Community Responsibly",
+    description:
+      "Sensible habits for anyone using or promoting crypto apps: manage risk, verify claims, avoid hype, and understand that utility tokens are not guaranteed income.",
+    date: "September 21, 2026",
+    category: "Education",
+    content: `Crypto attracts enthusiasm and, unfortunately, a great deal of hype. Whether you are a casual user of Bitcoin Yay or a community builder, a few habits will keep you safer and more credible.
+
+## Understand what you are using
+
+BTCY is an in-app utility token. Its associated plans are designed to enhance participation in the ecosystem, and they are not investment contracts, securities or profit-generating instruments. Being clear about that from the start helps you set realistic expectations.
+
+## Only risk what you can afford to lose
+
+Digital assets can lose value, and features can change. Do not spend money you need for rent, food or emergencies. Free participation is available, so there is no need to pay for anything to get started.
+
+## Verify claims before you believe or share them
+
+- **Check the source.** Confirm announcements on the official website, app and channels.
+- **Be sceptical of guarantees.** Nobody can guarantee returns. Claims of guaranteed daily income are a warning sign.
+- **Watch for impersonators.** Fake admins and support accounts are common. Support will never ask for your password.
+
+## If you promote Bitcoin Yay
+
+Referral and social campaigns reward people for spreading the word, and that comes with responsibility.
+
+1. **Be truthful.** Explain that mining is virtual and in-app, and that it does not produce Bitcoin.
+2. **Never promise income.** Describe the features, not imagined profits.
+3. **Disclose the referral link.** Be open that you may benefit from sign-ups.
+4. **Do not use fake accounts.** Only real, active users count as verified referrals, and anti-fraud checks apply.
+
+## Protect other people
+
+If a friend is about to send money to a stranger, or click a suspicious link, speak up. Share the basics from our [security checklist](/blogs/btcy-account-security-checklist), especially never sharing passwords and always using official channels.
+
+## Protect your own information
+
+Use a strong, unique password and keep your email secure. You can request account or data deletion through the privacy options, and our [privacy policy](/privacy-policy) explains how personal information is handled.
+
+## Keep learning
+
+Read the [whitepaper](/whitepaper), the [FAQ](/faq) and the [Terms of Use](/term-of-service). The more you know, the harder you are to mislead.
+
+Nothing in this article is financial advice.`,
+  },
 ];
 
 export const getArticle = (slug: string) =>
