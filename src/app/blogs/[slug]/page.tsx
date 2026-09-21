@@ -98,7 +98,7 @@ export function generateMetadata({ params }: PageProps): Metadata {
   const article = getArticle(params.slug);
   if (!article) return {};
   return {
-    title: `${article.title} | Bitcoin Yay`,
+    title: article.title,
     description: article.description,
     openGraph: { title: article.title, description: article.description },
   };
