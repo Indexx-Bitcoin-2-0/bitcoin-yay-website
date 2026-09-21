@@ -3,7 +3,6 @@ import { Suspense } from "react";
 import SignInTokenHandler from "@/components/SignInTokenHandler";
 import BirthdayPopupHandler from "@/components/BirthdayPopupHandler";
 import ConditionalLayout from "@/components/ConditionalLayout";
-import AdSenseScript from "@/components/ads/AdSenseScript";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { GoogleOAuthProvider } from "@react-oauth/google"; // ✅ Import this
 import { EXTERNAL_URLS } from "@/lib/api-config";
@@ -69,6 +68,12 @@ export default function RootLayout({
           }}
         />
         {/* End Google Tag Manager */}
+        {/* Google AdSense — plain tag in server-rendered <head> so the site verifier can see it. */}
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5596248159338050"
+          crossOrigin="anonymous"
+        ></script>
       </head>
       <body className="antialiased">
         {/* Google Tag Manager (noscript) */}
@@ -81,8 +86,6 @@ export default function RootLayout({
           ></iframe>
         </noscript>
         {/* End Google Tag Manager (noscript) */}
-        {/* Google AdSense — no-op until NEXT_PUBLIC_ADSENSE_CLIENT is set. */}
-        <AdSenseScript />
         <GoogleOAuthProvider
           clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}
         >

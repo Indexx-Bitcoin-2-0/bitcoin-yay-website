@@ -18,7 +18,7 @@ export default function PrivacyPolicy() {
           Privacy Policy
         </h1>
         <p className="text-sm md:text-lg font-normal text-tertiary my-4">
-          Last Updated: May 29, 2025
+          Last Updated: September 21, 2026
         </p>
       </CustomStyledConatiner>
       <div className="md:p-10 lg:p-18">
@@ -587,6 +587,11 @@ export default function PrivacyPolicy() {
           onClick={() => {
             window.location.href = "mailto:privacy@bitcoinyay.com";
           }}
+        />
+
+        <InfoSection
+          desc="Fraud, Abuse, and Account Enforcement"
+          endingLine="To protect our users and the integrity of our platform, we may monitor account activity, transfers, trades, and relationships between accounts (including accounts linked by transfers, referrals, devices, or other identifiers) to detect fraud, manipulation, or abuse of our Services. Any user found engaging in fraudulent or abusive activity, including exploiting system errors or vulnerabilities, using multiple or linked accounts to circumvent limits or rewards, submitting false payment proof, or laundering funds, will be treated as a bad actor. We may suspend or permanently terminate the account and any linked accounts, freeze, reverse, or withhold balances and transactions, and take further action, including reporting to law enforcement and pursuing legal remedies. Information we collect may be shared with authorities, payment providers, and other parties as required or permitted by law to investigate and prevent fraud."
         />
 
         <InfoSection
