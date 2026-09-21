@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { articles } from "./blogs/articles";
 
 const SITE = "https://www.bitcoinyay.com";
 
@@ -8,6 +9,7 @@ const PATHS = [
   "/faq",
   "/blogs",
   "/blogs/smart-crypto-empowering-investors",
+  ...articles.map((article) => `/blogs/${article.slug}`),
   "/whitepaper",
   "/roadmap",
   "/ecosystem",
