@@ -28,7 +28,9 @@ const Footer = ({ }) => {
         { text: "Developers", url: "#" },
         { text: "About us", url: "/about" },
         { text: "FAQs", url: "/faq" },
+        { text: "Blog", url: "/blogs" },
         { text: "Support", url: "/support" },
+        { text: "Contact Us", url: "/support#contact-us" },
       ],
     },
     {

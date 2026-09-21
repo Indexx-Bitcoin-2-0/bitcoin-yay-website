@@ -37,6 +37,12 @@ const nextConfig = {
 
   async redirects() {
     return [
+      // Contact form lives on the support page.
+      {
+        source: '/contact',
+        destination: '/support#contact-us',
+        permanent: true,
+      },
       // 1. Redirect root of sales subdomain to /sale page
       {
         source: '/',
