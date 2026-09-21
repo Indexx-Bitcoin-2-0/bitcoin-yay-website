@@ -1,4 +1,4 @@
-/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint 15767b072c96) — edit the source there, not here. */
+/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint ecf4e6e61ae7) — edit the source there, not here. */
 /*
  * Indexx ID — the browser-side OIDC client (the "RP") every product embeds.
  *
@@ -43,8 +43,18 @@
  * that in mind — the bookkeeping there is the whole point of this file.
  */
 
-/** Space-delimited, per OIDC. `ecosystem` is opt-in per product. */
-const DEFAULT_SCOPE = "openid profile email";
+/*
+ * Space-delimited, per OIDC.
+ *
+ * `ecosystem` is what /session/legacy checks before it will mint an estate
+ * token, so every product that wants an estate session has to ask for it here.
+ * It used to be opt-in and nothing enforced it; the estate token came back on
+ * the strength of the session cookie alone. Now that the route also accepts a
+ * bearer access token — which it must, or products on a foreign registrable
+ * domain can never get one — the grant has to be explicit in the token rather
+ * than implied by whoever happens to be holding it.
+ */
+const DEFAULT_SCOPE = "openid profile email ecosystem";
 
 /** Refresh this long before `exp`, so an in-flight request never dies mid-call. */
 const REFRESH_MARGIN_MS = 60 * 1000;
@@ -400,9 +410,17 @@ function buildAuth(options) {
   const applyEstateSession = async () => {
     let estate = null;
     try {
+      /* The cookie rides along for same-site products, but it is SameSite=Lax
+         and this is an XHR, so it never arrives from a product on a foreign
+         registrable domain. Send the access token we were handed moments ago
+         as well: adoptTokenResponse() has already run at both call sites, so
+         it is always present here, and the provider accepts either. Without
+         it, Bitcoin Yay, EMMM and the rest got a 401 and rendered signed-out
+         while holding a valid OIDC session. */
       const r = await fetch(issuer + "/session/legacy", {
         method: "POST",
         credentials: "include",
+        headers: accessToken ? { Authorization: "Bearer " + accessToken } : {},
       });
       if (r.ok) estate = await r.json();
     } catch (_) {
