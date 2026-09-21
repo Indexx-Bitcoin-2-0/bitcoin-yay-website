@@ -71,7 +71,7 @@ export default function RootLayout({
         {/* Google AdSense — plain tag in server-rendered <head> so the site verifier can see it. */}
         <script
           async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5596248159338050"
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2639481936876154"
           crossOrigin="anonymous"
         ></script>
       </head>

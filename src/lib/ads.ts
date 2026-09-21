@@ -19,7 +19,7 @@
  * automatically by the adsbygoogle tag — no extra script here.
  */
 
-export const ADSENSE_CLIENT = (process.env.NEXT_PUBLIC_ADSENSE_CLIENT ?? "ca-pub-5596248159338050").trim();
+export const ADSENSE_CLIENT = (process.env.NEXT_PUBLIC_ADSENSE_CLIENT ?? "ca-pub-2639481936876154").trim();
 
 /** True once a real publisher id is configured. */
 export const ADSENSE_ENABLED = /^ca-pub-\d{10,}$/.test(ADSENSE_CLIENT);
