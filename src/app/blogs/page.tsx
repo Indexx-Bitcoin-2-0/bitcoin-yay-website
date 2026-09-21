@@ -184,13 +184,12 @@ const publishedPosts = blogPosts.filter((post, i, all) =>
   all.findIndex((p) => p.link === post.link) === i
 );
 
-const guideImages = [Blog2, Blog3, Blog4, Blog5, Blog6, Blog8, Blog9, Blog10];
 const guidePosts: BlogPost[] = articles.map((article, i) => ({
   id: 100 + i,
   title: article.title,
   description: article.description,
   date: article.date,
-  image: guideImages[i % guideImages.length],
+  image: `/blog/${article.slug}.svg`,
   category: article.category,
   link: `/blogs/${article.slug}`,
 }));
