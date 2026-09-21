@@ -2,6 +2,8 @@ import CustomStyledConatiner from "@/components/CustomStyledContainer";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import { type Components } from "react-markdown";
+import type { Metadata } from "next";
+import { articles, getArticle } from "../articles";
 
 interface BlogPost {
   id: number;
@@ -85,16 +87,34 @@ interface PageProps {
   searchParams?: { [key: string]: string | string[] | undefined };
 }
 
+export function generateStaticParams() {
+  return [
+    { slug: "smart-crypto-empowering-investors" },
+    ...articles.map((article) => ({ slug: article.slug })),
+  ];
+}
+
+export function generateMetadata({ params }: PageProps): Metadata {
+  const article = getArticle(params.slug);
+  if (!article) return {};
+  return {
+    title: `${article.title} | Bitcoin Yay`,
+    description: article.description,
+    openGraph: { title: article.title, description: article.description },
+  };
+}
+
 export default function BlogPost({ params }: PageProps) {
-  const content = getPostContent(params.slug);
+  const article = getArticle(params.slug);
+  const content = article ? article.content : getPostContent(params.slug);
 
   if (!content) {
     notFound();
   }
 
-  const post = blogPosts.find((post: BlogPost) =>
-    post.link.endsWith(params.slug)
-  );
+  const post = article
+    ? { title: article.title, category: article.category, date: article.date }
+    : blogPosts.find((post: BlogPost) => post.link.endsWith(params.slug));
 
   if (!post) {
     notFound();
