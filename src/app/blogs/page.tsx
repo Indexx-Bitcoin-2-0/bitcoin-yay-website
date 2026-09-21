@@ -189,7 +189,7 @@ const guidePosts: BlogPost[] = articles.map((article, i) => ({
   title: article.title,
   description: article.description,
   date: article.date,
-  image: `/blog/${article.slug}.svg`,
+  image: `/blog/${article.slug}.jpg`,
   category: article.category,
   link: `/blogs/${article.slug}`,
 }));

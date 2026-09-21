@@ -104,7 +104,7 @@ export function generateMetadata({ params }: PageProps): Metadata {
     openGraph: {
       title: article.title,
       description: article.description,
-      images: [`/blog/${article.slug}.svg`],
+      images: [`/blog/${article.slug}.jpg`],
     },
   };
 }
@@ -139,7 +139,7 @@ export default function BlogPost({ params }: PageProps) {
 
       {article && (
         <Image
-          src={`/blog/${article.slug}.svg`}
+          src={`/blog/${article.slug}.jpg`}
           alt={article.title}
           width={1200}
           height={630}
