@@ -1,4 +1,4 @@
-/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint ecf4e6e61ae7) — edit the source there, not here. */
+/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint 7df908509e1c) — edit the source there, not here. */
 /*
  * Indexx ID — the browser-side OIDC client (the "RP") every product embeds.
  *
@@ -301,6 +301,7 @@ function buildAuth(options) {
   const KEY_SILENT = ns + "silent";   // the anti-loop marker
   const KEY_REFRESH = ns + "rt";      // refresh token, per tab
   const KEY_HYDRATED = ns + "estate";  // "this tab has already reloaded once"
+  const KEY_ADOPT = ns + "adopt";     // "a handoff navigation already happened"
 
   /*
    * ── Where tokens live ────────────────────────────────────────────────────
@@ -682,6 +683,8 @@ function buildAuth(options) {
     });
     if (extra && extra.prompt) params.set("prompt", extra.prompt);
     if (extra && extra.loginHint) params.set("login_hint", extra.loginHint);
+    // The handoff from the product's own login form — see adoptLocalSession.
+    if (extra && extra.adoptCode) params.set("adopt_code", extra.adoptCode);
 
     return endpoints.authorize + "?" + params.toString();
   };
@@ -1002,7 +1005,8 @@ function buildAuth(options) {
       });
       adoptTokenResponse(data, tx.nonce);
       await applyEstateSession();
-      storeDel(KEY_SILENT); // signed in: the loop guard has nothing left to guard
+      storeDel(KEY_SILENT); // signed in: the loop guards have nothing left to guard
+      storeDel(KEY_ADOPT);
       return {
         status: "authenticated",
         user: claims,
@@ -1048,12 +1052,17 @@ function buildAuth(options) {
    * The product's login UI is untouched — users see exactly the screen they
    * always have. When it succeeds it writes `access_token` to localStorage as
    * it always did; this hands that token to the IdP, which verifies it and
-   * returns a session cookie. From then on every OTHER product's silent
-   * re-auth finds that session and signs the user in without a prompt.
+   * opens an IdP session. From then on every OTHER product's silent re-auth
+   * finds that session and signs the user in without a prompt.
    *
-   * Runs at most once per page load, and only when there is a local token and
-   * no IdP session yet — so it costs one request on the page right after login
-   * and nothing thereafter.
+   * How the session actually lands in the browser depends on where this
+   * product lives — a cookie when we share the provider's registrable domain,
+   * a top-level handoff navigation when we do not. The long comment inside
+   * explains why that difference is not optional.
+   *
+   * Runs at most once per local token, and only when there is no provider
+   * session yet — so it costs one request on the page right after login and
+   * nothing thereafter.
    */
   /*
    * Latched on the TOKEN, not on "have I run".
@@ -1070,6 +1079,21 @@ function buildAuth(options) {
    * there to provide.
    */
   let adoptedToken = null;
+
+  /*
+   * The handoff navigates the whole page, so it needs its own loop guard for
+   * exactly the reason silentSignIn has one. If the round trip breaks anywhere
+   * — the callback route never ran, storage was cleared, the user hit Back —
+   * we come back to a page that still has the same local token and no provider
+   * tokens, and would hand off again, and again. One handoff per browser
+   * session per cooldown window; a successful sign-in clears it.
+   */
+  const adoptHandoffAllowed = () => {
+    const at = Number(storeGet(KEY_ADOPT) || 0);
+    return !(at > 0 && Date.now() - at < silentCooldownMs);
+  };
+  const markAdoptHandoff = () => storeSet(KEY_ADOPT, String(Date.now()));
+
   const adoptLocalSession = async () => {
     if (!isBrowser()) return false;
 
@@ -1089,15 +1113,64 @@ function buildAuth(options) {
       const r = await fetch(issuer + "/session/adopt", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        // The cookie the IdP sets is the whole point, so the response must be
-        // allowed to set it.
+        // Lets the response set its cookie — which works only when this product
+        // and the provider share a registrable domain. See below.
         credentials: "include",
-        body: JSON.stringify({ access_token: local }),
+        body: JSON.stringify({ access_token: local, client_id: clientId }),
       });
       if (!r.ok) return false;
-      // The session now exists at the provider. Pick it up through the normal
-      // silent path so this client holds provider-issued tokens rather than
-      // the legacy one.
+
+      /*
+       * ── Why the response body matters more than the cookie ───────────────
+       *
+       * For the products on foreign domains (bitcoinyay.com,
+       * eenymeenyminymoe.io, aiainai.ai, yaysapp.com, shoperpal.com) the call
+       * above is a CROSS-SITE XHR, and a SameSite=Lax cookie cannot be SET by
+       * one — the browser discards the Set-Cookie without comment. The
+       * provider created the session; this browser kept nothing pointing at
+       * it. That is why signing in on EMMM used to sign you in on EMMM alone.
+       *
+       * So the provider also hands back a short-lived single-use code, and we
+       * spend it on a TOP-LEVEL navigation to /authorize — a first-party
+       * request to that origin, where the cookie is set normally and the flow
+       * continues exactly as it does for every other product.
+       *
+       * prompt=none, because the user is already signed in here: if the
+       * handoff fails for any reason the provider must answer and get out of
+       * the way, never render a login form over the page they are looking at.
+       */
+      let adoptCode = null;
+      try {
+        const data = await r.json();
+        if (data && typeof data.adopt_code === "string") adoptCode = data.adopt_code;
+      } catch (_) {
+        adoptCode = null;
+      }
+
+      // markAdoptHandoff last, and only navigate if it stuck: without the guard
+      // persisting across the redirect there is no guard, and a page that can
+      // navigate but cannot remember that it did is the loop itself.
+      if (adoptCode && adoptHandoffAllowed() && markAdoptHandoff()) {
+        let url = null;
+        try {
+          url = await buildAuthorizeUrl({ silent: true, prompt: "none", adoptCode: adoptCode });
+        } catch (_) {
+          url = null;
+        }
+        if (url && writeSilentMarker("pending")) {
+          silentAttemptedThisLoad = true;
+          navigate(url);
+          return true;
+        }
+      }
+
+      /*
+       * No code (an older provider), or the handoff could not be guarded.
+       * Fall back to the original path: the cookie is all a same-site product
+       * ever needed, and silentSignIn picks it up through the normal flow so
+       * this client ends up holding provider-issued tokens rather than the
+       * legacy one.
+       */
       await silentSignIn();
       return true;
     } catch (_) {
@@ -1147,6 +1220,12 @@ function buildAuth(options) {
      */
     writeSilentMarker("none");
     silentAttemptedThisLoad = true;
+    /*
+     * The handoff guard, though, IS cleared: signing out and back in through
+     * the product's own form is a fresh start, and must not be blocked by a
+     * cooldown left over from the session that just ended.
+     */
+    storeDel(KEY_ADOPT);
 
     const params = new URLSearchParams({ client_id: clientId });
     /*
