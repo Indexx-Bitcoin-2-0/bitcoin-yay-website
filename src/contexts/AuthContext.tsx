@@ -22,6 +22,8 @@ import {
   handleAuthFailure,
   invalidateIfAuthorizationExpired,
 } from "@/lib/auth-session";
+// @ts-ignore — zodiacAuth.js is plain JS, synced from zodiac-embed, no types
+import { notifySignedIn } from "@/components/ZodiacLauncher/zodiacAuth";
 
 type TokenPayload = {
   exp?: number;
@@ -97,6 +99,39 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = useCallback((userData: User) => {
     saveAuthData(userData);
     setUser(userData);
+
+    /*
+     * Tell Indexx Zodiac that a session now exists.
+     *
+     * ── Why this line is what makes BTCY -> anywhere work ─────────────────
+     *
+     * Signing in here is a LOCAL event. saveAuthData writes the estate token
+     * to localStorage.access_token (lib/auth.ts:21, via persistLegacyAuthData)
+     * and the identity provider learns nothing: the provider's session cookie
+     * is SameSite=Lax and bitcoinyay.com is a foreign registrable domain, so
+     * nothing this page does in the background can set it.
+     *
+     * notifySignedIn() reaches the launcher's client and calls
+     * adoptLocalSession(), which POSTs that estate token to /session/adopt and
+     * spends the adopt_code it returns. THAT is what creates the provider
+     * session — and without it the rest of the estate has no idea the person
+     * is signed in. Open any other product and prompt=none finds nothing.
+     *
+     * The launcher will not do this by itself at this moment. It adopts on
+     * mount, when the switcher opens, and when leaving for another product —
+     * none of which is "the user just submitted the login form". This popup
+     * closes without reloading, so the launcher mounted while signed out and
+     * would not look again until the switcher happened to be touched.
+     *
+     * Both LoginPopup (:131) and RegisterPopup (:302) funnel through here, so
+     * one call covers the form and registration alike. This mirrors EMMM,
+     * which has had it since the federation work (AuthProvider.tsx:131).
+     *
+     * Fire and forget: a failure in sign-on wiring must never break signing in
+     * HERE. adoptLocalSession already swallows its own errors and returns
+     * false; the catch is belt and braces.
+     */
+    void notifySignedIn().catch(() => {});
   }, []);
 
   const checkAuth = useCallback(() => {
