@@ -1,4 +1,4 @@
-/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint c20d9fb3d59d) — edit the source there, not here. */
+/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint 48c6864b2a8c) — edit the source there, not here. */
 /*
  * Zodiac launcher styles. SOURCE OF TRUTH: zodiac-embed/ — copied, never edited
  * in a consumer repo.
@@ -346,6 +346,13 @@
   border-top: 1px solid var(--zdc-line);
   font-size: 12.5px;
   color: var(--zdc-label);
+  /* Signed out this holds one string and looks exactly as it did; signed in it
+     holds the account and the sign-out control, which belong on one row. */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 .panelLight .panelFoot {
   border-top-color: rgba(0, 0, 0, 0.1);

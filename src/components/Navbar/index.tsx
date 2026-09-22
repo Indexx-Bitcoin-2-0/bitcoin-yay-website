@@ -697,15 +697,21 @@ const Navbar: React.FC = () => {
     setIsRegisterPopupOpen(false);
   };
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
     setBalances({ nugget: 0, withdrawn: 0, token: 0 });
     setBalanceError(null);
     setIsBalanceLoading(false);
     setActiveBalanceModal(null);
     balanceTriggerRef.current = null;
     closeMobileMenu();
-    redirectToBasePath(router);
+
+    // logout() clears this browser and then hands off to the Indexx ID
+    // end-session endpoint, so it goes last and the browser may not come back.
+    // It resolves false when there is no Zodiac session to end — only then is
+    // this redirect ours to make, and racing it against that navigation with
+    // window.location.assign would strand the provider session alive.
+    const ended = await logout();
+    if (!ended) redirectToBasePath(router);
   };
 
   // Initial check for dropdown visibility
@@ -1248,6 +1254,16 @@ const Navbar: React.FC = () => {
             tone="dark"
             auth={{
               clientId: "indexx-btcy",
+              /*
+               * No reload after a silent sign-in. AuthContext listens for
+               * "zodiac:session" and re-reads storage in place (AuthContext.tsx,
+               * the effect next to checkAuth), so the header re-renders on its
+               * own. The reload this replaces threw the tokens away and made the
+               * tab re-authenticate from the refresh token — a second /id/token
+               * grant and a second /session/legacy mint for one sign-in, plus
+               * the full-screen "Signing you in…" flash.
+               */
+              reloadOnSession: false,
               /*
                * This product does not read the estate's legacy keys. Its
                * isAuthenticated() is `getAuthData() !== null`, and getAuthData

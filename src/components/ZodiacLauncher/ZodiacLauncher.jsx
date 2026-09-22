@@ -1,4 +1,4 @@
-/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint c20d9fb3d59d) — edit the source there, not here. */
+/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint 48c6864b2a8c) — edit the source there, not here. */
 "use client";
 /*
  * Client component: this reads window, holds state and portals to <body>.
@@ -194,14 +194,37 @@ const withSession = (href) => {
   }
 };
 
-/** Read the session the host product already stores. Never writes. */
+/**
+ * The signed-in email a bridging product already keeps. Never writes.
+ *
+ * Only a fallback for the panel's account row: the id_token claims are the real
+ * source, and this covers the window before an exchange has happened on this
+ * page load. Products that opt out of the legacy bridge simply have nothing
+ * here, and the row falls back to showing nothing rather than something wrong.
+ */
+const readLegacyEmail = () => {
+  try {
+    return window.localStorage.getItem("email") || null;
+  } catch (_) {
+    return null;
+  }
+};
+
+/**
+ * Read the estate session the host product already stores. Never writes.
+ *
+ * Only `access_token`. It used to fall back to camelCase `accessToken`, which
+ * nothing in zodiacAuth ever writes — so the only way that key exists is that
+ * the PRODUCT put its own session there. Wall Street does exactly that, signed
+ * by its own backend with its own secret, and the fallback handed that foreign
+ * token to the estate API as a Bearer credential. Every /zodiac/hub call from
+ * Wall Street 401'd for that reason, and the panel showed "explore" on all
+ * sixteen rows instead of real state. A token this client did not obtain is not
+ * a session it can speak for.
+ */
 const readToken = () => {
   try {
-    return (
-      window.localStorage.getItem("access_token") ||
-      window.localStorage.getItem("accessToken") ||
-      null
-    );
+    return window.localStorage.getItem("access_token") || null;
   } catch (_) {
     return null;
   }
@@ -405,6 +428,19 @@ export default function ZodiacLauncher({
   /** Render the Dashboard link inside the trigger cluster. Off by default —
    *  the bar normally places <ZodiacDashboardLink /> on the far right. */
   withDashboard = false,
+  /**
+   * Clear THIS product's own session, before the shared one is ended.
+   *
+   * The panel's Sign out revokes the Indexx ID session for the whole estate,
+   * which is the part no product could do for itself. What it cannot do is
+   * clear a session the product keeps in its own shape: Wall Street signs its
+   * own tokens, YaysApp keeps a store, ShoperPal and ai ai N ai hold cookies
+   * from their own backends — none of which this component knows about. Those
+   * products pass this callback so the two halves end together; without it they
+   * would be signed out of the estate while their own header still said
+   * otherwise. Awaited, and a rejection never blocks the sign-out.
+   */
+  onSignOut = /** @type {any} */ (null),
 }) {
   const resolvedApiBase = apiBase || ENV_API_BASE || DEFAULT_API_BASE;
 
@@ -479,6 +515,18 @@ export default function ZodiacLauncher({
         /* Products that keep their session in their own shape adapt it here.
            See the onSession comment in zodiacAuth.js. */
         onSession: auth.onSession,
+        /*
+         * Whether a session appearing should reload the page.
+         *
+         * Defaults ON, because a product whose header reads localStorage once
+         * at mount has no other way to notice a session that arrived after it
+         * painted. Products that listen for the "zodiac:session" event instead
+         * pass false, and lose the reload — with it the second /token grant and
+         * second /session/legacy mint it forced, and the visible "Signing you
+         * in…" flash. See applyEstateSession in zodiacAuth.js.
+         */
+        reloadOnSession:
+          auth.reloadOnSession === undefined ? true : auth.reloadOnSession,
       });
       authClientRef.current = client;
       /* Expose for diagnosis: `window.__zodiacAuth.debug()` in the console says
@@ -544,6 +592,8 @@ export default function ZodiacLauncher({
   const panelRef = useRef(null);
   const triggerRef = useRef(null);
   const loadedHub = useRef(false);
+  /* Who the panel says you are. Read on open, never polled. */
+  const [account, setAccount] = useState(null);
 
   useEffect(() => setMounted(true), []);
 
@@ -706,6 +756,30 @@ export default function ZodiacLauncher({
 
   const close = useCallback(() => setOpen(false), []);
 
+  /*
+   * Who is signed in, read at the moment the panel opens.
+   *
+   * Deliberately not state the launcher maintains: the claims live in the auth
+   * client, the product may have signed in through its own form since this
+   * component mounted, and the panel is the only place this is rendered. Reading
+   * on open is both the cheapest and the freshest option.
+   *
+   * These are id_token claims — display data, never an authorization decision.
+   */
+  const readAccount = useCallback(() => {
+    const client = authClientRef.current;
+    if (!client) return;
+    try {
+      const user = typeof client.getUser === "function" ? client.getUser() : null;
+      const email = (user && user.email) || readLegacyEmail();
+      if (!email) return setAccount(null);
+      const name = (user && (user.name || user.preferred_username)) || null;
+      setAccount({ email: email, name: name });
+    } catch (_) {
+      setAccount(null);
+    }
+  }, []);
+
   const toggle = () => {
     /*
      * Re-check for a session the product established on its OWN login form.
@@ -781,9 +855,42 @@ export default function ZodiacLauncher({
         });
       }
       loadHub();
+      readAccount();
       return true;
     });
   };
+
+  /*
+   * Sign out of everything.
+   *
+   * Order matters and is the whole point. The product clears its own session
+   * first, because `signOut` NAVIGATES to the provider's end-session endpoint
+   * and may never come back — anything left until after it may simply not run.
+   * Only then is the shared session revoked, which is the half no product could
+   * do alone: clearing local storage ends a session in one tab and nowhere
+   * else, so the next page load silently signs the person back in.
+   */
+  const signOutEverywhere = useCallback(async () => {
+    if (typeof onSignOut === "function") {
+      try {
+        await onSignOut();
+      } catch (_) {
+        /* The product's own cleanup failing must not trap the user signed in. */
+      }
+    }
+    const client = authClientRef.current;
+    if (!client || typeof client.signOut !== "function") {
+      /* Nothing to revoke — at least do not leave the panel claiming a session. */
+      setAccount(null);
+      setOpen(false);
+      return;
+    }
+    try {
+      await client.signOut();
+    } catch (_) {
+      /* Best effort: signOut never throws by contract, but never trap the user. */
+    }
+  }, [onSignOut]);
 
   useEffect(() => {
     if (!open) return undefined;
@@ -930,7 +1037,34 @@ export default function ZodiacLauncher({
         </div>
 
         <div className={s.panelFoot}>
-          Signed in here, signed in everywhere. No product asks you to log in again.
+          {account ? (
+            /*
+             * The panel promised "signed in everywhere" and offered no way out
+             * of it. Clearing local storage — which is what every product's own
+             * Logout did — ends a session in one tab and nowhere else: the
+             * provider's cookie survives, so the next page load signs the person
+             * straight back in. On a shared machine the next person inherits it.
+             * This is the control that actually ends the shared session, and it
+             * belongs here because here is the only place that claims to span
+             * all sixteen products.
+             */
+            <>
+              <span className={s.account}>
+                <span className={s.accountEmail} title={account.email}>
+                  {account.name || account.email}
+                </span>
+              </span>
+              <button
+                type="button"
+                className={s.authBtn}
+                onClick={signOutEverywhere}
+              >
+                Sign out everywhere
+              </button>
+            </>
+          ) : (
+            "Signed in here, signed in everywhere. No product asks you to log in again."
+          )}
         </div>
       </div>
     </>

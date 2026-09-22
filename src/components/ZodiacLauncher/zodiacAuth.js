@@ -1,4 +1,4 @@
-/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint c20d9fb3d59d) — edit the source there, not here. */
+/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint 48c6864b2a8c) — edit the source there, not here. */
 /*
  * Indexx ID — the browser-side OIDC client (the "RP") every product embeds.
  *
@@ -246,7 +246,54 @@ export function createAuth(options) {
   } catch (_) {
     /* frozen or proxied window — the module-level cache still dedupes here */
   }
-  if (!cache[key]) cache[key] = buildAuth(options);
+  if (!cache[key]) {
+    cache[key] = buildAuth(options);
+    try {
+      cache[key].__opts = options || {};
+    } catch (_) {
+      /* frozen instance — the warning below simply will not fire */
+    }
+    return cache[key];
+  }
+
+  /*
+   * A later caller's options are DISCARDED, and that silence has bitten.
+   *
+   * The memo key is issuer|clientId|redirectUri, which is right — two clients
+   * for one session would replay each other's rotating refresh token and the
+   * provider would revoke the family, logging the user out. But it means
+   * whichever call site builds the client FIRST decides its behaviour, and
+   * every later one is ignored without a word.
+   *
+   * That turned `reloadOnSession: false` into a dependency on React effect
+   * ordering in indexx-welcome-page: the flag held only because a child
+   * launcher's effect happened to run before the parent hook's. Move a
+   * component and the reload comes back, silently, with nothing to point at.
+   *
+   * Warn rather than throw: the memo is still the correct outcome, and a
+   * sign-on path must not die over a config mismatch. Naming the keys makes a
+   * five-minute puzzle out of what was a silent behaviour change.
+   */
+  try {
+    const first = cache[key].__opts || {};
+    const differing = ["reloadOnSession", "bridgeLegacyKeys", "scope"].filter(
+      (k) =>
+        options &&
+        options[k] !== undefined &&
+        first[k] !== undefined &&
+        options[k] !== first[k]
+    );
+    if (differing.length) {
+      // eslint-disable-next-line no-console
+      console.warn(
+        "[zodiac] createAuth(" + key + ") already exists; ignoring different " +
+          differing.join(", ") + ". The FIRST caller decides. Make the options " +
+          "match, or build the client once in a module both call sites import."
+      );
+    }
+  } catch (_) {
+    /* diagnostics must never break sign-in */
+  }
   return cache[key];
 }
 
@@ -376,6 +423,14 @@ function buildAuth(options) {
      are signed in. See the block in applyTokenResponse. */
   const bridgeLegacyKeys =
     !options || options.bridgeLegacyKeys === undefined ? true : !!options.bridgeLegacyKeys;
+  /*
+   * Reload the page once when a session first appears. Defaults ON so no
+   * product changes behaviour by upgrading this file; set false once the
+   * product listens for the "zodiac:session" event instead. See the end of
+   * applyEstateSession for what the reload costs.
+   */
+  const reloadOnSession =
+    !options || options.reloadOnSession === undefined ? true : !!options.reloadOnSession;
   const opts = options || {};
   const issuer = String(opts.issuer || "").replace(/\/+$/, "");
   const clientId = String(opts.clientId || "");
@@ -423,6 +478,7 @@ function buildAuth(options) {
   const KEY_HYDRATED = ns + "estate";  // "this tab has already reloaded once"
   const KEY_ADOPT = ns + "adopt";     // "a handoff navigation already happened"
   const KEY_LINK  = ns + "link";      // "the provider refused to link this account"
+  const KEY_XRETRY = ns + "xretry";   // "a cross-origin arrival already bought a retry"
 
   /*
    * ── Where tokens live ────────────────────────────────────────────────────
@@ -589,7 +645,7 @@ function buildAuth(options) {
     }
 
     /*
-     * One reload, the first time a session appears on this page.
+     * Tell the page a session exists.
      *
      * Every product reads its session from localStorage while its header is
      * mounting. This token arrives after that — a silent sign-in is a network
@@ -597,13 +653,48 @@ function buildAuth(options) {
      * that was empty a moment ago, and nothing tells it to look again. The
      * session is real; only the render is stale.
      *
-     * Reloading is blunt, but it is the one remedy that does not require each
-     * of eight products to subscribe to a new event. The guard is the important
-     * part: a marker written BEFORE the reload, and read back to confirm it
-     * stuck, because a reload that cannot remember it has happened is an
-     * infinite loop — which this codebase has already paid for once.
+     * This event is the cheap fix. A header that listens re-reads and
+     * re-renders in place: no reload, no second round trip, no flash of a
+     * signed-out page. Dispatched unconditionally and before the fallback below,
+     * so a product can adopt it simply by listening.
+     *
+     *   window.addEventListener("zodiac:session", () => rereadSession());
      */
-    if (isBrowser() && !storeGet(KEY_HYDRATED)) {
+    if (isBrowser()) {
+      try {
+        window.dispatchEvent(
+          new CustomEvent("zodiac:session", {
+            detail: {
+              clientId: clientId,
+              email: (estate && estate.email) || (claims && claims.email) || null,
+              claims: claims || null,
+            },
+          })
+        );
+      } catch (_) {
+        /* CustomEvent is everywhere we run, but never take sign-in down for it */
+      }
+    }
+
+    /*
+     * The fallback, for products that do not listen yet.
+     *
+     * Reloading is blunt and expensive: it throws away the tokens held in this
+     * closure, so the tab re-authenticates from the refresh token afterwards —
+     * a SECOND /token grant and a SECOND /session/legacy mint for one sign-in,
+     * on every product, plus the visible "Signing you in…" flash users notice.
+     * It stays only because removing it for a product whose header does not
+     * listen would leave that header showing "Login" against a live session.
+     *
+     * Opt out with `reloadOnSession: false` once the product listens for the
+     * event above — that is the whole migration, one product at a time.
+     *
+     * The guard is the important part: a marker written BEFORE the reload, and
+     * read back to confirm it stuck, because a reload that cannot remember it
+     * has happened is an infinite loop — which this codebase has already paid
+     * for once.
+     */
+    if (reloadOnSession && isBrowser() && !storeGet(KEY_HYDRATED)) {
       if (storeSet(KEY_HYDRATED, String(Date.now()))) {
         window.location.reload();
       }
@@ -658,12 +749,25 @@ function buildAuth(options) {
      * read their session from this client instead of from localStorage, and it
      * is the reason both systems can be live at once without either breaking.
      */
+    /*
+     * ── Identity only. The TOKEN is written by applyEstateSession, not here ──
+     *
+     * This block used to write `data.access_token` into localStorage
+     * `access_token`. That token is the PROVIDER's, signed RS256; the estate
+     * verifies HS256 with a shared secret and rejects it. So for the whole
+     * duration of the /session/legacy round trip the key held a token that
+     * looked like a session and 401'd on first use — and if that request failed,
+     * it stayed there permanently. Products reading the key in that window sent
+     * it to the estate API and got 401s that looked like a Zodiac fault.
+     *
+     * The comment above still holds for the identity keys, which are display
+     * data and safe to publish early. The token key now has exactly one writer:
+     * applyEstateSession, once a real estate token exists. A product that checks
+     * for `access_token` therefore sees "signed out" until it is genuinely
+     * signed in to the estate, which is the honest answer.
+     */
     if (bridgeLegacyKeys && isBrowser()) {
       try {
-        window.localStorage.setItem("access_token", data.access_token);
-        if (data.refresh_token) {
-          window.localStorage.setItem("refresh_token", data.refresh_token);
-        }
         const c = claims || decodeJwtClaims(data.access_token) || {};
         if (c.email) {
           window.localStorage.setItem("email", c.email);
@@ -960,13 +1064,6 @@ function buildAuth(options) {
       return { status: status === "authenticated" ? "authenticated" : "anonymous", reason: "already_attempted" };
     }
 
-    const marker = readSilentMarker();
-    if (marker && marker.phase === "pending") {
-      silentAttemptedThisLoad = true;
-      writeSilentMarker("none");
-      status = "anonymous";
-      return { status: "anonymous", reason: "incomplete_attempt" };
-    }
     /*
      * Arriving from another site is itself a reason to re-check.
      *
@@ -980,6 +1077,11 @@ function buildAuth(options) {
      *
      * This is what makes "sign in on any product, then move freely" work rather
      * than only ever working outward from whichever product you started on.
+     *
+     * Computed BEFORE the "pending" branch below, not after. It used to sit
+     * underneath, which meant a stranded attempt was resolved without ever
+     * asking whether the user had just walked in from another product — the one
+     * case this check exists to catch. See the branch below.
      */
     const arrivedFromElsewhere = (() => {
       try {
@@ -989,6 +1091,39 @@ function buildAuth(options) {
         return false;
       }
     })();
+
+    const marker = readSilentMarker();
+    if (marker && marker.phase === "pending") {
+      /*
+       * A stranded "pending" means the last attempt never came back. Usually
+       * that is the dangerous case the comment above describes, and downgrading
+       * is right. But it is ALSO what an aborted navigation looks like — a
+       * service worker claiming the page and reloading it, a slow IdP, a user
+       * hitting Back — and in that case the person is not signed out at all. If
+       * they have just arrived from another product, spending their arrival on
+       * bookkeeping is precisely the "it didn't authenticate at first, then it
+       * did" behaviour that makes the estate feel broken.
+       *
+       * So a cross-origin arrival buys exactly ONE retry, tracked in its own key
+       * rather than by rewriting this marker. The budget is spent before the
+       * redirect, so a retry that strands in the same way cannot buy another —
+       * the second arrival downgrades as before. `clearSilentRetry()` restores
+       * it on a completed exchange, so ordinary use is never penalised.
+       *
+       * This cannot loop: the budget is at most one, it is consumed before
+       * navigating, and `silentAttemptedThisLoad` still caps this page load at a
+       * single attempt regardless.
+       */
+      if (arrivedFromElsewhere && !storeGet(KEY_XRETRY)) {
+        storeSet(KEY_XRETRY, String(Date.now()));
+        storeDel(KEY_SILENT);
+      } else {
+        silentAttemptedThisLoad = true;
+        writeSilentMarker("none");
+        status = "anonymous";
+        return { status: "anonymous", reason: "incomplete_attempt" };
+      }
+    }
 
     if (
       marker &&
@@ -1129,6 +1264,7 @@ function buildAuth(options) {
       storeDel(KEY_SILENT); // signed in: the loop guards have nothing left to guard
       storeDel(KEY_ADOPT);
       storeDel(KEY_LINK);   // a session exists; nothing is waiting to be linked
+      storeDel(KEY_XRETRY); // the round trip completed: restore the cross-origin retry budget
       return {
         status: "authenticated",
         user: claims,
@@ -1445,7 +1581,14 @@ function buildAuth(options) {
        signed in — the exact split-brain the bridge exists to avoid. */
     if (bridgeLegacyKeys) {
       try {
-        ["access_token", "refresh_token", "email", "user", "username", "shortToken"]
+        /*
+         * `userType` is written by applyEstateSession and was missing here, so a
+         * signed-out tab kept a stale account type. `accessToken` is never
+         * written by this file, but ZodiacLauncher's readToken() falls back to
+         * it, so a product that stores the camelCase key would keep handing a
+         * live-looking token to the switcher after sign-out.
+         */
+        ["access_token", "accessToken", "refresh_token", "email", "user", "username", "userType", "shortToken"]
           .forEach((k) => window.localStorage.removeItem(k));
       } catch (_) { /* blocked storage */ }
     }
@@ -1486,6 +1629,14 @@ function buildAuth(options) {
      */
     storeDel(KEY_ADOPT);
     storeDel(KEY_LINK);
+    storeDel(KEY_XRETRY);
+    /*
+     * KEY_HYDRATED too. It records "this tab has already reloaded once" and was
+     * never cleared anywhere, so signing out and back in within the same tab
+     * skipped the rehydration the next sign-in depends on — the product's header
+     * would sit on the session it had before this one.
+     */
+    storeDel(KEY_HYDRATED);
 
     const params = new URLSearchParams({ client_id: clientId });
     /*

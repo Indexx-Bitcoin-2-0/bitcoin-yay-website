@@ -23,7 +23,10 @@ import {
   invalidateIfAuthorizationExpired,
 } from "@/lib/auth-session";
 // @ts-ignore — zodiacAuth.js is plain JS, synced from zodiac-embed, no types
-import { notifySignedIn } from "@/components/ZodiacLauncher/zodiacAuth";
+import {
+  notifySignedIn,
+  notifySignedOut,
+} from "@/components/ZodiacLauncher/zodiacAuth";
 
 type TokenPayload = {
   exp?: number;
@@ -49,7 +52,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (userData: User) => void;
-  logout: () => void;
+  logout: () => Promise<boolean>;
   checkAuth: () => void;
   setIsLoadingState: (value: boolean) => void;
 }
@@ -90,11 +93,48 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }, []);
 
-  const logout = useCallback(() => {
+  /*
+   * The local half of signing out — this browser, this product.
+   *
+   * This is what the paths the MACHINE initiates use: an access token that
+   * aged out, a 401 handled by handleAuthFailure. Those must NOT end the
+   * Indexx ID session. The estate session deliberately outlives an 8h access
+   * token, and the launcher's silent check is what hands the user a fresh one
+   * on the next load; ending it here would sign the person out of all sixteen
+   * products every time one token lapsed, without them asking for anything.
+   */
+  const clearLocalSession = useCallback(() => {
     clearBrowserStorage();
     clearAuthData();
     setUser(null);
   }, [clearBrowserStorage]);
+
+  const logout = useCallback(async (): Promise<boolean> => {
+    clearLocalSession();
+
+    /*
+     * And end the session at the PROVIDER — the mirror image of the
+     * notifySignedIn() call below, and the half that was missing.
+     *
+     * Clearing storage ends the session in this tab and nowhere else. The
+     * provider's session row and its idp_session cookie survive untouched, so
+     * the next page load runs prompt=none, finds that session, and signs the
+     * person straight back in — proven on test.indexx.ai: log out, return to
+     * the home page, "SIGNED IN — Welcome back". On a shared machine the next
+     * person inherits it across every product.
+     *
+     * notifySignedOut() revokes the refresh family and navigates to the
+     * provider's end-session endpoint, which is what actually ends it. Two
+     * consequences the caller has to respect:
+     *   - it NAVIGATES, so it goes LAST, after the product has cleared its own
+     *     state. The navigation may not come back.
+     *   - it resolves false (never throws) when no launcher client exists on
+     *     the page — someone signed in to BTCY but not to Zodiac. Only then is
+     *     there a local redirect left to do, which is why this returns the
+     *     flag instead of swallowing it. See Navbar's handleLogout.
+     */
+    return notifySignedOut().catch(() => false);
+  }, [clearLocalSession]);
 
   const login = useCallback((userData: User) => {
     saveAuthData(userData);
@@ -137,14 +177,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const checkAuth = useCallback(() => {
     const userData = getAuthData();
     if (userData && isAccessTokenExpired(userData.access_token)) {
-      logout();
+      clearLocalSession();
       setIsLoading(false);
       return;
     }
 
     setUser(userData);
     setIsLoading(false);
-  }, [logout]);
+  }, [clearLocalSession]);
 
   const setIsLoadingState = useCallback((value: boolean) => {
     setIsLoading(value);
@@ -154,9 +194,40 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     checkAuth();
   }, [checkAuth]);
 
+  /*
+   * The estate signed us in AFTER this provider had already read storage.
+   *
+   * Zodiac's silent sign-in is a network round trip: the launcher mounts, asks
+   * the provider prompt=none, and the session lands a moment later. By then
+   * checkAuth() above has run against empty storage and the header has painted
+   * "Login" — the session is real, only the render is stale.
+   *
+   * The launcher's onSession (Navbar, at the mount) has just written that
+   * session through saveAuthData, and zodiacAuth fires "zodiac:session" only
+   * after that callback resolves, so by the time we are called the JSON under
+   * bitcoinYayAuth is already there. Re-reading is the whole fix.
+   *
+   * This listener is what earns `reloadOnSession: false` at the mount. Without
+   * it the launcher's window.location.reload() is the only thing that refreshes
+   * the header, and it costs a second /id/token grant, a second /session/legacy
+   * mint and the full-screen "Signing you in…" flash for one sign-in. Every
+   * consumer in this app reads its session through useAuth, so the single
+   * setUser inside checkAuth re-renders all of them — the mining balances the
+   * Navbar keys on user.email included.
+   */
+  useEffect(() => {
+    const handleEstateSession = () => {
+      checkAuth();
+    };
+
+    window.addEventListener("zodiac:session", handleEstateSession);
+    return () =>
+      window.removeEventListener("zodiac:session", handleEstateSession);
+  }, [checkAuth]);
+
   useEffect(() => {
     const handleInvalidSession = () => {
-      logout();
+      clearLocalSession();
       setIsLoading(false);
     };
 
@@ -166,7 +237,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         AUTH_SESSION_INVALID_EVENT,
         handleInvalidSession
       );
-  }, [logout]);
+  }, [clearLocalSession]);
 
   useEffect(() => {
     const originalFetch = window.fetch;
@@ -239,18 +310,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     const now = Date.now();
     if (now >= expiryMs) {
-      logout();
+      clearLocalSession();
       setIsLoading(false);
       return;
     }
 
     const timeoutId = window.setTimeout(() => {
-      logout();
+      clearLocalSession();
       setIsLoading(false);
     }, expiryMs - now);
 
     return () => window.clearTimeout(timeoutId);
-  }, [user?.access_token, logout]);
+  }, [user?.access_token, clearLocalSession]);
 
   const value: AuthContextType = {
     user,
