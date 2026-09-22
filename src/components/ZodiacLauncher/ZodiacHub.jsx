@@ -1,4 +1,4 @@
-/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint 7df908509e1c) — edit the source there, not here. */
+/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint ff8916268301) — edit the source there, not here. */
 /*
  * Zodiac Hub — the Dashboard, one page per product repo.
  *
