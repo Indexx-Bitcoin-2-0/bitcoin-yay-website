@@ -1,4 +1,4 @@
-/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint 678a1ea63da5) — edit the source there, not here. */
+/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint c20d9fb3d59d) — edit the source there, not here. */
 /*
  * Indexx ID — the browser-side OIDC client (the "RP") every product embeds.
  *
@@ -303,6 +303,71 @@ export async function notifySignedIn() {
     clients.map((c) => c.sessionStarted().catch(() => false))
   );
   return results.some(Boolean);
+}
+
+/**
+ * The counterpart: tell the provider the product just signed the user OUT.
+ *
+ * ── Why clearing localStorage is not signing out ──────────────────────────
+ *
+ * Most products log out by emptying their own storage. That ends the session
+ * in this tab and nowhere else: the provider's session row is untouched, so
+ * the very next page load runs prompt=none, finds it, and signs the person
+ * straight back in. They click Log out, the page clears, and they are still
+ * signed in — and on a shared machine the next person inherits it.
+ *
+ * signOut() is what actually ends it: it revokes the refresh family and then
+ * navigates to the provider's end-session endpoint so the first-party cookie
+ * dies too.
+ *
+ * ── Why this is a module function, like notifySignedIn ────────────────────
+ *
+ * Same reason, and it matters more here. A product reaching for signOut would
+ * have to rebuild the client with issuer|clientId|redirectUri matching the
+ * launcher's exactly; miss by a character and you get a SECOND client that
+ * holds no tokens, revokes nothing, and cheerfully reports success. Naming
+ * nothing is the whole point.
+ *
+ * ── One client, not all of them ───────────────────────────────────────────
+ *
+ * Unlike notifySignedIn, this NAVIGATES. Only the first navigation happens, so
+ * fanning out would be theatre. One client is enough: the refresh family and
+ * the provider session are shared, so whichever revokes ends it for all.
+ *
+ * Call it AFTER clearing your own state — the navigation may not come back.
+ * Resolves false when there is nothing to sign out of, and never throws: a
+ * failure here must never trap someone in a session they asked to leave.
+ */
+export async function notifySignedOut(args) {
+  if (typeof window === "undefined") return false;
+
+  let cache = moduleInstances;
+  try {
+    cache = window[INSTANCE_CACHE_KEY] || moduleInstances;
+  } catch (_) {
+    /* frozen or proxied window — the module-level cache still has them */
+  }
+
+  let client = null;
+  try {
+    for (const key of Object.keys(cache)) {
+      const c = cache[key];
+      if (c && typeof c.signOut === "function") {
+        client = c;
+        break;
+      }
+    }
+  } catch (_) {
+    return false;
+  }
+  if (!client) return false;
+
+  try {
+    await client.signOut(args);
+    return true;
+  } catch (_) {
+    return false;
+  }
 }
 
 function buildAuth(options) {

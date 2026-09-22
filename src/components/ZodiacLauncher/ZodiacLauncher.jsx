@@ -1,4 +1,4 @@
-/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint 678a1ea63da5) — edit the source there, not here. */
+/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint c20d9fb3d59d) — edit the source there, not here. */
 "use client";
 /*
  * Client component: this reads window, holds state and portals to <body>.
@@ -298,7 +298,9 @@ function Row({ product, active, note, isLive, tone, logoBase, onClose, useHandof
 function Handoff({ from, to, logoBase, tone }) {
   const markFor = (p) => {
     const art = (p && ART[p.id]) || {};
-    const fallback = p ? `${p.id}.png` : "zodiac.png";
+    // A null `p` is only ever the FROM side, and the label beside it already
+    // reads "Indexx" (see fromName). The mark has to agree with that word.
+    const fallback = p ? `${p.id}.png` : "indexx.png";
     return tone === "light" ? art.logo || fallback : art.logoBare || art.logo || fallback;
   };
   const fromName = (from && from.name) || "Indexx";
@@ -313,7 +315,15 @@ function Handoff({ from, to, logoBase, tone }) {
     >
       <div className={s.xcard} aria-hidden="true">
         <div className={s.xbrand}>
-          <img className={s.xbrandMark} src={`${logoBase}/zodiac.png`} alt="" />
+          {/*
+            The Indexx mark, not the Zodiac one.
+
+            Zodiac is the plumbing — the thing that carried the session across.
+            What the person is leaving and arriving at is Indexx, and this card
+            is the only moment in the jump where a brand is on screen at all.
+            Same 220x189 art box as zodiac.png, so the 26px rule is unchanged.
+          */}
+          <img className={s.xbrandMark} src={`${logoBase}/indexx.png`} alt="" />
           <span className={s.xlabel}>Moving you across</span>
         </div>
 
