@@ -1,4 +1,4 @@
-/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint 7df908509e1c) — edit the source there, not here. */
+/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint 678a1ea63da5) — edit the source there, not here. */
 /*
  * Zodiac launcher styles. SOURCE OF TRUTH: zodiac-embed/ — copied, never edited
  * in a consumer repo.
@@ -202,7 +202,6 @@
 }
 .panelLight .panelHead { border-bottom-color: rgba(0, 0, 0, 0.1); }
 
-.panelMark { display: block; height: 44px; width: auto; flex: 0 0 auto; }
 
 .panelTitleWrap { min-width: 0; display: block; }
 .panelTitle {
@@ -367,7 +366,6 @@
   .word { display: none; }
   .panel { padding: 14px; max-height: calc(100vh - 72px); }
   .groups, .rowsWide { grid-template-columns: 1fr; }
-  .panelMark { height: 34px; }
   .panelTitle { font-size: 17px; }
   .panelSub { font-size: 11.5px; }
   .panelCount { display: none; }
@@ -637,4 +635,56 @@
 .triggerIcon .grid > i {
   width: var(--zodiac-nav-dot-w, 5px);
   height: var(--zodiac-nav-dot-h, 4px);
+}
+
+/* ── "sign in with Indexx once to connect this account" ──────────────────────
+ *
+ * Shown only when the provider refused to link this product's own session
+ * because the email already belongs to an Indexx account (see linkRequired in
+ * zodiacAuth.js). Deliberately quiet: it is information, not an alarm, and the
+ * panel's job is still to show sixteen products.
+ */
+.linkNotice {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 12px 14px;
+  margin-bottom: 18px;
+  border: 1px solid var(--zdc-line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.linkNoticeText {
+  flex: 1 1 260px;
+  min-width: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  /* Not --zdc-dim: this line is the only explanation the person gets, and the
+     dim token is a 3:1 grey that fails at this size. */
+  color: inherit;
+}
+
+.linkNoticeAction {
+  flex: 0 0 auto;
+  /* 44px is the minimum comfortable target; this is the one control in the
+     panel that is not a whole product row. */
+  min-height: 44px;
+  padding: 0 18px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0b0b0d;
+  background: var(--zdc-green);
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.linkNoticeAction:hover { filter: brightness(1.08); }
+.linkNoticeAction:focus-visible { outline: 2px solid var(--zdc-green); outline-offset: 3px; }
+
+@media (max-width: 600px) {
+  .linkNoticeAction { width: 100%; }
 }

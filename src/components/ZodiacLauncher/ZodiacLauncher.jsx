@@ -1,4 +1,4 @@
-/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint 7df908509e1c) — edit the source there, not here. */
+/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint 678a1ea63da5) — edit the source there, not here. */
 "use client";
 /*
  * Client component: this reads window, holds state and portals to <body>.
@@ -492,7 +492,7 @@ export default function ZodiacLauncher({
        */
       if (auth && typeof auth.donateSession === "function") {
         try {
-          Promise.resolve(auth.donateSession()).catch(() => {});
+          client.donateProductSession(auth.donateSession).catch(() => {});
         } catch (_) {
           /* never let sign-on wiring take a header down */
         }
@@ -510,6 +510,16 @@ export default function ZodiacLauncher({
        reason to ask more than once per page load. */
   }, [auth && auth.issuer, auth && auth.clientId]);
   const [open, setOpen] = useState(false);
+  /*
+   * "This product could not be linked automatically."
+   *
+   * Set when the provider refused to donate this product's own session because
+   * an Indexx account already uses the same email and this product does not
+   * verify email addresses at signup — see donateProductSession in zodiacAuth.
+   * Read when the panel opens rather than held live: that is the only moment it
+   * is shown, and it is the moment the person is trying to move somewhere.
+   */
+  const [needsLink, setNeedsLink] = useState(false);
   /** The product being navigated TO while the handoff screen is up. */
   const [handoffTo, setHandoffTo] = useState(null);
   const handoffTimers = useRef([]);
@@ -561,9 +571,10 @@ export default function ZodiacLauncher({
           /* a failed adopt must never block the navigation */
         }
       }
-      if (auth && typeof auth.donateSession === "function") {
+      /* Through the ref, and guarded: see the note at the toggle's donate. */
+      if (authClientRef.current && auth && typeof auth.donateSession === "function") {
         try {
-          await auth.donateSession();
+          await authClientRef.current.donateProductSession(auth.donateSession);
         } catch (_) {
           /* likewise — never block the move */
         }
@@ -703,9 +714,20 @@ export default function ZodiacLauncher({
         /* never let sign-on wiring block the panel from opening */
       }
     }
-    if (auth && typeof auth.donateSession === "function") {
+    if (authClientRef.current) {
       try {
-        Promise.resolve(auth.donateSession()).catch(() => {});
+        setNeedsLink(Boolean(authClientRef.current.linkRequired()));
+      } catch (_) {
+        /* diagnostics only — never let this take the panel down */
+      }
+    }
+    /* The ref, not `client`: that binding belongs to the mount effect and does
+       not exist out here. Check it — the try/catch below would swallow a null
+       deref, and a swallowed TypeError reads exactly like "this product had
+       nothing to donate". */
+    if (authClientRef.current && auth && typeof auth.donateSession === "function") {
+      try {
+        authClientRef.current.donateProductSession(auth.donateSession).catch(() => {});
       } catch (_) {
         /* same */
       }
@@ -800,12 +822,15 @@ export default function ZodiacLauncher({
         }}
       >
         {/*
-          The grid in the bar is the affordance; the brand is here. This is the
-          moment someone learns the ecosystem has a name, so the mark leads at
-          full size rather than trailing in a footer.
+          The name leads, on its own.
+
+          The mark used to sit here at full size, on the reasoning that this is
+          the moment someone learns the ecosystem has a name. But the same mark
+          IS the button that opened this panel, a few pixels up and still on
+          screen — showing it twice explained nothing and took weight off the
+          one thing in this row that does the explaining, which is the name.
         */}
         <div className={s.panelHead}>
-          <img src={`${logoBase}/zodiac.png`} alt="" className={s.panelMark} />
           <span className={s.panelTitleWrap}>
             <span className={s.panelTitle}>Indexx Zodiac</span>
             <span className={s.panelSub}>
@@ -816,6 +841,48 @@ export default function ZodiacLauncher({
             {products.length} products · {GROUPS.length} groups
           </span>
         </div>
+
+        {/*
+          The one refusal a person can actually do something about.
+
+          This product signs its own sessions and does not verify email at
+          signup, so the provider will not hand it an estate account that
+          already uses the same address — that would be claiming an account
+          rather than creating one. The refusal is correct and it stays. What
+          was wrong is that it was invisible: the call failed silently and the
+          switcher simply never signed you in anywhere, with no way to find out
+          why.
+
+          Signing in with Indexx once proves the identity. After that this
+          product's own bridge records the subject, and every later sign-in
+          here connects on its own.
+
+          Offered, not forced: throwing someone off the page they are on to a
+          login screen they did not ask for is worse than the silence was. This
+          is where they already are when they try to move.
+        */}
+        {needsLink ? (
+          <div className={s.linkNotice}>
+            <span className={s.linkNoticeText}>
+              An Indexx account already uses this email. Sign in with Indexx
+              once to connect them — after that, signing in here signs you in
+              everywhere.
+            </span>
+            <button
+              type="button"
+              className={s.linkNoticeAction}
+              onClick={() => {
+                try {
+                  if (authClientRef.current) authClientRef.current.signIn();
+                } catch (_) {
+                  /* a failed sign-in must never break the panel */
+                }
+              }}
+            >
+              Sign in with Indexx
+            </button>
+          </div>
+        ) : null}
 
         <div className={s.groups}>
           {GROUPS.map((g) => {

@@ -1,4 +1,4 @@
-/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint 7df908509e1c) — edit the source there, not here. */
+/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint 678a1ea63da5) — edit the source there, not here. */
 /*
  * Indexx ID — the browser-side OIDC client (the "RP") every product embeds.
  *
@@ -250,6 +250,61 @@ export function createAuth(options) {
   return cache[key];
 }
 
+/**
+ * Tell every launcher on this page that the product just signed in.
+ *
+ * ── The gap this closes ──────────────────────────────────────────────────
+ *
+ * A launcher adopts at three moments: when it mounts, when the switcher is
+ * opened, and when leaving for another product. None of them is "the user just
+ * signed in". A product whose login RELOADS the page never noticed, because
+ * the mount after the reload is that moment by accident. A product whose login
+ * closes a modal and stays put did notice: the launcher had already mounted,
+ * signed out, with nothing to adopt, and did not look again until the user
+ * happened to touch the switcher. Sign in on EMMM, type bitcoinyay.com into
+ * the address bar, and you arrived signed out.
+ *
+ * ── Why a module function and not a client method ────────────────────────
+ *
+ * createAuth memoises per issuer|clientId|redirectUri, and a product calling
+ * createAuth again to get a handle would have to reproduce all three exactly —
+ * including the issuer default the launcher resolved from its own environment.
+ * Get one character wrong and you build a SECOND client with its own latch and
+ * its own single-flight, which adopts in parallel with the real one. So the
+ * product names nothing: every launcher already on the page is told, and each
+ * decides for itself whether it has anything to adopt.
+ *
+ * Safe to call more than once, and safe before the keys are written — it is
+ * the same single-flight adopt the launcher uses.
+ */
+export async function notifySignedIn() {
+  if (typeof window === "undefined") return false;
+
+  let cache = moduleInstances;
+  try {
+    cache = window[INSTANCE_CACHE_KEY] || moduleInstances;
+  } catch (_) {
+    /* frozen or proxied window — the module-level cache still has them */
+  }
+
+  const clients = [];
+  try {
+    for (const key of Object.keys(cache)) {
+      const client = cache[key];
+      if (client && typeof client.sessionStarted === "function") clients.push(client);
+    }
+  } catch (_) {
+    return false;
+  }
+  if (!clients.length) return false;
+
+  // Never let sign-on wiring break signing in. Each result is independent.
+  const results = await Promise.all(
+    clients.map((c) => c.sessionStarted().catch(() => false))
+  );
+  return results.some(Boolean);
+}
+
 function buildAuth(options) {
   /* Write the legacy localStorage keys each product's own header reads. On by
      default: without it the provider and the product disagree about whether you
@@ -302,6 +357,7 @@ function buildAuth(options) {
   const KEY_REFRESH = ns + "rt";      // refresh token, per tab
   const KEY_HYDRATED = ns + "estate";  // "this tab has already reloaded once"
   const KEY_ADOPT = ns + "adopt";     // "a handoff navigation already happened"
+  const KEY_LINK  = ns + "link";      // "the provider refused to link this account"
 
   /*
    * ── Where tokens live ────────────────────────────────────────────────────
@@ -1007,6 +1063,7 @@ function buildAuth(options) {
       await applyEstateSession();
       storeDel(KEY_SILENT); // signed in: the loop guards have nothing left to guard
       storeDel(KEY_ADOPT);
+      storeDel(KEY_LINK);   // a session exists; nothing is waiting to be linked
       return {
         status: "authenticated",
         user: claims,
@@ -1078,7 +1135,26 @@ function buildAuth(options) {
    * same token is never retried — which is the property the boolean was really
    * there to provide.
    */
+  /*
+   * SETTLED, not attempted.
+   *
+   * This used to be assigned before the fetch, which quietly meant "we tried
+   * once, never look again". A network blip, a provider restart, a tab that
+   * woke up offline — any of them burned the token for the rest of the page
+   * load, and the user stayed signed in here and nowhere else. It is now set
+   * only when the provider actually ANSWERED: adopted, or refused in a way
+   * that retrying cannot change. A failure we could not interpret leaves it
+   * null so the next moment (the switcher, the next page) tries again.
+   */
   let adoptedToken = null;
+
+  /*
+   * Single-flight, keyed on the token. The launcher fires adopt at three
+   * moments and a product may add a fourth by calling sessionStarted(); two of
+   * those landing together must not become two POSTs and two navigations.
+   * Concurrent callers for the same token observe the first one's result.
+   */
+  let adoptInFlight = null;
 
   /*
    * The handoff navigates the whole page, so it needs its own loop guard for
@@ -1094,6 +1170,80 @@ function buildAuth(options) {
   };
   const markAdoptHandoff = () => storeSet(KEY_ADOPT, String(Date.now()));
 
+  /**
+   * Spend a handoff code on a TOP-LEVEL navigation to /authorize.
+   *
+   * ── Why a navigation and not another fetch ───────────────────────────────
+   *
+   * For every product on a foreign registrable domain — bitcoinyay.com,
+   * eenymeenyminymoe.io, aiainai.ai, yaysapp.com, shoperpal.com,
+   * wallstreetindexx.com — the call that produced this code was a CROSS-SITE
+   * XHR, and a SameSite=Lax cookie cannot be SET by one: the browser discards
+   * the Set-Cookie without comment. The provider created the session and this
+   * browser kept nothing pointing at it. That is why signing in on EMMM used
+   * to sign you in on EMMM alone.
+   *
+   * Navigating there makes the request first-party, so the cookie is set
+   * normally and the flow continues exactly as it does everywhere else.
+   *
+   * prompt=none, because the user is already signed in HERE: if the handoff
+   * fails for any reason the provider must answer and get out of the way,
+   * never render a login form over the page they are looking at.
+   *
+   * @returns {Promise<boolean>} true if a navigation was started.
+   */
+  const spendAdoptCode = async (code) => {
+    if (!isBrowser() || typeof code !== "string" || !code) return false;
+    // Guard first, and only navigate if it stuck: a page that can navigate but
+    // cannot remember that it did is the loop itself.
+    if (!adoptHandoffAllowed() || !markAdoptHandoff()) return false;
+
+    let url = null;
+    try {
+      url = await buildAuthorizeUrl({ silent: true, prompt: "none", adoptCode: code });
+    } catch (_) {
+      url = null;
+    }
+    if (!url || !writeSilentMarker("pending")) return false;
+
+    silentAttemptedThisLoad = true;
+    navigate(url);
+    return true;
+  };
+
+  /**
+   * Hand the provider a credential and take the session back.
+   *
+   * `post` is the whole request; it differs between the estate-token route
+   * (/session/adopt) and the product-signed route (/session/federate), but
+   * everything after the response is identical, so it lives here once.
+   */
+  const runHandoff = async (post) => {
+    const r = await post();
+    // 4xx is an ANSWER: this credential is not adoptable and re-sending it
+    // will not change that. 5xx and a thrown fetch are not answers.
+    if (!r.ok) return { settled: r.status >= 400 && r.status < 500, ok: false };
+
+    let code = null;
+    try {
+      const data = await r.json();
+      if (data && typeof data.adopt_code === "string") code = data.adopt_code;
+    } catch (_) {
+      code = null;
+    }
+
+    if (await spendAdoptCode(code)) return { settled: true, ok: true };
+
+    /*
+     * No code (an older provider), or the handoff could not be guarded. Fall
+     * back to the original path: the cookie is all a same-site product ever
+     * needed, and silentSignIn picks it up through the normal flow so this
+     * client ends up holding provider-issued tokens rather than the legacy one.
+     */
+    await silentSignIn();
+    return { settled: true, ok: true };
+  };
+
   const adoptLocalSession = async () => {
     if (!isBrowser()) return false;
 
@@ -1105,78 +1255,122 @@ function buildAuth(options) {
     }
     if (!local) return false;
     if (local === adoptedToken) return false;
-    adoptedToken = local;
+    if (adoptInFlight && adoptInFlight.token === local) return adoptInFlight.promise;
     // Already signed in through the provider — nothing to adopt.
     if (isAccessTokenFresh() || getRefreshToken()) return false;
 
-    try {
-      const r = await fetch(issuer + "/session/adopt", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        // Lets the response set its cookie — which works only when this product
-        // and the provider share a registrable domain. See below.
-        credentials: "include",
-        body: JSON.stringify({ access_token: local, client_id: clientId }),
-      });
-      if (!r.ok) return false;
-
-      /*
-       * ── Why the response body matters more than the cookie ───────────────
-       *
-       * For the products on foreign domains (bitcoinyay.com,
-       * eenymeenyminymoe.io, aiainai.ai, yaysapp.com, shoperpal.com) the call
-       * above is a CROSS-SITE XHR, and a SameSite=Lax cookie cannot be SET by
-       * one — the browser discards the Set-Cookie without comment. The
-       * provider created the session; this browser kept nothing pointing at
-       * it. That is why signing in on EMMM used to sign you in on EMMM alone.
-       *
-       * So the provider also hands back a short-lived single-use code, and we
-       * spend it on a TOP-LEVEL navigation to /authorize — a first-party
-       * request to that origin, where the cookie is set normally and the flow
-       * continues exactly as it does for every other product.
-       *
-       * prompt=none, because the user is already signed in here: if the
-       * handoff fails for any reason the provider must answer and get out of
-       * the way, never render a login form over the page they are looking at.
-       */
-      let adoptCode = null;
+    const attempt = (async () => {
       try {
-        const data = await r.json();
-        if (data && typeof data.adopt_code === "string") adoptCode = data.adopt_code;
+        const result = await runHandoff(() =>
+          fetch(issuer + "/session/adopt", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            // Lets the response set its cookie, which works only when this
+            // product and the provider share a registrable domain. The code in
+            // the body is what covers the case where it does not.
+            credentials: "include",
+            body: JSON.stringify({ access_token: local, client_id: clientId }),
+          })
+        );
+        if (result.settled) adoptedToken = local;
+        return result.ok;
       } catch (_) {
-        adoptCode = null;
+        // Never answered. Leave the token unlatched so a later moment retries.
+        return false;
       }
+    })();
 
-      // markAdoptHandoff last, and only navigate if it stuck: without the guard
-      // persisting across the redirect there is no guard, and a page that can
-      // navigate but cannot remember that it did is the loop itself.
-      if (adoptCode && adoptHandoffAllowed() && markAdoptHandoff()) {
-        let url = null;
-        try {
-          url = await buildAuthorizeUrl({ silent: true, prompt: "none", adoptCode: adoptCode });
-        } catch (_) {
-          url = null;
-        }
-        if (url && writeSilentMarker("pending")) {
-          silentAttemptedThisLoad = true;
-          navigate(url);
-          return true;
-        }
-      }
+    adoptInFlight = { token: local, promise: attempt };
+    try {
+      return await attempt;
+    } finally {
+      if (adoptInFlight && adoptInFlight.promise === attempt) adoptInFlight = null;
+    }
+  };
+
+  /*
+   * Products that sign their OWN sessions — Wall Street and ShoperPal — have no
+   * estate token to adopt. They hand the provider their own and it verifies
+   * with them directly, through /session/federate. That route had the SAME
+   * cross-site Set-Cookie problem and the same fix, so the response is handled
+   * by the same code above.
+   *
+   * `donate` is the product's own function; it returns the provider's JSON.
+   */
+  let donatedThisLoad = false;
+  const donateProductSession = async (donate) => {
+    if (!isBrowser() || typeof donate !== "function") return false;
+    if (donatedThisLoad) return false;
+    if (isAccessTokenFresh() || getRefreshToken()) return false;
+    donatedThisLoad = true;
+    try {
+      const data = await donate();
 
       /*
-       * No code (an older provider), or the handoff could not be guarded.
-       * Fall back to the original path: the cookie is all a same-site product
-       * ever needed, and silentSignIn picks it up through the normal flow so
-       * this client ends up holding provider-issued tokens rather than the
-       * legacy one.
+       * ── The refusal that needs a person, not a retry ──────────────────────
+       *
+       * The provider answers 409 `account_exists` when an Indexx account
+       * already uses this email and the donating product does not verify email
+       * addresses at signup. Wall Street and ShoperPal both create an account
+       * from an address and a password with no confirmation step, so donating
+       * would hand over an estate account this product never proved the person
+       * owns. Refusing is correct and must stay correct.
+       *
+       * But it is not a dead end, and everyone treated it as one: the call
+       * returned, nothing happened, and the user was told nothing. The way out
+       * is for the person to prove the Indexx identity ONCE, by signing in with
+       * it — after which this product's own /api/auth/indexx bridge records the
+       * subject and every future donation is proven rather than asserted.
+       *
+       * So remember it, and let the launcher offer that sign-in where the user
+       * is already standing: in the switcher, at the moment they try to move.
+       * Doing it automatically would throw someone off the page they are on to
+       * a login screen they did not ask for.
        */
+      if (data && data.error === "account_exists") {
+        storeSet(KEY_LINK, String(Date.now()));
+        return false;
+      }
+
+      // A product on an older build returns true/undefined and relies on its
+      // cookie; one that knows about the handoff returns the provider's body.
+      const code = data && typeof data.adopt_code === "string" ? data.adopt_code : null;
+      if (await spendAdoptCode(code)) return true;
       await silentSignIn();
       return true;
     } catch (_) {
+      donatedThisLoad = false; // never answered — let a later moment retry
       return false;
     }
   };
+
+  /**
+   * True when this product's session could not be linked automatically and the
+   * person needs to sign in with Indexx once. See donateProductSession.
+   */
+  const linkRequired = () => {
+    if (!isBrowser()) return false;
+    if (isAccessTokenFresh() || getRefreshToken()) return false;
+    return Boolean(storeGet(KEY_LINK));
+  };
+
+  /** Clear it once a session exists — the link is no longer outstanding. */
+  const clearLinkRequired = () => storeDel(KEY_LINK);
+
+  /**
+   * Call this the moment YOUR OWN login succeeds.
+   *
+   * The launcher adopts at three moments — when it mounts, when the switcher is
+   * opened, and when leaving for another product. None of them is "the user
+   * just signed in", so a product that logs in without reloading (a modal that
+   * closes, a client-side route change) stayed signed in locally and nowhere
+   * else until the user happened to touch the switcher. Products that hard
+   * reload after login never noticed, which is why this gap survived.
+   *
+   * Safe to call more than once and safe to call before the token is written:
+   * it is the same single-flight adopt the launcher uses.
+   */
+  const sessionStarted = async () => adoptLocalSession();
 
   const signOut = async (args) => {
     if (!isBrowser()) return;
@@ -1226,6 +1420,7 @@ function buildAuth(options) {
      * cooldown left over from the session that just ended.
      */
     storeDel(KEY_ADOPT);
+    storeDel(KEY_LINK);
 
     const params = new URLSearchParams({ client_id: clientId });
     /*
@@ -1273,6 +1468,13 @@ function buildAuth(options) {
     getIdToken: () => idToken,
     signOut: signOut,
     adoptLocalSession: adoptLocalSession,
+    /** Call right after YOUR OWN login succeeds. See sessionStarted. */
+    sessionStarted: sessionStarted,
+    /** Used by the launcher for products that sign their own sessions. */
+    donateProductSession: donateProductSession,
+    /** True when the person must sign in with Indexx once to link. */
+    linkRequired: linkRequired,
+    clearLinkRequired: clearLinkRequired,
     getUser: getUser,
     hasAttemptedSilentSignIn: hasAttemptedSilentSignIn,
     getStatus: getStatus,
