@@ -1,4 +1,4 @@
-/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint ff8916268301) — edit the source there, not here. */
+/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint 678a1ea63da5) — edit the source there, not here. */
 "use client";
 /*
  * Client component: this reads window, holds state and portals to <body>.
@@ -571,9 +571,10 @@ export default function ZodiacLauncher({
           /* a failed adopt must never block the navigation */
         }
       }
-      if (auth && typeof auth.donateSession === "function") {
+      /* Through the ref, and guarded: see the note at the toggle's donate. */
+      if (authClientRef.current && auth && typeof auth.donateSession === "function") {
         try {
-          await client.donateProductSession(auth.donateSession);
+          await authClientRef.current.donateProductSession(auth.donateSession);
         } catch (_) {
           /* likewise — never block the move */
         }
@@ -720,9 +721,13 @@ export default function ZodiacLauncher({
         /* diagnostics only — never let this take the panel down */
       }
     }
-    if (auth && typeof auth.donateSession === "function") {
+    /* The ref, not `client`: that binding belongs to the mount effect and does
+       not exist out here. Check it — the try/catch below would swallow a null
+       deref, and a swallowed TypeError reads exactly like "this product had
+       nothing to donate". */
+    if (authClientRef.current && auth && typeof auth.donateSession === "function") {
       try {
-        client.donateProductSession(auth.donateSession).catch(() => {});
+        authClientRef.current.donateProductSession(auth.donateSession).catch(() => {});
       } catch (_) {
         /* same */
       }
