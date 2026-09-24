@@ -1,4 +1,4 @@
-/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint 48c6864b2a8c) — edit the source there, not here. */
+/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint 7975636513ee) — edit the source there, not here. */
 /*
  * Indexx ID — the browser-side OIDC client (the "RP") every product embeds.
  *
@@ -1356,6 +1356,13 @@ function buildAuth(options) {
    * Concurrent callers for the same token observe the first one's result.
    */
   let adoptInFlight = null;
+  /*
+   * The token a cookie-only (non-navigating) adopt has already been attempted
+   * for this load. Separate from `adoptedToken`, which means "the handoff
+   * COMPLETED": a cookie-only attempt deliberately leaves that unset so the
+   * real handoff still runs on the way out to another product.
+   */
+  let cookieAdoptedToken = null;
 
   /*
    * The handoff navigates the whole page, so it needs its own loop guard for
@@ -1419,7 +1426,7 @@ function buildAuth(options) {
    * (/session/adopt) and the product-signed route (/session/federate), but
    * everything after the response is identical, so it lives here once.
    */
-  const runHandoff = async (post) => {
+  const runHandoff = async (post, allowNavigation) => {
     const r = await post();
     // 4xx is an ANSWER: this credential is not adoptable and re-sending it
     // will not change that. 5xx and a thrown fetch are not answers.
@@ -1433,20 +1440,104 @@ function buildAuth(options) {
       code = null;
     }
 
-    if (await spendAdoptCode(code)) return { settled: true, ok: true };
+    /*
+     * ── The caller decides whether a top-level navigation is acceptable ────
+     *
+     * Everything below LEAVES THE PAGE. That is correct when the user just
+     * submitted a login form (notifySignedIn) — a bounce is what they expect
+     * — and wrong everywhere else.
+     *
+     * It was being reached from the switcher's toggle, which is an ordinary
+     * UI click: the user taps the waffle to read a list of products and the
+     * tab navigates to /authorize and back through this product's callback.
+     * Measured on BTCY at localhost:3004 — one click on the switcher produced
+     * `/` -> IDP/authorize -> /auth/callback -> `/`. The app remounts under
+     * the open panel, so the header renders signed-out for the whole round
+     * trip and the panel's own React state is destroyed. It reads exactly
+     * like "clicking the switcher signed me out", which is how it was
+     * reported.
+     *
+     * Declining to navigate is not a no-op: the POST above already created
+     * the session row, and for every product that shares a registrable domain
+     * with the provider the Set-Cookie on that response is all that was ever
+     * needed. Only foreign domains (bitcoinyay.com and friends) need the trip
+     * — and for those it is deferred to beginHandoff, where the user is
+     * already leaving and a navigation costs nothing.
+     *
+     * `settled: false` is the load-bearing half: adoptLocalSession latches
+     * `adoptedToken` only on a settled result, so declining here leaves the
+     * token unlatched and the real handoff still happens on the way out.
+     */
+    if (!allowNavigation) return { settled: false, ok: false };
 
     /*
-     * No code (an older provider), or the handoff could not be guarded. Fall
-     * back to the original path: the cookie is all a same-site product ever
-     * needed, and silentSignIn picks it up through the normal flow so this
-     * client ends up holding provider-issued tokens rather than the legacy one.
+     * A navigation was STARTED — not finished. `settled: false` deliberately
+     * leaves `adoptedToken` unlatched.
+     *
+     * beginHandoff awaits this and then, ~620ms later, assigns the
+     * destination URL. Whichever assignment the browser commits first wins,
+     * and the loser is discarded silently. Latching on "started" meant that
+     * when the destination won, the adopt code was never spent, no provider
+     * session existed, and this client had recorded the handoff as done — so
+     * it never tried again. The user arrived at the product they picked,
+     * signed out, permanently.
+     *
+     * Not latching costs nothing on the path where the navigation DOES
+     * commit: the page comes back holding provider-issued tokens, and
+     * isAccessTokenFresh()/getRefreshToken() above already stop any further
+     * adopt. And adoptHandoffAllowed()'s cooldown bounds the retry either way.
      */
-    await silentSignIn();
-    return { settled: true, ok: true };
+    if (await spendAdoptCode(code)) return { settled: false, ok: true };
+
+    /*
+     * The code could not be spent — no code at all (an older provider), or
+     * spendAdoptCode declined because its 30s cooldown was still running.
+     *
+     * Fall back to the original path: the cookie is all a same-site product
+     * ever needed, and silentSignIn picks it up through the normal flow so
+     * this client ends up holding provider-issued tokens rather than the
+     * legacy one.
+     *
+     * ── Why the result is CHECKED and no longer assumed ───────────────────
+     *
+     * This used to `await silentSignIn()` and unconditionally report
+     * { settled: true, ok: true }. But silentSignIn is capped at one attempt
+     * per page load (`silentAttemptedThisLoad`), and on the page where someone
+     * signs in that attempt has ALWAYS already happened — the launcher made it
+     * at mount, while they were still signed out, and the provider answered
+     * login_required. So the fallback returned instantly with
+     * reason "already_attempted", having done nothing at all, and we latched
+     * adoptedToken as though the handoff had completed.
+     *
+     * The result was a product that believed it had published the session and
+     * never tried again: sign in on Bitcoin Yay, move to any other product,
+     * and nothing recognises you — permanently, for the life of that token.
+     * Reported as "if I login to btcy directly and move around any other
+     * platform it doesnt authenticate me".
+     *
+     * Only a genuinely authenticated answer settles this. Anything else leaves
+     * the token unlatched so the next real opportunity — the switcher opening,
+     * or beginHandoff on the way out — tries again. adoptHandoffAllowed()'s
+     * cooldown still bounds how often that can reach the network.
+     */
+    const fallback = await silentSignIn();
+    const authenticated = Boolean(fallback && fallback.status === "authenticated");
+    return { settled: authenticated, ok: authenticated };
   };
 
-  const adoptLocalSession = async () => {
+  /**
+   * Turn a session the product established on its OWN login form into an
+   * Indexx ID session.
+   *
+   * @param {{allowNavigation?: boolean}} [opts] Pass `allowNavigation: false`
+   *   from anything that is not already a navigation — a UI click, a mount,
+   *   an effect. The POST still runs (and still sets the cookie wherever the
+   *   product and the provider share a registrable domain); only the
+   *   top-level round trip is withheld. See the note in runHandoff.
+   */
+  const adoptLocalSession = async (opts) => {
     if (!isBrowser()) return false;
+    const allowNavigation = !(opts && opts.allowNavigation === false);
 
     let local = null;
     try {
@@ -1456,9 +1547,26 @@ function buildAuth(options) {
     }
     if (!local) return false;
     if (local === adoptedToken) return false;
-    if (adoptInFlight && adoptInFlight.token === local) return adoptInFlight.promise;
+    /*
+     * A cookie-only attempt for this same token already ran this load. It
+     * cannot do any more than it did the first time, and the toggle fires on
+     * every open, so without this the panel POSTs to /session/adopt on each
+     * tap. A caller that CAN navigate is a different question and falls
+     * through.
+     */
+    if (!allowNavigation && local === cookieAdoptedToken) return false;
+    /*
+     * Reuse an attempt in flight only when it is the same KIND of attempt:
+     * a cookie-only one resolves without spending the code, so handing it to
+     * a caller that was willing to navigate would report the handoff done
+     * when nothing left the page.
+     */
+    if (adoptInFlight && adoptInFlight.token === local && adoptInFlight.nav === allowNavigation) {
+      return adoptInFlight.promise;
+    }
     // Already signed in through the provider — nothing to adopt.
     if (isAccessTokenFresh() || getRefreshToken()) return false;
+    if (!allowNavigation) cookieAdoptedToken = local;
 
     const attempt = (async () => {
       try {
@@ -1471,7 +1579,8 @@ function buildAuth(options) {
             // the body is what covers the case where it does not.
             credentials: "include",
             body: JSON.stringify({ access_token: local, client_id: clientId }),
-          })
+          }),
+          allowNavigation
         );
         if (result.settled) adoptedToken = local;
         return result.ok;
@@ -1481,7 +1590,7 @@ function buildAuth(options) {
       }
     })();
 
-    adoptInFlight = { token: local, promise: attempt };
+    adoptInFlight = { token: local, nav: allowNavigation, promise: attempt };
     try {
       return await attempt;
     } finally {

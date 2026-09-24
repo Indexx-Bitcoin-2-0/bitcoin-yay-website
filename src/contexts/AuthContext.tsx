@@ -22,7 +22,7 @@ import {
   handleAuthFailure,
   invalidateIfAuthorizationExpired,
 } from "@/lib/auth-session";
-// @ts-ignore — zodiacAuth.js is plain JS, synced from zodiac-embed, no types
+// zodiacAuth.js is plain JS, synced from zodiac-embed — allowJs resolves it, no directive needed
 import {
   notifySignedIn,
   notifySignedOut,
@@ -39,6 +39,81 @@ const getAccessTokenExpiryMs = (token?: string): number | null => {
     return null;
   }
   return decoded.exp * 1000;
+};
+
+/*
+ * ── Only THIS product's backend may declare THIS product's session dead ────
+ *
+ * The effect below replaces window.fetch for the whole page, so EVERY fetch
+ * any code makes — including the Zodiac launcher's — runs through it, and any
+ * authenticated response that was not ok used to invalidate the session.
+ *
+ * That is how opening the Zodiac switcher signed the user out. The launcher's
+ * loadHub() (ZodiacLauncher.jsx:751) fetches /api/v1/zodiac/hub with a Bearer
+ * token the moment the panel opens. That endpoint answers 401 whenever it does
+ * not accept the token — a perfectly ordinary answer from a DIFFERENT service,
+ * about a DIFFERENT credential. handleAuthFailure took it as proof that the
+ * Bitcoin Yay session had expired, dispatched AUTH_SESSION_INVALID, and
+ * clearLocalSession() wiped storage: the header behind the open panel fell back
+ * to Login/Register with no navigation, and the panel lost the account it had
+ * just shown. All three of the reported symptoms, from one foreign 401.
+ *
+ * A 401 from someone else's API means "this token is not valid for THAT
+ * service". It says nothing about this one. So the interceptor now listens
+ * only to our own origin and our own API host.
+ */
+const originOf = (raw?: string | null): string | null => {
+  if (!raw) return null;
+  try {
+    return new URL(raw).origin;
+  } catch {
+    return null;
+  }
+};
+
+const OWN_API_ORIGIN = originOf(process.env.NEXT_PUBLIC_API_URL);
+const IDP_ORIGIN = originOf(process.env.NEXT_PUBLIC_IDP_ISSUER);
+
+/*
+ * Endpoints that answer about a DIFFERENT credential than this product's.
+ *
+ * Matching on path and not only on origin is the load-bearing part: in
+ * production the Zodiac hub is served by the same monolith as Bitcoin Yay's
+ * own API (/api/v1/zodiac/hub on api.v1.indexx.ai), so an origin allowlist
+ * alone would not tell them apart and the bug would survive deployment even
+ * though it looked fixed on localhost, where the two run on different ports.
+ */
+const isForeignAuthSurface = (url: URL): boolean => {
+  if (/\/api\/v\d+\/zodiac\//.test(url.pathname)) return true;
+  if (IDP_ORIGIN && url.origin === IDP_ORIGIN) return true;
+  return false;
+};
+
+/**
+ * True when a failed authenticated response is evidence about OUR session.
+ *
+ * When NEXT_PUBLIC_API_URL is unset we cannot positively identify our own API,
+ * so we keep the previous behaviour — trust any authenticated request — minus
+ * the foreign auth surfaces above. That keeps genuine expiry handling working
+ * while still refusing to be signed out by someone else's 401.
+ */
+const isOwnApiRequest = (input: RequestInfo | URL): boolean => {
+  if (typeof window === "undefined") return false;
+  let href: string;
+  if (typeof input === "string") href = input;
+  else if (input instanceof URL) href = input.href;
+  else if (input instanceof Request) href = input.url;
+  else return false;
+
+  try {
+    const url = new URL(href, window.location.href);
+    if (isForeignAuthSurface(url)) return false;
+    if (url.origin === window.location.origin) return true;
+    if (OWN_API_ORIGIN) return url.origin === OWN_API_ORIGIN;
+    return true;
+  } catch {
+    return false;
+  }
 };
 
 const isAccessTokenExpired = (token?: string): boolean => {
@@ -75,22 +150,44 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  /*
+   * Clear this product's storage — and only this product's.
+   *
+   * This used to be window.localStorage.clear(), which takes the whole origin
+   * with it. The Zodiac launcher keeps its OIDC state under "zodiac." on the
+   * same origin (its PKCE verifier, refresh token, silent-sign-in markers), so
+   * a Bitcoin Yay logout was also destroying the single sign-on client sitting
+   * next to it. Combined with the foreign-401 bug above, that is why the
+   * switcher panel lost the account it had just displayed: the keys it reads
+   * had been deleted out from under it.
+   *
+   * clearAuthData() already removes every key this product owns, precisely
+   * (lib/auth.ts). Anything preserved here belongs to somebody else, and
+   * signing out of Zodiac is zodiacAuth's own signOut() — not ours to do by
+   * side effect.
+   */
   const clearBrowserStorage = useCallback(() => {
     if (typeof window === "undefined") {
       return;
     }
 
-    try {
-      window.localStorage.clear();
-    } catch (error) {
-      console.warn("Unable to clear localStorage during logout", error);
-    }
+    const preserve = (key: string) => key.startsWith("zodiac.");
 
-    try {
-      window.sessionStorage.clear();
-    } catch (error) {
-      console.warn("Unable to clear sessionStorage during logout", error);
-    }
+    const sweep = (store: Storage, label: string) => {
+      try {
+        const doomed: string[] = [];
+        for (let i = 0; i < store.length; i += 1) {
+          const key = store.key(i);
+          if (key && !preserve(key)) doomed.push(key);
+        }
+        doomed.forEach((key) => store.removeItem(key));
+      } catch (error) {
+        console.warn(`Unable to clear ${label} during logout`, error);
+      }
+    };
+
+    sweep(window.localStorage, "localStorage");
+    sweep(window.sessionStorage, "sessionStorage");
   }, []);
 
   /*
@@ -247,8 +344,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         init?.headers ?? (input instanceof Request ? input.headers : undefined)
       );
       const authorization = requestHeaders.get("Authorization");
-      const isAuthenticatedRequest = Boolean(authorization);
-      invalidateIfAuthorizationExpired(authorization);
+      /*
+       * Scoped deliberately — see isOwnApiRequest above. Without this, the
+       * Zodiac hub's 401 signs the user out of Bitcoin Yay.
+       */
+      const isOwnApi = isOwnApiRequest(input);
+      const isAuthenticatedRequest = Boolean(authorization) && isOwnApi;
+      if (isOwnApi) invalidateIfAuthorizationExpired(authorization);
       const response = await originalFetch(input, init);
 
       if (isAuthenticatedRequest) {
@@ -281,7 +383,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       (error: unknown) => {
         if (axios.isAxiosError(error)) {
           const authorization = error.config?.headers?.get?.("Authorization");
-          if (authorization && error.response) {
+          // Same rule as the fetch path: only our own API's 401 is about us.
+          const target = error.config?.url
+            ? new URL(error.config.url, error.config.baseURL || window.location.href).href
+            : null;
+          if (authorization && error.response && target && isOwnApiRequest(target)) {
             handleAuthFailure(error.response, error.response.data);
           }
         }

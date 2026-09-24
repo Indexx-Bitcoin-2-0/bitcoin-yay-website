@@ -1,4 +1,4 @@
-/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint 48c6864b2a8c) — edit the source there, not here. */
+/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint 7975636513ee) — edit the source there, not here. */
 "use client";
 /*
  * Client component: this reads window, holds state and portals to <body>.
@@ -39,6 +39,13 @@ import s from "./zodiac-launcher.module.css";
  * Measured by fitting an ellipse to the Bitcoin Yay coin artwork, not eyeballed.
  * Every oval in the ecosystem uses it, including the nine in the grid.
  */
+/*
+ * What the switcher calls itself, in the tooltip and to assistive technology.
+ * Names the product AND says what it does: "Indexx Zodiac" alone does not tell
+ * a first-time user that this is how you move between products.
+ */
+const TRIGGER_LABEL = "Indexx Zodiac — switch products";
+
 const OVAL_ANGLE = -38.4;
 
 const GROUPS = [
@@ -395,11 +402,17 @@ export default function ZodiacLauncher({
   dashboardUrl = DEFAULT_DASHBOARD,
   /**
    * Explicit prop wins, then the build-time env var, then production.
-   * The `= undefined` is load-bearing: without a default, TypeScript infers the
-   * prop as REQUIRED in the two CRA repos (both set `allowJs`) and every call
-   * site that omits it fails to compile with TS2741.
+   *
+   * The default is load-bearing TWICE, which is why it is a cast and not a
+   * bare `undefined`. Without ANY default, TypeScript infers the prop as
+   * REQUIRED in the repos that set `allowJs`, and every call site omitting it
+   * fails with TS2741. With a bare `= undefined` it infers the type as
+   * literally `undefined`, and every call site PASSING one fails with TS2322 —
+   * which is what broke ai ai N ai's build (Sidebar.tsx:658) and would have
+   * broken Wall Street's the moment it type-checked (UniversalSidebar.tsx:624).
+   * The cast satisfies both.
    */
-  apiBase = undefined,
+  apiBase = /** @type {any} */ (undefined),
   tone = "dark",
   /**
    * "nav"  — a sidebar row that inherits the host's colour and type.
@@ -407,7 +420,7 @@ export default function ZodiacLauncher({
    *          whatever the mobile shells end up needing).
    * See .triggerNav / .triggerIcon in the stylesheet.
    */
-  variant = undefined,
+  variant = /** @type {any} */ (undefined),
   logoBase = "/logos",
   /**
    * Per-platform palette, applied as CSS custom properties.
@@ -594,6 +607,16 @@ export default function ZodiacLauncher({
   const loadedHub = useRef(false);
   /* Who the panel says you are. Read on open, never polled. */
   const [account, setAccount] = useState(null);
+  /*
+   * The tooltip's viewport position, or null when hidden.
+   *
+   * A real element rather than the `title` attribute, for one reason: `title`
+   * is shown by the browser after a delay of roughly a second that no page can
+   * configure or remove. For the one control in these headers whose meaning is
+   * not conventional — nine ovals — a label that arrives a second late is a
+   * label most people never see. This appears on the first frame.
+   */
+  const [tip, setTip] = useState(null);
 
   useEffect(() => setMounted(true), []);
 
@@ -780,6 +803,40 @@ export default function ZodiacLauncher({
     }
   }, []);
 
+  /*
+   * Position from the trigger's own rect, measured at the moment it is shown.
+   *
+   * Fixed coordinates and portalled to <body>, the same reason the panel is:
+   * every one of these headers has an ancestor with overflow, and a tooltip
+   * rendered inside the button would be clipped by it.
+   *
+   * Nothing is shown while the panel is open — the panel names itself, and a
+   * tooltip over it is noise.
+   */
+  const showTip = useCallback(() => {
+    if (open) return;
+    const el = triggerRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    /*
+     * Anchor to whichever edge keeps it on screen.
+     *
+     * Centred under the trigger is the nice default and the wrong one here:
+     * this control sits in the TOP-RIGHT corner of every product, so a centred
+     * label ran off the right of the viewport — measured 1496px on a 1440px
+     * window. Deciding from the trigger's own position needs no measurement of
+     * the tooltip itself, so there is no second pass and nothing flickers.
+     */
+    const vw = window.innerWidth;
+    const centre = r.left + r.width / 2;
+    const top = r.bottom + 8;
+    if (centre > vw * 0.72) return setTip({ top, right: Math.max(8, vw - r.right), place: "end" });
+    if (centre < vw * 0.28) return setTip({ top, left: Math.max(8, r.left), place: "start" });
+    setTip({ top, left: centre, place: "center" });
+  }, [open]);
+
+  const hideTip = useCallback(() => setTip(null), []);
+
   const toggle = () => {
     /*
      * Re-check for a session the product established on its OWN login form.
@@ -787,13 +844,27 @@ export default function ZodiacLauncher({
      * adoptLocalSession turns that into an Indexx ID session, and this is the
      * moment it matters: the user has just signed in here and is reaching for
      * the switcher to go somewhere else. Running it only at mount missed that
-     * entirely — at mount they were still signed out. Cheap and idempotent:
-     * the client latches on the token value, so this is a no-op unless a NEW
-     * token has appeared since the last attempt.
+     * entirely — at mount they were still signed out.
+     *
+     * ── allowNavigation: false, and why it is not optional ────────────────
+     *
+     * This used to be described as "cheap and idempotent". It was neither.
+     * adoptLocalSession spends the provider's adopt_code on a TOP-LEVEL
+     * navigation, so opening the panel could take the whole tab with it —
+     * measured on BTCY: one click on the waffle produced `/` ->
+     * IDP/authorize -> /auth/callback -> `/`. The user sees the header behind
+     * the open panel fall back to Login/Register for the round trip, and the
+     * panel loses its own state because the app remounted under it. Reported
+     * as "when I click the zodiac switcher the authentication is gone".
+     *
+     * Opening a menu must never navigate. The POST still runs, so every
+     * product sharing a registrable domain with the provider still gets its
+     * cookie here; the foreign domains that genuinely need the round trip get
+     * it in beginHandoff, on the way out, where a navigation is the point.
      */
     if (authClientRef.current) {
       try {
-        authClientRef.current.adoptLocalSession().catch(() => {});
+        authClientRef.current.adoptLocalSession({ allowNavigation: false }).catch(() => {});
       } catch (_) {
         /* never let sign-on wiring block the panel from opening */
       }
@@ -918,6 +989,79 @@ export default function ZodiacLauncher({
       document.removeEventListener("mousedown", onClick);
     };
   }, [open, close]);
+
+  /*
+   * Hold the page still while the panel is open.
+   *
+   * The panel is fixed and portalled to <body>, so the document behind it stays
+   * perfectly scrollable: a wheel over the scrim moved the page, and once the
+   * panel's own list hit its end the scroll CHAINED out to the document and
+   * carried on. Either way the user came back to a different place than they
+   * left, and the panel read as pasted on top of the page rather than as a
+   * layer of it.
+   *
+   * `position: fixed` on <body> rather than `overflow: hidden`, because
+   * overflow alone does not hold iOS Safari, which scrolls the document anyway.
+   * Pinning the body collapses it to the viewport, so the offset has to be put
+   * back as a negative `top` or the page jumps to the top the moment it locks —
+   * and restored on the way out, which is the part that makes the position
+   * survive rather than merely freeze.
+   *
+   * The scrollbar disappearing with it would reflow everything a few pixels
+   * wider, so its width is added back as padding. Measured, not assumed:
+   * overlay scrollbars (macOS default, all of mobile) have zero width and must
+   * get zero padding.
+   *
+   * Every value read here is the INLINE style, and every one is put back
+   * exactly as found — including "was not set at all", which restores to "".
+   * A product that sets its own body styles must not have them rewritten by a
+   * switcher being opened.
+   */
+  useEffect(() => {
+    if (!open) return undefined;
+    if (typeof window === "undefined" || !document.body) return undefined;
+
+    const body = document.body;
+    const scrollY = window.scrollY || window.pageYOffset || 0;
+    const barWidth = window.innerWidth - document.documentElement.clientWidth;
+
+    const prior = {
+      position: body.style.position,
+      top: body.style.top,
+      left: body.style.left,
+      right: body.style.right,
+      width: body.style.width,
+      overflow: body.style.overflow,
+      paddingRight: body.style.paddingRight,
+    };
+
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.left = "0";
+    body.style.right = "0";
+    body.style.width = "100%";
+    body.style.overflow = "hidden";
+    if (barWidth > 0) {
+      const existing = parseFloat(window.getComputedStyle(body).paddingRight) || 0;
+      body.style.paddingRight = `${existing + barWidth}px`;
+    }
+
+    return () => {
+      Object.keys(prior).forEach((k) => {
+        body.style[k] = prior[k];
+      });
+      /*
+       * Put them back where they were. Instant, not smooth: a product with
+       * `scroll-behavior: smooth` would otherwise animate the restore and the
+       * page would visibly slide as the panel closes.
+       */
+      try {
+        window.scrollTo({ top: scrollY, left: 0, behavior: "instant" });
+      } catch (_) {
+        window.scrollTo(0, scrollY);
+      }
+    };
+  }, [open]);
 
   const inGroup = (id) => products.filter((p) => p.group === id);
 
@@ -1085,8 +1229,30 @@ export default function ZodiacLauncher({
         className={`${s.trigger} ${variant === "nav" ? s.triggerNav : ""} ${variant === "icon" ? s.triggerIcon : ""} ${open ? s.triggerOpen : ""}`}
         aria-haspopup="dialog"
         aria-expanded={open}
-        aria-label="Indexx ecosystem"
+        /*
+         * `title` and `aria-label` carry the SAME words on purpose.
+         *
+         * There was no title at all, so the control had no tooltip and nothing
+         * on hover said what the nine ovals were — the one icon in the header
+         * whose meaning is not conventional. aria-label overrides title for
+         * assistive technology, so letting them differ would mean a screen
+         * reader and a sighted user being told two different things about the
+         * same button.
+         */
+        /*
+         * No `title`. It would render a SECOND, OS-drawn tooltip a beat after
+         * this one, saying the same thing twice in two places.
+         *
+         * The accessible name is unaffected: `aria-label` is what assistive
+         * technology reads, and the element below is aria-hidden because it is
+         * a visual echo of that same name.
+         */
+        aria-label={TRIGGER_LABEL}
         onClick={toggle}
+        onMouseEnter={showTip}
+        onMouseLeave={hideTip}
+        onFocus={showTip}
+        onBlur={hideTip}
       >
         <span className={s.grid} aria-hidden="true">
           {Array.from({ length: 9 }).map((_, i) => (
@@ -1116,6 +1282,26 @@ export default function ZodiacLauncher({
       {withDashboard && (
         <ZodiacDashboardLink dashboardUrl={dashboardUrl} tone={tone} />
       )}
+
+      {tip && !open && mounted && typeof document !== "undefined"
+        ? createPortal(
+            <span
+              className={`${s.tip} ${tone === "light" ? s.tipLight : ""} ${
+                tip.place === "end" ? s.tipEnd : tip.place === "start" ? s.tipStart : ""
+              }`}
+              style={
+                tip.place === "end"
+                  ? { top: tip.top, right: tip.right }
+                  : { top: tip.top, left: tip.left }
+              }
+              role="presentation"
+              aria-hidden="true"
+            >
+              {TRIGGER_LABEL}
+            </span>,
+            document.body
+          )
+        : null}
 
       {open && mounted && typeof document !== "undefined"
         ? createPortal(panel, document.body)

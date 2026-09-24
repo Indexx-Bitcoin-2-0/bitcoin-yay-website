@@ -1142,7 +1142,27 @@ const Navbar: React.FC = () => {
             {headerData.map((element, idx) => (
               <li
                 key={idx}
-                className="list-none p-[9px_15px] group"
+                /*
+                 * `whitespace-nowrap` is the alignment fix, and the padding is
+                 * what makes it fit.
+                 *
+                 * The desktop row turns on at xl (1280px) and needs 904px for
+                 * its eleven items at the old 15px side padding — but only has
+                 * 856px at 1440 and 801px at 1280. So multi-word labels broke
+                 * across two lines: "Buy BTCY", "Sell BTCY" and "Mining
+                 * Station" rendered 41px tall against 17px for their
+                 * neighbours, which is what threw the row off a single
+                 * baseline. Measured on a 13" viewport, where it is visible;
+                 * a 16" screen has the room and never showed it.
+                 *
+                 * nowrap alone would only trade wrapping for overflow, so the
+                 * side padding drops to 9px until 2xl. Eleven items × 6px × two
+                 * sides reclaims 132px — more than the 103px shortfall at the
+                 * narrowest width the desktop row is used at. 2xl keeps the
+                 * original spacing, so nothing changes on the large screens
+                 * where this already looked right.
+                 */
+                className="list-none p-[9px_9px] 2xl:p-[9px_15px] group whitespace-nowrap"
                 onMouseEnter={() =>
                   updateBackDropVisibility(!element.hasMegaDrop ? "" : "enter")
                 }
@@ -1246,46 +1266,63 @@ const Navbar: React.FC = () => {
             </div>
           )}
 
-          {/* Zodiac closes the right-hand cluster, after the account controls —
-              the same slot it takes on every other product, where a theme
-              switcher sits to its right. Bitcoin Yay has none, so it is last. */}
-          <ZodiacLauncher
-            productId="btcy"
-            tone="dark"
-            auth={{
-              clientId: "indexx-btcy",
-              /*
-               * No reload after a silent sign-in. AuthContext listens for
-               * "zodiac:session" and re-reads storage in place (AuthContext.tsx,
-               * the effect next to checkAuth), so the header re-renders on its
-               * own. The reload this replaces threw the tokens away and made the
-               * tab re-authenticate from the refresh token — a second /id/token
-               * grant and a second /session/legacy mint for one sign-in, plus
-               * the full-screen "Signing you in…" flash.
-               */
-              reloadOnSession: false,
-              /*
-               * This product does not read the estate's legacy keys. Its
-               * isAuthenticated() is `getAuthData() !== null`, and getAuthData
-               * reads the JSON User under `bitcoinYayAuth` — so writing
-               * access_token/email alone left the header showing Login while
-               * the user was, in fact, signed in. Store the session in the
-               * shape this app actually asks for.
-               */
-              onSession: (s: any) =>
-                s.access_token &&
-                saveAuthData({
-                  email: s.email,
-                  name: s.username || s.email,
-                  access_token: s.access_token,
-                  refresh_token: s.refresh_token || "",
-                  role: "",
-                  userType: s.userType || "",
-                  shortToken: "",
-                  username: s.username || undefined,
-                }),
-            }}
-          />
+        </div>
+
+        {/*
+          Outside the desktop-only cluster on purpose.
+          
+          This used to live inside `hidden xl:flex`, so below 1280px it vanished
+          with the rest of the desktop nav and the switcher was simply gone —
+          the one control that is supposed to be reachable from every product,
+          at every size, missing on the sizes most laptops actually use. It is
+          not in the hamburger either: the whole point is to move BETWEEN
+          products, which should not require opening this product's own menu.
+
+          One instance, always rendered. Mounting a second copy for mobile would
+          put two launchers on the page, each with its own mount effect and its
+          own silent-sign-in attempt.
+        */}
+        <div className="flex items-center ml-4 xl:ml-8">
+            {/* Zodiac closes the right-hand cluster, after the account controls —
+                the same slot it takes on every other product, where a theme
+                switcher sits to its right. Bitcoin Yay has none, so it is last. */}
+            <ZodiacLauncher
+              productId="btcy"
+              tone="dark"
+              auth={{
+                clientId: "indexx-btcy",
+                /*
+                 * No reload after a silent sign-in. AuthContext listens for
+                 * "zodiac:session" and re-reads storage in place (AuthContext.tsx,
+                 * the effect next to checkAuth), so the header re-renders on its
+                 * own. The reload this replaces threw the tokens away and made the
+                 * tab re-authenticate from the refresh token — a second /id/token
+                 * grant and a second /session/legacy mint for one sign-in, plus
+                 * the full-screen "Signing you in…" flash.
+                 */
+                reloadOnSession: false,
+                /*
+                 * This product does not read the estate's legacy keys. Its
+                 * isAuthenticated() is `getAuthData() !== null`, and getAuthData
+                 * reads the JSON User under `bitcoinYayAuth` — so writing
+                 * access_token/email alone left the header showing Login while
+                 * the user was, in fact, signed in. Store the session in the
+                 * shape this app actually asks for.
+                 */
+                onSession: (s: any) =>
+                  s.access_token &&
+                  saveAuthData({
+                    email: s.email,
+                    name: s.username || s.email,
+                    access_token: s.access_token,
+                    refresh_token: s.refresh_token || "",
+                    role: "",
+                    userType: s.userType || "",
+                    shortToken: "",
+                    username: s.username || undefined,
+                  }),
+              }}
+            />
         </div>
 
         {/* Mobile Menu */}
