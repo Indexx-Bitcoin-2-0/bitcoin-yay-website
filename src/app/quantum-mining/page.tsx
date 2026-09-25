@@ -1,9 +1,10 @@
 "use client";
 
-import { EXTERNAL_URLS } from "@/lib/api-config";
+import { API_BASE_URL, EXTERNAL_URLS } from "@/lib/api-config";
 
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { IndexxPayClient } from "indexx-pay-js-sdk";
 import { ChevronDown, Check } from "lucide-react";
 import {
   Accordion,
@@ -14,6 +15,7 @@ import {
 import CustomButton2 from "@/components/CustomButton2";
 import PaymentPopup from "./PaymentPopup";
 import WireTransferPopup from "./WireTransferPopup";
+import IndexxPayPopup from "./IndexxPayPopup";
 import LoginPopup from "@/components/LoginPopup";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -284,7 +286,11 @@ const isCompletedStatus = (status?: string) => {
   );
 };
 
-const PAYMENT_OPTIONS = [
+// Two different kinds of thing were being flattened into one list: a
+// currency you already hold (USDT, USDC, USD -- you're paying with a
+// balance) versus a payment method/portal that moves new money in
+// (Indexx Pay, PayPal, a wire, a card processor).
+const CURRENCY_PAYMENT_OPTIONS = [
   {
     name: "USDT",
     icon: USDTIcon,
@@ -298,16 +304,25 @@ const PAYMENT_OPTIONS = [
     inputIconClassName: "w-10 h-10",
   },
   {
-    name: "PayPal",
-    icon: PaypalIcon,
-    optionIconClassName: "w-10 h-10",
-    inputIconClassName: "w-10 h-10",
-  },
-  {
     name: "USD",
     icon: USDIcon,
     optionIconClassName: "w-10 h-10",
     inputIconClassName: "w-14 h-10",
+  },
+] as const;
+
+const METHOD_PAYMENT_OPTIONS = [
+  {
+    name: "Indexx Pay",
+    icon: "/logos/pay.png",
+    optionIconClassName: "w-10 h-10 rounded-lg",
+    inputIconClassName: "w-10 h-10 rounded-lg",
+  },
+  {
+    name: "PayPal",
+    icon: PaypalIcon,
+    optionIconClassName: "w-10 h-10",
+    inputIconClassName: "w-10 h-10",
   },
   {
     name: "Wire Transfer",
@@ -322,6 +337,11 @@ const PAYMENT_OPTIONS = [
     inputIconClassName: "w-10 h-10",
     disabled: true,
   },
+] as const;
+
+const PAYMENT_OPTIONS = [
+  ...CURRENCY_PAYMENT_OPTIONS,
+  ...METHOD_PAYMENT_OPTIONS,
 ] as const;
 
 const AUTO_CHECK_DURATION_MS = 2 * 60 * 1000;
@@ -372,17 +392,26 @@ const isConfirmedQuantumPayment = (
 
 const QuantumMiningPage = () => {
   const { user } = useAuth();
+  const indexxPayClient = useMemo(
+    () =>
+      new IndexxPayClient({
+        baseUrl: API_BASE_URL,
+        getToken: () => user?.access_token ?? "",
+      }),
+    [user?.access_token]
+  );
 
   const [payAmount, setPayAmount] = useState("");
   const [getAmount, setGetAmount] = useState("");
   const [selectedPaymentOption, setSelectedPaymentOption] =
-    useState<PaymentOption>("USDT");
+    useState<PaymentOption>("Indexx Pay");
   const [selectedNetwork, setSelectedNetwork] = useState<"Ethereum" | "Solana">(
     "Ethereum"
   );
   const [isNetworkDropdownOpen, setIsNetworkDropdownOpen] = useState(false);
   const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
   const [isWireTransferPopupOpen, setIsWireTransferPopupOpen] = useState(false);
+  const [isIndexxPayPopupOpen, setIsIndexxPayPopupOpen] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
   const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
   const [btcyPrice, setBtcyPrice] = useState(0);
@@ -404,6 +433,12 @@ const QuantumMiningPage = () => {
   const [cancelError, setCancelError] = useState<string>();
   const [isCancellingOrder, setIsCancellingOrder] = useState(false);
   const [walletUrl, setWalletUrl] = useState(WALLET_OVERVIEW_BASE_URL);
+  const [usdxxBalance, setUsdxxBalance] = useState<number | null>(null);
+  const [isLoadingUsdxxBalance, setIsLoadingUsdxxBalance] = useState(false);
+  const [usdxxBalanceError, setUsdxxBalanceError] = useState<string | null>(
+    null
+  );
+  const [isIndexxPayBusy, setIsIndexxPayBusy] = useState(false);
 
   // Socket
   const socketRef = useRef<unknown>(null);
@@ -412,6 +447,7 @@ const QuantumMiningPage = () => {
   const verificationRunIdRef = useRef(0);
 
   const handledReturnRef = useRef(false);
+  const handledIndexxPayReturnRef = useRef(false);
 
   // Track Page View
   useEffect(() => {
@@ -425,6 +461,45 @@ const QuantumMiningPage = () => {
   useEffect(() => {
     pendingOrderIdRef.current = pendingOrderId;
   }, [pendingOrderId]);
+
+  useEffect(() => {
+    if (selectedPaymentOption !== "Indexx Pay" || !user?.email) {
+      setUsdxxBalance(null);
+      setUsdxxBalanceError(null);
+      setIsLoadingUsdxxBalance(false);
+      return;
+    }
+
+    let active = true;
+    setIsLoadingUsdxxBalance(true);
+    setUsdxxBalanceError(null);
+    indexxPayClient
+      .getBalance(user.email)
+      .then((result) => {
+        if (!active) return;
+        setUsdxxBalance(Number(result.balance));
+        setUsdxxBalanceError(null);
+      })
+      .catch((error) => {
+        if (!active) return;
+        // Surfaced in the UI below instead of failing silently -- a bare
+        // `null` balance used to be indistinguishable from "still loading".
+        console.error("Indexx Pay getBalance failed:", error);
+        setUsdxxBalance(null);
+        setUsdxxBalanceError(
+          error instanceof Error
+            ? error.message
+            : "Couldn't load your USDXX balance."
+        );
+      })
+      .finally(() => {
+        if (active) setIsLoadingUsdxxBalance(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [indexxPayClient, selectedPaymentOption, user?.email]);
 
   useEffect(() => {
     let isActive = true;
@@ -470,6 +545,7 @@ const QuantumMiningPage = () => {
     verificationRunIdRef.current += 1;
     setIsPaymentPopupOpen(false);
     setIsWireTransferPopupOpen(false);
+    setIsIndexxPayPopupOpen(false);
     setIsVerifyingPopupOpen(false);
     setFailRequiresTxHash(false);
     setFailureMessage(message);
@@ -481,6 +557,7 @@ const QuantumMiningPage = () => {
     verificationRunIdRef.current += 1;
     setIsPaymentPopupOpen(false);
     setIsWireTransferPopupOpen(false);
+    setIsIndexxPayPopupOpen(false);
     setIsVerifyingPopupOpen(false);
     setFailRequiresTxHash(true);
     setFailureMessage(message);
@@ -496,6 +573,7 @@ const QuantumMiningPage = () => {
       verificationRunIdRef.current += 1;
       setIsPaymentPopupOpen(false);
       setIsWireTransferPopupOpen(false);
+      setIsIndexxPayPopupOpen(false);
       setIsVerifyingPopupOpen(false);
       setFailOpen(false);
       setFailRequiresTxHash(false);
@@ -672,6 +750,42 @@ const QuantumMiningPage = () => {
       })();
     }
   }, [finalizeOrder, openGenericFailure, upsertLatestSignal, user?.email]);
+
+  // Return from indexx_pay's hosted buy-btcy page (the "Open Indexx Pay
+  // website instead" escape hatch in IndexxPayPopup). Unlike the PayPal
+  // return above, there's no order to re-check the status of -- the
+  // conversion was already confirmed there before it redirected back, so
+  // these query params are the confirmed result itself.
+  useEffect(() => {
+    if (handledIndexxPayReturnRef.current) return;
+    handledIndexxPayReturnRef.current = true;
+
+    if (typeof window === "undefined") return;
+
+    const url = new URL(window.location.href);
+    const status = url.searchParams.get("indexxPayStatus");
+    if (!status) return;
+
+    window.history.replaceState({}, "", url.origin + url.pathname);
+
+    if (status === "success") {
+      // Anyone can craft this return URL, so the amounts in it are not shown
+      // as fact -- the success screen stays generic and the user's real BTCY
+      // balance is what they check. The conversion itself happened (and was
+      // verified) server-side on indexx_pay before it redirected here.
+      finalizeOrder({
+        orderId: `indexxpay-${Date.now()}`,
+        status: "COMPLETED",
+        currency: "BTCY",
+        paymentType: "Indexx Pay",
+        orderType: "Quantum",
+      });
+      return;
+    }
+
+    // cancelled -- no order was ever created, nothing to undo.
+    setIsIndexxPayPopupOpen(false);
+  }, [finalizeOrder]);
 
   const handlePayAmountChange = (value: string) => {
     setPayAmount(value);
@@ -1065,6 +1179,87 @@ const QuantumMiningPage = () => {
     }
   }, [finalizeOrder, upsertLatestSignal]);
 
+  // Indexx Pay: spends the signed-in user's USDXX balance and credits BTCY
+  // directly via the backend's atomic convert endpoint. This never marks
+  // BTCY as purchased client-side -- finalizeOrder only fires once the
+  // conversion call has actually resolved.
+  const handleIndexxPayBuy = useCallback(async () => {
+    if (isIndexxPayBusy) return;
+
+    const amount = Number(payAmount);
+
+    if (usdxxBalance === null) {
+      openGenericFailure(
+        "We couldn't load your USDXX balance. Please try again."
+      );
+      return;
+    }
+
+    if (amount > usdxxBalance) {
+      setErrors((prev) => ({
+        ...prev,
+        payAmount: `Insufficient USDXX balance (available: ${usdxxBalance.toFixed(2)})`,
+      }));
+      return;
+    }
+
+    setIsIndexxPayBusy(true);
+    try {
+      const result = await indexxPayClient.convertUsdxxToBtcy(amount);
+      setUsdxxBalance(result.usdxxBalance);
+
+      const orderId = `indexxpay-${Date.now()}`;
+      analytics.trackOrderCreated({
+        order_id: orderId,
+        amount: result.usdxxDebited,
+        currency: "USDXX",
+      });
+
+      setErrors({});
+      finalizeOrder({
+        orderId,
+        status: "COMPLETED",
+        amount: result.btcyCredited,
+        currency: "BTCY",
+        paymentType: "Indexx Pay",
+        orderType: "Quantum",
+        raw: result,
+      });
+    } catch (error) {
+      console.error("convertUsdxxToBtcy failed", error);
+      openGenericFailure(
+        error instanceof Error
+          ? error.message
+          : "Failed to convert USDXX to BTCY. Please try again."
+      );
+    } finally {
+      setIsIndexxPayBusy(false);
+    }
+  }, [
+    finalizeOrder,
+    indexxPayClient,
+    isIndexxPayBusy,
+    openGenericFailure,
+    payAmount,
+    usdxxBalance,
+  ]);
+
+  // Escape hatch out of the popup above: if the inline balance/convert calls
+  // ever don't work for this site's session (see zodiacAuth.js's estate-token
+  // bridge), the user can still finish on indexx_pay's own hosted page, the
+  // same page bitcoin-yay-mobile now always uses for this exact reason.
+  const handleOpenIndexxPayWebsite = useCallback(() => {
+    const returnBase = `${window.location.origin}${window.location.pathname}`;
+    const successUrl = `${returnBase}?indexxPayStatus=success`;
+    const cancelUrl = `${returnBase}?indexxPayStatus=cancelled`;
+    const target =
+      `${EXTERNAL_URLS.indexx.pay}/dashboard/buy-btcy` +
+      `?amount=${encodeURIComponent(payAmount)}` +
+      `&successUrl=${encodeURIComponent(successUrl)}` +
+      `&cancelUrl=${encodeURIComponent(cancelUrl)}`;
+    window.location.href = target;
+  }, [payAmount]);
+
   // MAIN BUY HANDLER: calls API first, then either redirect (paypal/usd) or open popup (crypto)
   const handleBuyNow = async () => {
     const validation = validateOrderData(
@@ -1101,6 +1296,14 @@ const QuantumMiningPage = () => {
       currency: selectedPaymentOption,
       network: isCryptoPayment(selectedPaymentOption) ? selectedNetwork : undefined,
     });
+
+    // Indexx Pay doesn't create a Quantum payment order at all -- it's a
+    // direct USDXX->BTCY conversion against the user's own balance, shown
+    // in a popup rather than confirmed immediately (see IndexxPayPopup).
+    if (selectedPaymentOption === "Indexx Pay") {
+      setIsIndexxPayPopupOpen(true);
+      return;
+    }
 
     try {
       const outAmount = calculateBTCYAmount(Number(payAmount), btcyPrice);
@@ -1314,6 +1517,53 @@ const QuantumMiningPage = () => {
     setLatestOrderSignal(null);
   };
 
+  const renderPaymentOptionTile = (option: (typeof PAYMENT_OPTIONS)[number]) => {
+    const name = option.name as PaymentOption;
+    const isSelected = name === selectedPaymentOption;
+    const isDisabled = "disabled" in option && option.disabled;
+    return (
+      <button
+        type="button"
+        key={name}
+        disabled={isDisabled}
+        aria-label={isDisabled ? `${name} - Coming Soon` : name}
+        className={`relative transition-all duration-200 ${
+          isDisabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+        }`}
+        onClick={() => !isDisabled && setSelectedPaymentOption(name)}
+      >
+        <div className="group flex flex-col items-center">
+          <span className="mb-2">
+            <Image
+              src={option.icon}
+              alt={name}
+              className={option.optionIconClassName}
+              {...(typeof option.icon === "string"
+                ? { width: 40, height: 40 }
+                : {})}
+            />
+          </span>
+          <span
+            className={`text-lg ${
+              name === "Indexx Pay"
+                ? "text-white"
+                : `${!isDisabled ? "group-hover:text-primary" : ""} ${
+                    isSelected ? "text-primary" : ""
+                  }`
+            }`}
+          >
+            {name}
+          </span>
+          {isDisabled && (
+            <span className="mt-1 text-xs font-semibold uppercase tracking-wide text-primary">
+              Coming Soon
+            </span>
+          )}
+        </div>
+      </button>
+    );
+  };
+
   return (
     <div className="mx-auto mt-40 max-w-[1800px] px-4 md:px-10 xl:px-20">
       <div className="flex flex-col-reverse lg:flex-row">
@@ -1378,49 +1628,30 @@ const QuantumMiningPage = () => {
           </p>
         </div>
 
-        {/* Payment Options */}
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-2 md:gap-2 mb-8 justify-items-center">
-          {PAYMENT_OPTIONS.map((option) => {
-            const name = option.name as PaymentOption;
-            const isSelected = name === selectedPaymentOption;
-            const isDisabled = "disabled" in option && option.disabled;
-            return (
-              <button
-                type="button"
-                key={name}
-                disabled={isDisabled}
-                aria-label={isDisabled ? `${name} - Coming Soon` : name}
-                className={`relative transition-all duration-200 ${
-                  isDisabled
-                    ? "cursor-not-allowed opacity-50"
-                    : "cursor-pointer"
-                }`}
-                onClick={() => !isDisabled && setSelectedPaymentOption(name)}
-              >
-                <div className="group flex flex-col items-center">
-                  <span className="mb-2">
-                    <Image
-                      src={option.icon}
-                      alt={name}
-                      className={option.optionIconClassName}
-                    />
-                  </span>
-                  <span
-                    className={`text-lg ${
-                      !isDisabled ? "group-hover:text-primary" : ""
-                    } ${isSelected ? "text-primary" : ""}`}
-                  >
-                    {name}
-                  </span>
-                  {isDisabled && (
-                    <span className="mt-1 text-xs font-semibold uppercase tracking-wide text-primary">
-                      Coming Soon
-                    </span>
-                  )}
-                </div>
-              </button>
-            );
-          })}
+        {/* Payment Options -- split into what you already hold (a currency
+            balance) vs. what brings new money in (a payment method), instead
+            of flattening both into one undifferentiated row. */}
+        <div className="mb-8 space-y-6">
+          <div>
+            <p className="text-sm uppercase tracking-wide text-tertiary mb-3">
+              Pay with a currency
+            </p>
+            <div className="grid grid-cols-3 gap-2 md:gap-2 justify-items-center">
+              {CURRENCY_PAYMENT_OPTIONS.map((option) =>
+                renderPaymentOptionTile(option)
+              )}
+            </div>
+          </div>
+          <div>
+            <p className="text-sm uppercase tracking-wide text-tertiary mb-3">
+              Pay with a payment method
+            </p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-2 justify-items-center">
+              {METHOD_PAYMENT_OPTIONS.map((option) =>
+                renderPaymentOptionTile(option)
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Network for crypto */}
@@ -1486,12 +1717,20 @@ const QuantumMiningPage = () => {
                     src={selectedPaymentVisual.icon}
                     alt={selectedPaymentVisual.name}
                     className={selectedPaymentVisual.inputIconClassName}
+                    {...(typeof selectedPaymentVisual.icon === "string"
+                      ? { width: 40, height: 40 }
+                      : {})}
                   />
                 </span>
               </div>
             </div>
             {errors.payAmount && (
               <p className="text-red-500 text-sm mt-2">{errors.payAmount}</p>
+            )}
+            {selectedPaymentOption === "Indexx Pay" && !errors.payAmount && (
+              <p className="text-tertiary text-sm mt-2">
+                Your USDXX balance and confirmation appear in the next step.
+              </p>
             )}
           </div>
 
@@ -1528,7 +1767,11 @@ const QuantumMiningPage = () => {
         >
           <CustomButton2
             image={CartButtonImage}
-            text="With Quantum Power"
+            text={
+              selectedPaymentOption === "Indexx Pay" && isIndexxPayBusy
+                ? "Processing…"
+                : "With Quantum Power"
+            }
             onClick={() => {
               if (isBuyDisabled) return;
               handleBuyNow();
@@ -1965,6 +2208,19 @@ const QuantumMiningPage = () => {
         onClose={() => setIsWireTransferPopupOpen(false)}
         payAmount={payAmount}
         wireOrderId={pendingOrderId}
+      />
+
+      <IndexxPayPopup
+        isOpen={isIndexxPayPopupOpen}
+        onClose={() => setIsIndexxPayPopupOpen(false)}
+        payAmount={payAmount}
+        btcyAmount={getAmount}
+        usdxxBalance={usdxxBalance}
+        isLoadingBalance={isLoadingUsdxxBalance}
+        balanceError={usdxxBalanceError}
+        isConfirming={isIndexxPayBusy}
+        onConfirm={handleIndexxPayBuy}
+        onOpenIndexxPayWebsite={handleOpenIndexxPayWebsite}
       />
 
       <CancelConfirmationPopup

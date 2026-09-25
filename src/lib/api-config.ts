@@ -18,6 +18,9 @@ const INDEX_X_URLS = {
   lottery: `https://lotto.${INDEX_X_DOMAIN}`,
   academy: `https://academy.${INDEX_X_DOMAIN}`,
   wallStreet: `https://test.wallstreet.${INDEX_X_DOMAIN}`,
+  // The dedicated Indexx Pay web app -- not deployed to a production host
+  // yet, same as API_BASE_URL above.
+  pay: `https://test.pay.${INDEX_X_DOMAIN}`,
 } as const;
 
 const BITCOIN_YAY_URL = `https://test.${BITCOIN_YAY_DOMAIN}`;
@@ -70,6 +73,7 @@ export const EXTERNAL_URLS = {
     lottery: INDEX_X_URLS.lottery,
     cryptoLottery: `${INDEX_X_URLS.lottery}/contest?contest=crypto`,
     academy: INDEX_X_URLS.academy,
+    pay: INDEX_X_URLS.pay,
     smartCrypto: `${INDEX_X_URLS.exchange}/smart-crypto`,
     smartApy: `${INDEX_X_URLS.exchange}/smart-apy`,
     about: `${INDEX_X_URLS.home}/indexx-exchange/about`,

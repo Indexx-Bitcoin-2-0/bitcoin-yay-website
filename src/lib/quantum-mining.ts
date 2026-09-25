@@ -17,7 +17,8 @@ export type PaymentOption =
   | "PayPal"
   | "USD"
   | "Wire Transfer"
-  | "Stripe";
+  | "Stripe"
+  | "Indexx Pay";
 
 export type QuantumCurrencyIn =
   | "USDT"
@@ -483,6 +484,9 @@ export function isCryptoPayment(option: PaymentOption): boolean {
  * Converts payment option to currency format expected by API
  */
 export function optionToCurrencyIn(opt: PaymentOption): QuantumCurrencyIn {
+  if (opt === "Indexx Pay") {
+    throw new Error("Indexx Pay conversions do not create Quantum payment orders");
+  }
   if (opt === "Wire Transfer") {
     return "WireTransfer";
   }
