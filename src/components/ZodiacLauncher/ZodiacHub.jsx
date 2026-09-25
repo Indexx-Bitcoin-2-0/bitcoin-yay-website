@@ -1,4 +1,4 @@
-/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint c20d9fb3d59d) — edit the source there, not here. */
+/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint 7975636513ee) — edit the source there, not here. */
 /*
  * Zodiac Hub — the Dashboard, one page per product repo.
  *
@@ -60,13 +60,15 @@ const ENV_API_BASE = (() => {
 })();
 const DEFAULT_API_BASE = "https://api.v1.indexx.ai";
 
+/*
+ * Only `access_token` — see the same function in ZodiacLauncher.jsx. The
+ * camelCase fallback read a token this client never wrote, i.e. the product's
+ * own session (Wall Street signs those with its own secret), and sent it to the
+ * estate API as a Bearer credential, which 401s every time.
+ */
 const readToken = () => {
   try {
-    return (
-      window.localStorage.getItem("access_token") ||
-      window.localStorage.getItem("accessToken") ||
-      null
-    );
+    return window.localStorage.getItem("access_token") || null;
   } catch (_) {
     return null;
   }

@@ -1,4 +1,4 @@
-/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint c20d9fb3d59d) — edit the source there, not here. */
+/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint 7975636513ee) — edit the source there, not here. */
 "use client";
 /*
  * Client component: this reads window, holds state and portals to <body>.
@@ -39,6 +39,13 @@ import s from "./zodiac-launcher.module.css";
  * Measured by fitting an ellipse to the Bitcoin Yay coin artwork, not eyeballed.
  * Every oval in the ecosystem uses it, including the nine in the grid.
  */
+/*
+ * What the switcher calls itself, in the tooltip and to assistive technology.
+ * Names the product AND says what it does: "Indexx Zodiac" alone does not tell
+ * a first-time user that this is how you move between products.
+ */
+const TRIGGER_LABEL = "Indexx Zodiac — switch products";
+
 const OVAL_ANGLE = -38.4;
 
 const GROUPS = [
@@ -194,14 +201,37 @@ const withSession = (href) => {
   }
 };
 
-/** Read the session the host product already stores. Never writes. */
+/**
+ * The signed-in email a bridging product already keeps. Never writes.
+ *
+ * Only a fallback for the panel's account row: the id_token claims are the real
+ * source, and this covers the window before an exchange has happened on this
+ * page load. Products that opt out of the legacy bridge simply have nothing
+ * here, and the row falls back to showing nothing rather than something wrong.
+ */
+const readLegacyEmail = () => {
+  try {
+    return window.localStorage.getItem("email") || null;
+  } catch (_) {
+    return null;
+  }
+};
+
+/**
+ * Read the estate session the host product already stores. Never writes.
+ *
+ * Only `access_token`. It used to fall back to camelCase `accessToken`, which
+ * nothing in zodiacAuth ever writes — so the only way that key exists is that
+ * the PRODUCT put its own session there. Wall Street does exactly that, signed
+ * by its own backend with its own secret, and the fallback handed that foreign
+ * token to the estate API as a Bearer credential. Every /zodiac/hub call from
+ * Wall Street 401'd for that reason, and the panel showed "explore" on all
+ * sixteen rows instead of real state. A token this client did not obtain is not
+ * a session it can speak for.
+ */
 const readToken = () => {
   try {
-    return (
-      window.localStorage.getItem("access_token") ||
-      window.localStorage.getItem("accessToken") ||
-      null
-    );
+    return window.localStorage.getItem("access_token") || null;
   } catch (_) {
     return null;
   }
@@ -372,11 +402,17 @@ export default function ZodiacLauncher({
   dashboardUrl = DEFAULT_DASHBOARD,
   /**
    * Explicit prop wins, then the build-time env var, then production.
-   * The `= undefined` is load-bearing: without a default, TypeScript infers the
-   * prop as REQUIRED in the two CRA repos (both set `allowJs`) and every call
-   * site that omits it fails to compile with TS2741.
+   *
+   * The default is load-bearing TWICE, which is why it is a cast and not a
+   * bare `undefined`. Without ANY default, TypeScript infers the prop as
+   * REQUIRED in the repos that set `allowJs`, and every call site omitting it
+   * fails with TS2741. With a bare `= undefined` it infers the type as
+   * literally `undefined`, and every call site PASSING one fails with TS2322 —
+   * which is what broke ai ai N ai's build (Sidebar.tsx:658) and would have
+   * broken Wall Street's the moment it type-checked (UniversalSidebar.tsx:624).
+   * The cast satisfies both.
    */
-  apiBase = undefined,
+  apiBase = /** @type {any} */ (undefined),
   tone = "dark",
   /**
    * "nav"  — a sidebar row that inherits the host's colour and type.
@@ -384,7 +420,7 @@ export default function ZodiacLauncher({
    *          whatever the mobile shells end up needing).
    * See .triggerNav / .triggerIcon in the stylesheet.
    */
-  variant = undefined,
+  variant = /** @type {any} */ (undefined),
   logoBase = "/logos",
   /**
    * Per-platform palette, applied as CSS custom properties.
@@ -405,6 +441,19 @@ export default function ZodiacLauncher({
   /** Render the Dashboard link inside the trigger cluster. Off by default —
    *  the bar normally places <ZodiacDashboardLink /> on the far right. */
   withDashboard = false,
+  /**
+   * Clear THIS product's own session, before the shared one is ended.
+   *
+   * The panel's Sign out revokes the Indexx ID session for the whole estate,
+   * which is the part no product could do for itself. What it cannot do is
+   * clear a session the product keeps in its own shape: Wall Street signs its
+   * own tokens, YaysApp keeps a store, ShoperPal and ai ai N ai hold cookies
+   * from their own backends — none of which this component knows about. Those
+   * products pass this callback so the two halves end together; without it they
+   * would be signed out of the estate while their own header still said
+   * otherwise. Awaited, and a rejection never blocks the sign-out.
+   */
+  onSignOut = /** @type {any} */ (null),
 }) {
   const resolvedApiBase = apiBase || ENV_API_BASE || DEFAULT_API_BASE;
 
@@ -479,6 +528,18 @@ export default function ZodiacLauncher({
         /* Products that keep their session in their own shape adapt it here.
            See the onSession comment in zodiacAuth.js. */
         onSession: auth.onSession,
+        /*
+         * Whether a session appearing should reload the page.
+         *
+         * Defaults ON, because a product whose header reads localStorage once
+         * at mount has no other way to notice a session that arrived after it
+         * painted. Products that listen for the "zodiac:session" event instead
+         * pass false, and lose the reload — with it the second /token grant and
+         * second /session/legacy mint it forced, and the visible "Signing you
+         * in…" flash. See applyEstateSession in zodiacAuth.js.
+         */
+        reloadOnSession:
+          auth.reloadOnSession === undefined ? true : auth.reloadOnSession,
       });
       authClientRef.current = client;
       /* Expose for diagnosis: `window.__zodiacAuth.debug()` in the console says
@@ -544,6 +605,18 @@ export default function ZodiacLauncher({
   const panelRef = useRef(null);
   const triggerRef = useRef(null);
   const loadedHub = useRef(false);
+  /* Who the panel says you are. Read on open, never polled. */
+  const [account, setAccount] = useState(null);
+  /*
+   * The tooltip's viewport position, or null when hidden.
+   *
+   * A real element rather than the `title` attribute, for one reason: `title`
+   * is shown by the browser after a delay of roughly a second that no page can
+   * configure or remove. For the one control in these headers whose meaning is
+   * not conventional — nine ovals — a label that arrives a second late is a
+   * label most people never see. This appears on the first frame.
+   */
+  const [tip, setTip] = useState(null);
 
   useEffect(() => setMounted(true), []);
 
@@ -706,6 +779,64 @@ export default function ZodiacLauncher({
 
   const close = useCallback(() => setOpen(false), []);
 
+  /*
+   * Who is signed in, read at the moment the panel opens.
+   *
+   * Deliberately not state the launcher maintains: the claims live in the auth
+   * client, the product may have signed in through its own form since this
+   * component mounted, and the panel is the only place this is rendered. Reading
+   * on open is both the cheapest and the freshest option.
+   *
+   * These are id_token claims — display data, never an authorization decision.
+   */
+  const readAccount = useCallback(() => {
+    const client = authClientRef.current;
+    if (!client) return;
+    try {
+      const user = typeof client.getUser === "function" ? client.getUser() : null;
+      const email = (user && user.email) || readLegacyEmail();
+      if (!email) return setAccount(null);
+      const name = (user && (user.name || user.preferred_username)) || null;
+      setAccount({ email: email, name: name });
+    } catch (_) {
+      setAccount(null);
+    }
+  }, []);
+
+  /*
+   * Position from the trigger's own rect, measured at the moment it is shown.
+   *
+   * Fixed coordinates and portalled to <body>, the same reason the panel is:
+   * every one of these headers has an ancestor with overflow, and a tooltip
+   * rendered inside the button would be clipped by it.
+   *
+   * Nothing is shown while the panel is open — the panel names itself, and a
+   * tooltip over it is noise.
+   */
+  const showTip = useCallback(() => {
+    if (open) return;
+    const el = triggerRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    /*
+     * Anchor to whichever edge keeps it on screen.
+     *
+     * Centred under the trigger is the nice default and the wrong one here:
+     * this control sits in the TOP-RIGHT corner of every product, so a centred
+     * label ran off the right of the viewport — measured 1496px on a 1440px
+     * window. Deciding from the trigger's own position needs no measurement of
+     * the tooltip itself, so there is no second pass and nothing flickers.
+     */
+    const vw = window.innerWidth;
+    const centre = r.left + r.width / 2;
+    const top = r.bottom + 8;
+    if (centre > vw * 0.72) return setTip({ top, right: Math.max(8, vw - r.right), place: "end" });
+    if (centre < vw * 0.28) return setTip({ top, left: Math.max(8, r.left), place: "start" });
+    setTip({ top, left: centre, place: "center" });
+  }, [open]);
+
+  const hideTip = useCallback(() => setTip(null), []);
+
   const toggle = () => {
     /*
      * Re-check for a session the product established on its OWN login form.
@@ -713,13 +844,27 @@ export default function ZodiacLauncher({
      * adoptLocalSession turns that into an Indexx ID session, and this is the
      * moment it matters: the user has just signed in here and is reaching for
      * the switcher to go somewhere else. Running it only at mount missed that
-     * entirely — at mount they were still signed out. Cheap and idempotent:
-     * the client latches on the token value, so this is a no-op unless a NEW
-     * token has appeared since the last attempt.
+     * entirely — at mount they were still signed out.
+     *
+     * ── allowNavigation: false, and why it is not optional ────────────────
+     *
+     * This used to be described as "cheap and idempotent". It was neither.
+     * adoptLocalSession spends the provider's adopt_code on a TOP-LEVEL
+     * navigation, so opening the panel could take the whole tab with it —
+     * measured on BTCY: one click on the waffle produced `/` ->
+     * IDP/authorize -> /auth/callback -> `/`. The user sees the header behind
+     * the open panel fall back to Login/Register for the round trip, and the
+     * panel loses its own state because the app remounted under it. Reported
+     * as "when I click the zodiac switcher the authentication is gone".
+     *
+     * Opening a menu must never navigate. The POST still runs, so every
+     * product sharing a registrable domain with the provider still gets its
+     * cookie here; the foreign domains that genuinely need the round trip get
+     * it in beginHandoff, on the way out, where a navigation is the point.
      */
     if (authClientRef.current) {
       try {
-        authClientRef.current.adoptLocalSession().catch(() => {});
+        authClientRef.current.adoptLocalSession({ allowNavigation: false }).catch(() => {});
       } catch (_) {
         /* never let sign-on wiring block the panel from opening */
       }
@@ -781,9 +926,42 @@ export default function ZodiacLauncher({
         });
       }
       loadHub();
+      readAccount();
       return true;
     });
   };
+
+  /*
+   * Sign out of everything.
+   *
+   * Order matters and is the whole point. The product clears its own session
+   * first, because `signOut` NAVIGATES to the provider's end-session endpoint
+   * and may never come back — anything left until after it may simply not run.
+   * Only then is the shared session revoked, which is the half no product could
+   * do alone: clearing local storage ends a session in one tab and nowhere
+   * else, so the next page load silently signs the person back in.
+   */
+  const signOutEverywhere = useCallback(async () => {
+    if (typeof onSignOut === "function") {
+      try {
+        await onSignOut();
+      } catch (_) {
+        /* The product's own cleanup failing must not trap the user signed in. */
+      }
+    }
+    const client = authClientRef.current;
+    if (!client || typeof client.signOut !== "function") {
+      /* Nothing to revoke — at least do not leave the panel claiming a session. */
+      setAccount(null);
+      setOpen(false);
+      return;
+    }
+    try {
+      await client.signOut();
+    } catch (_) {
+      /* Best effort: signOut never throws by contract, but never trap the user. */
+    }
+  }, [onSignOut]);
 
   useEffect(() => {
     if (!open) return undefined;
@@ -811,6 +989,79 @@ export default function ZodiacLauncher({
       document.removeEventListener("mousedown", onClick);
     };
   }, [open, close]);
+
+  /*
+   * Hold the page still while the panel is open.
+   *
+   * The panel is fixed and portalled to <body>, so the document behind it stays
+   * perfectly scrollable: a wheel over the scrim moved the page, and once the
+   * panel's own list hit its end the scroll CHAINED out to the document and
+   * carried on. Either way the user came back to a different place than they
+   * left, and the panel read as pasted on top of the page rather than as a
+   * layer of it.
+   *
+   * `position: fixed` on <body> rather than `overflow: hidden`, because
+   * overflow alone does not hold iOS Safari, which scrolls the document anyway.
+   * Pinning the body collapses it to the viewport, so the offset has to be put
+   * back as a negative `top` or the page jumps to the top the moment it locks —
+   * and restored on the way out, which is the part that makes the position
+   * survive rather than merely freeze.
+   *
+   * The scrollbar disappearing with it would reflow everything a few pixels
+   * wider, so its width is added back as padding. Measured, not assumed:
+   * overlay scrollbars (macOS default, all of mobile) have zero width and must
+   * get zero padding.
+   *
+   * Every value read here is the INLINE style, and every one is put back
+   * exactly as found — including "was not set at all", which restores to "".
+   * A product that sets its own body styles must not have them rewritten by a
+   * switcher being opened.
+   */
+  useEffect(() => {
+    if (!open) return undefined;
+    if (typeof window === "undefined" || !document.body) return undefined;
+
+    const body = document.body;
+    const scrollY = window.scrollY || window.pageYOffset || 0;
+    const barWidth = window.innerWidth - document.documentElement.clientWidth;
+
+    const prior = {
+      position: body.style.position,
+      top: body.style.top,
+      left: body.style.left,
+      right: body.style.right,
+      width: body.style.width,
+      overflow: body.style.overflow,
+      paddingRight: body.style.paddingRight,
+    };
+
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.left = "0";
+    body.style.right = "0";
+    body.style.width = "100%";
+    body.style.overflow = "hidden";
+    if (barWidth > 0) {
+      const existing = parseFloat(window.getComputedStyle(body).paddingRight) || 0;
+      body.style.paddingRight = `${existing + barWidth}px`;
+    }
+
+    return () => {
+      Object.keys(prior).forEach((k) => {
+        body.style[k] = prior[k];
+      });
+      /*
+       * Put them back where they were. Instant, not smooth: a product with
+       * `scroll-behavior: smooth` would otherwise animate the restore and the
+       * page would visibly slide as the panel closes.
+       */
+      try {
+        window.scrollTo({ top: scrollY, left: 0, behavior: "instant" });
+      } catch (_) {
+        window.scrollTo(0, scrollY);
+      }
+    };
+  }, [open]);
 
   const inGroup = (id) => products.filter((p) => p.group === id);
 
@@ -930,7 +1181,34 @@ export default function ZodiacLauncher({
         </div>
 
         <div className={s.panelFoot}>
-          Signed in here, signed in everywhere. No product asks you to log in again.
+          {account ? (
+            /*
+             * The panel promised "signed in everywhere" and offered no way out
+             * of it. Clearing local storage — which is what every product's own
+             * Logout did — ends a session in one tab and nowhere else: the
+             * provider's cookie survives, so the next page load signs the person
+             * straight back in. On a shared machine the next person inherits it.
+             * This is the control that actually ends the shared session, and it
+             * belongs here because here is the only place that claims to span
+             * all sixteen products.
+             */
+            <>
+              <span className={s.account}>
+                <span className={s.accountEmail} title={account.email}>
+                  {account.name || account.email}
+                </span>
+              </span>
+              <button
+                type="button"
+                className={s.authBtn}
+                onClick={signOutEverywhere}
+              >
+                Sign out everywhere
+              </button>
+            </>
+          ) : (
+            "Signed in here, signed in everywhere. No product asks you to log in again."
+          )}
         </div>
       </div>
     </>
@@ -951,8 +1229,30 @@ export default function ZodiacLauncher({
         className={`${s.trigger} ${variant === "nav" ? s.triggerNav : ""} ${variant === "icon" ? s.triggerIcon : ""} ${open ? s.triggerOpen : ""}`}
         aria-haspopup="dialog"
         aria-expanded={open}
-        aria-label="Indexx ecosystem"
+        /*
+         * `title` and `aria-label` carry the SAME words on purpose.
+         *
+         * There was no title at all, so the control had no tooltip and nothing
+         * on hover said what the nine ovals were — the one icon in the header
+         * whose meaning is not conventional. aria-label overrides title for
+         * assistive technology, so letting them differ would mean a screen
+         * reader and a sighted user being told two different things about the
+         * same button.
+         */
+        /*
+         * No `title`. It would render a SECOND, OS-drawn tooltip a beat after
+         * this one, saying the same thing twice in two places.
+         *
+         * The accessible name is unaffected: `aria-label` is what assistive
+         * technology reads, and the element below is aria-hidden because it is
+         * a visual echo of that same name.
+         */
+        aria-label={TRIGGER_LABEL}
         onClick={toggle}
+        onMouseEnter={showTip}
+        onMouseLeave={hideTip}
+        onFocus={showTip}
+        onBlur={hideTip}
       >
         <span className={s.grid} aria-hidden="true">
           {Array.from({ length: 9 }).map((_, i) => (
@@ -982,6 +1282,26 @@ export default function ZodiacLauncher({
       {withDashboard && (
         <ZodiacDashboardLink dashboardUrl={dashboardUrl} tone={tone} />
       )}
+
+      {tip && !open && mounted && typeof document !== "undefined"
+        ? createPortal(
+            <span
+              className={`${s.tip} ${tone === "light" ? s.tipLight : ""} ${
+                tip.place === "end" ? s.tipEnd : tip.place === "start" ? s.tipStart : ""
+              }`}
+              style={
+                tip.place === "end"
+                  ? { top: tip.top, right: tip.right }
+                  : { top: tip.top, left: tip.left }
+              }
+              role="presentation"
+              aria-hidden="true"
+            >
+              {TRIGGER_LABEL}
+            </span>,
+            document.body
+          )
+        : null}
 
       {open && mounted && typeof document !== "undefined"
         ? createPortal(panel, document.body)

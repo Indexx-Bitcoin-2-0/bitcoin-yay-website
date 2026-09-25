@@ -69,6 +69,9 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  /* Did registration actually hand back a session? Decides whether closing the
+     success popup drops the user back signed-out or sends them to sign in. */
+  const [registeredWithSession, setRegisteredWithSession] = useState(false);
   const [isCheckingEmail, setIsCheckingEmail] = useState(false);
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
   const [emailAvailable, setEmailAvailable] = useState<boolean | null>(null);
@@ -289,17 +292,49 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
       if (response.status === 200 || response.status === 201) {
         const apiData = response.data.data || response.data;
 
-        const userData = {
-          email: formData.email.trim(),
-          name: `${formData.firstName} ${formData.lastName}`,
-          access_token: apiData.access_token || "temp-access-token-" + Date.now(),
-          refresh_token: apiData.refresh_token || "temp-refresh-token-" + Date.now(),
-          role: apiData.role || "Standard",
-          userType: apiData.userType || "Indexx Exchange",
-          shortToken: apiData.shortToken || "temp-short-token",
-        };
+        /*
+         * Only claim a session if the API actually returned one.
+         *
+         * This used to synthesise one when it did not:
+         *   access_token: apiData.access_token || "temp-access-token-" + Date.now()
+         *
+         * `registerwithapp` answers `{ status: 200, data: "createdUser" }` — a
+         * STRING, carrying no tokens, because registering is not signing in. So
+         * the fallback fired on every successful registration and wrote
+         * "temp-access-token-…" into localStorage as the session.
+         *
+         * That looked harmless here — the header reads `access_token`, found
+         * one, and showed the user as signed in. It was not harmless anywhere
+         * else. The Zodiac launcher reads the same key and posts it to the
+         * provider's /session/adopt to open an ecosystem session; the provider
+         * cannot verify a string that is not even a JWT, answers 401, and no
+         * Indexx ID session is ever created. The user registered on Bitcoin Yay,
+         * appeared signed in here, and arrived signed out at every other
+         * product — the exact opposite of one account across the ecosystem.
+         *
+         * An invented credential is worse than no credential: it makes both
+         * this app and the estate act on a session that does not exist. The
+         * Google path below already gets this right by requiring a real
+         * access_token before calling login(); this is the same rule.
+         */
+        const session =
+          apiData && typeof apiData === "object" && typeof apiData.access_token === "string"
+            ? apiData
+            : null;
 
-        login(userData);
+        if (session) {
+          login({
+            email: formData.email.trim(),
+            name: `${formData.firstName} ${formData.lastName}`,
+            access_token: session.access_token,
+            refresh_token: session.refresh_token,
+            role: session.role || "Standard",
+            userType: session.userType || "Indexx Exchange",
+            shortToken: session.shortToken,
+          });
+        }
+        setRegisteredWithSession(Boolean(session));
+
         onClose();
         setShowSuccessPopup(true);
 
@@ -460,6 +495,15 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({
 
   const handleCloseSuccessPopup = () => {
     setShowSuccessPopup(false);
+    /*
+     * The account exists but there is no session, so send them to sign in
+     * rather than closing onto a page that still says Login. Registering used
+     * to appear to sign the user in only because of the invented token above.
+     */
+    if (!registeredWithSession) {
+      onLoginClick();
+      return;
+    }
     onRegisterSuccess();
   };
 

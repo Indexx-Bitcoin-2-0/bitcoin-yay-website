@@ -1,4 +1,4 @@
-/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint c20d9fb3d59d) — edit the source there, not here. */
+/* Copied from indexx-exchange-backend/zodiac-embed/ (fingerprint 7975636513ee) — edit the source there, not here. */
 /*
  * Zodiac launcher styles. SOURCE OF TRUTH: zodiac-embed/ — copied, never edited
  * in a consumer repo.
@@ -58,6 +58,25 @@
   padding: 6px 4px;
   margin: 0;
   cursor: pointer;
+  /*
+   * Take the content's height, not the header row's.
+   *
+   * `inline-flex` is blockified when this button is a flex item, which every
+   * one of these headers makes it, and a flex row stretches its items by
+   * default. So the control silently grew to whatever the tallest thing in the
+   * row was — 55px against 44px neighbours on indexx.ai — and looked oversized
+   * next to the account chip for reasons nothing in this file asked for.
+   * Centring pins it to its own content box instead.
+   *
+   * `.triggerNav` re-asserts `align-self: stretch` immediately below, because
+   * the sidebar variant genuinely does want to fill the host's row.
+   */
+  align-self: center;
+  /*
+   * Opt-in exact height, for a header that wants every control identical.
+   * Defaults to `auto` so no product's layout moves just by taking this file.
+   */
+  height: var(--zodiac-trigger-h, auto);
   transition: opacity 0.15s ease, transform 0.15s ease;
   -webkit-appearance: none;
   appearance: none;
@@ -146,11 +165,61 @@
 
 /* ── Panel ─────────────────────────────────────────────────────────────── */
 
+/*
+ * The trigger's label, shown on the first frame.
+ *
+ * Replaces the `title` attribute, whose delay (~1s, browser-controlled and not
+ * configurable) meant most people never saw it. No transition and no delay
+ * here on purpose: it is an answer to "what is this?", and an answer that
+ * animates in is slower than one that is simply there.
+ *
+ * `left` is the trigger's CENTRE and the element pulls itself back by half its
+ * own width, so it stays centred whatever the text length. Fixed and portalled
+ * to <body> like the panel, because every host header has an ancestor with
+ * overflow that would clip it. pointer-events:none so it can never sit between
+ * the cursor and the button it describes.
+ */
+.tip {
+  position: fixed;
+  transform: translateX(-50%);
+  z-index: 2147483001;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #101010;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.2;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.7);
+}
+/* Edge-anchored variants: the element is placed by `right` or `left` directly,
+   so the centring transform has to come off or it would shift back out. */
+.tipEnd,
+.tipStart {
+  transform: none;
+}
+
+.tipLight {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #3d3227;
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.25);
+}
+
 .scrim {
   position: fixed;
   inset: 0;
   z-index: 2147482000;
   background: rgba(0, 0, 0, 0.6);
+  /* Nothing behind this should move. The body is pinned while the panel is
+     open, but a touch drag still tries to chain to the nearest scrollable
+     ancestor; `none` stops it here. */
+  overscroll-behavior: none;
+  touch-action: none;
 }
 
 .panel {
@@ -177,6 +246,10 @@
   max-width: calc(100vw - 28px);
   max-height: calc(100vh - 96px);
   overflow-y: auto;
+  /* Keep the panel's own scrolling to itself. Without this, reaching the end of
+     the product list hands the remaining scroll to the document behind it and
+     the page moves under the panel. */
+  overscroll-behavior: contain;
   border-radius: 18px;
   padding: 20px;
   background: var(--zdc-surface);
@@ -346,6 +419,13 @@
   border-top: 1px solid var(--zdc-line);
   font-size: 12.5px;
   color: var(--zdc-label);
+  /* Signed out this holds one string and looks exactly as it did; signed in it
+     holds the account and the sign-out control, which belong on one row. */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 .panelLight .panelFoot {
   border-top-color: rgba(0, 0, 0, 0.1);
