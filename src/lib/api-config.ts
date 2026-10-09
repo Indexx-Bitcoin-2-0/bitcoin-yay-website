@@ -41,6 +41,9 @@ const EVM_BTCY_CONTRACT = "0x22726F15677F6a569F42ea9a4de6e5e5eEd9B93b";
  * Every external destination used by the application lives here so links and
  * service endpoints can be reviewed and changed without hunting through UI code.
  */
+/** Indexx Pay's website (One QR pay links live at <this>/pay/<public Indexx Pay ID>). */
+export const INDEXX_PAY_WEB_URL = INDEX_X_URLS.pay;
+
 export const EXTERNAL_URLS = {
   yaysapp: {
     home: "https://yaysapp.com",
