@@ -46,7 +46,7 @@ function MyQr({ token }: { token: string }) {
           margin: 1,
           width: 440,
           color: { dark: "#151515", light: "#ffffff" },
-          errorCorrectionLevel: "M",
+          errorCorrectionLevel: "H",
         });
         if (active) {
           setPublicId(id);
@@ -66,7 +66,7 @@ function MyQr({ token }: { token: string }) {
   const link = `${INDEXX_PAY_WEB_URL}/pay/${publicId}`;
   return (
     <div className="mt-5 flex flex-col items-center gap-4 sm:flex-row sm:items-start">
-      <img src={qr} alt="My Indexx Pay One QR" className="size-56 shrink-0 rounded-2xl bg-white p-3" />
+      <span className="relative inline-block shrink-0"><img src={qr} alt="My Indexx Pay One QR" className="size-56 shrink-0 rounded-2xl bg-white p-3" /><img src="/indexx-pay-qr-logo.png" alt="" aria-hidden="true" className="pointer-events-none absolute left-1/2 top-1/2 w-[24%] -translate-x-1/2 -translate-y-1/2 rounded-[20%] bg-white ring-[3px] ring-white" /></span>
       <div className="min-w-0">
         <p className="text-xs uppercase tracking-wide opacity-70">Indexx Pay ID</p>
         <p className="break-all font-mono text-sm">{publicId}</p>

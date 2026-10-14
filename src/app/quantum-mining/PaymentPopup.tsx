@@ -70,6 +70,7 @@ export default function PaymentPopup({
       const url = await QRCode.toDataURL(sanitizedReceiverAddress, {
         width: 512,
         margin: 1,
+        errorCorrectionLevel: "H",
       });
       setQrSrc(url);
     };
@@ -108,14 +109,18 @@ export default function PaymentPopup({
             {/* QR */}
             <div className="mt-6">
               {qrSrc ? (
-                <Image
-                  src={qrSrc}
-                  alt="QR"
-                  width={300}
-                  height={300}
-                  onClick={handleCopyAddress}
-                  className="w-60 h-60 rounded-xl cursor-pointer"
-                />
+                <span className="relative inline-block">
+                  <Image
+                    src={qrSrc}
+                    alt="QR"
+                    width={300}
+                    height={300}
+                    onClick={handleCopyAddress}
+                    className="w-60 h-60 rounded-xl cursor-pointer"
+                  />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/qr-logo.png" alt="" aria-hidden="true" className="pointer-events-none absolute left-1/2 top-1/2 w-[18%] -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white ring-2 ring-white" />
+                </span>
               ) : (
                 <div className="w-60 h-60 bg-bg2 animate-pulse rounded-xl" />
               )}
