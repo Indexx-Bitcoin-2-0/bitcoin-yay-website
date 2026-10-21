@@ -1697,7 +1697,7 @@ function buildAuth(options) {
          * it, so a product that stores the camelCase key would keep handing a
          * live-looking token to the switcher after sign-out.
          */
-        ["access_token", "accessToken", "refresh_token", "email", "user", "username", "userType", "shortToken"]
+        ["access_token", "accessToken", "refresh_token", "refreshToken", "email", "user", "username", "userType", "shortToken"]
           .forEach((k) => window.localStorage.removeItem(k));
       } catch (_) { /* blocked storage */ }
     }

@@ -1,0 +1,41 @@
+BTCY Power Mining — U.S. Regulatory Risk Review
+
+My preliminary assessment: BTCY Power Mining could violate U.S. securities regulations depending on how the program operates, how customers purchase mining power, and how BTCY Nuggets are converted into financial value.
+
+However, charging customers $5,000, $10,000, or $20,000 for mining power is not automatically illegal.
+
+The distinction is whether BTCY is selling a genuine service or offering an investment with an expectation of financial returns.
+
+Based on the business model you’ve described, I see three issues that require particular attention:
+
+* Investment contracts: If purchasers depend on BTCY’s management to generate profits, the SEC may classify the arrangement as a securities offering.
+* Promised returns: Advertising 10%–15% annual returns makes the program more likely to be treated as an investment rather than a normal software or mining service.
+* Nugget redemption: If BTCY promises to convert Nuggets into valuable tokens or cash, we need to examine the conversion mechanism, liquidity, funding sources, and potential financial-services licensing requirements.
+
+I would not launch the proposed return-based Power Mining packages until these questions are resolved.
+
+Regulatory risk assessment
+
+Based on what you’ve told me about BTCY, this is my preliminary assessment—not a finding that the existing program has violated any law.
+
+BTCY business feature	Preliminary risk
+Free mobile mining and earning Nuggets	Lower
+Selling Power Mining packages	Needs review
+Company-generated Nuggets with no actual blockchain mining	Needs review
+Marketing 10%–15% annual investment returns	High
+Guaranteed redemption or financial returns	High
+Exchange, custody, or transfer of convertible BTCY	Licensing review
+
+The SEC’s March 2026 interpretation specifically addresses mining on public proof-of-work blockchains. BTCY’s off-chain Nugget generation may not qualify for that treatment. The SEC also emphasizes the Howey investment-contract test, including whether buyers expect profits from the essential managerial efforts of others.
+
+FinCEN regulations may separately apply if BTCY operates as an administrator, exchanger, or transmitter of convertible virtual currency.
+
+What BTCY should do now
+
+I recommend a formal compliance audit covering existing package sales, customer agreements, marketing promises, actual Nugget-generation mechanics, withdrawals, and sources of reward funding. Preserve the records and have a U.S. securities attorney review them before changing the terms or expanding sales.
+
+The most important question I need you to answer is this:
+
+When someone pays $10,000 for BTCY Power Mining, is BTCY using actual blockchain computing power to generate cryptocurrency, or is the BTCY software simply increasing the number of Nuggets credited to the customer’s account?
+
+That single distinction will help us determine how the existing business works and which SEC, FinCEN, and state regulatory issues require closer examination.

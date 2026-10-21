@@ -1,0 +1,118 @@
+BTCY Revival Plan — Power Mining 2.0
+
+Bitcoin Yay | October 19, 2026
+
+I agree that Bitcoin Yay (BTCY) deserves a serious strategic review. If new-user registrations have fallen from approximately 1,000 per day to much lower levels, we need to examine not only marketing but also the product’s value proposition, mining economics, user confidence, and reasons people stop participating.
+
+Your idea of allowing miners to purchase additional mining power is worth exploring. However, I would separate three different business models:
+
+* Free Mining: Users earn BTCY Nuggets through participation, activity, and referrals.
+* Power Mining: Users purchase additional computing or mining-related services to increase their eligible mining activity.
+* Investment Products: Users contribute capital expecting financial returns, potentially 10%–15% annually.
+
+The third model is fundamentally different from the first two. Calling an investment “Power Mining” or paying returns in BTCY Nuggets does not automatically exempt it from SEC securities laws.
+
+I would not recommend designing the program to evade SEC oversight. Instead, we should explore a compliant mining-service product alongside a separately structured investment offering, if one makes commercial sense.
+
+1. Your proposed Power Mining economics
+
+Here is how a 10%–15% annual return target would translate into dollars, before fees, taxes, and BTCY price fluctuations.
+
+Purchase amount	10% annually	15% annually
+$5,000	$500	$750
+$10,000	$1,000	$1,500
+$20,000	$2,000	$3,000
+
+For example, a $10,000 purchase targeting 15% annually would require $1,500 in annual value, or $125 monthly on a simple-interest basis.
+
+But the important question is: Where does the $1,500 come from?
+
+If it comes from sustainable, independently verified mining revenue or another legitimate business activity, we can evaluate the economics. If it comes primarily from selling new mining packages to new users, that creates substantial financial and regulatory risk.
+
+We also need to distinguish BTCY Nuggets from transferable BTCY tokens. Their conversion eligibility, actual liquidity, and realizable market value determine whether they have meaningful economic value.
+
+2. My proposed BTCY revival strategy
+
+Rebuild user acquisition
+
+Relaunch referral campaigns, short-form videos, and creator partnerships. Focus on verified registrations and miners who remain active after 30 days, not just sign-ups.
+
+Introduce Power Mining 2.0
+
+Test $5,000, $10,000, and $20,000 packages only after establishing what mining services are actually delivered, how rewards are generated, and whether the pricing is commercially reasonable.
+
+Build trust and transparency
+
+Publish clear explanations of Nugget balances, conversion rules, withdrawal eligibility, costs, and risks. Avoid advertising guaranteed interest without a legally authorized and financially supported product.
+
+Measure retention and revenue
+
+Track daily newcomers, active miners, mining-package conversions, customer acquisition costs, withdrawals, and the economic sustainability of rewards.
+
+3. Proposed Power Mining landing page
+
+BITCOIN YAY
+
+Power Mining 2.0
+
+Explore BTCY mining services and understand how participation works.
+
+Starter
+
+$5,000
+
+Service specifications pending
+
+Advanced
+
+$10,000
+
+Service specifications pending
+
+Premium
+
+$20,000
+
+Service specifications pending
+
+Concept preview only. These are proposed price tiers, not available offers. No yield or mining output is promised.
+
+4. BTCY Nugget return calculator
+
+This calculator demonstrates the Nugget quantity needed to equal a hypothetical annual dollar target. It does not forecast actual earnings.
+
+Illustrative package
+
+$5,000
+
+$10,000
+
+$20,000
+
+Hypothetical annual value target
+
+10%15%
+
+Assumed realizable value per Nugget (USD)
+
+Monthly dollar target
+
+$125
+
+Nuggets required monthly
+
+125,000
+
+Annual value target: $1,500. Assumes one Nugget can actually be converted and sold at the entered price without costs or slippage. This is not a guaranteed return or a verified BTCY valuation.
+
+5. Tomorrow’s review
+
+Scheduled for Tuesday, October 20, 2026
+
+Your BTCY Revival Review is scheduled for tomorrow at approximately 2:11 PM Pacific. It will cover marketing, Power Mining economics, legal considerations, landing-page design, and a 90-day recovery roadmap.
+
+I can work from the voice-message transcript you’ve already provided. I can’t independently record or retrieve additional voicemail.
+
+One important question for our review: Does BTCY Power Mining currently generate revenue from actual blockchain mining, or does it allocate BTCY Nuggets through an internal reward system?
+
+That distinction will determine whether we can responsibly build a mining-service business or need to structure the proposed product as a regulated investment offering.
