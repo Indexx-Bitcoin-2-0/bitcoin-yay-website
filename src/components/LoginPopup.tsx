@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import axios from "axios";
 import PopupComponent from "@/components/PopupComponent";
@@ -11,7 +11,12 @@ import ResetPasswordPopup from "@/components/ResetPasswordPopup";
 import JoinPopup from "@/components/JoinPopup";
 import SetPasswordPopup from "@/components/SetPasswordPopup";
 import { useAuth } from "@/contexts/AuthContext";
-import { GOOGLE_LOGIN_API_ROUTE, LOGIN_API_ROUTE } from "@/routes";
+import {
+  GOOGLE_LOGIN_API_ROUTE,
+  LOGIN_API_ROUTE,
+  LOGIN_MFA_API_ROUTE,
+} from "@/routes";
+import MfaCodePopup from "@/components/MfaCodePopup";
 import { extractApiMessage } from "@/lib/utils";
 import ReCAPTCHA from "react-google-recaptcha";
 import { RECAPTCHA_SITE_KEY } from "@/constants/recaptcha";
@@ -62,6 +67,22 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
   const captchaRef = useRef<ReCAPTCHA | null>(null);
   const isLoginButtonDisabled = isSubmitting || !recaptchaToken;
 
+  // Two-factor sign-in step (only for accounts that turned it on).
+  const [mfa, setMfa] = useState<{
+    token: string;
+    method: "password" | "google";
+  } | null>(null);
+  const [mfaError, setMfaError] = useState("");
+  const [mfaSubmitting, setMfaSubmitting] = useState(false);
+
+  // A closed login popup drops any half-finished two-factor step.
+  useEffect(() => {
+    if (!isOpen) {
+      setMfa(null);
+      setMfaError("");
+    }
+  }, [isOpen]);
+
   const validateForm = (): boolean => {
     const newErrors: { email?: string; password?: string } = {};
 
@@ -79,6 +100,86 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const finishPasswordLogin = (apiData: any) => {
+    login({
+      email: apiData.email,
+      name: apiData.name || email.split("@")[0], // Use email prefix as fallback for name
+      access_token: apiData.access_token,
+      refresh_token: apiData.refresh_token,
+      role: apiData.role,
+      userType: apiData.userType,
+      shortToken: apiData.shortToken,
+    });
+    onLoginSuccess();
+    onClose();
+    setEmail("");
+    setPassword("");
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const finishGoogleLogin = (data: any) => {
+    login({
+      email: data.email,
+      name: data.name || data.email.split("@")[0],
+      access_token: data.access_token,
+      refresh_token: data.refresh_token,
+      role: data.role || "Standard",
+      userType: data.userType || "Indexx Exchange",
+      shortToken: data.shortToken || "google-short-token",
+    });
+    onLoginSuccess();
+    onClose();
+    // Check if password needs to be set and show popup
+    if (data.isPasswordSet === false) {
+      setShowSetPassword(true);
+    }
+  };
+
+  const startMfaStep = (token: string, method: "password" | "google") => {
+    setMfaError("");
+    setMfa({ token, method });
+  };
+
+  const cancelMfaStep = () => {
+    setMfa(null);
+    setMfaError("");
+  };
+
+  const submitMfaCode = async (code: string) => {
+    if (!mfa) return;
+    setMfaSubmitting(true);
+    setMfaError("");
+    try {
+      const res = await axios.post(LOGIN_MFA_API_ROUTE, {
+        mfaToken: mfa.token,
+        code,
+      });
+      const data = res.data?.data;
+      if (!data?.access_token) {
+        setMfaError("Sign-in failed. Please try again.");
+        return;
+      }
+      const method = mfa.method;
+      setMfa(null);
+      if (method === "google") finishGoogleLogin(data);
+      else finishPasswordLogin(data);
+    } catch (error: unknown) {
+      const message = axios.isAxiosError(error)
+        ? extractApiMessage(error.response?.data)
+        : undefined;
+      if (message && /expired|sign in again/i.test(message)) {
+        // Too many tries or too slow: back to the login form.
+        setMfa(null);
+        setErrors({ general: message });
+      } else {
+        setMfaError(message || "That code is not right.");
+      }
+    } finally {
+      setMfaSubmitting(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -114,27 +215,12 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
         recaptchaToken,
       });
 
-      if (response.status === 200 && response.data) {
-        // Extract user data from API response
-        const apiData = response.data.data; // API returns data inside 'data' property
-
-        const userData = {
-          email: apiData.email,
-          name: apiData.name || email.split("@")[0], // Use email prefix as fallback for name
-          access_token: apiData.access_token,
-          refresh_token: apiData.refresh_token,
-          role: apiData.role,
-          userType: apiData.userType,
-          shortToken: apiData.shortToken,
-        };
-
-        login(userData);
-        onLoginSuccess();
-        onClose();
-
-        // Reset form
-        setEmail("");
-        setPassword("");
+      if (response.data?.data?.mfaRequired && response.data.data.mfaToken) {
+        // Two-factor is on: ask for the authenticator code next.
+        startMfaStep(response.data.data.mfaToken, "password");
+      } else if (response.status === 200 && response.data) {
+        // API returns data inside 'data' property
+        finishPasswordLogin(response.data.data);
       } else {
         setErrors({
           general:
@@ -187,26 +273,11 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
           googleToken,
           language: selectedLanguageLabel,
         });
-        console.log("Google login response:", res);
-        if (res?.status === 200 && res.data?.data?.access_token) {
-          // Success
-          login({
-            email: res.data?.data?.email,
-            name: res.data?.data?.name || res.data?.data?.email.split("@")[0],
-            access_token: res.data?.data.access_token,
-            refresh_token: res.data?.data.refresh_token,
-            role: res.data?.data.role || "Standard",
-            userType: res.data?.data.userType || "Indexx Exchange",
-            shortToken: res.data?.data.shortToken || "google-short-token",
-          });
-
-          onLoginSuccess();
-          onClose();
-
-          // Check if password needs to be set and show popup
-          if (res.data?.data?.isPasswordSet === false) {
-            setShowSetPassword(true);
-          }
+        if (res?.data?.data?.mfaRequired && res.data.data.mfaToken) {
+          // Two-factor is on: ask for the authenticator code next.
+          startMfaStep(res.data.data.mfaToken, "google");
+        } else if (res?.status === 200 && res.data?.data?.access_token) {
+          finishGoogleLogin(res.data.data);
         } else {
           // Any other backend response
           const errorMessage =
@@ -318,7 +389,8 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
     showEmailVerification ||
     showResetPassword ||
     showRegister ||
-    showSetPassword;
+    showSetPassword ||
+    Boolean(mfa);
 
   return (
     <>
@@ -498,6 +570,14 @@ const LoginPopup: React.FC<LoginPopupProps> = ({
       </PopupComponent>
 
       {/* Sub-Popups - rendered independently */}
+      <MfaCodePopup
+        isOpen={isOpen && Boolean(mfa)}
+        error={mfaError}
+        isSubmitting={mfaSubmitting}
+        onSubmit={submitMfaCode}
+        onCancel={cancelMfaStep}
+      />
+
       <ForgotPasswordPopup
         isOpen={showForgotPassword}
         onClose={handleCloseForgotPassword}
