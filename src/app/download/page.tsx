@@ -1,13 +1,15 @@
 "use client";
 
+import { EXTERNAL_URLS } from "@/lib/api-config";
+
 import Image from "next/image";
 import Link from "next/link";
 import MainLogo from "@/assets/images/main-logo.svg";
 import GopherImage1 from "@/assets/images/downloadPageArt.png";
 
 // App Store and Google Play links
-const APP_STORE_LINK = "https://apps.apple.com/ph/app/bitcoin-yay/id6744868017";
-const GOOGLE_PLAY_LINK = "https://play.google.com/store/apps/details?id=com.bitcoin2&hl=en";
+const APP_STORE_LINK = EXTERNAL_URLS.stores.apple;
+const GOOGLE_PLAY_LINK = EXTERNAL_URLS.stores.googlePlay;
 
 export default function DownloadPage() {
     return (

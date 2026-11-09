@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Sell BTCY - Coming Soon | bitcoin-yay",
+  title: "Sell BTCY | bitcoin-yay",
   description: "Selling BTCY tokens will be operational within 2 weeks. Stay tuned for the 30% promotion!",
 };
 

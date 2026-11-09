@@ -1,5 +1,6 @@
 "use client";
 
+import { EXTERNAL_URLS } from "@/lib/api-config";
 import BuybackRuleNote from "@/components/p2p/BuybackRuleNote";
 
 import { useState, useEffect, type FormEvent } from "react";
@@ -64,7 +65,7 @@ const DEFAULT_KYC_MESSAGE =
 const BTCY_SYMBOL = "BTCY";
 const TOKEN_WALLET_NETWORK = "Ying Yang Chain";
 const MIN_SELL_USD = 10;
-const KYC_ACCOUNT_URL = "https://cex.indexx.ai/indexx-exchange/account";
+const KYC_ACCOUNT_URL = EXTERNAL_URLS.app.kycAccount;
 
 const getSellOrderPayloadData = (responseData: unknown) => {
   if (

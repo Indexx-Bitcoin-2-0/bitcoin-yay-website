@@ -1,3 +1,4 @@
+import { EXTERNAL_URLS } from "@/lib/api-config";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -51,14 +52,14 @@ export default function BtcyIndexRelationship() {
           />
         </div>
         <div className="flex flex-col items-start justify-start gap-10 lg:mb-100">
-          <Link href={"https://indexx.ai"} target="_blank">
+          <Link href={EXTERNAL_URLS.indexx.home} target="_blank">
             <Image
               src={IndexxLogo}
               alt="Indexx Logo"
               className="w-70 hover:scale-105 transition-transform duration-300"
             />
           </Link>
-          <Link href={"https://lotto.indexx.ai"} target="_blank">
+          <Link href={EXTERNAL_URLS.indexx.lottery} target="_blank">
             <Image
               src={LotoLogo}
               alt="Loto Logo"
@@ -66,7 +67,7 @@ export default function BtcyIndexRelationship() {
             />
           </Link>
           <Link
-            href={"https://cex.indexx.ai/update/home?buyToken=INEX"}
+            href={EXTERNAL_URLS.indexx.buyInex}
             target="_blank"
           >
             <Image
@@ -75,14 +76,14 @@ export default function BtcyIndexRelationship() {
               className="w-64 hover:scale-105 transition-transform duration-300"
             />
           </Link>
-          <Link href={"https://shop.indexx.ai"} target="_blank">
+          <Link href={EXTERNAL_URLS.indexx.shop} target="_blank">
             <Image
               src={ShopLogo}
               alt="Shop Logo"
               className="w-46 hover:scale-105 transition-transform duration-300"
             />
           </Link>
-          <Link href={"https://academy.indexx.ai"} target="_blank">
+          <Link href={EXTERNAL_URLS.indexx.academy} target="_blank">
             <Image
               src={AcademyLogo}
               alt="Academy Logo"

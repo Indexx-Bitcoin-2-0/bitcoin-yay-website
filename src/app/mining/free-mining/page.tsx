@@ -1,3 +1,4 @@
+import { EXTERNAL_URLS } from "@/lib/api-config";
 import Image from "next/image";
 
 import FreeMiningButtonImage from "@/assets/images/mining/free-mining-icon.webp";
@@ -28,7 +29,7 @@ const FreeMiningPage = () => {
       {/*  We need to add video container here with youtube video iframe link  */}
       <div className="flex items-center justify-center my-20 max-w-7xl mx-auto aspect-video">
         <iframe
-          src="https://www.youtube.com/embed/ijFCuR8nr-E"
+          src={EXTERNAL_URLS.videos.freeMining}
           title="Snatch Mining"
           frameBorder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

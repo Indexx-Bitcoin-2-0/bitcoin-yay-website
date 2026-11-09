@@ -110,6 +110,49 @@ const MINING_SUBSCRIPTION_PLAN_URL = "/api/mining/getUserSubscriptionPlan";
 const REMOTE_SUBSCRIPTIONS_HOST = API_BASE_URL;
 const SUBSCRIPTION_HISTORY_URL = `${REMOTE_SUBSCRIPTIONS_HOST}/api/v1/bitcoinyay/subscriptions`;
 const CHANGE_PLAN_URL = `${REMOTE_SUBSCRIPTIONS_HOST}/api/v1/bitcoinyay/subscriptions/changeplan`;
+const PLAN_CATALOG_URL = `${REMOTE_SUBSCRIPTIONS_HOST}/api/v1/bitcoinyay/subscriptions/plans`;
+
+export interface ActivePromo {
+  code: string;
+  type: string;
+  percentOff: number;
+  discountAmount: number;
+  finalAmount: number;
+  description: string;
+  startsAt?: string;
+  endsAt?: string;
+}
+
+export interface PlanCatalogEntry {
+  key: string;
+  name: string;
+  amount: number;
+  currency: string;
+  activePromo?: ActivePromo;
+  [key: string]: unknown;
+}
+
+export type PlanCatalog = Record<string, PlanCatalogEntry>;
+
+// Personalized when `email` is passed: activePromo reflects the caller's own
+// referral-tier discount (or Mining Station Owner status) if it beats any
+// other currently-active promo — see getPlanCatalog in
+// indexx-exchange-backend/controllers/bitcoinyaySubscription.controller.ts.
+export async function fetchPlanCatalog(email?: string): Promise<PlanCatalog> {
+  const url = new URL(PLAN_CATALOG_URL);
+  const trimmedEmail = email?.trim();
+  if (trimmedEmail) {
+    url.searchParams.set("email", trimmedEmail);
+  }
+
+  const response = await fetch(url.toString(), { method: "GET" });
+  const result = await response.json().catch(() => null);
+  if (!response.ok || !result?.success) {
+    throw new Error(result?.error || "Unable to load the plan catalog.");
+  }
+
+  return (result.data ?? {}) as PlanCatalog;
+}
 
 export interface CouponValidationResponse {
   provider: string;

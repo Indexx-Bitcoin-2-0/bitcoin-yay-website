@@ -336,27 +336,27 @@
     B -->|No| B1["⚠️ Show message:<br>Selected Users Only, disable actions"]`
             },
             {
-                title: "Step 3b: Check if they have ≥50,000 BTCY mined",
+                title: "Step 3b: Check if they have ≥10,000 BTCY mined",
                 code: `flowchart TD
     A["🎮 Open Alchemy<br>Web, Android, iOS future"] --> B{Selected user?}
     B -->|No| B1["⚠️ Show message:<br>Selected Users Only, disable actions"]
-    B -->|Yes| C{"📊 Total mined BTCY >= 50000?"}`
+    B -->|Yes| C{"📊 Total mined BTCY >= 10000?"}`
             },
             {
                 title: "Step 4a: Insufficient BTCY - lock Alchemy",
                 code: `flowchart TD
     A["🎮 Open Alchemy<br>Web, Android, iOS future"] --> B{Selected user?}
     B -->|No| B1["⚠️ Show message:<br>Selected Users Only, disable actions"]
-    B -->|Yes| C{"📊 Total mined BTCY >= 50000?"}
-    C -->|No| C1["🔒 Show requirement:<br>Need 50000 BTCY mined, lock Alchemy"]`
+    B -->|Yes| C{"📊 Total mined BTCY >= 10000?"}
+    C -->|No| C1["🔒 Show requirement:<br>Need 10000 BTCY mined, lock Alchemy"]`
             },
             {
                 title: "Step 4b: Check 15-day cooldown period",
                 code: `flowchart TD
     A["🎮 Open Alchemy<br>Web, Android, iOS future"] --> B{Selected user?}
     B -->|No| B1["⚠️ Show message:<br>Selected Users Only, disable actions"]
-    B -->|Yes| C{"📊 Total mined BTCY >= 50000?"}
-    C -->|No| C1["🔒 Show requirement:<br>Need 50000 BTCY mined, lock Alchemy"]
+    B -->|Yes| C{"📊 Total mined BTCY >= 10000?"}
+    C -->|No| C1["🔒 Show requirement:<br>Need 10000 BTCY mined, lock Alchemy"]
     C -->|Yes| D{"⏰ In 15 day cooldown?"}`
             },
             {
@@ -364,8 +364,8 @@
                 code: `flowchart TD
     A["🎮 Open Alchemy<br>Web, Android, iOS future"] --> B{Selected user?}
     B -->|No| B1["⚠️ Show message:<br>Selected Users Only, disable actions"]
-    B -->|Yes| C{"📊 Total mined BTCY >= 50000?"}
-    C -->|No| C1["🔒 Show requirement:<br>Need 50000 BTCY mined, lock Alchemy"]
+    B -->|Yes| C{"📊 Total mined BTCY >= 10000?"}
+    C -->|No| C1["🔒 Show requirement:<br>Need 10000 BTCY mined, lock Alchemy"]
     C -->|Yes| D{"⏰ In 15 day cooldown?"}
     D -->|Yes| D1["📅 Show next available date,<br>disable Start Session"]`
             },
@@ -374,8 +374,8 @@
                 code: `flowchart TD
     A["🎮 Open Alchemy<br>Web, Android, iOS future"] --> B{Selected user?}
     B -->|No| B1["⚠️ Show message:<br>Selected Users Only, disable actions"]
-    B -->|Yes| C{"📊 Total mined BTCY >= 50000?"}
-    C -->|No| C1["🔒 Show requirement:<br>Need 50000 BTCY mined, lock Alchemy"]
+    B -->|Yes| C{"📊 Total mined BTCY >= 10000?"}
+    C -->|No| C1["🔒 Show requirement:<br>Need 10000 BTCY mined, lock Alchemy"]
     C -->|Yes| D{"⏰ In 15 day cooldown?"}
     D -->|Yes| D1["📅 Show next available date,<br>disable Start Session"]
     D -->|No| E["🔄 Show Alchemy session screen,<br>fixed input 1000 BTCY"]`
@@ -385,8 +385,8 @@
                 code: `flowchart TD
     A["🎮 Open Alchemy<br>Web, Android, iOS future"] --> B{Selected user?}
     B -->|No| B1["⚠️ Show message:<br>Selected Users Only, disable actions"]
-    B -->|Yes| C{"📊 Total mined BTCY >= 50000?"}
-    C -->|No| C1["🔒 Show requirement:<br>Need 50000 BTCY mined, lock Alchemy"]
+    B -->|Yes| C{"📊 Total mined BTCY >= 10000?"}
+    C -->|No| C1["🔒 Show requirement:<br>Need 10000 BTCY mined, lock Alchemy"]
     C -->|Yes| D{"⏰ In 15 day cooldown?"}
     D -->|Yes| D1["📅 Show next available date,<br>disable Start Session"]
     D -->|No| E["🔄 Show Alchemy session screen,<br>fixed input 1000 BTCY"]
@@ -397,8 +397,8 @@
                 code: `flowchart TD
     A["🎮 Open Alchemy<br>Web, Android, iOS future"] --> B{Selected user?}
     B -->|No| B1["⚠️ Show message:<br>Selected Users Only, disable actions"]
-    B -->|Yes| C{"📊 Total mined BTCY >= 50000?"}
-    C -->|No| C1["🔒 Show requirement:<br>Need 50000 BTCY mined, lock Alchemy"]
+    B -->|Yes| C{"📊 Total mined BTCY >= 10000?"}
+    C -->|No| C1["🔒 Show requirement:<br>Need 10000 BTCY mined, lock Alchemy"]
     C -->|Yes| D{"⏰ In 15 day cooldown?"}
     D -->|Yes| D1["📅 Show next available date,<br>disable Start Session"]
     D -->|No| E["🔄 Show Alchemy session screen,<br>fixed input 1000 BTCY"]
@@ -410,8 +410,8 @@
                 code: `flowchart TD
     A["🎮 Open Alchemy<br>Web, Android, iOS future"] --> B{Selected user?}
     B -->|No| B1["⚠️ Show message:<br>Selected Users Only, disable actions"]
-    B -->|Yes| C{"📊 Total mined BTCY >= 50000?"}
-    C -->|No| C1["🔒 Show requirement:<br>Need 50000 BTCY mined, lock Alchemy"]
+    B -->|Yes| C{"📊 Total mined BTCY >= 10000?"}
+    C -->|No| C1["🔒 Show requirement:<br>Need 10000 BTCY mined, lock Alchemy"]
     C -->|Yes| D{"⏰ In 15 day cooldown?"}
     D -->|Yes| D1["📅 Show next available date,<br>disable Start Session"]
     D -->|No| E["🔄 Show Alchemy session screen,<br>fixed input 1000 BTCY"]
@@ -424,8 +424,8 @@
                 code: `flowchart TD
     A["🎮 Open Alchemy<br>Web, Android, iOS future"] --> B{Selected user?}
     B -->|No| B1["⚠️ Show message:<br>Selected Users Only, disable actions"]
-    B -->|Yes| C{"📊 Total mined BTCY >= 50000?"}
-    C -->|No| C1["🔒 Show requirement:<br>Need 50000 BTCY mined, lock Alchemy"]
+    B -->|Yes| C{"📊 Total mined BTCY >= 10000?"}
+    C -->|No| C1["🔒 Show requirement:<br>Need 10000 BTCY mined, lock Alchemy"]
     C -->|Yes| D{"⏰ In 15 day cooldown?"}
     D -->|Yes| D1["📅 Show next available date,<br>disable Start Session"]
     D -->|No| E["🔄 Show Alchemy session screen,<br>fixed input 1000 BTCY"]
@@ -439,8 +439,8 @@
                 code: `flowchart TD
     A["🎮 Open Alchemy<br>Web, Android, iOS future"] --> B{Selected user?}
     B -->|No| B1["⚠️ Show message:<br>Selected Users Only, disable actions"]
-    B -->|Yes| C{"📊 Total mined BTCY >= 50000?"}
-    C -->|No| C1["🔒 Show requirement:<br>Need 50000 BTCY mined, lock Alchemy"]
+    B -->|Yes| C{"📊 Total mined BTCY >= 10000?"}
+    C -->|No| C1["🔒 Show requirement:<br>Need 10000 BTCY mined, lock Alchemy"]
     C -->|Yes| D{"⏰ In 15 day cooldown?"}
     D -->|Yes| D1["📅 Show next available date,<br>disable Start Session"]
     D -->|No| E["🔄 Show Alchemy session screen,<br>fixed input 1000 BTCY"]
@@ -455,8 +455,8 @@
                 code: `flowchart TD
     A["🎮 Open Alchemy<br>Web, Android, iOS future"] --> B{Selected user?}
     B -->|No| B1["⚠️ Show message:<br>Selected Users Only, disable actions"]
-    B -->|Yes| C{"📊 Total mined BTCY >= 50000?"}
-    C -->|No| C1["🔒 Show requirement:<br>Need 50000 BTCY mined, lock Alchemy"]
+    B -->|Yes| C{"📊 Total mined BTCY >= 10000?"}
+    C -->|No| C1["🔒 Show requirement:<br>Need 10000 BTCY mined, lock Alchemy"]
     C -->|Yes| D{"⏰ In 15 day cooldown?"}
     D -->|Yes| D1["📅 Show next available date,<br>disable Start Session"]
     D -->|No| E["🔄 Show Alchemy session screen,<br>fixed input 1000 BTCY"]
@@ -472,8 +472,8 @@
                 code: `flowchart TD
     A["🎮 Open Alchemy<br>Web, Android, iOS future"] --> B{Selected user?}
     B -->|No| B1["⚠️ Show message:<br>Selected Users Only, disable actions"]
-    B -->|Yes| C{"📊 Total mined BTCY >= 50000?"}
-    C -->|No| C1["🔒 Show requirement:<br>Need 50000 BTCY mined, lock Alchemy"]
+    B -->|Yes| C{"📊 Total mined BTCY >= 10000?"}
+    C -->|No| C1["🔒 Show requirement:<br>Need 10000 BTCY mined, lock Alchemy"]
     C -->|Yes| D{"⏰ In 15 day cooldown?"}
     D -->|Yes| D1["📅 Show next available date,<br>disable Start Session"]
     D -->|No| E["🔄 Show Alchemy session screen,<br>fixed input 1000 BTCY"]
@@ -490,8 +490,8 @@
                 code: `flowchart TD
     A["🎮 Open Alchemy<br>Web, Android, iOS future"] --> B{Selected user?}
     B -->|No| B1["⚠️ Show message:<br>Selected Users Only, disable actions"]
-    B -->|Yes| C{"📊 Total mined BTCY >= 50000?"}
-    C -->|No| C1["🔒 Show requirement:<br>Need 50000 BTCY mined, lock Alchemy"]
+    B -->|Yes| C{"📊 Total mined BTCY >= 10000?"}
+    C -->|No| C1["🔒 Show requirement:<br>Need 10000 BTCY mined, lock Alchemy"]
     C -->|Yes| D{"⏰ In 15 day cooldown?"}
     D -->|Yes| D1["📅 Show next available date,<br>disable Start Session"]
     D -->|No| E["🔄 Show Alchemy session screen,<br>fixed input 1000 BTCY"]
@@ -509,8 +509,8 @@
                 code: `flowchart TD
     A["🎮 Open Alchemy<br>Web, Android, iOS future"] --> B{Selected user?}
     B -->|No| B1["⚠️ Show message:<br>Selected Users Only, disable actions"]
-    B -->|Yes| C{"📊 Total mined BTCY >= 50000?"}
-    C -->|No| C1["🔒 Show requirement:<br>Need 50000 BTCY mined, lock Alchemy"]
+    B -->|Yes| C{"📊 Total mined BTCY >= 10000?"}
+    C -->|No| C1["🔒 Show requirement:<br>Need 10000 BTCY mined, lock Alchemy"]
     C -->|Yes| D{"⏰ In 15 day cooldown?"}
     D -->|Yes| D1["📅 Show next available date,<br>disable Start Session"]
     D -->|No| E["🔄 Show Alchemy session screen,<br>fixed input 1000 BTCY"]
@@ -529,8 +529,8 @@
                 code: `flowchart TD
     A["🎮 Open Alchemy<br>Web, Android, iOS future"] --> B{Selected user?}
     B -->|No| B1["⚠️ Show message:<br>Selected Users Only, disable actions"]
-    B -->|Yes| C{"📊 Total mined BTCY >= 50000?"}
-    C -->|No| C1["🔒 Show requirement:<br>Need 50000 BTCY mined, lock Alchemy"]
+    B -->|Yes| C{"📊 Total mined BTCY >= 10000?"}
+    C -->|No| C1["🔒 Show requirement:<br>Need 10000 BTCY mined, lock Alchemy"]
     C -->|Yes| D{"⏰ In 15 day cooldown?"}
     D -->|Yes| D1["📅 Show next available date,<br>disable Start Session"]
     D -->|No| E["🔄 Show Alchemy session screen,<br>fixed input 1000 BTCY"]
@@ -550,8 +550,8 @@
                 code: `flowchart TD
     A["🎮 Open Alchemy<br>Web, Android, iOS future"] --> B{Selected user?}
     B -->|No| B1["⚠️ Show message:<br>Selected Users Only, disable actions"]
-    B -->|Yes| C{"📊 Total mined BTCY >= 50000?"}
-    C -->|No| C1["🔒 Show requirement:<br>Need 50000 BTCY mined, lock Alchemy"]
+    B -->|Yes| C{"📊 Total mined BTCY >= 10000?"}
+    C -->|No| C1["🔒 Show requirement:<br>Need 10000 BTCY mined, lock Alchemy"]
     C -->|Yes| D{"⏰ In 15 day cooldown?"}
     D -->|Yes| D1["📅 Show next available date,<br>disable Start Session"]
     D -->|No| E["🔄 Show Alchemy session screen,<br>fixed input 1000 BTCY"]
@@ -572,8 +572,8 @@
                 code: `flowchart TD
     A["🎮 Open Alchemy<br>Web, Android, iOS future"] --> B{Selected user?}
     B -->|No| B1["⚠️ Show message:<br>Selected Users Only, disable actions"]
-    B -->|Yes| C{"📊 Total mined BTCY >= 50000?"}
-    C -->|No| C1["🔒 Show requirement:<br>Need 50000 BTCY mined, lock Alchemy"]
+    B -->|Yes| C{"📊 Total mined BTCY >= 10000?"}
+    C -->|No| C1["🔒 Show requirement:<br>Need 10000 BTCY mined, lock Alchemy"]
     C -->|Yes| D{"⏰ In 15 day cooldown?"}
     D -->|Yes| D1["📅 Show next available date,<br>disable Start Session"]
     D -->|No| E["🔄 Show Alchemy session screen,<br>fixed input 1000 BTCY"]
@@ -595,8 +595,8 @@
                 code: `flowchart TD
     A["🎮 Open Alchemy<br>Web, Android, iOS future"] --> B{Selected user?}
     B -->|No| B1["⚠️ Show message:<br>Selected Users Only, disable actions"]
-    B -->|Yes| C{"📊 Total mined BTCY >= 50000?"}
-    C -->|No| C1["🔒 Show requirement:<br>Need 50000 BTCY mined, lock Alchemy"]
+    B -->|Yes| C{"📊 Total mined BTCY >= 10000?"}
+    C -->|No| C1["🔒 Show requirement:<br>Need 10000 BTCY mined, lock Alchemy"]
     C -->|Yes| D{"⏰ In 15 day cooldown?"}
     D -->|Yes| D1["📅 Show next available date,<br>disable Start Session"]
     D -->|No| E["🔄 Show Alchemy session screen,<br>fixed input 1000 BTCY"]
@@ -619,8 +619,8 @@
                 code: `flowchart TD
     A["🎮 Open Alchemy<br>Web, Android, iOS future"] --> B{Selected user?}
     B -->|No| B1["⚠️ Show message:<br>Selected Users Only, disable actions"]
-    B -->|Yes| C{"📊 Total mined BTCY >= 50000?"}
-    C -->|No| C1["🔒 Show requirement:<br>Need 50000 BTCY mined, lock Alchemy"]
+    B -->|Yes| C{"📊 Total mined BTCY >= 10000?"}
+    C -->|No| C1["🔒 Show requirement:<br>Need 10000 BTCY mined, lock Alchemy"]
     C -->|Yes| D{"⏰ In 15 day cooldown?"}
     D -->|Yes| D1["📅 Show next available date,<br>disable Start Session"]
     D -->|No| E["🔄 Show Alchemy session screen,<br>fixed input 1000 BTCY"]
@@ -644,8 +644,8 @@
                 code: `flowchart TD
     A["🎮 Open Alchemy<br>Web, Android, iOS future"] --> B{Selected user?}
     B -->|No| B1["⚠️ Show message:<br>Selected Users Only, disable actions"]
-    B -->|Yes| C{"📊 Total mined BTCY >= 50000?"}
-    C -->|No| C1["🔒 Show requirement:<br>Need 50000 BTCY mined, lock Alchemy"]
+    B -->|Yes| C{"📊 Total mined BTCY >= 10000?"}
+    C -->|No| C1["🔒 Show requirement:<br>Need 10000 BTCY mined, lock Alchemy"]
     C -->|Yes| D{"⏰ In 15 day cooldown?"}
     D -->|Yes| D1["📅 Show next available date,<br>disable Start Session"]
     D -->|No| E["🔄 Show Alchemy session screen,<br>fixed input 1000 BTCY"]

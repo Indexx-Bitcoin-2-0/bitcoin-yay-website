@@ -1,5 +1,7 @@
 "use client";
 
+import { EXTERNAL_URLS } from "@/lib/api-config";
+
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronDown, Check } from "lucide-react";
@@ -44,7 +46,7 @@ import CardImage1 from "@/assets/images/home/card-1.webp";
 import CardImage2 from "@/assets/images/home/card-2.webp";
 import CardImage3 from "@/assets/images/home/card-3.webp";
 
-const WALLET_OVERVIEW_BASE_URL = "https://cex.indexx.ai/wallet/overview";
+const WALLET_OVERVIEW_BASE_URL: string = EXTERNAL_URLS.app.walletOverview;
 
 import {
   PaymentOption,

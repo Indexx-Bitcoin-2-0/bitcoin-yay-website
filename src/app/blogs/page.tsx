@@ -1,3 +1,4 @@
+import { articles } from "./articles";
 import CustomStyledConatiner from "@/components/CustomStyledContainer";
 import Image from "next/image";
 import Link from "next/link";
@@ -176,6 +177,24 @@ const BlogCard = ({ post }: { post: BlogPost }) => {
   );
 };
 
+// Only posts that have real content behind them are listed; the rest would 404.
+const PUBLISHED_SLUGS = ["smart-crypto-empowering-investors"];
+const publishedPosts = blogPosts.filter((post, i, all) =>
+  PUBLISHED_SLUGS.some((slug) => post.link.endsWith(slug)) &&
+  all.findIndex((p) => p.link === post.link) === i
+);
+
+const guidePosts: BlogPost[] = articles.map((article, i) => ({
+  id: 100 + i,
+  title: article.title,
+  description: article.description,
+  date: article.date,
+  image: `/blog/${article.slug}.jpg`,
+  category: article.category,
+  link: `/blogs/${article.slug}`,
+}));
+const allPosts = [...guidePosts, ...publishedPosts];
+
 export default function Blogs() {
   return (
     <div className="mx-auto max-w-[90vw] lg:px-10 py-8 mt-40">
@@ -184,12 +203,12 @@ export default function Blogs() {
           News & Blogs
         </h1>
         <p className="text-sm md:text-lg font-normal text-tertiary my-4">
-          Last Updated: March 10, 2025
+          Last Updated: September 21, 2026
         </p>
       </CustomStyledConatiner>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-        {blogPosts.map((post) => (
+        {allPosts.map((post) => (
           <BlogCard key={post.id} post={post} />
         ))}
       </div>

@@ -1,3 +1,4 @@
+import { EXTERNAL_URLS } from "@/lib/api-config";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -52,7 +53,7 @@ export default function BtcyIndexRelationship() {
           />
         </div>
         <div className="flex flex-col justify-center items-center" >
-          <Link href={"https://whoisbitcoinsatoshi.wtf"} target="_blank">
+          <Link href={EXTERNAL_URLS.wibs.home} target="_blank">
             <Image
               src={WibsLogo}
               alt="WibsLogo"
@@ -60,7 +61,7 @@ export default function BtcyIndexRelationship() {
             />
           </Link>
           <div className="w-22">
-            <CustomButton2 image={UpArrow} text="Visit WIBS" link="https://whoisbitcoinsatoshi.wtf" />
+            <CustomButton2 image={UpArrow} text="Visit WIBS" link={EXTERNAL_URLS.wibs.home} />
           </div>
 
         </div>

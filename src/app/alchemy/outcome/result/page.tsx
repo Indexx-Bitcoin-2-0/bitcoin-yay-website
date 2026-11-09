@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Copy, Share2, Flag, X } from "lucide-react";
 import jsPDF from "jspdf";
+import { EXTERNAL_URLS } from "@/lib/api-config";
 
 import AlchemyLogo from "@/assets/images/alchemy/alchemy-logo.webp";
 import ArtImage1 from "@/assets/images/alchemy/home/alchemyResult.png";
@@ -238,7 +239,7 @@ export default function AlchemyOutcomeResultPage() {
         if (typeof window !== 'undefined') {
             return window.location.href;
         }
-        return 'https://bitcoinyay.com';
+        return EXTERNAL_URLS.app.website;
     };
 
     const handleShare = async () => {
@@ -273,22 +274,22 @@ export default function AlchemyOutcomeResultPage() {
 
         switch (platform) {
             case 'twitter':
-                shareUrl = `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
+                shareUrl = `${EXTERNAL_URLS.share.x}?text=${text}&url=${url}`;
                 break;
             case 'facebook':
-                shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+                shareUrl = `${EXTERNAL_URLS.share.facebook}?u=${url}`;
                 break;
             case 'linkedin':
-                shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
+                shareUrl = `${EXTERNAL_URLS.share.linkedin}?url=${url}`;
                 break;
             case 'whatsapp':
-                shareUrl = `https://wa.me/?text=${text} ${url}`;
+                shareUrl = `${EXTERNAL_URLS.share.whatsapp}?text=${text} ${url}`;
                 break;
             case 'telegram':
-                shareUrl = `https://t.me/share/url?url=${url}&text=${text}`;
+                shareUrl = `${EXTERNAL_URLS.share.telegram}?url=${url}&text=${text}`;
                 break;
             case 'reddit':
-                shareUrl = `https://reddit.com/submit?url=${url}&title=${text}`;
+                shareUrl = `${EXTERNAL_URLS.share.reddit}?url=${url}&title=${text}`;
                 break;
             case 'copy':
                 navigator.clipboard.writeText(`${getShareText()} ${getShareUrl()}`);

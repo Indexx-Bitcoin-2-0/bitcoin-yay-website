@@ -29,10 +29,7 @@ import {
 import CongratulationsPage from "@/app/alchemy/congratulations/page";
 import RetainedPage from "@/app/alchemy/retained/page";
 
-import {
-  getMinimumBalanceMessage,
-  getMinimumBTCYBalanceForAlchemy,
-} from "@/app/alchemy/constants";
+import { getMinimumBTCYBalanceForAlchemy } from "@/app/alchemy/constants";
 
 interface AlchemyDetailPageProps {
   params: Promise<{
@@ -48,7 +45,11 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
   // const router = useRouter();
 
   const { user, isLoading } = useAuth(); // Get authenticated user
-  const minimumBalanceForUser = getMinimumBTCYBalanceForAlchemy(user?.email);
+  const [personalizedMinimumMinedRequired, setPersonalizedMinimumMinedRequired] =
+    useState<number | null>(null);
+  const minimumBalanceForUser =
+    personalizedMinimumMinedRequired ??
+    getMinimumBTCYBalanceForAlchemy(user?.email);
   const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
   const [configLoading, setConfigLoading] = useState(true);
   const [configError, setConfigError] = useState<string | null>(null);
@@ -76,17 +77,17 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
 
   // Fetch alchemy config on component mount
   useEffect(() => {
-    const fetchAlchemyConfig = async () => {
+    const fetchAlchemyConfig = async (): Promise<number | null> => {
       try {
         if (ALCHEMY_DISABLED) {
           setConfigLoading(false);
           setConfigError(null); // we’ll render the disabled UI instead of an error
-          return;
+          return null;
         }
         setConfigLoading(true);
         setConfigError(null);
 
-        const response = await getAlchemyConfig();
+        const response = await getAlchemyConfig(user?.email);
         console.log("res", response)
         if (!response.success) {
           throw new Error(response.error || "Failed to fetch alchemy config");
@@ -101,26 +102,35 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
         } else {
           throw new Error("No turbo plans found");
         }
+
+        return response.alchemyMinimumMinedRequired ?? null;
       } catch (err) {
         console.error("Failed to fetch alchemy config:", err);
         setConfigError(
           err instanceof Error ? err.message : "Failed to fetch alchemy config"
         );
+        return null;
       } finally {
         setConfigLoading(false);
       }
     };
 
-    const fetchBalance = async () => {
+    const fetchBalance = async (personalizedMinimum: number | null) => {
       const balance = await getUserBTCYBalance(user?.email || "");
       setUserPlanData({
         balance: balance.data?.totalBTCYBalance,
         userType: balance.data?.userType,
         plan: balance.data?.plan,
       });
-      const requiredBalance = getMinimumBTCYBalanceForAlchemy(user?.email);
+      const requiredBalance =
+        personalizedMinimum ?? getMinimumBTCYBalanceForAlchemy(user?.email);
+      setPersonalizedMinimumMinedRequired(requiredBalance);
       if (balance.data?.totalBTCYBalance < requiredBalance) {
-        setError(getMinimumBalanceMessage(user?.email));
+        setError(
+          `You need at least ${requiredBalance.toLocaleString(
+            "en-US"
+          )} BTCY to start an Alchemy`
+        );
         setIsLoadingAlchemy(false);
         return;
       }
@@ -134,8 +144,10 @@ export default function AlchemyDetailPage({ params }: AlchemyDetailPageProps) {
       }
       // Only fetch if planIndex is a valid number
       if (!isNaN(planIndex)) {
-        fetchAlchemyConfig();
-        fetchBalance();
+        (async () => {
+          const personalizedMinimum = await fetchAlchemyConfig();
+          await fetchBalance(personalizedMinimum);
+        })();
       } else {
         setConfigError("Invalid plan index");
         setConfigLoading(false);

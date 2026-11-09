@@ -11,6 +11,7 @@ import {
   GET_USER_MINING_BALANCE_API_ROUTE,
   GET_USER_WALLET_BALANCE_API_ROUTE,
 } from "@/routes";
+import { handleAuthFailure } from "@/lib/auth-session";
 
 export const ALCHEMY_DISABLED = false;
 
@@ -143,6 +144,12 @@ export interface AlchemyConfigResponse {
   config?: AlchemyRuntimeConfig;
   maxInputLimit?: number;
   maxInputLimitLabel?: string;
+  // Personalized when `email` is passed to getAlchemyConfig(): reflects
+  // the caller's actual Alchemy unlock requirement (5,000 for Mining
+  // Station Owners, otherwise the standard/special threshold) — computed
+  // the same way the backend enforces it at session-start time.
+  isStationOwner?: boolean;
+  alchemyMinimumMinedRequired?: number;
   error?: string;
 }
 
@@ -157,7 +164,9 @@ function getAccessToken(): string | null {
 
 async function parseJsonSafe(response: Response) {
   try {
-    return await response.json();
+    const result = await response.json();
+    handleAuthFailure(response, result);
+    return result;
   } catch (error) {
     const fallback =
       (await response.text().catch(() => "")) || "Unable to parse response body";
@@ -436,11 +445,17 @@ export async function completeAlchemyProcess(
 /**
  * Fetches alchemy configuration for all types
  */
-export async function getAlchemyConfig(): Promise<AlchemyConfigResponse> {
+export async function getAlchemyConfig(email?: string): Promise<AlchemyConfigResponse> {
   try {
     ensureAlchemyEnabled();
 
-    const response = await fetch(ALCHEMY_CONFIG_API_ROUTE, {
+    const url = new URL(ALCHEMY_CONFIG_API_ROUTE);
+    const trimmedEmail = email?.trim();
+    if (trimmedEmail) {
+      url.searchParams.set("email", trimmedEmail);
+    }
+
+    const response = await fetch(url.toString(), {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -460,6 +475,8 @@ export async function getAlchemyConfig(): Promise<AlchemyConfigResponse> {
       config: result.config,
       maxInputLimit: result.maxInputLimit,
       maxInputLimitLabel: result.maxInputLimitLabel,
+      isStationOwner: result.isStationOwner,
+      alchemyMinimumMinedRequired: result.alchemyMinimumMinedRequired,
     };
   } catch (error) {
     console.error("Get alchemy config error:", error);

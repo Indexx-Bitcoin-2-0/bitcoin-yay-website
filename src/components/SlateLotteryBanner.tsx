@@ -1,5 +1,7 @@
 "use client";
 
+import { EXTERNAL_URLS } from "@/lib/api-config";
+
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Gift, Trophy } from "lucide-react";
@@ -12,7 +14,7 @@ import TigerArt from "@/assets/images/slate-lottery/tiger.png";
 import { useAuth } from "@/contexts/AuthContext";
 import { getAuthenticatedWalletUrl } from "@/lib/authenticated-wallet";
 
-const VISIT_URL = "https://emmm.io/";
+const VISIT_URL: string = EXTERNAL_URLS.promotion.emmm;
 
 // Slate Lottery promo banner. Rendered inside the home page banner slider
 // (src/components/HomeBannerSlider.tsx) alongside NewYearPromotionalBanner.

@@ -1,5 +1,7 @@
 "use client";
 
+import { EXTERNAL_URLS } from "@/lib/api-config";
+
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -53,13 +55,13 @@ const DownloadAppPopup: React.FC<DownloadAppPopupProps> = ({
                     <CustomButton2
                         image={DownloadIcon}
                         text="Download on App Store"
-                        onClick={() => window.open("https://apps.apple.com/ph/app/bitcoin-yay/id6744868017", "_blank")}
+                        onClick={() => window.open(EXTERNAL_URLS.stores.apple, "_blank")}
                         imageStyling="w-16 h-16"
                     />
                     <CustomButton2
                         image={DownloadIcon}
                         text="Get it on Google Play"
-                        onClick={() => window.open("https://play.google.com/store/apps/details?id=com.bitcoin2&hl=en", "_blank")}
+                        onClick={() => window.open(EXTERNAL_URLS.stores.googlePlay, "_blank")}
                         imageStyling="w-16 h-16"
                     />
                 </div>

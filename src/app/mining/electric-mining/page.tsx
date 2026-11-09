@@ -13,6 +13,8 @@ import { PROVIDER_LABELS } from "@/constants/paymentProviders";
 import {
   purchaseSubscription,
   validateCoupon,
+  fetchPlanCatalog,
+  ActivePromo,
   CouponValidationResponse,
   PaymentProvider,
   SubscriptionPurchasePayload,
@@ -55,6 +57,7 @@ const ElectricMiningPage = () => {
     useState<CouponValidationResponse | null>(null);
   const [couponValidationLoading, setCouponValidationLoading] =
     useState(false);
+  const [referralPromo, setReferralPromo] = useState<ActivePromo | null>(null);
   const getPlanKey = () =>
     duration === "weekly" ? WEEKLY_PLAN_KEY : MONTHLY_PLAN_KEY;
 
@@ -147,6 +150,28 @@ const ElectricMiningPage = () => {
     }
   }, [isLoading, user]);
 
+  // Automatic referral / Mining Station Owner discount, if the signed-in
+  // user qualifies for one — independent of the manual coupon field below.
+  useEffect(() => {
+    if (!user?.email) {
+      setReferralPromo(null);
+      return;
+    }
+    let active = true;
+    fetchPlanCatalog(user.email)
+      .then((catalog) => {
+        if (!active) return;
+        setReferralPromo(catalog[getPlanKey()]?.activePromo ?? null);
+      })
+      .catch(() => {
+        if (active) setReferralPromo(null);
+      });
+    return () => {
+      active = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.email, duration]);
+
   // Calculate current price based on duration
   const currentPrice = duration === "weekly" ? PLAN_PRICE_WEEKLY : PLAN_PRICE_MONTHLY;
   const priceLabel = duration === "weekly" ? "week" : "m";
@@ -192,6 +217,12 @@ const ElectricMiningPage = () => {
 
       if (trimmedCoupon) {
         payload.couponCode = trimmedCoupon;
+      } else if (referralPromo) {
+        // No manual coupon entered — apply the automatic referral/station
+        // owner discount. The backend still picks whichever discount is
+        // larger if a manual coupon is present, so this only fills the gap
+        // when the user didn't type one.
+        payload.couponCode = referralPromo.code;
       }
 
       const result = await purchaseSubscription(payload);
@@ -367,6 +398,11 @@ const ElectricMiningPage = () => {
             >
               {couponValidationMessage}
             </p>
+          ) : referralPromo && !couponCode.trim() ? (
+            <p className="text-sm text-center mt-2 text-green-400">
+              {referralPromo.description} — final{" "}
+              {formatUsd(referralPromo.finalAmount)}
+            </p>
           ) : null}
           <CustomButton2
             text={isSubmitting ? "Processing subscription..." : "Subscribe"}
@@ -408,7 +444,7 @@ const ElectricMiningPage = () => {
         onSelectPaymentMethod={handlePaymentMethodSelect}
         planName={PLAN_NAME}
         subscriptionAmount={currentPrice}
-        finalAmount={couponValidation?.finalPrice}
+        finalAmount={couponValidation?.finalPrice ?? referralPromo?.finalAmount}
       />
 
       <div className="text-base mt-40 flex flex-col gap-20 max-w-5xl leading-8 mb-40">

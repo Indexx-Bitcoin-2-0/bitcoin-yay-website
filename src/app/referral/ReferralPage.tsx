@@ -1,5 +1,7 @@
 "use client";
 
+import { EXTERNAL_URLS } from "@/lib/api-config";
+
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -53,7 +55,7 @@ export default function ReferralPage() {
       </p>
       <div className="mt-2 flex flex-col md:flex-row md:gap-20 justify-center items-center">
         <Link
-          href="https://apps.apple.com/ph/app/bitcoin-yay/id6744868017"
+          href={EXTERNAL_URLS.stores.apple}
           target="_blank"
         >
           <Image
@@ -63,7 +65,7 @@ export default function ReferralPage() {
           />
         </Link>
         <Link
-          href="https://play.google.com/store/apps/details?id=com.bitcoin2&hl=en"
+          href={EXTERNAL_URLS.stores.googlePlay}
           target="_blank"
         >
           <Image

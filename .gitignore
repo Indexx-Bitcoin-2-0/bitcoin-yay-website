@@ -40,3 +40,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 package-lock.json
+
+# Knowledge-graph artifacts (graphify). Generated outside this repo under
+# ../graphs/<repo>/; the library also drops a cache/ here relative to the
+# input path. Never commit either.
+graphify-out/

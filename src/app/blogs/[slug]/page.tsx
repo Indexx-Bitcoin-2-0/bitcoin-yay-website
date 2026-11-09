@@ -2,6 +2,9 @@ import CustomStyledConatiner from "@/components/CustomStyledContainer";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import { type Components } from "react-markdown";
+import type { Metadata } from "next";
+import Image from "next/image";
+import { articles, getArticle } from "../articles";
 
 interface BlogPost {
   id: number;
@@ -85,16 +88,38 @@ interface PageProps {
   searchParams?: { [key: string]: string | string[] | undefined };
 }
 
+export function generateStaticParams() {
+  return [
+    { slug: "smart-crypto-empowering-investors" },
+    ...articles.map((article) => ({ slug: article.slug })),
+  ];
+}
+
+export function generateMetadata({ params }: PageProps): Metadata {
+  const article = getArticle(params.slug);
+  if (!article) return {};
+  return {
+    title: article.title,
+    description: article.description,
+    openGraph: {
+      title: article.title,
+      description: article.description,
+      images: [`/blog/${article.slug}.jpg`],
+    },
+  };
+}
+
 export default function BlogPost({ params }: PageProps) {
-  const content = getPostContent(params.slug);
+  const article = getArticle(params.slug);
+  const content = article ? article.content : getPostContent(params.slug);
 
   if (!content) {
     notFound();
   }
 
-  const post = blogPosts.find((post: BlogPost) =>
-    post.link.endsWith(params.slug)
-  );
+  const post = article
+    ? { title: article.title, category: article.category, date: article.date }
+    : blogPosts.find((post: BlogPost) => post.link.endsWith(params.slug));
 
   if (!post) {
     notFound();
@@ -112,6 +137,16 @@ export default function BlogPost({ params }: PageProps) {
         </div>
       </CustomStyledConatiner>
 
+      {article && (
+        <Image
+          src={`/blog/${article.slug}.jpg`}
+          alt={article.title}
+          width={1200}
+          height={630}
+          priority
+          className="w-full h-auto rounded-lg mt-8"
+        />
+      )}
       <article className="prose prose-invert prose-lg max-w-none mt-8">
         <ReactMarkdown components={components}>{content}</ReactMarkdown>
       </article>

@@ -6,6 +6,7 @@ import { ChevronDown, Check } from "lucide-react";
 import CustomButton2 from "@/components/CustomButton2";
 import SubmitButton from "@/assets/images/buttons/arrow-up-button.webp";
 import { useAuth } from "@/contexts/AuthContext";
+import { EXTERNAL_URLS } from "@/lib/api-config";
 import LoginPopup from "@/components/LoginPopup";
 import { API_BASE_URL } from "@/lib/api-config";
 
@@ -133,7 +134,7 @@ export default function NewProposal() {
 
       // Simulate IPFS upload or placeholder
       const attachmentUrls = formData.attachment
-        ? [`https://ipfs.io/ipfs/fakeHash/${formData.attachment.name}`]
+        ? [`${EXTERNAL_URLS.storage.ipfsGateway}/fakeHash/${formData.attachment.name}`]
         : [];
 
       const payload = {
