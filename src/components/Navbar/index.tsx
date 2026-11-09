@@ -18,7 +18,12 @@ import logo from "@/assets/images/main-logo.svg";
 import mobLogo from "@/assets/images/logo.webp";
 import ProfileIcon from "@/assets/images/profile-icon.webp";
 import UserDropdown from "./UserDropdown";
-import Data from "./data";
+import ProductLauncher from "@/components/ProductLauncher";
+import zodiacLogo from "@/assets/launcher/zodiacLogo.png";
+import RawData from "./data";
+
+// "Eco" is hidden from the navigation bar for now; its entry stays in data.ts.
+const Data = RawData.filter((item) => item.mainTextDesktop !== "Eco");
 import { useAuth } from "@/contexts/AuthContext";
 import LoginPopup from "@/components/LoginPopup";
 import RegisterPopup from "@/components/RegisterPopup";
@@ -1211,7 +1216,7 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Auth Section (Desktop) */}
-        <div className="hidden xl:flex items-center gap-8">
+        <div className="hidden xl:flex items-center gap-8 ml-auto">
           {isAuthenticated && user ? (
             <>
               <UserDropdown
@@ -1237,6 +1242,24 @@ const Navbar: React.FC = () => {
               </button>
             </div>
           )}
+
+        </div>
+
+        {/*
+          Outside the desktop-only cluster on purpose.
+          
+          This used to live inside `hidden xl:flex`, so below 1280px it vanished
+          with the rest of the desktop nav and the switcher was simply gone —
+          the one control that is supposed to be reachable from every product,
+          at every size, missing on the sizes most laptops actually use. It is
+          not in the hamburger either: the whole point is to move BETWEEN
+          products, which should not require opening this product's own menu.
+
+          One instance, always rendered: the nine-oval product launcher, ported
+          from the indexx welcome page (components/ProductLauncher).
+        */}
+        <div className="flex items-center ml-4 max-xl:ml-auto">
+            <ProductLauncher icon={zodiacLogo} theme="dark" />
         </div>
 
         {/* Mobile Menu */}
