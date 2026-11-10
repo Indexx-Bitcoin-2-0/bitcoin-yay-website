@@ -305,3 +305,20 @@
   background: var(--zl-btn);
   color: var(--zl-text);
 }
+
+/* "Explore Zodiac" link under the product grid */
+.zl-panel .zl-explore {
+  display: block;
+  margin: 2px 8px 0;
+  padding: 12px 8px 6px;
+  border-top: 1px solid rgba(128, 128, 128, 0.25);
+  text-align: center;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--zl-accent);
+  text-decoration: none;
+  cursor: pointer;
+}
+.zl-panel .zl-explore:hover {
+  text-decoration: underline;
+}

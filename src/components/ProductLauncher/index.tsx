@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import "./style.css";
-import { LAUNCHER_PRODUCTS, LauncherProduct } from "./products";
+import { LAUNCHER_PRODUCTS, LauncherProduct, ZODIAC_URL } from "./products";
 import { decodeJWT, getUserShortToken } from "@/lib/signInToken";
 
 const STORE_KEY = "indexxLauncherLayout";
@@ -382,6 +382,15 @@ const ProductLauncher: React.FC<Props> = ({ icon, theme }) => {
               )}
             </div>
           </div>
+
+          <a
+            className="zl-explore"
+            href={ZODIAC_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Explore Zodiac
+          </a>
 
           {drag && drag.moved && dragged && (
             <div className="zl-ghost" style={{ left: drag.x, top: drag.y }}>

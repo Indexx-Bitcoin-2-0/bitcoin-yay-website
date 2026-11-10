@@ -50,3 +50,6 @@ export const LAUNCHER_PRODUCTS: LauncherProduct[] = [
   { id: "xxemail", name: "XXEmail", url: () => "https://test.xxemail.com/", dark: u(xxEmailLogo), light: u(xxEmailLogo) },
   { id: "yaysapp", name: "YaysApp", url: () => "https://web.yaysapp.com", dark: u(yaysAppIconDark), light: u(yaysAppIconDark) },
 ];
+
+// Where "Explore Zodiac" in the launcher panel goes.
+export const ZODIAC_URL = "https://test.indexx.ai";
