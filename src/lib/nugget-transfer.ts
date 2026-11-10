@@ -13,6 +13,7 @@ export interface TransferRecipient {
 
 export interface TransferRulesCheck {
   isOwner: boolean;
+  eligibilityExempt: boolean;
   senderKyc: KycStatus;
   minedBalance: number;
   withdrawnBalance: number;
@@ -255,18 +256,22 @@ export const loadTransferRulesCheck = async (
   senderEmail: string,
   referralsOverride?: { count: number }
 ): Promise<TransferRulesCheck> => {
-  const [miningBalance, walletBalance, referrals, senderKyc] = await Promise.all([
+  const [miningBalance, walletBalance, referrals, senderKyc, senderDetails] = await Promise.all([
     getUserMiningBalance(senderEmail),
     getUserWalletBalance(senderEmail, "BTCY", "Stellar"),
     referralsOverride ?? getReferralRecipients(senderEmail),
     getKycStatusForEmail(senderEmail),
+    getUserDetails(senderEmail),
   ]);
 
   const minedBalance = toSafeNumber(miningBalance.data?.transferableBalance);
   const withdrawnBalance = toSafeNumber(walletBalance.data?.balance);
+  const sender = unwrapApiData(senderDetails);
+  const eligibilityExempt = sender.isNuggetTransferKycAndDirectReferralExempt === true;
 
   return {
-    isOwner: referrals.count >= MIN_TRANSFER_REFERRALS,
+    isOwner: eligibilityExempt || referrals.count >= MIN_TRANSFER_REFERRALS,
+    eligibilityExempt,
     senderKyc,
     minedBalance,
     withdrawnBalance,
