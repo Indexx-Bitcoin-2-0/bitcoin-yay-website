@@ -37,6 +37,7 @@ type Step = "recipient" | "amount" | "review" | "success";
 
 const initialRules: TransferRulesCheck = {
   isOwner: false,
+  eligibilityExempt: false,
   senderKyc: "unknown",
   minedBalance: 0,
   withdrawnBalance: 0,
@@ -133,6 +134,7 @@ const NuggetTransferPage: React.FC = () => {
 
   const [step, setStep] = useState<Step>("recipient");
   const [search, setSearch] = useState("");
+  const [recipientEmail, setRecipientEmail] = useState("");
   const [recipient, setRecipient] = useState<TransferRecipient | null>(null);
   const [source, setSource] = useState<TransferSource>("mined");
   const [amount, setAmount] = useState("");
@@ -195,7 +197,10 @@ const NuggetTransferPage: React.FC = () => {
   const numericAmount = Number(amount);
   const hasAmount = amount.trim().length > 0 && Number.isFinite(numericAmount);
   const canUseTransfer =
-    rules.isOwner && rules.senderKyc === "approved" && !loadingContext && !loadError;
+    rules.isOwner &&
+    (rules.eligibilityExempt || rules.senderKyc === "approved") &&
+    !loadingContext &&
+    !loadError;
 
   const validateAmount = (): string | null => {
     if (!hasAmount) return "Enter an amount.";
@@ -214,11 +219,26 @@ const NuggetTransferPage: React.FC = () => {
     setRecipient(nextRecipient);
     setSubmitError(null);
 
-    if (nextRecipient.kycStatus !== "approved") {
+    if (!rules.eligibilityExempt && nextRecipient.kycStatus !== "approved") {
       setKycBlock("You can only send Nuggets to KYC verified users.");
       return;
     }
 
+    setKycBlock(null);
+    setStep("amount");
+  };
+
+  const handleRecipientEmail = () => {
+    const email = recipientEmail.trim().toLowerCase();
+    if (!email || !email.includes("@")) {
+      setKycBlock("Enter a valid recipient email address.");
+      return;
+    }
+    if (email === senderEmail.toLowerCase()) {
+      setKycBlock("You cannot transfer Nuggets to your own account.");
+      return;
+    }
+    setRecipient({ id: email, name: email, email, kycStatus: "unknown" });
     setKycBlock(null);
     setStep("amount");
   };
@@ -235,11 +255,11 @@ const NuggetTransferPage: React.FC = () => {
       );
       return;
     }
-    if (rules.senderKyc !== "approved") {
+    if (!rules.eligibilityExempt && rules.senderKyc !== "approved") {
       setKycBlock("You must complete KYC verification before sending Nuggets.");
       return;
     }
-    if (!recipient || recipient.kycStatus !== "approved") {
+    if (!rules.eligibilityExempt && (!recipient || recipient.kycStatus !== "approved")) {
       setKycBlock("You can only send Nuggets to KYC verified users.");
       return;
     }
@@ -292,6 +312,7 @@ const NuggetTransferPage: React.FC = () => {
     setSubmitError(null);
     setTxnId("");
     setSearch("");
+    setRecipientEmail("");
     loadContext("Loading your transfer eligibility...");
   };
 
@@ -337,7 +358,7 @@ const NuggetTransferPage: React.FC = () => {
             Transfer Nuggets
           </h1>
           <p className="mt-2 text-tertiary">
-            Send BTCY Nuggets to KYC-verified referral members.
+            Send BTCY Nuggets to eligible recipients.
           </p>
         </div>
 
@@ -388,6 +409,30 @@ const NuggetTransferPage: React.FC = () => {
 
         {canUseTransfer && step === "recipient" && (
           <div>
+            {rules.eligibilityExempt && (
+              <div className="mb-4 rounded-xl border border-primary/40 bg-primary/10 p-4">
+                <p className="text-sm font-semibold text-white">Enter any recipient email</p>
+                <div className="mt-3 flex gap-2">
+                  <input
+                    value={recipientEmail}
+                    onChange={(event) => setRecipientEmail(event.target.value)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") handleRecipientEmail();
+                    }}
+                    placeholder="recipient@example.com"
+                    type="email"
+                    className="min-w-0 flex-1 rounded-xl border border-white/10 bg-[#202020] px-4 py-3 text-white placeholder:text-tertiary focus:border-primary focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleRecipientEmail}
+                    className="rounded-xl bg-primary px-4 py-3 font-bold text-black"
+                  >
+                    Continue
+                  </button>
+                </div>
+              </div>
+            )}
             <input
               value={search}
               onChange={(event) => setSearch(event.target.value)}
@@ -417,7 +462,7 @@ const NuggetTransferPage: React.FC = () => {
               ))}
               {filteredRecipients.length === 0 && (
                 <p className="py-8 text-center text-tertiary">
-                  No referral recipients found.
+              {rules.eligibilityExempt ? "Or enter a recipient email above." : "No referral recipients found."}
                 </p>
               )}
             </div>
