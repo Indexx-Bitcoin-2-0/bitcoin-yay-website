@@ -17,12 +17,14 @@ export default function ReferralPage() {
   const [referralCode, setReferralCode] = useState("");
   useEffect(() => {
     // Try ?code=xyz format
-    let code = searchParams.get("code");
+    // Keep only the code itself; links can carry tracking tags after it
+    // (e.g. referral=ABC?utm_source=app), which must not end up in the code.
+    let code = (searchParams.get("code") || "").match(/^[A-Za-z0-9_-]+/)?.[0] || null;
 
     // Fallback to path format: /referral=xyz
     if (!code) {
       const raw = window.location.href;
-      const match = raw.match(/referral=([^&]+)/);
+      const match = raw.match(/referral=([A-Za-z0-9_-]+)/);
       if (match?.[1]) code = match[1];
     }
 
