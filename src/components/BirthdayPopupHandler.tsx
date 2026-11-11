@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import BirthdayPopup from "@/components/BirthdayPopup";
+import { isPopupHiddenOn, loadAppPopup } from "@/lib/app-popup";
 
 const STORAGE_KEY = "btcyBirthdayPopupClosed";
 const COOLDOWN_MS = 30 * 60 * 1000; // 30 minutes
@@ -39,8 +40,14 @@ const BirthdayPopupHandler = () => {
       }
     };
 
-    const timer = setTimeout(checkPopupTiming, 500);
-    return () => clearTimeout(timer);
+    // The admin announcement popup (AppPopupHandler) goes first; this one waits.
+    let alive = true;
+    const timer = setTimeout(() => {
+      loadAppPopup().then(appPopup => {
+        if (alive && !(appPopup && !isPopupHiddenOn(pathname))) checkPopupTiming();
+      });
+    }, 500);
+    return () => { alive = false; clearTimeout(timer); };
   }, [pathname]);
 
   const handleClose = () => {

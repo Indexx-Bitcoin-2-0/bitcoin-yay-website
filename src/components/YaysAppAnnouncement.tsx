@@ -1,5 +1,6 @@
 "use client";
 
+import { loadAppPopup } from "@/lib/app-popup";
 import { useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -65,10 +66,14 @@ export default function YaysAppAnnouncement() {
     }
     if (seen) return;
     const timer = window.setTimeout(() => {
-      // Do not interrupt sign-in or another dialog the visitor has opened.
-      if (!document.querySelector('dialog[open], [role="dialog"], [aria-modal="true"]')) {
-        openIntro();
-      }
+      // The admin announcement popup goes first; show this on a later visit.
+      loadAppPopup().then(appPopup => {
+        if (appPopup) return;
+        // Do not interrupt sign-in or another dialog the visitor has opened.
+        if (!document.querySelector('dialog[open], [role="dialog"], [aria-modal="true"]')) {
+          openIntro();
+        }
+      });
     }, 900);
     return () => window.clearTimeout(timer);
   }, [openIntro]);

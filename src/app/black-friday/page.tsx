@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import CustomButton from "@/components/CustomButton";
 import { useCallback, useEffect, useState } from "react";
 import LoginPopup from "@/components/LoginPopup";
 import { useAuth } from "@/contexts/AuthContext";
@@ -30,6 +32,11 @@ const ProgressBar = ({ value, target }: { value: number; target: number }) => (
 
 export default function BlackFridayPage() {
   const { user, isAuthenticated } = useAuth();
+  const router = useRouter();
+  // The site's oval button; the main action uses the orange (active) oval.
+  const OVAL = "w-40 md:w-48 lg:w-52";
+  const Oval = ({ text, onClick, primary = false }: { text: string; onClick: () => void; primary?: boolean }) =>
+    <CustomButton index={0} text={text} handleButtonClick={onClick} isActive={primary} imageClassName={OVAL} />;
   const [campaign, setCampaign] = useState<Campaign | null>(null);
   const [unavailable, setUnavailable] = useState(false);
   const [leaderboard, setLeaderboard] = useState<LeaderboardRow[]>([]);
@@ -102,10 +109,10 @@ export default function BlackFridayPage() {
     {campaign.body ? <p className="mt-5 max-w-3xl text-lg text-tertiary">{campaign.body}</p> : null}
     <p className="mt-4 text-lg">{formatDate(campaign.startsAt, campaign)} – {formatDate(campaign.endsAt, campaign)} <span className="text-tertiary">({zone})</span></p>
     {announcement ? <p className="mt-1 text-tertiary">Winners announced {formatDate(announcement, campaign)}</p> : null}
-    <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-      {canJoin ? <button className="rounded-full bg-primary px-8 py-4 font-bold text-black disabled:opacity-60" onClick={join} disabled={joining}>{joining ? "Joining..." : isAuthenticated ? "Join the Airdrop" : "Sign in to join"}</button> : null}
-      {progress?.joined ? <span className="rounded-full border border-primary px-8 py-4 text-center font-bold text-primary">You&apos;ve joined</span> : null}
-      <Link className="rounded-full border border-primary px-8 py-4 text-center font-bold text-primary" href="/black-friday/terms">Read the rules</Link>
+    <div className="mt-8 flex flex-wrap items-center gap-6">
+      {canJoin ? <Oval primary text={joining ? "Joining..." : isAuthenticated ? "Join the Airdrop" : "Sign in to join"} onClick={() => { if (!joining) join(); }} /> : null}
+      {progress?.joined ? <span className="font-bold text-primary">✓ You&apos;ve joined</span> : null}
+      <Oval text="Read the rules" onClick={() => router.push("/black-friday/terms")} />
     </div>
     {canJoin ? <p className="mt-3 text-sm text-tertiary">Joining means you accept the <Link className="underline" href="/black-friday/terms">campaign rules</Link>.</p> : null}
     {message ? <p className="mt-3 text-sm text-primary">{message}</p> : null}
@@ -153,7 +160,7 @@ export default function BlackFridayPage() {
       <h2 className="text-2xl font-bold">Your referral dashboard</h2>
       {!isAuthenticated ? <div className="mt-4">
         <p className="text-tertiary">Sign in to see your total and verified referrals and your referral link.</p>
-        <button className="mt-4 rounded-full border border-primary px-7 py-3 font-bold text-primary" onClick={() => setLoginOpen(true)}>Sign in</button>
+        <div className="mt-4 flex"><Oval primary text="Sign in" onClick={() => setLoginOpen(true)} /></div>
       </div> : <>
         {progress?.isWinner && draw ? <p className="mt-4 rounded-2xl border border-green-400/60 p-4 font-semibold text-green-300">You won {formatMoney(draw.prizeAmount, draw.currency)} in the lucky draw. Your prize is confirmed after final verification.</p> : null}
         <div className="mt-5 grid gap-4 sm:grid-cols-2">
@@ -163,9 +170,9 @@ export default function BlackFridayPage() {
         <p className="mt-4 text-sm text-tertiary">Only verified referrals count. A referral is verified after they sign up with your link, start mining and complete {dayTarget} mining day{dayTarget === 1 ? "" : "s"}.</p>
         {progress?.nextMilestone ? <p className="mt-2 font-semibold text-primary">{progress.nextMilestone.remaining} more verified referral{progress.nextMilestone.remaining === 1 ? "" : "s"} to reach {progress.nextMilestone.referrals}.</p> : null}
         {progress?.luckyDrawEligible && !progress?.isWinner ? <p className="mt-2 font-semibold text-green-300">You are entered in the lucky draw (subject to review).</p> : null}
-        {progress?.referralUrl ? <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-          <code className="flex-1 overflow-x-auto rounded-2xl bg-black/40 px-4 py-3 text-sm">{progress.referralUrl}</code>
-          <button className="rounded-full bg-primary px-6 py-3 font-bold text-black" onClick={copyLink}>{copied ? "Copied" : "Copy link"}</button>
+        {progress?.referralUrl ? <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row">
+          <code className="w-full flex-1 overflow-x-auto rounded-2xl bg-black/40 px-4 py-3 text-sm">{progress.referralUrl}</code>
+          <Oval primary text={copied ? "Copied" : "Copy link"} onClick={copyLink} />
         </div> : null}
       </>}
     </section>
@@ -210,9 +217,9 @@ export default function BlackFridayPage() {
       <div className="mt-5 space-y-6">{campaign.faq.map((item, index) => <article key={`${index}-${item.question}`}><h3 className="font-semibold">{item.question}</h3><p className="mt-2 text-tertiary">{item.answer}</p></article>)}</div>
     </section> : null}
 
-    <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-      <Link className="rounded-full border border-primary px-7 py-4 text-center font-bold text-primary" href="/referral">Referral program</Link>
-      {campaign.supportUrl ? <a className="rounded-full border border-primary px-7 py-4 text-center font-bold text-primary" href={campaign.supportUrl}>Get support</a> : null}
+    <div className="mt-10 flex flex-wrap items-center gap-6">
+      <Oval text="Referral program" onClick={() => router.push("/referral")} />
+      {campaign.supportUrl ? <Oval text="Get support" onClick={() => { window.location.href = campaign.supportUrl!; }} /> : null}
     </div>
     <p className="mt-6 text-xs text-tertiary">Terms version: {campaign.termsVersion || "draft"}</p>
 
