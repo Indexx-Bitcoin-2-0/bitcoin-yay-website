@@ -242,7 +242,7 @@ export default function BlackFridayAirdrop() {
             </div>
           ) : (
             <>
-              {progress?.isWinner && draw ? <p className="mb-6 rounded-2xl border border-green-400/60 p-5 text-xl font-semibold text-green-300">You are a winner: {money(draw.prizeAmount)}. Your reward is confirmed after final verification.</p> : null}
+              {progress?.isWinner && draw ? <p className="mb-6 rounded-2xl border border-primary/60 p-5 text-xl font-semibold text-primary">You are a winner: {money(draw.prizeAmount)}. Your reward is confirmed after final verification.</p> : null}
               <div className="grid gap-6 sm:grid-cols-2">
                 <div className="rounded-2xl bg-white/5 p-8 text-center"><p className="text-6xl font-bold">{total}</p><p className="mt-2 text-xl text-tertiary">Total referrals</p></div>
                 <div className="rounded-2xl bg-white/5 p-8 text-center"><p className="text-6xl font-bold text-primary">{verified}</p><p className="mt-2 text-xl text-tertiary">Verified referrals</p></div>
@@ -255,7 +255,7 @@ export default function BlackFridayAirdrop() {
               ) : null}
               <p className="mt-6 text-lg text-tertiary">Only verified referrals count. A referral is verified after they sign up with your link, activate mining and complete {dayRule}.</p>
               {progress?.nextMilestone ? <p className="mt-3 text-xl font-semibold text-primary">{progress.nextMilestone.remaining} more verified referral{progress.nextMilestone.remaining === 1 ? "" : "s"} to reach {progress.nextMilestone.referrals}.</p> : null}
-              {progress?.luckyDrawEligible && !progress?.isWinner ? <p className="mt-3 text-xl font-semibold text-green-300">You qualify for the reward draw (subject to review).</p> : null}
+              {progress?.luckyDrawEligible && !progress?.isWinner ? <p className="mt-3 text-xl font-semibold text-primary">You qualify for the reward draw (subject to review).</p> : null}
               {progress?.referralUrl ? (
                 <div className="mt-8 flex flex-col items-center gap-6 md:flex-row">
                   <code className="w-full flex-1 overflow-x-auto rounded-2xl bg-black/40 px-5 py-4 text-base">{progress.referralUrl}</code>
@@ -346,7 +346,7 @@ export default function BlackFridayAirdrop() {
             {leaderboard.slice(0, 20).map(row => (
               <div className="flex items-center gap-4 py-4 text-xl" key={`${row.rank}-${row.participant}`}>
                 <span className="w-14 font-bold text-primary">#{row.rank}</span>
-                <span className="flex-1">{row.participant}{row.milestoneTitle ? <span className="block text-base text-green-300">{row.milestoneTitle}</span> : null}</span>
+                <span className="flex-1">{row.participant}{row.milestoneTitle ? <span className="block text-base text-primary">{row.milestoneTitle}</span> : null}</span>
                 <span className="text-right"><span className="block font-semibold text-primary">{row.verifiedReferrals} verified</span><span className="text-base text-tertiary">{row.totalReferrals} total</span></span>
               </div>
             ))}
