@@ -5,8 +5,9 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import PopupComponent from "@/components/PopupComponent";
 import CustomButton from "@/components/CustomButton";
-import DefaultArt from "@/assets/images/usdxx/usdxx-airdrop-eagle-color.webp";
+import DefaultArt from "@/assets/images/btcy-airdrop/btcy-airdrop-eagle.webp";
 import UsdxxMark from "@/assets/images/usdxx/usdxx-mark.webp";
+import BtcyMark from "@/assets/images/btcy-airdrop/btcy-mark.png";
 import { AppPopup, isPopupHiddenOn, loadAppPopup, popupDismissKey, popupLinkHref } from "@/lib/app-popup";
 
 // Ends date in US Pacific time, the timezone the campaigns are run in.
@@ -50,7 +51,7 @@ const AppPopupHandler = () => {
 
   if (!popup) return null;
   const ends = endsLabel(popup.endDate);
-  // Note line from the admin (e.g. "Prizes paid in USDXX, convertible to USDT on Indexx Exchange").
+  // Note line from the admin (e.g. "Rewards are paid in BTCY Tokens, not cash or USDT").
   const note = popup.popupNote?.trim();
   const noteIcon = popup.popupNoteIcon?.trim();
 
@@ -78,8 +79,9 @@ const AppPopupHandler = () => {
           </div>
         ) : null}
         {note ? (
-          <div className="mx-auto mb-4 flex max-w-md items-center justify-center gap-3 rounded-full border border-[#73bf6b]/50 px-4 py-2">
+          <div className={`mx-auto mb-4 flex max-w-md items-center justify-center gap-3 rounded-full border px-4 py-2 ${noteIcon === "usdxx" ? "border-[#73bf6b]/50" : "border-primary/50"}`}>
             {noteIcon === "usdxx" ? <Image src={UsdxxMark} alt="" className="h-8 w-8 shrink-0" /> : null}
+            {noteIcon === "btcy" ? <Image src={BtcyMark} alt="" className="h-8 w-8 shrink-0" /> : null}
             {noteIcon && /^https:\/\//i.test(noteIcon) ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={noteIcon} alt="" className="h-8 w-8 shrink-0 object-contain" />

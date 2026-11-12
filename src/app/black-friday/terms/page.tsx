@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Campaign, formatDate, formatMoney, getCampaign, zoneLabel } from "@/lib/black-friday";
+import { Campaign, formatDate, formatMoney, getCampaign, referralDayRule, zoneLabel } from "@/lib/black-friday";
 
 // Official rules for the Black Friday Airdrop Challenge. Dates, milestones and
 // prize values come from the campaign API so the rules match what the backend applies.
@@ -21,7 +21,9 @@ export default function BlackFridayTermsPage() {
 
   const draw = campaign.luckyDraw;
   const milestones = campaign.milestones || [];
-  const dayTarget = campaign.referralMiningDayTarget || 1;
+  const dayRule = referralDayRule(campaign);
+  const money = (amount: number) => formatMoney(amount, draw?.currency || "BTCY", draw?.valueCurrency);
+  const isBtcy = (draw?.currency || "").toUpperCase() === "BTCY";
   const zone = zoneLabel(campaign);
   const section = "mt-10";
   const heading = "text-2xl font-bold";
@@ -37,7 +39,7 @@ export default function BlackFridayTermsPage() {
       <ul className={list}>
         <li>Starts: {formatDate(campaign.startsAt, campaign, true)} ({zone})</li>
         <li>Ends: {formatDate(campaign.endsAt, campaign, true)} ({zone})</li>
-        <li>Winner announcement: planned for {formatDate(campaign.winnerAnnouncementAt, campaign)}, after referral and eligibility checks.</li>
+        <li>Winner announcement: proposed for {formatDate(campaign.winnerAnnouncementAt, campaign)}, after referral and eligibility checks (subject to confirmation).</li>
       </ul>
     </section>
 
@@ -51,20 +53,25 @@ export default function BlackFridayTermsPage() {
 
     <section className={section}>
       <h2 className={heading}>3. Verified referrals</h2>
-      <p className="mt-4 text-tertiary">A referral is verified only after the invited user registers through your unique referral link, activates mining and completes {dayTarget} day{dayTarget === 1 ? "" : "s"} of qualifying mining activity during the campaign. Your total referrals and verified referrals are shown separately; registrations that are not verified do not count toward milestones.</p>
+      <p className="mt-4 text-tertiary">A referral is verified only after the invited user registers through your unique referral link, activates mining and completes {dayRule} of qualifying mining activity during the campaign. Your total referrals and verified referrals are shown separately; registrations that are not verified do not count toward milestones.</p>
     </section>
 
     {milestones.length ? <section className={section}>
-      <h2 className={heading}>4. Referral milestones</h2>
+      <h2 className={heading}>4. Qualification</h2>
       <ul className={list}>{milestones.map(milestone => <li key={milestone.key}><strong className="text-white">{milestone.referrals} verified referrals:</strong> {milestone.description || milestone.title}</li>)}</ul>
     </section> : null}
 
     {draw ? <section className={section}>
-      <h2 className={heading}>5. Lucky draw</h2>
+      <h2 className={heading}>5. Reward and winner selection</h2>
       <ul className={list}>
-        <li>Prize pool: {formatMoney(draw.totalPool, draw.currency)}, shared by {draw.winnerCount} winners × {formatMoney(draw.prizeAmount, draw.currency)}.</li>
-        <li>Participants who reach {draw.entryReferrals} verified referrals and pass review are entered. Each eligible participant receives one entry.</li>
-        <li>Winners are drawn at random after the campaign ends. Reaching {draw.entryReferrals} verified referrals does not guarantee a prize.</li>
+        <li>Total advertised reward value: {money(draw.totalPool)}{isBtcy ? " Tokens" : ""}, shared by {draw.winnerCount} winners × {money(draw.prizeAmount)} each.</li>
+        <li>Participants who reach {draw.entryReferrals} verified referrals and pass review qualify. Each qualifying participant receives one entry.</li>
+        <li>If more than {draw.winnerCount} participants qualify, the {draw.winnerCount} winners are drawn at random after the campaign ends. Reaching {draw.entryReferrals} verified referrals does not guarantee a reward.</li>
+        {isBtcy ? <>
+          <li>Rewards are distributed in Bitcoin Yay (BTCY) Tokens, not cash or USDT. Token quantities are calculated using the approved BTCY valuation at the time rewards are allocated.</li>
+          <li>Winners may list BTCY Tokens on the Bitcoin Yay P2P Marketplace, subject to marketplace availability and platform rules. If a P2P sale completes, the seller may withdraw the proceeds through the supported withdrawal process, subject to its conditions.</li>
+          <li>The advertised dollar value is the US-dollar equivalent of the BTCY Token rewards. It is not a promise of cash, USDT, a guaranteed resale price or guaranteed withdrawal proceeds. P2P sales depend on buyer availability, market conditions and platform rules.</li>
+        </> : null}
         <li>Winners are published on the campaign page after validation.</li>
         {draw.currency?.toUpperCase() === "USDXX" ? <>
           <li>Prizes are paid in USDXX to the winner&apos;s USDXX wallet (app.usdxx.ai), which uses the same Indexx account as Bitcoin Yay. Winners claim their prize under Rewards within 3 days of the winners being announced; unclaimed prizes lapse. A KYC-verified account is required to claim.</li>
@@ -76,10 +83,10 @@ export default function BlackFridayTermsPage() {
     <section className={section}>
       <h2 className={heading}>6. Eligibility and fair play</h2>
       <ul className={list}>
-        <li>Participants must register through the official Bitcoin Yay airdrop page and use a valid account.</li>
-        <li>Referrals must be genuine users joining through the participant&apos;s unique referral link.</li>
+        <li>Participants must use a valid Bitcoin Yay account and their own unique referral link.</li>
+        <li>Only genuine referrals who complete {dayRule} count toward the verified referrals.</li>
         <li>Self-referrals, duplicate accounts, bots, fake accounts and manipulated activity do not qualify and may lead to disqualification.</li>
-        <li>Bitcoin Yay may review referral activity before confirming milestones and selecting lucky-draw winners.</li>
+        <li>Bitcoin Yay may review activity and disqualify invalid referrals before confirming winners.</li>
         {campaign.eligibleCountries?.length ? <li>Eligible countries: {campaign.eligibleCountries.join(", ")}.</li> : null}
       </ul>
     </section>
