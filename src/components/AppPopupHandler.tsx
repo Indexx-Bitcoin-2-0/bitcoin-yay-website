@@ -51,7 +51,7 @@ const AppPopupHandler = () => {
 
   if (!popup) return null;
   const ends = endsLabel(popup.endDate);
-  // Note line from the admin (e.g. "Rewards are paid in BTCY Tokens, not cash or USDT").
+  // Optional note line set in the admin (App Home Popup → Note line).
   const note = popup.popupNote?.trim();
   const noteIcon = popup.popupNoteIcon?.trim();
 

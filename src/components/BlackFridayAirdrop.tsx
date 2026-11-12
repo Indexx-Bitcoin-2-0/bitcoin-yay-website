@@ -278,7 +278,6 @@ export default function BlackFridayAirdrop() {
           <div className="flex flex-col items-center text-center">
             <Image src={BtcyMark} alt="BTCY" className="w-28 md:w-36" />
             <h2 className="mt-8 text-5xl lg:text-8xl font-bold">Your BTCY Reward</h2>
-            <p className="mt-6 max-w-4xl text-2xl md:text-3xl font-light">Rewards are paid in Bitcoin Yay (BTCY) Tokens, not cash or USDT.</p>
           </div>
           <ol className="mt-20 grid gap-10 md:grid-cols-3 max-w-6xl mx-auto">
             {[
