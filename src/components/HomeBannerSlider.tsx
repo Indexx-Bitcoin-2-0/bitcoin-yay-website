@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/carousel";
 import NewYearPromotionalBanner from "./NewYearPromotionalBanner";
 import SlateLotteryBanner from "./SlateLotteryBanner";
-import SocialCampaignBanner from "./SocialCampaignBanner";
+import BlackFridayAirdropBanner from "./BlackFridayAirdropBanner";
 import LeaderboardBanner from "./LeaderboardBanner";
 
 // Time each banner stays before auto-advancing (ms).
@@ -43,14 +43,15 @@ const HomeBannerSlider = () => {
       onMouseLeave={() => setIsPaused(false)}
     >
       <CarouselContent className="items-stretch">
+        {/* The current airdrop goes first. */}
+        <CarouselItem className="h-full">
+          <BlackFridayAirdropBanner />
+        </CarouselItem>
         <CarouselItem className="h-full">
           <NewYearPromotionalBanner />
         </CarouselItem>
         <CarouselItem className="h-full">
           <SlateLotteryBanner />
-        </CarouselItem>
-        <CarouselItem className="h-full">
-          <SocialCampaignBanner />
         </CarouselItem>
         <CarouselItem className="h-full">
           <LeaderboardBanner />

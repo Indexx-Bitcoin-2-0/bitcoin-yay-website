@@ -5,7 +5,7 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import PopupComponent from "@/components/PopupComponent";
 import CustomButton from "@/components/CustomButton";
-import DefaultArt from "@/assets/images/usdxx/usdxx-airdrop-eagle.webp";
+import DefaultArt from "@/assets/images/usdxx/usdxx-airdrop-eagle-color.webp";
 import UsdxxMark from "@/assets/images/usdxx/usdxx-mark.webp";
 import { AppPopup, isPopupHiddenOn, loadAppPopup, popupDismissKey, popupLinkHref } from "@/lib/app-popup";
 
@@ -51,7 +51,7 @@ const AppPopupHandler = () => {
   if (!popup) return null;
   const ends = endsLabel(popup.endDate);
   // The Black Friday Airdrop pays its prizes in USDXX.
-  const isAirdrop = popupLinkHref(popup.ctaUrl) === "/black-friday";
+  const isAirdrop = popupLinkHref(popup.ctaUrl) === "/airdrop";
 
   return (
     <PopupComponent isOpen onClose={close}>

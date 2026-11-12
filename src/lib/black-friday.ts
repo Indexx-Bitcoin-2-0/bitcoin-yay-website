@@ -1,5 +1,5 @@
 // Black Friday Airdrop Challenge: shared types, API calls and formatting for
-// the campaign page (/black-friday) and the rules page (/black-friday/terms).
+// the campaign page (/airdrop) and the rules page (/black-friday/terms).
 // All rules and numbers come from the campaign API so the pages never promise
 // something the backend doesn't apply.
 import { API_BASE_URL } from "@/lib/api-config";
