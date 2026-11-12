@@ -5,12 +5,12 @@ import CustomButton2 from "./CustomButton2";
 import LogoImage from "@/assets/images/main-logo.svg";
 import IndexxLogo from "@/assets/images/indexx.ai.svg";
 import StarButtonImage from "@/assets/images/buttons/star-button.webp";
-import EagleArt from "@/assets/images/usdxx/usdxx-airdrop-eagle-color.webp";
-import UsdxxMark from "@/assets/images/usdxx/usdxx-mark.webp";
+import EagleArt from "@/assets/images/btcy-airdrop/btcy-airdrop-eagle.webp";
+import BtcyMark from "@/assets/images/btcy-airdrop/btcy-mark.png";
 
 // Black Friday Airdrop banner, first slide of the home page banner slider
 // (src/components/HomeBannerSlider.tsx). Same design as the Black Friday
-// pop-up ("Something big is coming!"), with USDXX coins instead of INEX.
+// pop-up ("Something big is coming!"), with BTCY coins instead of INEX.
 const BlackFridayAirdropBanner = () => {
   return (
     <div className="relative flex h-full w-full flex-col overflow-hidden rounded-2xl bg-[#2a2a2a] p-8 md:p-10">
@@ -33,7 +33,7 @@ const BlackFridayAirdropBanner = () => {
         <div className="flex flex-[1.1] items-center justify-center">
           <Image
             src={EagleArt}
-            alt="An eagle carrying a bag of USDXX coins"
+            alt="An eagle carrying a bag of BTCY coins"
             className="h-auto w-full max-w-[280px] object-contain md:max-w-[420px]"
             priority
           />
@@ -56,10 +56,10 @@ const BlackFridayAirdropBanner = () => {
           </p>
 
           {/* Prize line */}
-          <div className="mt-6 flex items-center gap-3 rounded-full border border-[#73bf6b]/50 px-5 py-2">
-            <Image src={UsdxxMark} alt="USDXX" className="h-8 w-8" />
+          <div className="mt-6 flex items-center gap-3 rounded-full border border-[#f28132]/50 px-5 py-2">
+            <Image src={BtcyMark} alt="BTCY" className="h-8 w-8" />
             <p className="text-sm font-bold text-white md:text-base">
-              <span className="text-[#73bf6b]">200 USDXX</span> prize pool · 20 winners
+              <span className="text-[#f28132]">$200 worth of BTCY</span> · 20 winners
             </p>
           </div>
 

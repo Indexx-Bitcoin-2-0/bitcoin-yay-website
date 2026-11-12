@@ -8,7 +8,8 @@ import { API_BASE_URL } from "@/lib/api-config";
 export const CAMPAIGN_BASE = `${API_BASE_URL}/api/v1/btcy/campaigns/current`;
 
 export type Milestone = { key: string; referrals: number; title: string; description?: string; turboDays?: number; luckyDrawEntry?: boolean };
-export type LuckyDraw = { winnerCount: number; prizeAmount: number; currency: string; entryMilestone: string; entryReferrals: number; totalPool: number };
+// valueCurrency "USD": prizeAmount is a dollar value paid in `currency` tokens ("$10 worth of BTCY").
+export type LuckyDraw = { winnerCount: number; prizeAmount: number; currency: string; valueCurrency?: string; entryMilestone: string; entryReferrals: number; totalPool: number };
 
 export type Campaign = {
   title: string;
@@ -21,6 +22,7 @@ export type Campaign = {
   termsVersion?: string;
   eligibleCountries?: string[];
   referralMiningDayTarget: number;
+  referralMiningConsecutive?: boolean;
   rewardSummary?: string;
   milestones?: Milestone[];
   luckyDraw?: LuckyDraw;
@@ -33,7 +35,7 @@ export type Campaign = {
 
 export type LeaderboardRow = { rank: number; participant: string; verifiedReferrals: number; totalReferrals: number; milestone: string | null; milestoneTitle: string | null; luckyDrawEligible: boolean };
 
-export type Winners = { published: boolean; announcementAt: string | null; winners: Array<{ rank: number; participant: string; prizeAmount: number; currency: string }> };
+export type Winners = { published: boolean; announcementAt: string | null; winners: Array<{ rank: number; participant: string; prizeAmount: number; currency: string; valueCurrency?: string }> };
 
 export type Progress = {
   joined: boolean;
@@ -67,7 +69,16 @@ export const formatDate = (value?: string | null, campaign?: Campaign | null, wi
   return date.toLocaleString("en-US", options);
 };
 
-export const formatMoney = (amount: number, currency: string) => (currency === "USDT" ? `$${amount} USDT` : `${amount} ${currency}`);
+export const formatMoney = (amount: number, currency: string, valueCurrency?: string) => {
+  if (valueCurrency === "USD") return `$${amount} worth of ${currency}`;
+  return currency === "USDT" ? `$${amount} USDT` : `${amount} ${currency}`;
+};
+
+/** "7 consecutive mining days", "1 mining day", ... */
+export const referralDayRule = (campaign?: Campaign | null) => {
+  const days = Math.max(1, Number(campaign?.referralMiningDayTarget || 1));
+  return `${days}${campaign?.referralMiningConsecutive && days > 1 ? " consecutive" : ""} mining day${days === 1 ? "" : "s"}`;
+};
 
 const readJson = async <T>(response: Response): Promise<T> => {
   if (!response.ok) throw new Error(`Request failed (${response.status})`);
