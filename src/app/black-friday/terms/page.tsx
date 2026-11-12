@@ -39,7 +39,7 @@ export default function BlackFridayTermsPage() {
       <ul className={list}>
         <li>Starts: {formatDate(campaign.startsAt, campaign, true)} ({zone})</li>
         <li>Ends: {formatDate(campaign.endsAt, campaign, true)} ({zone})</li>
-        <li>Winner announcement: proposed for {formatDate(campaign.winnerAnnouncementAt, campaign)}, after referral and eligibility checks (subject to confirmation).</li>
+        <li>Winner announcement: {formatDate(campaign.winnerAnnouncementAt, campaign)}, after referral and eligibility checks.</li>
       </ul>
     </section>
 
