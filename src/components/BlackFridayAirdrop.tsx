@@ -111,7 +111,7 @@ export default function BlackFridayAirdrop() {
   };
 
   if (unavailable) {
-    return <main className="mx-auto mt-40 max-w-3xl px-6 py-24 text-center"><h1 className="text-4xl md:text-6xl font-bold">Black Friday Airdrop</h1><p className="mt-5 text-xl text-tertiary">Campaign details will be published here when the official rules are live.</p></main>;
+    return <main className="mx-auto mt-40 max-w-3xl px-6 py-24 text-center"><h1 className="text-4xl md:text-6xl font-bold">BTCY Airdrop</h1><p className="mt-5 text-xl text-tertiary">Campaign details will be published here when the official rules are live.</p></main>;
   }
   if (!campaign) {
     return <main className="mx-auto mt-40 max-w-3xl px-6 py-24 text-center"><p className="text-xl text-tertiary">Loading official campaign details...</p></main>;
@@ -130,7 +130,7 @@ export default function BlackFridayAirdrop() {
   const milestoneArt = [MilestoneArt1, MilestoneArt2];
 
   const steps = [
-    { image: StepRegister, title: "Join the Airdrop", text: "Sign in with your Bitcoin Yay account and join the Black Friday Airdrop." },
+    { image: StepRegister, title: "Join the Airdrop", text: "Sign in with your Bitcoin Yay account and join the airdrop." },
     { image: StepShare, title: "Share Your Link", text: "Copy your unique referral link and share it with friends." },
     { image: StepMine, title: "Friends Start Mining", text: "Friends sign up through your link and start mining in the app." },
     { image: StepVerified, title: "Get Verified", text: `Each referral is verified after ${dayTarget} day${dayTarget === 1 ? "" : "s"} of mining.` },
@@ -142,11 +142,7 @@ export default function BlackFridayAirdrop() {
       <div className="relative flex flex-col lg:flex-row lg:items-center">
         <div className="mt-10 w-full lg:w-[60%] flex flex-col px-4 md:pl-20 xl:pl-30">
           <p className="text-lg md:text-2xl font-bold tracking-[0.2em] text-primary">BITCOIN YAY · {STATUS_LABEL[campaign.status].toUpperCase()}</p>
-          <h1 className="mt-4 text-[40px] md:text-8xl font-bold leading-tight">
-            Black Friday
-            <br />
-            Airdrop
-          </h1>
+          <h1 className="mt-4 text-[40px] md:text-8xl font-bold leading-tight">{campaign.title}</h1>
           {campaign.body ? <p className="mt-10 text-2xl md:text-4xl text-white font-medium">{campaign.body}</p> : null}
           {isUsdxx && draw?.totalPool ? (
             <p className="mt-6 flex items-center gap-3 text-2xl font-semibold" style={{ color: USDXX_GREEN }}>

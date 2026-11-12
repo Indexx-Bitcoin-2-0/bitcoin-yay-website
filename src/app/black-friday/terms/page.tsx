@@ -13,7 +13,7 @@ export default function BlackFridayTermsPage() {
   useEffect(() => { getCampaign().then(setCampaign).catch(() => setUnavailable(true)); }, []);
 
   if (unavailable) {
-    return <main className="mx-auto mt-32 max-w-3xl px-6 py-24 text-center"><h1 className="text-4xl font-bold">Black Friday Airdrop Rules</h1><p className="mt-5 text-lg text-tertiary">The official rules will be published here when the campaign is live.</p></main>;
+    return <main className="mx-auto mt-32 max-w-3xl px-6 py-24 text-center"><h1 className="text-4xl font-bold">BTCY Airdrop Rules</h1><p className="mt-5 text-lg text-tertiary">The official rules will be published here when the campaign is live.</p></main>;
   }
   if (!campaign) {
     return <main className="mx-auto mt-32 max-w-3xl px-6 py-24 text-center"><p className="text-lg text-tertiary">Loading the official rules...</p></main>;
