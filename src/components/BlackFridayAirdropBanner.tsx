@@ -13,7 +13,7 @@ import UsdxxMark from "@/assets/images/usdxx/usdxx-mark.webp";
 // pop-up ("Something big is coming!"), with USDXX coins instead of INEX.
 const BlackFridayAirdropBanner = () => {
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-2xl bg-[#2a2a2a] p-8 md:p-10">
+    <div className="relative flex h-full w-full flex-col overflow-hidden rounded-2xl bg-[#2a2a2a] p-8 md:p-10">
       {/* Soft accent behind the eagle */}
       <div className="pointer-events-none absolute -left-10 top-0 hidden h-full w-1/2 bg-[radial-gradient(circle_at_35%_55%,rgba(242,129,50,0.25),transparent_60%)] md:block" />
 
@@ -29,12 +29,12 @@ const BlackFridayAirdropBanner = () => {
       </div>
 
       {/* Content row: eagle on the left, message on the right (as in the pop-up) */}
-      <div className="relative mt-6 flex flex-col items-center gap-6 md:flex-row">
-        <div className="flex flex-1 items-center justify-center">
+      <div className="relative my-auto flex flex-col items-center gap-6 pt-6 md:flex-row">
+        <div className="flex flex-[1.1] items-center justify-center">
           <Image
             src={EagleArt}
             alt="An eagle carrying a bag of USDXX coins"
-            className="h-auto w-full max-w-[220px] object-contain md:max-w-[300px]"
+            className="h-auto w-full max-w-[280px] object-contain md:max-w-[420px]"
             priority
           />
         </div>
