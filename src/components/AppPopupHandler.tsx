@@ -50,8 +50,9 @@ const AppPopupHandler = () => {
 
   if (!popup) return null;
   const ends = endsLabel(popup.endDate);
-  // The Black Friday Airdrop pays its prizes in USDXX.
-  const isAirdrop = popupLinkHref(popup.ctaUrl) === "/airdrop";
+  // Note line from the admin (e.g. "Prizes paid in USDXX, convertible to USDT on Indexx Exchange").
+  const note = popup.popupNote?.trim();
+  const noteIcon = popup.popupNoteIcon?.trim();
 
   return (
     <PopupComponent isOpen onClose={close}>
@@ -76,10 +77,14 @@ const AppPopupHandler = () => {
             {popup.winnersCount ? <p className="text-white text-lg md:text-xl font-bold">🏆 {popup.winnersCount}</p> : null}
           </div>
         ) : null}
-        {isAirdrop ? (
+        {note ? (
           <div className="mx-auto mb-4 flex max-w-md items-center justify-center gap-3 rounded-full border border-[#73bf6b]/50 px-4 py-2">
-            <Image src={UsdxxMark} alt="USDXX" className="h-8 w-8 shrink-0" />
-            <p className="text-left text-sm md:text-base text-white">Prizes paid in <span className="font-bold text-[#73bf6b]">USDXX</span>, convertible to USDT on Indexx Exchange</p>
+            {noteIcon === "usdxx" ? <Image src={UsdxxMark} alt="" className="h-8 w-8 shrink-0" /> : null}
+            {noteIcon && /^https:\/\//i.test(noteIcon) ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={noteIcon} alt="" className="h-8 w-8 shrink-0 object-contain" />
+            ) : null}
+            <p className="text-left text-sm md:text-base text-white">{note}</p>
           </div>
         ) : null}
         {ends ? <p className="text-gray-400 text-sm md:text-base font-medium mb-4">{ends}</p> : null}

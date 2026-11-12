@@ -13,6 +13,9 @@ export type AppPopup = {
   ctaText?: string;
   ctaUrl?: string;
   endDate?: string;
+  /** Optional note line under the details, and its icon ("usdxx" or an https image URL). */
+  popupNote?: string;
+  popupNoteIcon?: string;
   updatedAt?: string;
   active?: boolean;
 };
