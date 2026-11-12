@@ -66,6 +66,10 @@ export default function BlackFridayTermsPage() {
         <li>Participants who reach {draw.entryReferrals} verified referrals and pass review are entered. Each eligible participant receives one entry.</li>
         <li>Winners are drawn at random after the campaign ends. Reaching {draw.entryReferrals} verified referrals does not guarantee a prize.</li>
         <li>Winners are published on the campaign page after validation.</li>
+        {draw.currency?.toUpperCase() === "USDXX" ? <>
+          <li>Prizes are paid in USDXX to the winner&apos;s USDXX wallet (app.usdxx.ai), which uses the same Indexx account as Bitcoin Yay. Winners claim their prize under Rewards within 3 days of the winners being announced; unclaimed prizes lapse. A KYC-verified account is required to claim.</li>
+          <li>Converting USDXX to USDT will be available on Indexx Exchange once the winner&apos;s USDXX wallet is linked to it. Conversion carries a 1% fee and USDT withdrawals a 3% fee. The timing will be announced to winners; no USDT is paid directly.</li>
+        </> : null}
       </ul>
     </section> : null}
 

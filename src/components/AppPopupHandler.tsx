@@ -5,7 +5,8 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import PopupComponent from "@/components/PopupComponent";
 import CustomButton from "@/components/CustomButton";
-import DefaultArt from "@/assets/images/mining/turbo-mining-art-1.webp";
+import DefaultArt from "@/assets/images/usdxx/usdxx-airdrop-eagle.webp";
+import UsdxxMark from "@/assets/images/usdxx/usdxx-mark.webp";
 import { AppPopup, isPopupHiddenOn, loadAppPopup, popupDismissKey, popupLinkHref } from "@/lib/app-popup";
 
 // Ends date in US Pacific time, the timezone the campaigns are run in.
@@ -49,6 +50,8 @@ const AppPopupHandler = () => {
 
   if (!popup) return null;
   const ends = endsLabel(popup.endDate);
+  // The Black Friday Airdrop pays its prizes in USDXX.
+  const isAirdrop = popupLinkHref(popup.ctaUrl) === "/black-friday";
 
   return (
     <PopupComponent isOpen onClose={close}>
@@ -59,7 +62,7 @@ const AppPopupHandler = () => {
             // eslint-disable-next-line @next/next/no-img-element
             <img src={popup.imageUrl} alt="" className="w-50 max-h-60 object-contain" />
           ) : (
-            <Image src={DefaultArt} alt="" className="w-50" />
+            <Image src={DefaultArt} alt="" className="w-44 md:w-52" />
           )}
         </div>
 
@@ -73,11 +76,17 @@ const AppPopupHandler = () => {
             {popup.winnersCount ? <p className="text-white text-lg md:text-xl font-bold">🏆 {popup.winnersCount}</p> : null}
           </div>
         ) : null}
+        {isAirdrop ? (
+          <div className="mx-auto mb-4 flex max-w-md items-center justify-center gap-3 rounded-full border border-[#73bf6b]/50 px-4 py-2">
+            <Image src={UsdxxMark} alt="USDXX" className="h-8 w-8 shrink-0" />
+            <p className="text-left text-sm md:text-base text-white">Prizes paid in <span className="font-bold text-[#73bf6b]">USDXX</span>, convertible to USDT on Indexx Exchange</p>
+          </div>
+        ) : null}
         {ends ? <p className="text-gray-400 text-sm md:text-base font-medium mb-4">{ends}</p> : null}
 
         {popupLinkHref(popup.ctaUrl) ? (
           <div className="flex justify-center mt-2">
-            <CustomButton index={0} text={popup.ctaText || "Learn More"} handleButtonClick={open} isActive />
+            <CustomButton index={0} text={popup.ctaText || "Learn More"} handleButtonClick={open} isActive imageClassName="w-40 md:w-52 lg:w-56" />
           </div>
         ) : null}
       </div>
