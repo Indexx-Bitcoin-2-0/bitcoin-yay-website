@@ -15,6 +15,8 @@ import {
   formatMoney,
   getCampaign,
   referralDayRule,
+  rewardHeadline,
+  rewardPaidIn,
   getLeaderboard,
   getProgress,
   getWinners,
@@ -138,10 +140,13 @@ export default function BlackFridayAirdrop() {
           <h1 className="mt-4 text-[40px] md:text-8xl font-bold leading-tight">{campaign.title}</h1>
           {campaign.body ? <p className="mt-10 text-2xl md:text-4xl text-white font-medium">{campaign.body}</p> : null}
           {draw?.totalPool ? (
-            <p className="mt-6 flex items-center gap-3 text-2xl md:text-3xl font-semibold text-primary">
-              {isBtcy ? <Image src={BtcyMark} alt="BTCY" className="h-10 w-10" /> : null}
-              {money(draw.totalPool)}{isBtcy ? " Tokens" : ""} · {draw.winnerCount} winners
-            </p>
+            <div className="mt-6 flex items-center gap-3">
+              {isBtcy ? <Image src={BtcyMark} alt="BTCY" className="h-10 w-10 shrink-0" /> : null}
+              <div>
+                <p className="text-2xl md:text-3xl font-semibold text-primary">{rewardHeadline(draw.totalPool, draw)}</p>
+                <p className="text-lg md:text-xl text-tertiary">{rewardPaidIn(draw)}</p>
+              </div>
+            </div>
           ) : null}
           <p className="mt-6 text-2xl text-white">
             {formatDate(campaign.startsAt, campaign)} – {formatDate(campaign.endsAt, campaign)} <span className="text-tertiary">({zone})</span>
@@ -176,8 +181,8 @@ export default function BlackFridayAirdrop() {
           <div className="mt-16 flex flex-col lg:flex-row items-center justify-center gap-12">
             {isBtcy ? <Image src={BtcyCoin} alt="BTCY Token" className="w-56 md:w-72" /> : null}
             <div>
-              <p className="text-6xl md:text-8xl font-bold text-primary">{money(draw.totalPool)}{isBtcy ? " Tokens" : ""}</p>
-              <p className="mt-4 text-3xl md:text-4xl font-semibold">{draw.winnerCount} Winners × {money(draw.prizeAmount)} each</p>
+              <p className="text-6xl md:text-8xl font-bold text-primary">{rewardHeadline(draw.totalPool, draw)}</p>
+              <p className="mt-4 text-3xl md:text-4xl font-semibold">{rewardPaidIn(draw)}</p>
               <p className="mx-auto mt-8 max-w-3xl text-xl md:text-2xl text-tertiary">
                 Reach {draw.entryReferrals} verified referrals to qualify. If more than {draw.winnerCount} people qualify, the {draw.winnerCount} winners are drawn at random after verification. Qualifying does not guarantee a reward.
               </p>
