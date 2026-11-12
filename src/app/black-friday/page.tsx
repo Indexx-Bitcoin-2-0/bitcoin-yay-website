@@ -299,9 +299,11 @@ export default function BlackFridayPage() {
             ))}
           </ol>
           <p className="mt-10 text-center text-xl text-tertiary">Conversion to USDT opens on Indexx Exchange after the winners are paid. We&apos;ll notify winners when it&apos;s live.</p>
-          <div className="mt-12 flex justify-center">
-            <CustomButton2 image={DollarButtonImage} text="Open USDXX Wallet" link={USDXX_APP_URL} _blank imageStyling="w-24" />
-          </div>
+          {progress?.isWinner ? (
+            <div className="mt-12 flex justify-center">
+              <CustomButton2 image={DollarButtonImage} text="Claim your USDXX" link={USDXX_APP_URL} _blank imageStyling="w-24" />
+            </div>
+          ) : null}
         </section>
       ) : null}
 
