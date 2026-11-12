@@ -307,7 +307,7 @@ export default function BlackFridayAirdrop() {
           {[
             [formatDate(campaign.startsAt, campaign), "Campaign start"],
             [formatDate(campaign.endsAt, campaign), "End of campaign period"],
-            [announcement ? formatDate(announcement, campaign) : "To be announced", "Winners announced (proposed)"],
+            [announcement ? formatDate(announcement, campaign) : "To be announced", "Winners announced"],
           ].map(([date, label]) => (
             <div key={label} className="w-90 flex flex-col">
               <h3 className="text-[40px] md:text-4xl font-bold text-center md:text-left">{date}</h3>
