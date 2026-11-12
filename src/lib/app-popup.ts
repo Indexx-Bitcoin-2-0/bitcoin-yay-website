@@ -52,5 +52,10 @@ export function popupLinkHref(url?: string): string | null {
   return /^https:\/\/\S+$/i.test(link) ? link : null;
 }
 
-/** Pages where the popup would only get in the way (it already points there). */
-export const isPopupHiddenOn = (pathname: string) => pathname === "/airdrop" || pathname.startsWith("/black-friday");
+/**
+ * Pages where the popup would only get in the way: the airdrop pages (it already
+ * points there) and the sign-in hand-off (/auth/...), which redirects straight on,
+ * so the popup would flash and vanish.
+ */
+export const isPopupHiddenOn = (pathname: string) =>
+  pathname === "/airdrop" || pathname.startsWith("/black-friday") || pathname.startsWith("/auth/");
