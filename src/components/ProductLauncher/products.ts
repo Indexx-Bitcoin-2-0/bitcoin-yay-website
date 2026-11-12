@@ -1,4 +1,5 @@
 // Products shown in the Zodiac launcher (same order as the home page).
+import captainJackLogo from "@/assets/launcher/captainJackLogo.png";
 import bitcoinYayIconDark from "@/assets/launcher/bitcoinyayLogo.webp";
 import cryptoTreasuryIconDark from "@/assets/launcher/CryptoTreasuryLogo.webp";
 import emmmIconDark from "@/assets/launcher/EmmmLogo.webp";
@@ -35,6 +36,7 @@ export type LauncherProduct = {
 
 export const LAUNCHER_PRODUCTS: LauncherProduct[] = [
   { id: "bitcoin-yay", name: "Bitcoin Yay", url: () => baseBitcoinYayURL, dark: u(bitcoinYayIconDark), light: u(bitcoinYayIconDark) },
+  { id: "captain-jack", name: "Captain Jack", url: () => "http://jacksai.si/", dark: u(captainJackLogo), light: u(captainJackLogo) },
   { id: "crypto-treasury", name: "Crypto Treasury", url: () => "https://cex.indexx.ai/crypto-treasury", dark: u(cryptoTreasuryIconDark), light: u(cryptoTreasuryIconDark) },
   { id: "emmm", name: "Eeny Meeny Miny Moe", url: () => "https://eenymeenyminymoe.io/", dark: u(emmmIconDark), light: u(emmmIconDark) },
   { id: "exchange", name: "Exchange", url: () => baseNewCEXURL, dark: u(exchangeIconDark), light: u(exchangeIconDark) },
