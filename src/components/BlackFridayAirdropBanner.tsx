@@ -59,7 +59,7 @@ const BlackFridayAirdropBanner = () => {
           <div className="mt-6 flex items-center gap-3 rounded-full border border-[#f28132]/50 px-5 py-2">
             <Image src={BtcyMark} alt="BTCY" className="h-8 w-8" />
             <p className="text-sm font-bold text-white md:text-base">
-              <span className="text-[#f28132]">$200 worth of BTCY</span> · 20 winners
+              <span className="text-[#f28132]">$200 in Bitcoin Yay Rewards</span> · paid in BTCY Tokens
             </p>
           </div>
 

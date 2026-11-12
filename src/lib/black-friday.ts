@@ -74,6 +74,22 @@ export const formatMoney = (amount: number, currency: string, valueCurrency?: st
   return currency === "USDT" ? `$${amount} USDT` : `${amount} ${currency}`;
 };
 
+/**
+ * Marketing headline for the reward: "$200 in Bitcoin Yay Rewards" when the prize is a
+ * dollar value paid in BTCY, with the token named on the line under it (rewardPaidIn).
+ */
+export const rewardHeadline = (amount: number, draw?: LuckyDraw | null) =>
+  draw?.valueCurrency === "USD" && draw.currency?.toUpperCase() === "BTCY"
+    ? `$${amount} in Bitcoin Yay Rewards`
+    : formatMoney(amount, draw?.currency || "", draw?.valueCurrency);
+
+/** "Paid in BTCY Tokens · 20 winners × $10 each" */
+export const rewardPaidIn = (draw?: LuckyDraw | null) => {
+  if (!draw) return "";
+  const each = draw.valueCurrency === "USD" ? `$${draw.prizeAmount}` : formatMoney(draw.prizeAmount, draw.currency);
+  return `${draw.valueCurrency === "USD" ? `Paid in ${draw.currency} Tokens · ` : ""}${draw.winnerCount} winners × ${each} each`;
+};
+
 /** "7 consecutive mining days", "1 mining day", ... */
 export const referralDayRule = (campaign?: Campaign | null) => {
   const days = Math.max(1, Number(campaign?.referralMiningDayTarget || 1));
