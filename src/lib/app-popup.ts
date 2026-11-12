@@ -45,9 +45,9 @@ export function loadAppPopup(): Promise<AppPopup | null> {
 /** Where the popup button goes on the website. App links map to the matching page. */
 export function popupLinkHref(url?: string): string | null {
   const link = String(url || "").trim();
-  if (link === "bitcoinyay://black-friday") return "/black-friday";
+  if (link === "bitcoinyay://black-friday") return "/airdrop";
   return /^https:\/\/\S+$/i.test(link) ? link : null;
 }
 
 /** Pages where the popup would only get in the way (it already points there). */
-export const isPopupHiddenOn = (pathname: string) => pathname.startsWith("/black-friday");
+export const isPopupHiddenOn = (pathname: string) => pathname === "/airdrop" || pathname.startsWith("/black-friday");

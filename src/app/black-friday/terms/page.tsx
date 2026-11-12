@@ -28,7 +28,7 @@ export default function BlackFridayTermsPage() {
   const list = "mt-4 list-disc space-y-2 pl-5 text-tertiary";
 
   return <main className="mx-auto mt-28 max-w-3xl px-6 py-16">
-    <Link className="text-sm font-semibold text-primary" href="/black-friday">← Back to the challenge</Link>
+    <Link className="text-sm font-semibold text-primary" href="/airdrop">← Back to the challenge</Link>
     <h1 className="mt-4 text-4xl font-bold md:text-5xl">{campaign.title}: Official Rules</h1>
     <p className="mt-3 text-sm text-tertiary">Terms version {campaign.termsVersion || "draft"}. These rules may be updated before launch; the version shown here applies.</p>
 
@@ -95,7 +95,7 @@ export default function BlackFridayTermsPage() {
 
     <section className={section}>
       <h2 className={heading}>8. Questions and support</h2>
-      <p className="mt-4 text-tertiary">See the FAQ on the <Link className="text-primary underline" href="/black-friday">campaign page</Link>{campaign.supportUrl ? <> or <a className="text-primary underline" href={campaign.supportUrl}>contact support</a></> : null}.</p>
+      <p className="mt-4 text-tertiary">See the FAQ on the <Link className="text-primary underline" href="/airdrop">campaign page</Link>{campaign.supportUrl ? <> or <a className="text-primary underline" href={campaign.supportUrl}>contact support</a></> : null}.</p>
     </section>
   </main>;
 }
