@@ -1,10 +1,11 @@
-// Black Friday Airdrop Challenge: shared types, API calls and formatting for
+// BTCY Airdrop (Black Friday, Christmas Eve, New Year, …): shared types, API calls and formatting for
 // the campaign page (/airdrop) and the rules page (/black-friday/terms).
 // All rules and numbers come from the campaign API so the pages never promise
 // something the backend doesn't apply.
 import { API_BASE_URL } from "@/lib/api-config";
 
-export const CAMPAIGN_BASE = `${API_BASE_URL}/api/v1/btcy/campaigns/black-friday-2026`;
+// "current" = the airdrop the admin made current, so the next airdrop needs no website change.
+export const CAMPAIGN_BASE = `${API_BASE_URL}/api/v1/btcy/campaigns/current`;
 
 export type Milestone = { key: string; referrals: number; title: string; description?: string; turboDays?: number; luckyDrawEntry?: boolean };
 export type LuckyDraw = { winnerCount: number; prizeAmount: number; currency: string; entryMilestone: string; entryReferrals: number; totalPool: number };

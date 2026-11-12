@@ -48,7 +48,7 @@ export function loadAppPopup(): Promise<AppPopup | null> {
 /** Where the popup button goes on the website. App links map to the matching page. */
 export function popupLinkHref(url?: string): string | null {
   const link = String(url || "").trim();
-  if (link === "bitcoinyay://black-friday") return "/airdrop";
+  if (link === "bitcoinyay://black-friday" || link === "bitcoinyay://airdrop") return "/airdrop";
   return /^https:\/\/\S+$/i.test(link) ? link : null;
 }
 
