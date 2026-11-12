@@ -26,6 +26,8 @@ const products = [
   { name: "BTCY Alchemy", purpose: "Reward conversion", description: "Convert eligible mining rewards into tokens when Alchemy requirements are met.", href: "/alchemy" },
 ];
 
+const AUTO_OPEN_INTRO = false;
+
 export default function YaysAppAnnouncement() {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const previousFocus = useRef<HTMLElement | null>(null);
@@ -58,6 +60,9 @@ export default function YaysAppAnnouncement() {
   const closeIntro = () => dialogRef.current?.close();
 
   useEffect(() => {
+    // Paused while the Black Friday Airdrop popup runs: the introduction no longer
+    // opens by itself. The section's buttons can still open it.
+    if (!AUTO_OPEN_INTRO) return;
     let seen = false;
     try {
       seen = localStorage.getItem(STORAGE_KEY) === "true";
