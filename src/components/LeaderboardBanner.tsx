@@ -19,7 +19,7 @@ const TOP3 = [
 
 const LeaderboardBanner = () => {
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-2xl bg-[#2a2a2a] p-8 md:p-10">
+    <div className="relative flex h-full w-full flex-col overflow-hidden rounded-2xl bg-[#2a2a2a] p-8 md:p-10">
       {/* Soft accent */}
       <div className="pointer-events-none absolute -right-10 top-0 hidden h-full w-1/2 bg-[radial-gradient(circle_at_70%_50%,rgba(242,129,50,0.30),transparent_60%)] md:block" />
 
@@ -33,7 +33,7 @@ const LeaderboardBanner = () => {
       </div>
 
       {/* Content row */}
-      <div className="relative mt-6 flex flex-col items-center gap-6 md:flex-row">
+      <div className="relative my-auto flex flex-col items-center gap-6 pt-6 md:flex-row">
         {/* Left Section - Content */}
         <div className="flex flex-[1.1] flex-col p-4 md:p-8">
           <div className="mb-3 self-start rounded-full bg-[#f28132]/15 px-4 py-1">

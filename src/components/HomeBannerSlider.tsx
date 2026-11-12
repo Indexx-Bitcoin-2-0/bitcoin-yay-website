@@ -17,7 +17,9 @@ import LeaderboardBanner from "./LeaderboardBanner";
 // Time each banner stays before auto-advancing (ms).
 const AUTOPLAY_INTERVAL = 6000;
 
-// Home page hero banner slider. Auto-advances on an interval (pauses on hover),
+// Home page hero banner slider. Every slide is as tall as the tallest one
+// (flex stretch; no explicit height on the items) and each banner centres its
+// content in that space, so all slides look the same size. Auto-advances on an interval (pauses on hover),
 // with manual prev/next arrows. Slides stretch to equal height via the flex
 // container's default align-stretch plus `h-full` on each banner root.
 const HomeBannerSlider = () => {
@@ -44,16 +46,16 @@ const HomeBannerSlider = () => {
     >
       <CarouselContent className="items-stretch">
         {/* The current airdrop goes first. */}
-        <CarouselItem className="h-full">
+        <CarouselItem>
           <BlackFridayAirdropBanner />
         </CarouselItem>
-        <CarouselItem className="h-full">
+        <CarouselItem>
           <NewYearPromotionalBanner />
         </CarouselItem>
-        <CarouselItem className="h-full">
+        <CarouselItem>
           <SlateLotteryBanner />
         </CarouselItem>
-        <CarouselItem className="h-full">
+        <CarouselItem>
           <LeaderboardBanner />
         </CarouselItem>
       </CarouselContent>

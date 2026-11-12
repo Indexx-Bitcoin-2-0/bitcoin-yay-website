@@ -42,7 +42,7 @@ const NewYearPromotionalBanner = () => {
   }, [user?.email]);
 
   return (
-    <div className="h-full w-full bg-[#2a2a2a] rounded-2xl overflow-hidden p-8 md:p-10">
+    <div className="flex h-full w-full flex-col bg-[#2a2a2a] rounded-2xl overflow-hidden p-8 md:p-10">
       {/* Top - Co-branded logos + Powered By (centered, matching Alchemy layout) */}
       <div className="flex flex-col items-center">
         <div className="flex items-center justify-center gap-5 md:gap-7 mb-2">
@@ -72,7 +72,7 @@ const NewYearPromotionalBanner = () => {
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row items-center">
+      <div className="my-auto flex flex-col md:flex-row items-center">
         {/* Left Section - Content */}
         <div className="flex-2 flex flex-col justify-center p-6 md:p-8">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#f28132] uppercase tracking-tight mb-6 md:mb-8">

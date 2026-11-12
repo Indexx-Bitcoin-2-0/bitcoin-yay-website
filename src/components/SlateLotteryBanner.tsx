@@ -42,7 +42,7 @@ const SlateLotteryBanner = () => {
   }, [user?.email]);
 
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-2xl bg-[#2a2a2a] p-8 md:p-10">
+    <div className="relative flex h-full w-full flex-col overflow-hidden rounded-2xl bg-[#2a2a2a] p-8 md:p-10">
       {/* Soft orange accent behind the tiger (echoes the brush strokes) */}
       <div className="pointer-events-none absolute -right-10 top-0 hidden h-full w-1/2 bg-[radial-gradient(circle_at_70%_50%,rgba(242,129,50,0.30),transparent_60%)] md:block" />
 
@@ -76,7 +76,7 @@ const SlateLotteryBanner = () => {
       </div>
 
       {/* Content row */}
-      <div className="relative mt-6 flex flex-col items-center gap-6 md:flex-row">
+      <div className="relative my-auto flex flex-col items-center gap-6 pt-6 md:flex-row">
         {/* Left Section - Content */}
         <div className="flex flex-[1.4] flex-col p-6 md:p-8">
           {/* Headline */}
