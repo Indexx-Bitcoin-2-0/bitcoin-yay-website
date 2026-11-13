@@ -10,6 +10,9 @@ export const BTCY_SOCIAL_POST_AIRDROP_REGISTER_API_ROUTE = `${API_BASE_URL}/api/
 
 export const LOGIN_API_ROUTE = `${API_BASE_URL}/api/v1/inex/user/login`;
 
+// Second step of sign-in when two-factor is on: { mfaToken, code }.
+export const LOGIN_MFA_API_ROUTE = `${API_BASE_URL}/api/v1/inex/user/login/mfa`;
+
 export const LOGIN_WITH_TOKEN_API_ROUTE = `${API_BASE_URL}/api/v1/inex/user/loginWithToken`;
 
 export const REGISTER_API_ROUTE = `${API_BASE_URL}/api/v1/inex/user/registerwithapp`;

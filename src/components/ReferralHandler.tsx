@@ -17,11 +17,13 @@ const ReferralHandler: React.FC<ReferralHandlerProps> = ({
   useEffect(() => {
     if (isAuthenticated) return; // Don't open if user is already logged in
 
-    let code = searchParams.get("referral");
+    // Keep only the code itself; links can carry tracking tags after it
+    // (e.g. referral=ABC?utm_source=app), which must not end up in the code.
+    let code = (searchParams.get("referral") || "").match(/^[A-Za-z0-9_-]+/)?.[0] || null;
 
     if (!code) {
       const raw = window.location.href;
-      const match = raw.match(/referral=([^&]+)/);
+      const match = raw.match(/referral=([A-Za-z0-9_-]+)/);
       if (match?.[1]) code = match[1];
     }
 
