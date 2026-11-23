@@ -812,7 +812,11 @@ export async function getUserBTCYBalance(
         ? (resultRecord["data"] as Record<string, unknown>)
         : resultRecord;
 
-    const totalBTCYBalance = toSafeNumber(
+    // The server's totalBTCYBalance is the BTCY Stellar wallet only. Mined
+    // Nuggets stay in the mining balance and Alchemy spends them from there
+    // first (backend getSpendableNuggets: verified mining balance + Stellar
+    // wallet), so count them here too or users are wrongly blocked.
+    const walletBTCYBalance = toSafeNumber(
       pickFirstNumber(
         dataSource["totalBTCYBalance"],
         dataSource["totalBalance"],
@@ -822,19 +826,17 @@ export async function getUserBTCYBalance(
         dataSource["availableBalance"]
       )
     );
+    const mining = await getUserMiningBalance(email).catch(() => null);
+    const miningNuggetBalance = toSafeNumber(mining?.data?.transferableBalance);
+    const totalBTCYBalance = walletBTCYBalance + miningNuggetBalance;
 
     const normalizedData = {
       ...dataSource,
       email,
+      walletBTCYBalance,
+      miningNuggetBalance,
       totalBTCYBalance,
-      balance: toSafeNumber(
-        pickFirstNumber(
-          dataSource["balance"],
-          dataSource["totalBTCYBalance"],
-          dataSource["totalBalance"],
-          totalBTCYBalance
-        )
-      ),
+      balance: totalBTCYBalance,
     };
 
     const rawError =

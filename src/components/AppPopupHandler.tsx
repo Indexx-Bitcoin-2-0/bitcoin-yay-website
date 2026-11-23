@@ -5,7 +5,7 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import PopupComponent from "@/components/PopupComponent";
 import CustomButton from "@/components/CustomButton";
-import DefaultArt from "@/assets/images/btcy-airdrop/btcy-airdrop-eagle.webp";
+import DefaultArt from "@/assets/images/btcy-airdrop/btcy-airdrop-rider.webp";
 import UsdxxMark from "@/assets/images/usdxx/usdxx-mark.webp";
 import BtcyMark from "@/assets/images/btcy-airdrop/btcy-mark.png";
 import { AppPopup, isPopupHiddenOn, loadAppPopup, popupDismissKey, popupLinkHref } from "@/lib/app-popup";

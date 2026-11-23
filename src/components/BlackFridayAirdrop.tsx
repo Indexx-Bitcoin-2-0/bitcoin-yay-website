@@ -27,7 +27,7 @@ import {
 
 // Same look as the main /airdrop page: big headings, art beside the hero,
 // illustrated steps, Key Dates and FAQs. The reward is paid in BTCY Tokens.
-import EagleArt from "@/assets/images/btcy-airdrop/btcy-airdrop-eagle.webp";
+import AirdropArt from "@/assets/images/btcy-airdrop/btcy-airdrop-rider.webp";
 import BtcyCoin from "@/assets/images/quantum-mining/btcy-icon.webp";
 import BtcyMark from "@/assets/images/btcy-airdrop/btcy-mark.png";
 import StepRegister from "@/assets/images/btcy-airdrop/register.png";
@@ -170,7 +170,7 @@ export default function BlackFridayAirdrop() {
           {message ? <p className="mt-3 text-lg text-primary">{message}</p> : null}
         </div>
         <div className="relative mx-auto lg:mx-0 lg:w-[40%] flex justify-center">
-          <Image src={EagleArt} alt="An eagle carrying a bag of BTCY coins" priority className="w-80 md:w-120 xl:w-150 mt-10" />
+          <Image src={AirdropArt} alt="A Bitcoin Yay rider with a megaphone and a burst of BTCY coins" priority className="w-72 md:w-96 xl:w-[440px] mt-10" />
         </div>
       </div>
 

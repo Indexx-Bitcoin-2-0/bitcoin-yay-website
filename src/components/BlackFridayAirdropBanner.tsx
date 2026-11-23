@@ -5,7 +5,7 @@ import CustomButton2 from "./CustomButton2";
 import LogoImage from "@/assets/images/main-logo.svg";
 import IndexxLogo from "@/assets/images/indexx.ai.svg";
 import StarButtonImage from "@/assets/images/buttons/star-button.webp";
-import EagleArt from "@/assets/images/btcy-airdrop/btcy-airdrop-eagle.webp";
+import AirdropArt from "@/assets/images/btcy-airdrop/btcy-airdrop-rider.webp";
 import BtcyMark from "@/assets/images/btcy-airdrop/btcy-mark.png";
 
 // Black Friday Airdrop banner, first slide of the home page banner slider
@@ -14,7 +14,7 @@ import BtcyMark from "@/assets/images/btcy-airdrop/btcy-mark.png";
 const BlackFridayAirdropBanner = () => {
   return (
     <div className="relative flex h-full w-full flex-col overflow-hidden rounded-2xl bg-[#2a2a2a] p-8 md:p-10">
-      {/* Soft accent behind the eagle */}
+      {/* Soft accent behind the art */}
       <div className="pointer-events-none absolute -left-10 top-0 hidden h-full w-1/2 bg-[radial-gradient(circle_at_35%_55%,rgba(242,129,50,0.25),transparent_60%)] md:block" />
 
       {/* Top - Logo + Powered By (centered, matching the other banners) */}
@@ -28,12 +28,12 @@ const BlackFridayAirdropBanner = () => {
         </div>
       </div>
 
-      {/* Content row: eagle on the left, message on the right (as in the pop-up) */}
+      {/* Content row: art on the left, message on the right (as in the pop-up) */}
       <div className="relative my-auto flex flex-col items-center gap-6 pt-6 md:flex-row">
         <div className="flex flex-[1.1] items-center justify-center">
           <Image
-            src={EagleArt}
-            alt="An eagle carrying a bag of BTCY coins"
+            src={AirdropArt}
+            alt="A Bitcoin Yay rider with a megaphone and a burst of BTCY coins"
             className="h-auto w-full max-w-[280px] object-contain md:max-w-[420px]"
             priority
           />
