@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./style.css";
 import { LAUNCHER_PRODUCTS, LauncherProduct, ZODIAC_URL } from "./products";
-import { decodeJWT, getUserShortToken } from "@/lib/signInToken";
+import { getAuthenticatedWalletUrl } from "@/lib/authenticated-wallet";
 
 const STORE_KEY = "indexxLauncherLayout";
 const MAX_FAV = 9;
@@ -48,21 +48,10 @@ const openProduct = async (url: string) => {
     window.location.href = url;
     return;
   }
-  const accessToken = localStorage.getItem("access_token");
-  if (!accessToken) {
-    window.location.href = url;
-    return;
-  }
   try {
-    let email = localStorage.getItem("email");
-    if (!email) {
-      const decoded: any = await decodeJWT(accessToken);
-      email = decoded?.email;
-    }
-    const shortToken: any = email ? await getUserShortToken(email, accessToken) : null;
-    window.location.href = shortToken?.data
-      ? `${url}?signInToken=${shortToken.data}`
-      : url;
+    window.location.href = await getAuthenticatedWalletUrl(url, {
+      includeBuyToken: false,
+    });
   } catch (e) {
     window.location.href = url;
   }

@@ -97,12 +97,21 @@ export async function getAuthenticatedWalletUrl(
     return baseUrl;
   }
 
-  const separator = baseUrl.includes("?") ? "&" : "?";
   const shouldIncludeBuyToken = options.includeBuyToken ?? true;
-  const buyTokenSegment =
-    shouldIncludeBuyToken && !baseUrl.includes("buyToken")
+  try {
+    const target = new URL(baseUrl);
+    target.searchParams.set("signInToken", signInToken);
+    if (shouldIncludeBuyToken && !target.searchParams.has("buyToken")) {
+      target.searchParams.set("buyToken", "INEX");
+    }
+    return target.toString();
+  } catch {
+    // Preserve relative URLs for callers that do not provide an absolute URL.
+    const [withoutHash, hash = ""] = baseUrl.split("#", 2);
+    const separator = withoutHash.includes("?") ? "&" : "?";
+    const buyTokenSegment = shouldIncludeBuyToken && !withoutHash.includes("buyToken")
       ? "&buyToken=INEX"
       : "";
-
-  return `${baseUrl}${separator}signInToken=${encodeURIComponent(signInToken)}${buyTokenSegment}`;
+    return `${withoutHash}${separator}signInToken=${encodeURIComponent(signInToken)}${buyTokenSegment}${hash ? `#${hash}` : ""}`;
+  }
 }

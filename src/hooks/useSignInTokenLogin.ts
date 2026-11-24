@@ -52,7 +52,7 @@ export const useSignInTokenLogin = (): void => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  const { login, setIsLoadingState } = useAuth();
+  const { login, logout, setIsLoadingState } = useAuth();
   const activeTokenRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -125,6 +125,9 @@ export const useSignInTokenLogin = (): void => {
           }
         }
 
+        // A successful handoff represents the identity the user chose on the
+        // source site. Clear any previous account before persisting the new one.
+        logout();
         login(userData);
         window.localStorage.setItem("redirected", "true");
         window.localStorage.setItem("lastSignInToken", token);
@@ -145,5 +148,5 @@ export const useSignInTokenLogin = (): void => {
         setIsLoadingState(false);
       }
     })();
-  }, [login, pathname, router, searchParams, setIsLoadingState]);
+  }, [login, logout, pathname, router, searchParams, setIsLoadingState]);
 };

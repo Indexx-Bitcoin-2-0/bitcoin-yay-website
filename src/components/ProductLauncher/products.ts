@@ -36,22 +36,22 @@ export type LauncherProduct = {
 
 export const LAUNCHER_PRODUCTS: LauncherProduct[] = [
   { id: "bitcoin-yay", name: "Bitcoin Yay", url: () => baseBitcoinYayURL, dark: u(bitcoinYayIconDark), light: u(bitcoinYayIconDark) },
-  { id: "captain-jack", name: "Captain Jack", url: () => "http://jacksai.si/", dark: u(captainJackLogo), light: u(captainJackLogo) },
+  { id: "captain-jack", name: "Captain Jack", url: () => "https://jacksai.si/", dark: u(captainJackLogo), light: u(captainJackLogo) },
   { id: "crypto-treasury", name: "Crypto Treasury", url: () => "https://cex.indexx.ai/crypto-treasury", dark: u(cryptoTreasuryIconDark), light: u(cryptoTreasuryIconDark) },
   { id: "emmm", name: "Eeny Meeny Miny Moe", url: () => "https://eenymeenyminymoe.io/", dark: u(emmmIconDark), light: u(emmmIconDark) },
   { id: "exchange", name: "Exchange", url: () => baseNewCEXURL, dark: u(exchangeIconDark), light: u(exchangeIconDark) },
   { id: "fantasy-lotto", name: "Fantasy Lotto", url: () => "https://lotto.indexx.ai/", dark: u(fantasyLottoLogo), light: u(fantasyLottoLogo) },
   { id: "indexx-pay", name: "Indexx Pay", url: () => "https://pay.indexx.ai/", dark: u(indexxPayLogo), light: u(indexxPayLogo) },
   { id: "indexx-wallet", name: "Indexx Wallet", url: () => "https://wallet.indexx.ai/", dark: u(indexxWalletLogo), light: u(indexxWalletLogo) },
-  { id: "jacks-ai", name: "Jack's AI", url: () => "http://jackai.si/", dark: u(jacksAiLogo), light: u(jacksAiLogo) },
+  { id: "jacks-ai", name: "Jack's AI", url: () => "https://jackai.si/", dark: u(jacksAiLogo), light: u(jacksAiLogo) },
   { id: "rehumen-lab", name: "ReHumen Lab", url: () => "https://rehumenlab.com/", dark: u(reHumanLabLogoDark), light: u(reHumanLabLogo) },
-  { id: "shoperpal", name: "ShoperPal", url: () => "https://test.shoperpal.com/", dark: u(shoperPalLogo), light: u(shoperPalLogo) },
+  { id: "shoperpal", name: "ShoperPal", url: () => "https://shoperpal.com/", dark: u(shoperPalLogo), light: u(shoperPalLogo) },
   { id: "usdxx", name: "USDXX", url: () => "https://usdxxlynx.com", dark: u(usdxxIconDark), light: u(usdxxIconDark) },
   { id: "wallstreet", name: "Wallstreet", url: () => "https://wallstreet.indexx.ai/", dark: u(wallstreetIconDark), light: u(wallstreetIconDark), lightFilter: "invert(1)" },
   { id: "xtokens", name: "xTokens", url: () => "https://indexx.ai/xtokens", dark: u(xTokensIconDark), light: u(xTokensIconDark) },
-  { id: "xxemail", name: "XXEmail", url: () => "https://test.xxemail.com/", dark: u(xxEmailLogo), light: u(xxEmailLogo) },
+  { id: "xxemail", name: "XXEmail", url: () => "https://xxemail.com/", dark: u(xxEmailLogo), light: u(xxEmailLogo) },
   { id: "yaysapp", name: "YaysApp", url: () => "https://yaysapp.com/", dark: u(yaysAppIconDark), light: u(yaysAppIconDark) },
 ];
 
 // Where "Explore Zodiac" in the launcher panel goes.
-export const ZODIAC_URL = "https://test.indexx.ai";
+export const ZODIAC_URL = "https://indexx.ai";
