@@ -614,7 +614,7 @@ function SellTab({
                         }`}
                     >
                       <span className="block font-medium">{n.label}</span>
-                      <span className="mt-1 block text-xs opacity-60">{usdtNetwork === n.tag ? "Selected network/blockchain" : "Choose network/blockchain"}</span>
+                      <span className="mt-1 block text-xs opacity-60">{usdtNetwork === n.tag ? "Selected" : "Select"}</span>
                     </button>
                   ))}
                 </div>
@@ -657,7 +657,7 @@ function SellTab({
             onClick={submit}
             disabled={submitting}
             aria-label="Create sell offer"
-            className="inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-4 text-sm font-bold text-[#20150c] shadow-lg shadow-primary/10 transition hover:bg-[#ff9b47] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#242424] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+            className="inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-4 text-sm font-bold text-[#20150c] shadow-lg shadow-primary/10 transition hover:bg-[#ff9b47] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#242424] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
           >
             <span>{submitting ? "Creating offer…" : "Create sell offer"}</span>
             {!submitting && <ArrowRight className="h-4 w-4" aria-hidden="true" />}
