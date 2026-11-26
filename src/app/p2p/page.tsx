@@ -1011,7 +1011,7 @@ function TradeRoom({
               type="text"
               value={txHash}
               onChange={(e) => setTxHash(e.target.value)}
-              placeholder="0x… / T… / signature"
+              placeholder="Paste the transaction hash"
               autoCapitalize="none"
               autoCorrect="off"
               spellCheck={false}
