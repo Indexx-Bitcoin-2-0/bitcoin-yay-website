@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ListChecks, ShieldCheck, WalletCards } from "lucide-react";
 import TronWeb from "tronweb";
 import { isAddress as isValidEvmAddress } from "viem";
 import { PublicKey } from "@solana/web3.js";
@@ -481,26 +482,38 @@ function SellTab({
   return (
     <div className="mx-auto max-w-5xl space-y-9">
       <section aria-labelledby="sell-steps-title" className="pb-8 md:pb-10">
-        <div className="mb-7 flex flex-wrap items-end justify-between gap-5">
+        <div className="mb-9 flex flex-col gap-4 md:mb-12 md:flex-row md:items-end md:justify-between md:gap-8">
           <div>
-            <p className="mb-1 text-xs font-semibold uppercase tracking-[0.18em] text-primary">Peer-to-peer · USDT</p>
+            <p className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+              <span className="h-px w-7 bg-primary" aria-hidden="true" />
+              Sell with BTCY P2P
+            </p>
             <h2 id="sell-steps-title" className="text-3xl font-semibold tracking-tight text-white md:text-4xl">How selling works</h2>
           </div>
-          <p className="max-w-xl text-base leading-7 text-tertiary/70 md:text-lg">Your BTCY stays protected while you and the buyer complete payment directly.</p>
+          <p className="max-w-xl text-base leading-7 text-tertiary/70 md:text-lg">
+            Agree directly with your buyer. Your BTCY stays reserved until you confirm the USDT payment has arrived.
+          </p>
         </div>
-        <ol className="grid gap-7 md:grid-cols-3 md:gap-10">
-          {[
-            { number: "01", title: "Create your offer", detail: "Choose how much BTCY to sell and set your price." },
-            { number: "02", title: "Receive USDT", detail: "The buyer pays your wallet on the network you selected." },
-            { number: "03", title: "Confirm payment", detail: "Once USDT arrives, confirm it to release BTCY." },
-          ].map((step) => (
-            <li key={step.number} className="border-l-2 border-primary/30 py-2 pl-5 md:min-h-40 md:border-l-0 md:border-t-2 md:pl-0 md:pt-6">
-              <span className="mb-3 block text-3xl font-bold tracking-tight text-primary/80 md:text-4xl">{step.number}</span>
-              <h3 className="mb-2 text-lg font-semibold text-white md:text-xl">{step.title}</h3>
-              <p className="max-w-sm text-sm leading-6 text-tertiary/70 md:text-base">{step.detail}</p>
-            </li>
-          ))}
-        </ol>
+        <div className="relative">
+          <div className="absolute left-[16.66%] right-[16.66%] top-7 hidden h-px bg-gradient-to-r from-primary/50 via-white/20 to-primary/50 md:block" aria-hidden="true" />
+          <ol className="grid gap-8 md:grid-cols-3 md:gap-10">
+            {[
+              { number: "01", title: "Set your offer", detail: "Choose how much BTCY to sell, set your price, and add your USDT address.", Icon: ListChecks },
+              { number: "02", title: "Buyer pays you", detail: "After accepting your offer, the buyer sends USDT on the network you selected.", Icon: WalletCards },
+              { number: "03", title: "Verify & release", detail: "Check your wallet first. Confirm only after the USDT arrives to release BTCY.", Icon: ShieldCheck },
+            ].map((step) => (
+              <li key={step.number} className="relative">
+                <div className="relative z-10 mb-5 flex h-14 w-14 items-center justify-center rounded-2xl border border-primary/30 bg-[#202020] shadow-[0_0_0_8px_#202020] md:mb-6">
+                  <step.Icon className="h-6 w-6 text-primary" strokeWidth={1.8} aria-hidden="true" />
+                  <span className="sr-only">Step {step.number}</span>
+                </div>
+                <p className="mb-1 text-xs font-semibold uppercase tracking-[0.16em] text-primary/80">Step {step.number}</p>
+                <h3 className="mb-2 text-lg font-semibold text-white md:text-xl">{step.title}</h3>
+                <p className="max-w-sm text-sm leading-6 text-tertiary/70 md:text-base">{step.detail}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
       </section>
 
       <div className="mx-auto w-full max-w-2xl space-y-6 rounded-3xl border border-white/10 bg-white/[0.04] p-5 shadow-xl shadow-black/20 md:p-7">
