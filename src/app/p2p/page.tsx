@@ -494,16 +494,22 @@ function SellTab({
             Agree directly with your buyer. Your BTCY stays reserved until you confirm the USDT payment has arrived.
           </p>
         </div>
-        <div className="relative">
-          <div className="absolute left-[16.66%] right-[16.66%] top-7 hidden h-px bg-gradient-to-r from-primary/50 via-white/20 to-primary/50 md:block" aria-hidden="true" />
+        <div>
           <ol className="grid gap-8 md:grid-cols-3 md:gap-10">
             {[
               { number: "01", title: "Set your offer", detail: "Choose how much BTCY to sell, set your price, and add your USDT address.", Icon: ListChecks },
-              { number: "02", title: "Buyer pays you", detail: "After accepting your offer, the buyer sends USDT on the network you selected.", Icon: WalletCards },
+              { number: "02", title: "Buyer pays you", detail: "After accepting your offer, the buyer sends USDT on the network/blockchain you selected.", Icon: WalletCards },
               { number: "03", title: "Verify & release", detail: "Check your wallet first. Confirm only after the USDT arrives to release BTCY.", Icon: ShieldCheck },
-            ].map((step) => (
+            ].map((step, i, steps) => (
               <li key={step.number} className="relative">
-                <div className="relative z-10 mb-5 flex h-14 w-14 items-center justify-center rounded-2xl border border-primary/30 bg-[#202020] shadow-[0_0_0_8px_#202020] md:mb-6">
+                {/* Connector: from this icon's right edge to the next icon's left edge, with a small gap on each side. */}
+                {i < steps.length - 1 && (
+                  <div
+                    className="absolute left-[calc(3.5rem+1rem)] right-[-1.5rem] top-7 hidden h-px bg-gradient-to-r from-primary/50 to-primary/20 md:block"
+                    aria-hidden="true"
+                  />
+                )}
+                <div className="relative mb-5 flex h-14 w-14 items-center justify-center rounded-2xl border border-primary/30 bg-primary/[0.04] md:mb-6">
                   <step.Icon className="h-6 w-6 text-primary" strokeWidth={1.8} aria-hidden="true" />
                   <span className="sr-only">Step {step.number}</span>
                 </div>
@@ -608,12 +614,12 @@ function SellTab({
                         }`}
                     >
                       <span className="block font-medium">{n.label}</span>
-                      <span className="mt-1 block text-xs opacity-60">{usdtNetwork === n.tag ? "Selected network" : "Choose network"}</span>
+                      <span className="mt-1 block text-xs opacity-60">{usdtNetwork === n.tag ? "Selected network/blockchain" : "Choose network/blockchain"}</span>
                     </button>
                   ))}
                 </div>
                 <p className="mt-2 rounded-xl border border-amber-400/15 bg-amber-400/[0.06] px-3 py-2 text-xs leading-5 text-amber-100/70">
-                  Your buyer must send USDT on this same network. The wrong chain can result in lost funds.
+                  Your buyer must send USDT on this same network/blockchain. The wrong one can result in lost funds.
                 </p>
               </div>
             )}
