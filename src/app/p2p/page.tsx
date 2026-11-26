@@ -479,34 +479,31 @@ function SellTab({
   };
 
   return (
-    <div className="mx-auto max-w-2xl space-y-5">
-      <section
-        aria-labelledby="sell-steps-title"
-        className="overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-[#2b251f] via-[#252525] to-[#202020] p-5 md:p-7"
-      >
-        <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+    <div className="mx-auto max-w-5xl space-y-9">
+      <section aria-labelledby="sell-steps-title" className="pb-8 md:pb-10">
+        <div className="mb-7 flex flex-wrap items-end justify-between gap-5">
           <div>
             <p className="mb-1 text-xs font-semibold uppercase tracking-[0.18em] text-primary">Peer-to-peer · USDT</p>
-            <h2 id="sell-steps-title" className="text-xl font-semibold text-white md:text-2xl">How selling works</h2>
+            <h2 id="sell-steps-title" className="text-3xl font-semibold tracking-tight text-white md:text-4xl">How selling works</h2>
           </div>
-          <p className="max-w-sm text-sm leading-6 text-tertiary/70">Your BTCY stays protected while you and the buyer complete payment directly.</p>
+          <p className="max-w-xl text-base leading-7 text-tertiary/70 md:text-lg">Your BTCY stays protected while you and the buyer complete payment directly.</p>
         </div>
-        <ol className="grid gap-3 md:grid-cols-3">
+        <ol className="grid gap-7 md:grid-cols-3 md:gap-10">
           {[
             { number: "01", title: "Create your offer", detail: "Choose how much BTCY to sell and set your price." },
             { number: "02", title: "Receive USDT", detail: "The buyer pays your wallet on the network you selected." },
             { number: "03", title: "Confirm payment", detail: "Once USDT arrives, confirm it to release BTCY." },
           ].map((step) => (
-            <li key={step.number} className="rounded-2xl border border-white/10 bg-black/20 p-4">
-              <span className="mb-3 inline-flex h-8 w-8 items-center justify-center rounded-full border border-primary/40 bg-primary/10 text-xs font-bold text-primary">{step.number}</span>
-              <h3 className="mb-1 text-sm font-semibold text-white">{step.title}</h3>
-              <p className="text-xs leading-5 text-tertiary/70">{step.detail}</p>
+            <li key={step.number} className="border-l-2 border-primary/30 py-2 pl-5 md:min-h-40 md:border-l-0 md:border-t-2 md:pl-0 md:pt-6">
+              <span className="mb-3 block text-3xl font-bold tracking-tight text-primary/80 md:text-4xl">{step.number}</span>
+              <h3 className="mb-2 text-lg font-semibold text-white md:text-xl">{step.title}</h3>
+              <p className="max-w-sm text-sm leading-6 text-tertiary/70 md:text-base">{step.detail}</p>
             </li>
           ))}
         </ol>
       </section>
 
-      <div className="space-y-6 rounded-3xl border border-white/10 bg-white/[0.04] p-5 shadow-xl shadow-black/20 md:p-7">
+      <div className="mx-auto w-full max-w-2xl space-y-6 rounded-3xl border border-white/10 bg-white/[0.04] p-5 shadow-xl shadow-black/20 md:p-7">
         <div className="flex flex-wrap items-start justify-between gap-3 border-b border-white/10 pb-5">
           <div>
             <p className="mb-1 text-xs font-semibold uppercase tracking-[0.16em] text-primary">New listing</p>
