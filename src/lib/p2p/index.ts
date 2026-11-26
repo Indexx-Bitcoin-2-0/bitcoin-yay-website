@@ -99,6 +99,12 @@ export const PAYMENT_METHODS = [
   "Cash App",
 ] as const;
 
+// Methods offered when creating a NEW listing — existing listings on the
+// other methods above keep working, but new ones are USDT-only so every
+// trade can settle through on-chain hash validation instead of a
+// screenshot an admin has to eyeball.
+export const NEW_LISTING_PAYMENT_METHODS = ["USDT"] as const;
+
 export const formatBtcy = (n: number) =>
   n.toLocaleString("en-US", { maximumFractionDigits: 5 });
 
