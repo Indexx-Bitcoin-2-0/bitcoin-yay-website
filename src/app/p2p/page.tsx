@@ -18,6 +18,7 @@ import CancelOrderImage from "@/assets/images/buttons/cancelOrder.svg";
 import DisputeButtonImage from "@/assets/images/buttons/customer_support.svg";
 import {
   PAYMENT_METHODS,
+  NEW_LISTING_PAYMENT_METHODS,
   P2POrder,
   OrderStatus,
   STATUS_CHIP,
@@ -519,7 +520,7 @@ function SellTab({
             Payment method
           </label>
           <div className="flex flex-wrap gap-2">
-            {PAYMENT_METHODS.map((m) => (
+            {NEW_LISTING_PAYMENT_METHODS.map((m) => (
               <button
                 key={m}
                 onClick={() => selectMethod(m)}
