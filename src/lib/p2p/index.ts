@@ -203,7 +203,10 @@ export type TradeAction =
   | "resolve_release" // admin resolves in buyer's favour (not wired yet)
   | "resolve_refund" // admin resolves in seller's favour (not wired yet)
   | "cancel"
-  | "replace_proof"; // buyer swaps out a mistakenly-attached receipt
+  | "replace_proof" // buyer swaps out a mistakenly-attached receipt
+  // USDT trades settle by on-chain hash instead of a payment screenshot —
+  // the backend verifies the hash itself and auto-releases on a match.
+  | "validate_payment";
 
 export const isActive = (s: OrderStatus) =>
   s !== "completed" && s !== "cancelled";

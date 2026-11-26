@@ -47,6 +47,7 @@ import {
   createP2PTrade,
   cancelP2POffer,
   markP2PTradeAsPaid,
+  validateP2PUsdtPayment,
   confirmP2PTradePayment,
   cancelP2PTrade,
   createP2PDispute,
@@ -754,15 +755,23 @@ function TradeRoom({
   // is actually doing something.
   pendingAction: TradeAction | null;
   onClose: () => void;
-  onAction: (action: TradeAction, payload?: { paymentProofImage?: string }) => void;
+  onAction: (action: TradeAction, payload?: { paymentProofImage?: string; txHash?: string }) => void;
 }) {
   const actionLoading = pendingAction !== null;
   const role = roleOf(order, currentEmail);
   const s = order.status;
+  // USDT listings carry a method string like "USDT (TRC20)" — see
+  // detectUsdtNetwork in the backend's platform/p2p.operations.ts, which
+  // this mirrors. Everything else (Bank Transfer, PayPal, ...) still uses
+  // the screenshot flow below; new listings can only be USDT going
+  // forward, but existing non-USDT trades keep working unchanged.
+  const isUsdt = /^USDT\b/i.test(order.paymentMethods[0] || "");
+  const [txHash, setTxHash] = useState("");
 
   // "I've Paid" requires a screenshot of the off-platform payment attached
   // first — the seller (and an admin, if this ends up disputed) needs
-  // something to check against besides the buyer's word.
+  // something to check against besides the buyer's word. Not used for
+  // USDT trades, which submit a transaction hash instead (see txHash above).
   const [proofImage, setProofImage] = useState<string | null>(null);
   const [proofFileName, setProofFileName] = useState("");
   const [proofError, setProofError] = useState<string | null>(null);
@@ -876,7 +885,9 @@ function TradeRoom({
         disabled={disabled || actionLoading}
         onClick={() => {
           if (actionLoading || disabled) return;
-          onAction(action, action === "pay" ? { paymentProofImage: proofImage ?? undefined } : undefined);
+          if (action === "pay") onAction(action, { paymentProofImage: proofImage ?? undefined });
+          else if (action === "validate_payment") onAction(action, { txHash: txHash.trim() || undefined });
+          else onAction(action);
         }}
         imageStyling="w-24 md:w-28"
         ariaLabel={isThisPending ? loadingLabel ?? "Submitting…" : label}
@@ -889,6 +900,7 @@ function TradeRoom({
   const waitingMsg: string[] = [];
   let showProofUpload = false;
   let showReplaceProof = false;
+  let showHashInput = false;
 
   if (role === "seller") {
     if (s === "open") {
@@ -908,17 +920,33 @@ function TradeRoom({
     }
   } else if (role === "buyer") {
     if (s === "payment_pending") {
-      showProofUpload = true;
-      myActions.push(
-        <Btn key="p" label="I've Paid" loadingLabel="Submitting…" action="pay" image={CheckMarkButtonImage} disabled={!proofImage} />,
-        <Btn key="c" label="Cancel" loadingLabel="Cancelling…" action="cancel" image={CancelOrderImage} />,
-      );
+      if (isUsdt) {
+        showHashInput = true;
+        myActions.push(
+          <Btn key="v" label="Validate Payment" loadingLabel="Verifying…" action="validate_payment" image={CheckMarkButtonImage} disabled={!txHash.trim()} />,
+          <Btn key="c" label="Cancel" loadingLabel="Cancelling…" action="cancel" image={CancelOrderImage} />,
+        );
+      } else {
+        showProofUpload = true;
+        myActions.push(
+          <Btn key="p" label="I've Paid" loadingLabel="Submitting…" action="pay" image={CheckMarkButtonImage} disabled={!proofImage} />,
+          <Btn key="c" label="Cancel" loadingLabel="Cancelling…" action="cancel" image={CancelOrderImage} />,
+        );
+      }
     } else if (s === "payment_submitted") {
-      showReplaceProof = order.hasPaymentProof === true;
+      if (isUsdt) {
+        showHashInput = true;
+      } else {
+        showReplaceProof = order.hasPaymentProof === true;
+      }
       myActions.push(
         <Btn key="d" label="Dispute" loadingLabel="Submitting…" action="dispute" image={DisputeButtonImage} />,
       );
-      waitingMsg.push("Waiting for the seller to confirm your payment.");
+      waitingMsg.push(
+        isUsdt
+          ? "Verifying your payment on-chain — this can take a minute."
+          : "Waiting for the seller to confirm your payment."
+      );
     } else if (s === "payment_confirmed") {
       waitingMsg.push("Payment confirmed. Awaiting BTCY release.");
     }
@@ -971,6 +999,26 @@ function TradeRoom({
             </div>
           )}
         </div>
+
+        {showHashInput && (
+          <div className="mt-4 rounded-xl border border-primary/30 bg-primary/5 p-4">
+            <p className="text-sm text-white">Transaction hash</p>
+            <p className="mt-1 text-xs text-tertiary/70">
+              Paste the USDT transfer&apos;s transaction hash — the backend verifies it
+              on-chain and releases the BTCY automatically once it matches.
+            </p>
+            <input
+              type="text"
+              value={txHash}
+              onChange={(e) => setTxHash(e.target.value)}
+              placeholder="0x… / T… / signature"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+              className="mt-3 w-full rounded-lg border border-primary/40 bg-black/40 px-3 py-2 text-sm text-white outline-none focus:border-primary"
+            />
+          </div>
+        )}
 
         {showProofUpload && (
           <div className="mt-4 rounded-xl border border-primary/30 bg-primary/5 p-4">
@@ -1292,7 +1340,7 @@ export default function P2PMarketplacePage() {
   // Apply a trade-room action against the real backend, then refetch.
   const handleAction = async (
     action: TradeAction,
-    payload?: { paymentProofImage?: string }
+    payload?: { paymentProofImage?: string; txHash?: string }
   ) => {
     if (!openOrder || !requireAuth()) return;
     if (action === "release" || action === "resolve_release" || action === "resolve_refund") {
@@ -1320,6 +1368,12 @@ export default function P2PMarketplacePage() {
           return;
         }
         res = await replaceP2PPaymentProof(openOrder.tradeId, payload.paymentProofImage);
+      } else if (action === "validate_payment" && openOrder.tradeId) {
+        if (!payload?.txHash) {
+          setErrorMessage("Please paste the transaction hash first.");
+          return;
+        }
+        res = await validateP2PUsdtPayment(openOrder.tradeId, payload.txHash);
       } else if (action === "confirm" && openOrder.tradeId) {
         res = await confirmP2PTradePayment(openOrder.tradeId);
       } else if (action === "dispute" && openOrder.tradeId) {

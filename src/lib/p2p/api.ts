@@ -14,6 +14,7 @@ import {
   P2P_TRADE_CONFIRM_ROUTE,
   P2P_TRADE_CANCEL_ROUTE,
   P2P_TRADE_PAYMENT_PROOF_ROUTE,
+  P2P_TRADE_VALIDATE_PAYMENT_ROUTE,
   P2P_DISPUTES_ROUTE,
 } from "@/routes";
 import { handleAuthFailure } from "@/lib/auth-session";
@@ -318,6 +319,23 @@ export async function replaceP2PPaymentProof(
   return request(
     P2P_TRADE_PAYMENT_PROOF_ROUTE(tradeId),
     { method: "POST", body: JSON.stringify({ tradeId, paymentProofImage }) },
+    () => null
+  );
+}
+
+// USDT trades: the buyer submits the on-chain transaction hash instead of a
+// screenshot. The backend verifies it directly (recipient, amount, token,
+// confirmations) and auto-releases escrow on a match — a failed validation's
+// reason (e.g. "needs more confirmations") comes back as this result's
+// `error`, so the caller can show it and let the buyer retry the same hash
+// once it confirms.
+export async function validateP2PUsdtPayment(
+  tradeId: string,
+  txHash: string
+): Promise<ApiResult<null>> {
+  return request(
+    P2P_TRADE_VALIDATE_PAYMENT_ROUTE(tradeId),
+    { method: "POST", body: JSON.stringify({ tradeId, txHash }) },
     () => null
   );
 }
