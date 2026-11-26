@@ -529,7 +529,7 @@ function SellTab({
         <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
           <div className="space-y-5">
             <div>
-              <label htmlFor="sell-amount" className="mb-2 block text-sm font-medium text-white">BTCY to sell</label>
+              <label htmlFor="sell-amount" className="mb-2 block text-sm font-bold text-white">BTCY to sell</label>
               <div className="flex items-center gap-2">
                 <input
                   id="sell-amount"
@@ -555,7 +555,7 @@ function SellTab({
             </div>
 
             <div>
-              <label htmlFor="sell-price" className="mb-2 block text-sm font-medium text-white">Price per BTCY</label>
+              <label htmlFor="sell-price" className="mb-2 block text-sm font-bold text-white">Price per BTCY</label>
               <div className="relative">
                 <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm text-tertiary/60">$</span>
                 <input
@@ -572,7 +572,7 @@ function SellTab({
 
           <div className="space-y-5">
             <div>
-              <p className="mb-2 block text-sm font-medium text-white">Payment method</p>
+              <p className="mb-2 block text-sm font-bold text-white">Payment method</p>
               <div className="grid gap-2 sm:grid-cols-2">
                 {NEW_LISTING_PAYMENT_METHODS.map((m) => (
                   <button
@@ -594,7 +594,7 @@ function SellTab({
 
             {method === "USDT" && (
               <div>
-                <p className="mb-2 text-sm font-medium text-white">USDT network</p>
+                <p className="mb-2 text-sm font-bold text-white">USDT network/blockchain</p>
                 <div className="grid gap-2 sm:grid-cols-2">
                   {USDT_NETWORKS.map((n) => (
                     <button
@@ -620,7 +620,7 @@ function SellTab({
 
             {methodFields.length > 0 && (
               <div>
-                <label htmlFor="sell-walletAddress" className="mb-2 block text-sm font-medium text-white">Your USDT receiving address</label>
+                <label htmlFor="sell-walletAddress" className="mb-2 block text-sm font-bold text-white">Your USDT receiving address</label>
                 <input
                   id="sell-walletAddress"
                   value={fields.walletAddress ?? ""}
