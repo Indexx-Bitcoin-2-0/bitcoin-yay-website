@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ListChecks, ShieldCheck, WalletCards } from "lucide-react";
+import { ArrowRight, ListChecks, ShieldCheck, WalletCards } from "lucide-react";
 import TronWeb from "tronweb";
 import { isAddress as isValidEvmAddress } from "viem";
 import { PublicKey } from "@solana/web3.js";
@@ -13,7 +13,6 @@ import PopupComponent from "@/components/PopupComponent";
 import LoginPopup from "@/components/LoginPopup";
 import { useAuth } from "@/contexts/AuthContext";
 import CartButtonImage from "@/assets/images/buttons/cart-button.webp";
-import SellButtonImage from "@/assets/images/buttons/price-tag-button.webp";
 import CheckMarkButtonImage from "@/assets/images/buttons/check-mark-button.webp";
 import CancelOrderImage from "@/assets/images/buttons/cancelOrder.svg";
 import DisputeButtonImage from "@/assets/images/buttons/customer_support.svg";
@@ -420,7 +419,7 @@ function SellTab({
 }) {
   const [amount, setAmount] = useState("");
   const [price, setPrice] = useState("0.063");
-  const [method, setMethod] = useState<string>("");
+  const [method, setMethod] = useState<string>(NEW_LISTING_PAYMENT_METHODS[0]);
   const [usdtNetwork, setUsdtNetwork] = useState<string>(USDT_NETWORKS[0].tag);
   const [fields, setFields] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
@@ -474,15 +473,15 @@ function SellTab({
       paymentDetails: fields,
     });
     setAmount("");
-    setMethod("");
+    setMethod(NEW_LISTING_PAYMENT_METHODS[0]);
     setUsdtNetwork(USDT_NETWORKS[0].tag);
     setFields({});
   };
 
   return (
-    <div className="mx-auto max-w-5xl space-y-9">
-      <section aria-labelledby="sell-steps-title" className="pb-8 md:pb-10">
-        <div className="mb-9 flex flex-col gap-4 md:mb-12 md:flex-row md:items-end md:justify-between md:gap-8">
+    <div className="mx-auto max-w-5xl space-y-7">
+      <section aria-labelledby="sell-steps-title" className="pb-1">
+        <div className="mb-7 flex flex-col gap-4 md:mb-8 md:flex-row md:items-end md:justify-between md:gap-8">
           <div>
             <p className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
               <span className="h-px w-7 bg-primary" aria-hidden="true" />
@@ -516,164 +515,152 @@ function SellTab({
         </div>
       </section>
 
-      <div className="mx-auto w-full max-w-2xl space-y-6 rounded-3xl border border-white/10 bg-white/[0.04] p-5 shadow-xl shadow-black/20 md:p-7">
-        <div className="flex flex-wrap items-start justify-between gap-3 border-b border-white/10 pb-5">
+      <div className="mx-auto w-full max-w-4xl rounded-3xl border border-white/10 bg-[#242424] p-5 shadow-xl shadow-black/20 md:p-8">
+        <div className="mb-6 flex flex-wrap items-start justify-between gap-3 border-b border-white/10 pb-5 md:mb-7">
           <div>
             <p className="mb-1 text-xs font-semibold uppercase tracking-[0.16em] text-primary">New listing</p>
-            <h2 className="text-xl font-semibold text-white">Create a sell offer</h2>
+            <h2 className="text-xl font-semibold text-white md:text-2xl">Create a sell offer</h2>
             <p className="mt-1 text-sm text-tertiary/70">Set your amount, price, and USDT receiving details.</p>
           </div>
           <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">USDT only</span>
         </div>
-        <div className="space-y-5">
-          <div>
-            <label htmlFor="sell-amount" className="mb-2 block text-sm font-medium text-white">BTCY to sell</label>
-          <div className="flex items-center gap-2">
-            <input
-              id="sell-amount"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))}
-              inputMode="decimal"
-              placeholder="0"
-              className="w-full rounded-xl border border-white/15 bg-black/40 px-4 py-3 text-white outline-none focus:border-primary"
-            />
-            <button
-              type="button"
-              onClick={() => setAmount(String(available))}
-              disabled={available <= 0}
-              className="rounded-xl border border-white/15 px-4 py-3 text-sm font-semibold text-primary transition hover:border-primary disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              Max
-            </button>
-          </div>
-          <p className="mt-2 flex items-center justify-between gap-2 text-xs text-tertiary/60">
-            <span>Available balance</span>
-            <span className="font-medium text-tertiary">{formatBtcy(available)} BTCY</span>
-          </p>
-        </div>
 
-        <div>
-          <label htmlFor="sell-price" className="mb-2 block text-sm font-medium text-white">
-            Price per BTCY
-          </label>
-          <div className="relative">
-            <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm text-tertiary/60">$</span>
-            <input
-            id="sell-price"
-            value={price}
-            onChange={(e) => setPrice(e.target.value.replace(/[^0-9.]/g, ""))}
-            inputMode="decimal"
-            className="w-full rounded-xl border border-white/15 bg-black/40 py-3 pl-8 pr-4 text-white outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
-            />
-          </div>
-          <p className="mt-2 text-xs text-tertiary/60">Your estimated payout updates as you set the amount and price.</p>
-        </div>
-
-        <div>
-          <label className="mb-2 block text-sm font-medium text-white">
-            Payment method
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {NEW_LISTING_PAYMENT_METHODS.map((m) => (
-              <button
-                key={m}
-                type="button"
-                onClick={() => selectMethod(m)}
-                aria-pressed={method === m}
-                className={`flex min-w-36 items-center justify-between rounded-xl border px-4 py-3 text-sm font-medium transition ${method === m
-                  ? "border-primary bg-primary/15 text-primary"
-                  : "border-white/15 text-tertiary hover:border-primary/60"
-                  }`}
-              >
-                <span>{m}</span>
-                <span className={`h-4 w-4 rounded-full border ${method === m ? "border-primary bg-primary shadow-[inset_0_0_0_3px_#252525]" : "border-white/30"}`} aria-hidden="true" />
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {method === "USDT" && (
-          <div>
-            <label className="mb-2 block text-sm font-medium text-white">USDT network</label>
-            <div className="grid gap-2 sm:grid-cols-2">
-              {USDT_NETWORKS.map((n) => (
-                <button
-                  key={n.tag}
-                  type="button"
-                  onClick={() => selectUsdtNetwork(n.tag)}
-                  aria-pressed={usdtNetwork === n.tag}
-                  className={`rounded-xl border px-4 py-3 text-left text-sm transition ${usdtNetwork === n.tag
-                    ? "border-primary bg-primary/15 text-primary"
-                    : "border-white/15 text-tertiary hover:border-primary/60"
-                    }`}
-                >
-                  <span className="block font-medium">{n.label}</span>
-                  <span className="mt-1 block text-xs opacity-60">{usdtNetwork === n.tag ? "Selected network" : "Choose network"}</span>
-                </button>
-              ))}
-            </div>
-            <p className="mt-2 rounded-xl border border-amber-400/15 bg-amber-400/[0.06] px-3 py-2 text-xs leading-5 text-amber-100/70">
-              Your buyer must send USDT on this same network. The wrong chain can result in lost funds.
-            </p>
-          </div>
-        )}
-
-        {methodFields.length > 0 && (
-          <div className="space-y-3">
+        <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
+          <div className="space-y-5">
             <div>
-              <p className="text-sm font-medium text-white">Your USDT receiving address</p>
-              <p className="mt-1 text-xs text-tertiary/60">This address is shared with the buyer after they accept your offer.</p>
-            </div>
-            {methodFields.map((f) => (
-              <div key={f.key}>
-                <label htmlFor={`sell-${f.key}`} className="mb-2 block text-xs font-medium text-tertiary/80">{f.label}</label>
+              <label htmlFor="sell-amount" className="mb-2 block text-sm font-medium text-white">BTCY to sell</label>
+              <div className="flex items-center gap-2">
                 <input
-                  id={`sell-${f.key}`}
-                  value={fields[f.key] ?? ""}
-                  onChange={(e) => setField(f.key, e.target.value)}
-                  placeholder={f.placeholder}
-                  className="w-full rounded-xl border border-white/15 bg-black/40 px-4 py-3 text-white outline-none focus:border-primary"
+                  id="sell-amount"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))}
+                  inputMode="decimal"
+                  placeholder="0"
+                  className="w-full rounded-xl border border-white/15 bg-black/40 px-4 py-3 text-white outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                />
+                <button
+                  type="button"
+                  onClick={() => setAmount(String(available))}
+                  disabled={available <= 0}
+                  className="rounded-xl border border-white/15 px-4 py-3 text-sm font-semibold text-primary transition hover:border-primary disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  Max
+                </button>
+              </div>
+              <p className="mt-2 flex items-center justify-between gap-2 text-xs text-tertiary/60">
+                <span>Available balance</span>
+                <span className="font-medium text-tertiary">{formatBtcy(available)} BTCY</span>
+              </p>
+            </div>
+
+            <div>
+              <label htmlFor="sell-price" className="mb-2 block text-sm font-medium text-white">Price per BTCY</label>
+              <div className="relative">
+                <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm text-tertiary/60">$</span>
+                <input
+                  id="sell-price"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value.replace(/[^0-9.]/g, ""))}
+                  inputMode="decimal"
+                  className="w-full rounded-xl border border-white/15 bg-black/40 py-3 pl-8 pr-4 text-white outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
               </div>
-            ))}
-
-          </div>
-        )}
-
-        <div className="rounded-2xl border border-white/10 bg-black/25 p-4 md:p-5">
-          <div className="mb-3 flex items-center justify-between text-sm">
-            <span className="text-tertiary/70">You are selling</span>
-            <span className="font-medium text-white">{amountNum > 0 ? formatBtcy(amountNum) : "—"} BTCY</span>
-          </div>
-          <div className="mb-4 flex items-center justify-between text-sm">
-            <span className="text-tertiary/70">Price per BTCY</span>
-            <span className="text-white">{priceNum > 0 ? formatUsd(priceNum) : "—"}</span>
-          </div>
-          <div className="flex items-end justify-between border-t border-white/10 pt-4">
-            <div>
-              <p className="text-xs text-tertiary/60">Estimated total</p>
-              <p className="mt-1 text-xs text-tertiary/50">Paid to you in USDT</p>
+              <p className="mt-2 text-xs text-tertiary/60">Your estimated payout updates as you set the amount and price.</p>
             </div>
-            <span className="text-2xl font-semibold tracking-tight text-primary">{formatUsd(total)}</span>
+          </div>
+
+          <div className="space-y-5">
+            <div>
+              <p className="mb-2 block text-sm font-medium text-white">Payment method</p>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {NEW_LISTING_PAYMENT_METHODS.map((m) => (
+                  <button
+                    key={m}
+                    type="button"
+                    onClick={() => selectMethod(m)}
+                    aria-pressed={method === m}
+                    className={`flex items-center justify-between rounded-xl border px-4 py-3 text-sm font-medium transition ${method === m
+                      ? "border-primary/60 bg-primary/10 text-primary"
+                      : "border-white/15 text-tertiary hover:border-primary/60"
+                      }`}
+                  >
+                    <span>{m}</span>
+                    <span className={`h-4 w-4 rounded-full border ${method === m ? "border-primary bg-primary shadow-[inset_0_0_0_3px_#242424]" : "border-white/30"}`} aria-hidden="true" />
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {method === "USDT" && (
+              <div>
+                <p className="mb-2 text-sm font-medium text-white">USDT network</p>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  {USDT_NETWORKS.map((n) => (
+                    <button
+                      key={n.tag}
+                      type="button"
+                      onClick={() => selectUsdtNetwork(n.tag)}
+                      aria-pressed={usdtNetwork === n.tag}
+                      className={`rounded-xl border px-4 py-3 text-left text-sm transition ${usdtNetwork === n.tag
+                        ? "border-primary/60 bg-primary/10 text-primary"
+                        : "border-white/15 text-tertiary hover:border-primary/60"
+                        }`}
+                    >
+                      <span className="block font-medium">{n.label}</span>
+                      <span className="mt-1 block text-xs opacity-60">{usdtNetwork === n.tag ? "Selected network" : "Choose network"}</span>
+                    </button>
+                  ))}
+                </div>
+                <p className="mt-2 rounded-xl border border-amber-400/15 bg-amber-400/[0.06] px-3 py-2 text-xs leading-5 text-amber-100/70">
+                  Your buyer must send USDT on this same network. The wrong chain can result in lost funds.
+                </p>
+              </div>
+            )}
+
+            {methodFields.length > 0 && (
+              <div>
+                <label htmlFor="sell-walletAddress" className="mb-2 block text-sm font-medium text-white">Your USDT receiving address</label>
+                <input
+                  id="sell-walletAddress"
+                  value={fields.walletAddress ?? ""}
+                  onChange={(e) => setField("walletAddress", e.target.value)}
+                  placeholder={methodFields[0]?.placeholder}
+                  className="w-full rounded-xl border border-white/15 bg-black/40 px-4 py-3 text-white outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                />
+                <p className="mt-2 text-xs leading-5 text-tertiary/60">Shared with the buyer after they accept your offer.</p>
+              </div>
+            )}
           </div>
         </div>
 
-        {error && <p className="text-sm text-red-400">{error}</p>}
+        {error && <p role="alert" className="mt-6 rounded-xl border border-red-400/20 bg-red-400/[0.06] px-4 py-3 text-sm text-red-300">{error}</p>}
 
-        <div className="flex justify-center">
-          <CustomButton2
-            image={SellButtonImage}
-            text={submitting ? "Creating…" : "Create Order"}
+        <div className="mt-6 grid gap-4 border-t border-white/10 pt-6 md:grid-cols-[minmax(0,1fr)_240px] md:items-center">
+          <div className="flex items-center justify-between gap-4 rounded-2xl bg-black/30 px-4 py-4 md:px-5">
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-white">Estimated payout</p>
+              <p className="mt-1 truncate text-xs text-tertiary/60">
+                {amountNum > 0 ? `${formatBtcy(amountNum)} BTCY` : "Enter an amount"} · {formatPrice(priceNum)} per BTCY · USDT
+              </p>
+            </div>
+            <span className="shrink-0 text-2xl font-semibold tracking-tight text-primary">{formatUsd(total)}</span>
+          </div>
+          <button
+            type="button"
             onClick={submit}
-            imageStyling="w-28 md:w-32"
-            ariaLabel="Create Order"
-          />
+            disabled={submitting}
+            aria-label="Create sell offer"
+            className="inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-4 text-sm font-bold text-[#20150c] shadow-lg shadow-primary/10 transition hover:bg-[#ff9b47] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#242424] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <span>{submitting ? "Creating offer…" : "Create sell offer"}</span>
+            {!submitting && <ArrowRight className="h-4 w-4" aria-hidden="true" />}
+          </button>
         </div>
-        <p className="flex items-start gap-2 rounded-xl border border-white/10 bg-black/20 p-3 text-xs leading-5 text-tertiary/60">
+
+        <p className="mt-4 flex items-start gap-2 text-xs leading-5 text-tertiary/60">
           <span className="mt-px text-primary" aria-hidden="true">●</span>
           BTCY is reserved while your offer is active. Confirm only after the USDT payment has arrived in your wallet.
         </p>
-        </div>
       </div>
     </div>
   );
