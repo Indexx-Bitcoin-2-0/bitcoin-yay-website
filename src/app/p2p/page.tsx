@@ -946,7 +946,13 @@ function TradeRoom({
       }
     } else if (s === "payment_submitted") {
       if (isUsdt) {
+        // The hash was recorded but didn't verify yet (a passing hash
+        // completes the trade at once): let the buyer validate again with
+        // the same hash after more confirmations, or with the correct one.
         showHashInput = true;
+        myActions.push(
+          <Btn key="v" label="Validate Payment" loadingLabel="Verifying…" action="validate_payment" image={CheckMarkButtonImage} disabled={!txHash.trim()} />,
+        );
       } else {
         showReplaceProof = order.hasPaymentProof === true;
       }
@@ -955,7 +961,7 @@ function TradeRoom({
       );
       waitingMsg.push(
         isUsdt
-          ? "Verifying your payment on-chain — this can take a minute."
+          ? "Payment not verified yet. If you just sent it, wait a minute and validate again. Otherwise paste the correct hash: USDT on this trade's network, sent to the seller's address, for the full amount."
           : "Waiting for the seller to confirm your payment."
       );
     } else if (s === "payment_confirmed") {
