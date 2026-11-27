@@ -210,46 +210,106 @@ export const getKycStatusForEmail = async (email: string): Promise<KycStatus> =>
   }
 };
 
-export const getReferralRecipients = async (
-  email: string
-): Promise<{ recipients: TransferRecipient[]; count: number }> => {
-  if (!email) return { recipients: [], count: 0 };
+export const REFERRALS_PAGE_SIZE = 10;
 
-  const response = await fetch(`${REFERRALS_ENDPOINT}/${encodeURIComponent(email)}`, {
-    headers: authHeaders(),
-  });
+export interface ReferralRecipientsPage {
+  recipients: TransferRecipient[];
+  /** Total referrals for the sender (ignores search), used for eligibility. */
+  count: number;
+  /** Total referrals matching the current search. */
+  total: number;
+  page: number;
+  totalPages: number;
+}
+
+const toRecipient = (
+  member: Record<string, unknown>,
+  index: number,
+  kycStatus: KycStatus
+): TransferRecipient => {
+  const memberEmail = String(member.email ?? "").trim();
+  const fullName = String(member.name ?? "").trim();
+  return {
+    id: String(member._id ?? member.id ?? memberEmail ?? index),
+    name: String(member.userName || member.username || fullName || memberEmail),
+    email: memberEmail,
+    kycStatus,
+  };
+};
+
+const matchesSearch = (member: Record<string, unknown>, q: string) =>
+  ["email", "username", "userName", "name"].some((key) =>
+    String(member[key] ?? "").toLowerCase().includes(q)
+  );
+
+/**
+ * Loads one page of the sender's referrals. Search runs server-side across all
+ * referrals; only the visible page is enriched with extra KYC lookups.
+ */
+export const getReferralRecipients = async (
+  email: string,
+  options: { page?: number; limit?: number; search?: string; signal?: AbortSignal } = {}
+): Promise<ReferralRecipientsPage> => {
+  const limit = options.limit ?? REFERRALS_PAGE_SIZE;
+  const requestedPage = Math.max(1, options.page ?? 1);
+  const search = (options.search ?? "").trim();
+  const empty = { recipients: [], count: 0, total: 0, page: 1, totalPages: 1 };
+  if (!email) return empty;
+
+  const params = new URLSearchParams({ page: String(requestedPage), limit: String(limit) });
+  if (search) params.set("search", search);
+
+  const response = await fetch(
+    `${REFERRALS_ENDPOINT}/${encodeURIComponent(email)}?${params.toString()}`,
+    { headers: authHeaders(), signal: options.signal }
+  );
   const payload = await parseJsonSafe(response);
   if (isApiFailure(response, payload)) {
     throw new Error(getApiErrorMessage(payload, "Failed to load referral members."));
   }
 
   const data = unwrapApiData(payload);
-  const members = Array.isArray(data.userDetails)
+  let members = (Array.isArray(data.userDetails)
     ? (data.userDetails as Array<Record<string, unknown>>)
-    : [];
-  const count = Number.isFinite(Number(data.count)) ? Number(data.count) : members.length;
+    : []
+  ).filter((member) => {
+    const memberEmail = String(member.email ?? "").trim();
+    return memberEmail && memberEmail.toLowerCase() !== email.toLowerCase();
+  });
+
+  let count: number;
+  let total: number;
+  const serverPaginated = Number.isFinite(Number(data.total));
+
+  if (serverPaginated) {
+    total = Number(data.total);
+    count = Number.isFinite(Number(data.totalReferrals))
+      ? Number(data.totalReferrals)
+      : Number(data.count) || total;
+  } else {
+    // Older backend returns every referral: filter and paginate locally.
+    count = Number.isFinite(Number(data.count)) ? Number(data.count) : members.length;
+    const q = search.toLowerCase();
+    if (q) members = members.filter((member) => matchesSearch(member, q));
+    total = members.length;
+  }
+
+  const totalPages = Math.max(1, Math.ceil(total / limit));
+  const page = Math.min(requestedPage, totalPages);
+  if (!serverPaginated) members = members.slice((page - 1) * limit, page * limit);
 
   const recipients = await Promise.all(
-    members
-      .filter((member) => {
-        const memberEmail = String(member.email ?? "").trim();
-        return memberEmail && memberEmail.toLowerCase() !== email.toLowerCase();
-      })
-      .map(async (member, index): Promise<TransferRecipient> => {
-        const memberEmail = String(member.email ?? "").trim();
-        const directKyc = extractKycStatus(member);
-        const kycStatus =
-          directKyc === "approved" ? directKyc : await getKycStatusForEmail(memberEmail);
-        return {
-          id: String(member._id ?? member.id ?? memberEmail ?? index),
-          name: String(member.userName ?? member.username ?? member.name ?? memberEmail),
-          email: memberEmail,
-          kycStatus,
-        };
-      })
+    members.map(async (member, index) => {
+      const directKyc = extractKycStatus(member);
+      const kycStatus =
+        directKyc === "approved"
+          ? directKyc
+          : await getKycStatusForEmail(String(member.email ?? "").trim());
+      return toRecipient(member, index, kycStatus);
+    })
   );
 
-  return { recipients, count };
+  return { recipients, count, total, page, totalPages };
 };
 
 export const loadTransferRulesCheck = async (

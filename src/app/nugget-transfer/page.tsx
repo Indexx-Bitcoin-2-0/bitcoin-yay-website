@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import LoginPopup from "@/components/LoginPopup";
@@ -15,6 +15,7 @@ import {
   KycStatus,
   MIN_TRANSFER_NUGGETS,
   MIN_TRANSFER_REFERRALS,
+  REFERRALS_PAGE_SIZE,
   TransferRecipient,
   TransferRulesCheck,
   TransferSource,
@@ -131,6 +132,14 @@ const NuggetTransferPage: React.FC = () => {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [rules, setRules] = useState<TransferRulesCheck>(initialRules);
   const [recipients, setRecipients] = useState<TransferRecipient[]>([]);
+  const [recipientsPage, setRecipientsPage] = useState(1);
+  const [recipientsTotal, setRecipientsTotal] = useState(0);
+  const [recipientsTotalPages, setRecipientsTotalPages] = useState(1);
+  const [recipientsLoading, setRecipientsLoading] = useState(false);
+  const [recipientsError, setRecipientsError] = useState<string | null>(null);
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const listRequestRef = useRef<AbortController | null>(null);
+  const contextLoadedRef = useRef(false);
 
   const [step, setStep] = useState<Step>("recipient");
   const [search, setSearch] = useState("");
@@ -156,10 +165,19 @@ const NuggetTransferPage: React.FC = () => {
         setLoadingMessage(message);
         setLoadingContext(true);
         setLoadError(null);
-        const recipientResult = await getReferralRecipients(senderEmail);
+        listRequestRef.current?.abort();
+        const recipientResult = await getReferralRecipients(senderEmail, {
+          page: 1,
+          limit: REFERRALS_PAGE_SIZE,
+        });
         const rulesResult = await loadTransferRulesCheck(senderEmail, recipientResult);
         setRecipients(recipientResult.recipients);
+        setRecipientsPage(recipientResult.page);
+        setRecipientsTotal(recipientResult.total);
+        setRecipientsTotalPages(recipientResult.totalPages);
+        setRecipientsError(null);
         setRules(rulesResult);
+        contextLoadedRef.current = true;
       } catch (error) {
         setLoadError(
           error instanceof Error
@@ -184,15 +202,63 @@ const NuggetTransferPage: React.FC = () => {
     loadContext("Loading your transfer eligibility...");
   }, [checked, loadContext, user]);
 
-  const filteredRecipients = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    if (!q) return recipients;
-    return recipients.filter(
-      (item) =>
-        item.name.toLowerCase().includes(q) ||
-        item.email.toLowerCase().includes(q)
-    );
-  }, [recipients, search]);
+  const fetchRecipientsPage = useCallback(
+    async (page: number, query: string) => {
+      if (!senderEmail) return;
+      listRequestRef.current?.abort();
+      const controller = new AbortController();
+      listRequestRef.current = controller;
+
+      try {
+        setRecipientsLoading(true);
+        setRecipientsError(null);
+        const result = await getReferralRecipients(senderEmail, {
+          page,
+          limit: REFERRALS_PAGE_SIZE,
+          search: query,
+          signal: controller.signal,
+        });
+        if (controller.signal.aborted) return;
+        setRecipients(result.recipients);
+        setRecipientsPage(result.page);
+        setRecipientsTotal(result.total);
+        setRecipientsTotalPages(result.totalPages);
+      } catch (error) {
+        if (controller.signal.aborted) return;
+        setRecipientsError(
+          error instanceof Error ? error.message : "Failed to load referral members."
+        );
+      } finally {
+        if (listRequestRef.current === controller) {
+          listRequestRef.current = null;
+          setRecipientsLoading(false);
+        }
+      }
+    },
+    [senderEmail]
+  );
+
+  // Debounce search input so we query the server once typing pauses.
+  useEffect(() => {
+    const handle = window.setTimeout(() => setDebouncedSearch(search.trim()), 350);
+    return () => window.clearTimeout(handle);
+  }, [search]);
+
+  // New search term: go back to page 1 and query all referrals server-side.
+  const lastSearchRef = useRef("");
+  useEffect(() => {
+    if (!contextLoadedRef.current) return;
+    if (debouncedSearch === lastSearchRef.current) return;
+    lastSearchRef.current = debouncedSearch;
+    fetchRecipientsPage(1, debouncedSearch);
+  }, [debouncedSearch, fetchRecipientsPage]);
+
+  useEffect(() => () => listRequestRef.current?.abort(), []);
+
+  const goToRecipientsPage = (page: number) => {
+    if (page < 1 || page > recipientsTotalPages || page === recipientsPage) return;
+    fetchRecipientsPage(page, debouncedSearch);
+  };
 
   const numericAmount = Number(amount);
   const hasAmount = amount.trim().length > 0 && Number.isFinite(numericAmount);
@@ -312,6 +378,8 @@ const NuggetTransferPage: React.FC = () => {
     setSubmitError(null);
     setTxnId("");
     setSearch("");
+    setDebouncedSearch("");
+    lastSearchRef.current = "";
     setRecipientEmail("");
     loadContext("Loading your transfer eligibility...");
   };
@@ -444,8 +512,25 @@ const NuggetTransferPage: React.FC = () => {
                 <p className="text-sm font-semibold text-[#F44336]">{kycBlock}</p>
               </div>
             )}
-            <div className="space-y-3">
-              {filteredRecipients.map((item) => (
+            {recipientsError && (
+              <div className="mb-4 rounded-xl border border-[#F44336]/40 bg-[#F44336]/10 p-4">
+                <p className="text-sm font-semibold text-[#F44336]">{recipientsError}</p>
+                <button
+                  type="button"
+                  onClick={() => fetchRecipientsPage(recipientsPage, debouncedSearch)}
+                  className="mt-2 text-sm font-bold text-primary"
+                >
+                  Retry
+                </button>
+              </div>
+            )}
+            <div
+              className={`space-y-3 transition-opacity ${
+                recipientsLoading ? "pointer-events-none opacity-50" : ""
+              }`}
+              aria-busy={recipientsLoading}
+            >
+              {recipients.map((item) => (
                 <button
                   key={item.id}
                   type="button"
@@ -460,12 +545,51 @@ const NuggetTransferPage: React.FC = () => {
                   <KycBadge status={item.kycStatus} />
                 </button>
               ))}
-              {filteredRecipients.length === 0 && (
+              {recipients.length === 0 && !recipientsLoading && (
                 <p className="py-8 text-center text-tertiary">
-              {rules.eligibilityExempt ? "Or enter a recipient email above." : "No referral recipients found."}
+                  {debouncedSearch
+                    ? `No referrals match "${debouncedSearch}".`
+                    : rules.eligibilityExempt
+                      ? "Or enter a recipient email above."
+                      : "No referral recipients found."}
                 </p>
               )}
+              {recipients.length === 0 && recipientsLoading && (
+                <p className="py-8 text-center text-tertiary">Searching referrals...</p>
+              )}
             </div>
+            {recipientsTotal > 0 && (
+              <div className="mt-5 flex items-center justify-between gap-3 text-sm">
+                <span className="text-tertiary">
+                  {(recipientsPage - 1) * REFERRALS_PAGE_SIZE + 1}–
+                  {Math.min(recipientsPage * REFERRALS_PAGE_SIZE, recipientsTotal)} of{" "}
+                  {recipientsTotal}
+                </span>
+                {recipientsTotalPages > 1 && (
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => goToRecipientsPage(recipientsPage - 1)}
+                      disabled={recipientsLoading || recipientsPage <= 1}
+                      className="rounded-full border border-white/20 px-4 py-1.5 font-bold text-white transition-colors hover:border-primary disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      Prev
+                    </button>
+                    <span className="px-1 text-tertiary">
+                      {recipientsPage} / {recipientsTotalPages}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => goToRecipientsPage(recipientsPage + 1)}
+                      disabled={recipientsLoading || recipientsPage >= recipientsTotalPages}
+                      className="rounded-full border border-white/20 px-4 py-1.5 font-bold text-white transition-colors hover:border-primary disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
 
