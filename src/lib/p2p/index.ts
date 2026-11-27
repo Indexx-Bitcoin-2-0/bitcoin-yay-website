@@ -99,6 +99,12 @@ export const PAYMENT_METHODS = [
   "Cash App",
 ] as const;
 
+// Methods offered when creating a NEW listing — existing listings on the
+// other methods above keep working, but new ones are USDT-only so every
+// trade can settle through on-chain hash validation instead of a
+// screenshot an admin has to eyeball.
+export const NEW_LISTING_PAYMENT_METHODS = ["USDT"] as const;
+
 export const formatBtcy = (n: number) =>
   n.toLocaleString("en-US", { maximumFractionDigits: 5 });
 
@@ -197,7 +203,10 @@ export type TradeAction =
   | "resolve_release" // admin resolves in buyer's favour (not wired yet)
   | "resolve_refund" // admin resolves in seller's favour (not wired yet)
   | "cancel"
-  | "replace_proof"; // buyer swaps out a mistakenly-attached receipt
+  | "replace_proof" // buyer swaps out a mistakenly-attached receipt
+  // USDT trades settle by on-chain hash instead of a payment screenshot —
+  // the backend verifies the hash itself and auto-releases on a match.
+  | "validate_payment";
 
 export const isActive = (s: OrderStatus) =>
   s !== "completed" && s !== "cancelled";

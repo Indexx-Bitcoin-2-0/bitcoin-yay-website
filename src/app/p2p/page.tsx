@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ArrowRight, ListChecks, ShieldCheck, WalletCards } from "lucide-react";
 import TronWeb from "tronweb";
 import { isAddress as isValidEvmAddress } from "viem";
 import { PublicKey } from "@solana/web3.js";
@@ -12,12 +13,12 @@ import PopupComponent from "@/components/PopupComponent";
 import LoginPopup from "@/components/LoginPopup";
 import { useAuth } from "@/contexts/AuthContext";
 import CartButtonImage from "@/assets/images/buttons/cart-button.webp";
-import SellButtonImage from "@/assets/images/buttons/price-tag-button.webp";
 import CheckMarkButtonImage from "@/assets/images/buttons/check-mark-button.webp";
 import CancelOrderImage from "@/assets/images/buttons/cancelOrder.svg";
 import DisputeButtonImage from "@/assets/images/buttons/customer_support.svg";
 import {
   PAYMENT_METHODS,
+  NEW_LISTING_PAYMENT_METHODS,
   P2POrder,
   OrderStatus,
   STATUS_CHIP,
@@ -46,6 +47,7 @@ import {
   createP2PTrade,
   cancelP2POffer,
   markP2PTradeAsPaid,
+  validateP2PUsdtPayment,
   confirmP2PTradePayment,
   cancelP2PTrade,
   createP2PDispute,
@@ -418,7 +420,7 @@ function SellTab({
 }) {
   const [amount, setAmount] = useState("");
   const [price, setPrice] = useState("0.063");
-  const [method, setMethod] = useState<string>("");
+  const [method, setMethod] = useState<string>(NEW_LISTING_PAYMENT_METHODS[0]);
   const [usdtNetwork, setUsdtNetwork] = useState<string>(USDT_NETWORKS[0].tag);
   const [fields, setFields] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
@@ -472,134 +474,199 @@ function SellTab({
       paymentDetails: fields,
     });
     setAmount("");
-    setMethod("");
+    setMethod(NEW_LISTING_PAYMENT_METHODS[0]);
     setUsdtNetwork(USDT_NETWORKS[0].tag);
     setFields({});
   };
 
   return (
-    <div className="mx-auto max-w-xl space-y-5">
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-5 space-y-4">
-        <div>
-          <label className="mb-1 block text-sm text-tertiary">BTCY amount</label>
-          <div className="flex items-center gap-2">
-            <input
-              value={amount}
-              onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))}
-              inputMode="decimal"
-              placeholder="0"
-              className="w-full rounded-xl border border-white/15 bg-black/40 px-4 py-3 text-white outline-none focus:border-primary"
-            />
-            <button
-              onClick={() => setAmount(String(available))}
-              className="rounded-xl border border-white/15 px-3 py-3 text-sm text-primary hover:border-primary"
-            >
-              Max
-            </button>
+    <div className="mx-auto max-w-5xl space-y-7">
+      <section aria-labelledby="sell-steps-title" className="pb-1">
+        <div className="mb-7 flex flex-col gap-4 md:mb-8 md:flex-row md:items-end md:justify-between md:gap-8">
+          <div>
+            <p className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+              <span className="h-px w-7 bg-primary" aria-hidden="true" />
+              Sell with BTCY P2P
+            </p>
+            <h2 id="sell-steps-title" className="text-3xl font-semibold tracking-tight text-white md:text-4xl">How selling works</h2>
           </div>
-          <p className="mt-1 text-xs text-tertiary/60">
-            Available to sell: {formatBtcy(available)} BTCY
+          <p className="max-w-xl text-base leading-7 text-tertiary/70 md:text-lg">
+            Agree directly with your buyer. Your BTCY stays reserved until you confirm the USDT payment has arrived.
           </p>
         </div>
-
         <div>
-          <label className="mb-1 block text-sm text-tertiary">
-            Price per BTCY (USD)
-          </label>
-          <input
-            value={price}
-            onChange={(e) => setPrice(e.target.value.replace(/[^0-9.]/g, ""))}
-            inputMode="decimal"
-            className="w-full rounded-xl border border-white/15 bg-black/40 px-4 py-3 text-white outline-none focus:border-primary"
-          />
-        </div>
-
-        <div>
-          <label className="mb-2 block text-sm text-tertiary">
-            Payment method
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {PAYMENT_METHODS.map((m) => (
-              <button
-                key={m}
-                onClick={() => selectMethod(m)}
-                className={`rounded-full border px-3 py-1.5 text-sm transition ${method === m
-                  ? "border-primary bg-primary/15 text-primary"
-                  : "border-white/15 text-tertiary hover:border-primary/60"
-                  }`}
-              >
-                {m}
-              </button>
+          <ol className="grid gap-8 md:grid-cols-3 md:gap-10">
+            {[
+              { number: "01", title: "Set your offer", detail: "Choose how much BTCY to sell, set your price, and add your USDT address.", Icon: ListChecks },
+              { number: "02", title: "Buyer pays you", detail: "After accepting your offer, the buyer sends USDT on the network/blockchain you selected.", Icon: WalletCards },
+              { number: "03", title: "Verify & release", detail: "Check your wallet first. Confirm only after the USDT arrives to release BTCY.", Icon: ShieldCheck },
+            ].map((step, i, steps) => (
+              <li key={step.number} className="relative">
+                {/* Connector: from this icon's right edge to the next icon's left edge, with a small gap on each side. */}
+                {i < steps.length - 1 && (
+                  <div
+                    className="absolute left-[calc(3.5rem+1rem)] right-[-1.5rem] top-7 hidden h-px bg-gradient-to-r from-primary/50 to-primary/20 md:block"
+                    aria-hidden="true"
+                  />
+                )}
+                <div className="relative mb-5 flex h-14 w-14 items-center justify-center rounded-2xl border border-primary/30 bg-primary/[0.04] md:mb-6">
+                  <step.Icon className="h-6 w-6 text-primary" strokeWidth={1.8} aria-hidden="true" />
+                  <span className="sr-only">Step {step.number}</span>
+                </div>
+                <p className="mb-1 text-xs font-semibold uppercase tracking-[0.16em] text-primary/80">Step {step.number}</p>
+                <h3 className="mb-2 text-lg font-semibold text-white md:text-xl">{step.title}</h3>
+                <p className="max-w-sm text-sm leading-6 text-tertiary/70 md:text-base">{step.detail}</p>
+              </li>
             ))}
+          </ol>
+        </div>
+      </section>
+
+      <div className="mx-auto w-full max-w-4xl rounded-3xl border border-white/10 bg-[#242424] p-5 shadow-xl shadow-black/20 md:p-8">
+        <div className="mb-6 flex flex-wrap items-start justify-between gap-3 border-b border-white/10 pb-5 md:mb-7">
+          <div>
+            <p className="mb-1 text-xs font-semibold uppercase tracking-[0.16em] text-primary">New listing</p>
+            <h2 className="text-xl font-semibold text-white md:text-2xl">Create a sell offer</h2>
+            <p className="mt-1 text-sm text-tertiary/70">Set your amount, price, and USDT receiving details.</p>
           </div>
+          <span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">USDT only</span>
         </div>
 
-        {method === "USDT" && (
-          <div>
-            <label className="mb-2 block text-sm text-tertiary">Network</label>
-            <div className="flex flex-wrap gap-2">
-              {USDT_NETWORKS.map((n) => (
-                <button
-                  key={n.tag}
-                  onClick={() => selectUsdtNetwork(n.tag)}
-                  className={`rounded-full border px-3 py-1.5 text-sm transition ${usdtNetwork === n.tag
-                    ? "border-primary bg-primary/15 text-primary"
-                    : "border-white/15 text-tertiary hover:border-primary/60"
-                    }`}
-                >
-                  {n.label}
-                </button>
-              ))}
-            </div>
-            <p className="mt-1 text-xs text-tertiary/60">
-              Double-check the network — sending to the wrong chain can permanently lose funds.
-            </p>
-          </div>
-        )}
-
-        {methodFields.length > 0 && (
-          <div className="space-y-3">
-            <p className="text-sm text-tertiary">Payment details for buyer</p>
-            {methodFields.map((f) => (
-              <div key={f.key}>
-                <label className="mb-1 block text-xs text-tertiary/70">{f.label}</label>
+        <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
+          <div className="space-y-5">
+            <div>
+              <label htmlFor="sell-amount" className="mb-2 block text-sm font-bold text-white">BTCY to sell</label>
+              <div className="flex items-center gap-2">
                 <input
-                  value={fields[f.key] ?? ""}
-                  onChange={(e) => setField(f.key, e.target.value)}
-                  placeholder={f.placeholder}
-                  className="w-full rounded-xl border border-white/15 bg-black/40 px-4 py-3 text-white outline-none focus:border-primary"
+                  id="sell-amount"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))}
+                  inputMode="decimal"
+                  placeholder="0"
+                  className="w-full rounded-xl border border-white/15 bg-black/40 px-4 py-3 text-white outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                />
+                <button
+                  type="button"
+                  onClick={() => setAmount(String(available))}
+                  disabled={available <= 0}
+                  className="rounded-xl border border-white/15 px-4 py-3 text-sm font-semibold text-primary transition hover:border-primary disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  Max
+                </button>
+              </div>
+              <p className="mt-2 flex items-center justify-between gap-2 text-xs text-tertiary/60">
+                <span>Available balance</span>
+                <span className="font-medium text-tertiary">{formatBtcy(available)} BTCY</span>
+              </p>
+            </div>
+
+            <div>
+              <label htmlFor="sell-price" className="mb-2 block text-sm font-bold text-white">Price per BTCY</label>
+              <div className="relative">
+                <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm text-tertiary/60">$</span>
+                <input
+                  id="sell-price"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value.replace(/[^0-9.]/g, ""))}
+                  inputMode="decimal"
+                  className="w-full rounded-xl border border-white/15 bg-black/40 py-3 pl-8 pr-4 text-white outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
               </div>
-            ))}
-            <p className="text-xs text-tertiary/60">
-              Shown to the buyer once they take your order.
-            </p>
+              <p className="mt-2 text-xs text-tertiary/60">Your estimated payout updates as you set the amount and price.</p>
+            </div>
           </div>
-        )}
 
-        <div className="rounded-xl bg-black/30 p-4 text-sm">
-          <div className="flex justify-between">
-            <span className="text-tertiary">Total</span>
-            <span className="font-semibold text-primary">
-              {formatUsd(total)}
-            </span>
+          <div className="space-y-5">
+            <div>
+              <p className="mb-2 block text-sm font-bold text-white">Payment method</p>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {NEW_LISTING_PAYMENT_METHODS.map((m) => (
+                  <button
+                    key={m}
+                    type="button"
+                    onClick={() => selectMethod(m)}
+                    aria-pressed={method === m}
+                    className={`flex items-center justify-between rounded-xl border px-4 py-3 text-sm font-medium transition ${method === m
+                      ? "border-primary/60 bg-primary/10 text-primary"
+                      : "border-white/15 text-tertiary hover:border-primary/60"
+                      }`}
+                  >
+                    <span>{m}</span>
+                    <span className={`h-4 w-4 rounded-full border ${method === m ? "border-primary bg-primary shadow-[inset_0_0_0_3px_#242424]" : "border-white/30"}`} aria-hidden="true" />
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {method === "USDT" && (
+              <div>
+                <p className="mb-2 text-sm font-bold text-white">USDT network/blockchain</p>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  {USDT_NETWORKS.map((n) => (
+                    <button
+                      key={n.tag}
+                      type="button"
+                      onClick={() => selectUsdtNetwork(n.tag)}
+                      aria-pressed={usdtNetwork === n.tag}
+                      className={`rounded-xl border px-4 py-3 text-left text-sm transition ${usdtNetwork === n.tag
+                        ? "border-primary/60 bg-primary/10 text-primary"
+                        : "border-white/15 text-tertiary hover:border-primary/60"
+                        }`}
+                    >
+                      <span className="block font-medium">{n.label}</span>
+                      <span className="mt-1 block text-xs opacity-60">{usdtNetwork === n.tag ? "Selected" : "Select"}</span>
+                    </button>
+                  ))}
+                </div>
+                <p className="mt-2 rounded-xl border border-amber-400/15 bg-amber-400/[0.06] px-3 py-2 text-xs leading-5 text-amber-100/70">
+                  Your buyer must send USDT on this same network/blockchain. The wrong one can result in lost funds.
+                </p>
+              </div>
+            )}
+
+            {methodFields.length > 0 && (
+              <div>
+                <label htmlFor="sell-walletAddress" className="mb-2 block text-sm font-bold text-white">Your USDT receiving address</label>
+                <input
+                  id="sell-walletAddress"
+                  value={fields.walletAddress ?? ""}
+                  onChange={(e) => setField("walletAddress", e.target.value)}
+                  placeholder={methodFields[0]?.placeholder}
+                  className="w-full rounded-xl border border-white/15 bg-black/40 px-4 py-3 text-white outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                />
+                <p className="mt-2 text-xs leading-5 text-tertiary/60">Shared with the buyer after they accept your offer.</p>
+              </div>
+            )}
           </div>
         </div>
 
-        {error && <p className="text-sm text-red-400">{error}</p>}
+        {error && <p role="alert" className="mt-6 rounded-xl border border-red-400/20 bg-red-400/[0.06] px-4 py-3 text-sm text-red-300">{error}</p>}
 
-        <div className="flex justify-center">
-          <CustomButton2
-            image={SellButtonImage}
-            text={submitting ? "Creating…" : "Create Order"}
+        <div className="mt-6 grid gap-4 border-t border-white/10 pt-6 md:grid-cols-[minmax(0,1fr)_240px] md:items-center">
+          <div className="flex items-center justify-between gap-4 rounded-2xl bg-black/30 px-4 py-4 md:px-5">
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-white">Estimated payout</p>
+              <p className="mt-1 truncate text-xs text-tertiary/60">
+                {amountNum > 0 ? `${formatBtcy(amountNum)} BTCY` : "Enter an amount"} · {formatPrice(priceNum)} per BTCY · USDT
+              </p>
+            </div>
+            <span className="shrink-0 text-2xl font-semibold tracking-tight text-primary">{formatUsd(total)}</span>
+          </div>
+          <button
+            type="button"
             onClick={submit}
-            imageStyling="w-28 md:w-32"
-            ariaLabel="Create Order"
-          />
+            disabled={submitting}
+            aria-label="Create sell offer"
+            className="inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-4 text-sm font-bold text-[#20150c] shadow-lg shadow-primary/10 transition hover:bg-[#ff9b47] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#242424] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <span>{submitting ? "Creating offer…" : "Create sell offer"}</span>
+            {!submitting && <ArrowRight className="h-4 w-4" aria-hidden="true" />}
+          </button>
         </div>
-        <p className="text-center text-xs text-tertiary/60">
-          Your BTCY is locked while the order is active and released to the buyer
-          only after payment is confirmed.
+
+        <p className="mt-4 flex items-start gap-2 text-xs leading-5 text-tertiary/60">
+          <span className="mt-px text-primary" aria-hidden="true">●</span>
+          BTCY is reserved while your offer is active. Confirm only after the USDT payment has arrived in your wallet.
         </p>
       </div>
     </div>
@@ -683,26 +750,39 @@ function TradeRoom({
   order,
   currentEmail,
   pendingAction,
+  errorMessage,
   onClose,
   onAction,
 }: {
   order: P2POrder;
   currentEmail: string;
+  // Why the last action in this room failed (e.g. the hash didn't match).
+  // Shown inside the modal, right above the buttons, so it isn't hidden
+  // behind the popup on the page.
+  errorMessage?: string | null;
   // Which action is currently in flight, if any — lets the specific
   // button that was clicked show its own loading label, instead of every
   // button in the popup just going dim with no feedback about which one
   // is actually doing something.
   pendingAction: TradeAction | null;
   onClose: () => void;
-  onAction: (action: TradeAction, payload?: { paymentProofImage?: string }) => void;
+  onAction: (action: TradeAction, payload?: { paymentProofImage?: string; txHash?: string }) => void;
 }) {
   const actionLoading = pendingAction !== null;
   const role = roleOf(order, currentEmail);
   const s = order.status;
+  // USDT listings carry a method string like "USDT (TRC20)" — see
+  // detectUsdtNetwork in the backend's platform/p2p.operations.ts, which
+  // this mirrors. Everything else (Bank Transfer, PayPal, ...) still uses
+  // the screenshot flow below; new listings can only be USDT going
+  // forward, but existing non-USDT trades keep working unchanged.
+  const isUsdt = /^USDT\b/i.test(order.paymentMethods[0] || "");
+  const [txHash, setTxHash] = useState("");
 
   // "I've Paid" requires a screenshot of the off-platform payment attached
   // first — the seller (and an admin, if this ends up disputed) needs
-  // something to check against besides the buyer's word.
+  // something to check against besides the buyer's word. Not used for
+  // USDT trades, which submit a transaction hash instead (see txHash above).
   const [proofImage, setProofImage] = useState<string | null>(null);
   const [proofFileName, setProofFileName] = useState("");
   const [proofError, setProofError] = useState<string | null>(null);
@@ -816,7 +896,9 @@ function TradeRoom({
         disabled={disabled || actionLoading}
         onClick={() => {
           if (actionLoading || disabled) return;
-          onAction(action, action === "pay" ? { paymentProofImage: proofImage ?? undefined } : undefined);
+          if (action === "pay") onAction(action, { paymentProofImage: proofImage ?? undefined });
+          else if (action === "validate_payment") onAction(action, { txHash: txHash.trim() || undefined });
+          else onAction(action);
         }}
         imageStyling="w-24 md:w-28"
         ariaLabel={isThisPending ? loadingLabel ?? "Submitting…" : label}
@@ -829,6 +911,7 @@ function TradeRoom({
   const waitingMsg: string[] = [];
   let showProofUpload = false;
   let showReplaceProof = false;
+  let showHashInput = false;
 
   if (role === "seller") {
     if (s === "open") {
@@ -848,17 +931,39 @@ function TradeRoom({
     }
   } else if (role === "buyer") {
     if (s === "payment_pending") {
-      showProofUpload = true;
-      myActions.push(
-        <Btn key="p" label="I've Paid" loadingLabel="Submitting…" action="pay" image={CheckMarkButtonImage} disabled={!proofImage} />,
-        <Btn key="c" label="Cancel" loadingLabel="Cancelling…" action="cancel" image={CancelOrderImage} />,
-      );
+      if (isUsdt) {
+        showHashInput = true;
+        myActions.push(
+          <Btn key="v" label="Validate Payment" loadingLabel="Verifying…" action="validate_payment" image={CheckMarkButtonImage} disabled={!txHash.trim()} />,
+          <Btn key="c" label="Cancel" loadingLabel="Cancelling…" action="cancel" image={CancelOrderImage} />,
+        );
+      } else {
+        showProofUpload = true;
+        myActions.push(
+          <Btn key="p" label="I've Paid" loadingLabel="Submitting…" action="pay" image={CheckMarkButtonImage} disabled={!proofImage} />,
+          <Btn key="c" label="Cancel" loadingLabel="Cancelling…" action="cancel" image={CancelOrderImage} />,
+        );
+      }
     } else if (s === "payment_submitted") {
-      showReplaceProof = order.hasPaymentProof === true;
+      if (isUsdt) {
+        // The hash was recorded but didn't verify yet (a passing hash
+        // completes the trade at once): let the buyer validate again with
+        // the same hash after more confirmations, or with the correct one.
+        showHashInput = true;
+        myActions.push(
+          <Btn key="v" label="Validate Payment" loadingLabel="Verifying…" action="validate_payment" image={CheckMarkButtonImage} disabled={!txHash.trim()} />,
+        );
+      } else {
+        showReplaceProof = order.hasPaymentProof === true;
+      }
       myActions.push(
         <Btn key="d" label="Dispute" loadingLabel="Submitting…" action="dispute" image={DisputeButtonImage} />,
       );
-      waitingMsg.push("Waiting for the seller to confirm your payment.");
+      waitingMsg.push(
+        isUsdt
+          ? "Payment not verified yet. If you just sent it, wait a minute and validate again. Otherwise paste the correct hash: USDT on this trade's network, sent to the seller's address, for the full amount."
+          : "Waiting for the seller to confirm your payment."
+      );
     } else if (s === "payment_confirmed") {
       waitingMsg.push("Payment confirmed. Awaiting BTCY release.");
     }
@@ -911,6 +1016,26 @@ function TradeRoom({
             </div>
           )}
         </div>
+
+        {showHashInput && (
+          <div className="mt-4 rounded-xl border border-primary/30 bg-primary/5 p-4">
+            <p className="text-sm text-white">Transaction hash</p>
+            <p className="mt-1 text-xs text-tertiary/70">
+              Paste the USDT transfer&apos;s transaction hash — the backend verifies it
+              on-chain and releases the BTCY automatically once it matches.
+            </p>
+            <input
+              type="text"
+              value={txHash}
+              onChange={(e) => setTxHash(e.target.value)}
+              placeholder="Paste the transaction hash"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+              className="mt-3 w-full rounded-lg border border-primary/40 bg-black/40 px-3 py-2 text-sm text-white outline-none focus:border-primary"
+            />
+          </div>
+        )}
 
         {showProofUpload && (
           <div className="mt-4 rounded-xl border border-primary/30 bg-primary/5 p-4">
@@ -989,6 +1114,15 @@ function TradeRoom({
               This trade is under admin review. Our support team will verify
               the evidence and resolve it — no action needed from you here.
             </p>
+          </div>
+        )}
+
+        {errorMessage && !actionLoading && (
+          <div
+            role="alert"
+            className="mt-4 rounded-xl border border-red-500/30 bg-red-500/5 p-4 text-sm text-red-400"
+          >
+            {errorMessage}
           </div>
         )}
 
@@ -1232,7 +1366,7 @@ export default function P2PMarketplacePage() {
   // Apply a trade-room action against the real backend, then refetch.
   const handleAction = async (
     action: TradeAction,
-    payload?: { paymentProofImage?: string }
+    payload?: { paymentProofImage?: string; txHash?: string }
   ) => {
     if (!openOrder || !requireAuth()) return;
     if (action === "release" || action === "resolve_release" || action === "resolve_refund") {
@@ -1260,6 +1394,12 @@ export default function P2PMarketplacePage() {
           return;
         }
         res = await replaceP2PPaymentProof(openOrder.tradeId, payload.paymentProofImage);
+      } else if (action === "validate_payment" && openOrder.tradeId) {
+        if (!payload?.txHash) {
+          setErrorMessage("Please paste the transaction hash first.");
+          return;
+        }
+        res = await validateP2PUsdtPayment(openOrder.tradeId, payload.txHash);
       } else if (action === "confirm" && openOrder.tradeId) {
         res = await confirmP2PTradePayment(openOrder.tradeId);
       } else if (action === "dispute" && openOrder.tradeId) {
@@ -1315,7 +1455,7 @@ export default function P2PMarketplacePage() {
         <BalanceCard wallet={wallet} locked={lockedBtcy} />
         <BuybackRuleNote />
 
-        {errorMessage && (
+        {errorMessage && !openOrder && (
           <div className="rounded-xl border border-red-500/30 bg-red-500/5 p-3 text-sm text-red-400">
             {errorMessage}
           </div>
@@ -1359,7 +1499,11 @@ export default function P2PMarketplacePage() {
           order={openOrder}
           currentEmail={email}
           pendingAction={pendingAction}
-          onClose={() => setOpenOrderId(null)}
+          errorMessage={errorMessage}
+          onClose={() => {
+            setOpenOrderId(null);
+            setErrorMessage(null);
+          }}
           onAction={handleAction}
         />
       )}
