@@ -750,11 +750,16 @@ function TradeRoom({
   order,
   currentEmail,
   pendingAction,
+  errorMessage,
   onClose,
   onAction,
 }: {
   order: P2POrder;
   currentEmail: string;
+  // Why the last action in this room failed (e.g. the hash didn't match).
+  // Shown inside the modal, right above the buttons, so it isn't hidden
+  // behind the popup on the page.
+  errorMessage?: string | null;
   // Which action is currently in flight, if any — lets the specific
   // button that was clicked show its own loading label, instead of every
   // button in the popup just going dim with no feedback about which one
@@ -1106,6 +1111,15 @@ function TradeRoom({
           </div>
         )}
 
+        {errorMessage && !actionLoading && (
+          <div
+            role="alert"
+            className="mt-4 rounded-xl border border-red-500/30 bg-red-500/5 p-4 text-sm text-red-400"
+          >
+            {errorMessage}
+          </div>
+        )}
+
         {myActions.length > 0 && (
           <div className="mt-5 flex flex-wrap items-center justify-center gap-8">
             {myActions}
@@ -1435,7 +1449,7 @@ export default function P2PMarketplacePage() {
         <BalanceCard wallet={wallet} locked={lockedBtcy} />
         <BuybackRuleNote />
 
-        {errorMessage && (
+        {errorMessage && !openOrder && (
           <div className="rounded-xl border border-red-500/30 bg-red-500/5 p-3 text-sm text-red-400">
             {errorMessage}
           </div>
@@ -1479,7 +1493,11 @@ export default function P2PMarketplacePage() {
           order={openOrder}
           currentEmail={email}
           pendingAction={pendingAction}
-          onClose={() => setOpenOrderId(null)}
+          errorMessage={errorMessage}
+          onClose={() => {
+            setOpenOrderId(null);
+            setErrorMessage(null);
+          }}
           onAction={handleAction}
         />
       )}
